@@ -241,8 +241,24 @@
 /* B15 逆順: textContent を反転するだけ */
 
 /* ============================================================
-   Phase 5b Batch3a — Stage 5 (B06/B14)
+   Phase 5b Batch3a — Stage 5 (B06/B14/B25)
    ============================================================ */
+
+/* ---------- B25 キャラ妨害: 4辺からモグラ叩き式に出現 ----------
+   position/transform はJS側でinlineに設定。
+   CSSはtransitionとベース指定のみ。 */
+.gk-b25-char {
+    position: absolute;
+    height: 560px;
+    width: auto;
+    pointer-events: none;
+    z-index: 55;
+    will-change: transform;
+    transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+}
 
 /* ---------- B06 色覚破壊: 画面全体の色相が常時シフト ---------- */
 .question-screen.gk-b06 {

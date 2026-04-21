@@ -313,6 +313,12 @@
                 'sprite/girl/think.png',
                 'sprite/girl/think_light.png',
             ];
+            const CHAR_H = 560;  // 表示上の高さ (px, 仮想座標)
+            const CHAR_W = 280;  // 幅の概算 (auto のため目安)
+            const PEEK   = 200;  // 覗き込む量 (px)
+            const OFF    = PEEK + 60; // 退場時に追加で押し出すオフセット
+            const SCREEN_W = 1080;
+
             const timers = new Set();
             let alive = true;
 
@@ -321,36 +327,87 @@
                 timers.add(t);
             }
 
-            function createChar(side) {
+            // 問題/回答エリア境界の仮想Y座標を取得
+            function getBoundaryY() {
+                const zone = ctx.screen.querySelector('.q-zone-answer');
+                if (!zone) return 1050;
+                const sr = ctx.screen.getBoundingClientRect();
+                const zr = zone.getBoundingClientRect();
+                const scale = sr.width / SCREEN_W;
+                return scale > 0 ? (zr.top - sr.top) / scale : 1050;
+            }
+
+            function spawnChar() {
+                if (!alive) return;
+                const boundaryY = getBoundaryY();
                 const img = document.createElement('img');
                 img.src = SPRITES[Math.floor(Math.random() * SPRITES.length)];
-                img.className = `gk-b25-char gk-b25-${side}`;
                 img.draggable = false;
+                img.className = 'gk-b25-char';
+
+                // 4辺からランダム選択: 0=左 1=右 2=上 3=下(境界)
+                const edge = Math.floor(Math.random() * 4);
+                let hiddenT, visibleT;
+
+                switch (edge) {
+                    case 0: { // 左端: 正向き、PEEK分だけ画面内に覗く
+                        const y = Math.random() * Math.max(0, boundaryY - CHAR_H);
+                        img.style.left = `${-(CHAR_W - PEEK)}px`;
+                        img.style.top  = `${y}px`;
+                        hiddenT  = `translateX(-${OFF}px)`;
+                        visibleT = 'translateX(0)';
+                        break;
+                    }
+                    case 1: { // 右端: 左右反転、PEEK分覗く
+                        const y = Math.random() * Math.max(0, boundaryY - CHAR_H);
+                        img.style.right = `${-(CHAR_W - PEEK)}px`;
+                        img.style.top   = `${y}px`;
+                        // scaleX(-1) 後は translateX(-) が視覚的に右方向
+                        hiddenT  = `scaleX(-1) translateX(-${OFF}px)`;
+                        visibleT = 'scaleX(-1)';
+                        break;
+                    }
+                    case 2: { // 上端: 底部(胴体)が見える — 下からではなく上からぬっと出る
+                        const x = CHAR_W * 0.2 + Math.random() * (SCREEN_W - CHAR_W * 1.4);
+                        img.style.left = `${x}px`;
+                        img.style.top  = `${-(CHAR_H - PEEK)}px`;
+                        hiddenT  = `translateY(-${OFF}px)`;
+                        visibleT = 'translateY(0)';
+                        break;
+                    }
+                    case 3: { // 下端: 問題/回答境界から頭が覗く
+                        const x = CHAR_W * 0.2 + Math.random() * (SCREEN_W - CHAR_W * 1.4);
+                        img.style.left = `${x}px`;
+                        img.style.top  = `${boundaryY - PEEK}px`;
+                        hiddenT  = `translateY(${OFF}px)`;
+                        visibleT = 'translateY(0)';
+                        break;
+                    }
+                }
+
+                img.style.transform = hiddenT;
                 ctx.screen.appendChild(img);
-                return img;
-            }
 
-            function spawnPair() {
-                const left = createChar('left');
-                const right = createChar('right');
-                // 初期(画面外)状態を描画してからトランジション開始
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        if (!alive) return;
-                        left.classList.add('is-in');
-                        right.classList.add('is-in');
-                    });
-                });
-                // 1.5〜2.5秒ホールドして退場
+                // 初期状態を描画してからトランジション開始
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    if (!alive) { img.remove(); return; }
+                    img.style.transform = visibleT;
+                }));
+
+                // ホールド → 退場
                 schedule(() => {
-                    left.classList.remove('is-in');
-                    right.classList.remove('is-in');
-                    schedule(() => { left.remove(); right.remove(); }, 600);
-                }, 1500 + Math.random() * 1000);
+                    img.style.transform = hiddenT;
+                    schedule(() => img.remove(), 450);
+                }, 800 + Math.random() * 700);
             }
 
-            schedule(spawnPair, 1200);
-            schedule(spawnPair, 6000 + Math.random() * 3000);
+            // モグラ叩きループ: 一定間隔で次のキャラを生成
+            function loop() {
+                spawnChar();
+                schedule(loop, 600 + Math.random() * 800);
+            }
+
+            schedule(loop, 900);
 
             return () => {
                 alive = false;

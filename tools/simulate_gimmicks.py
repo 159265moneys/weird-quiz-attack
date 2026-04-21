@@ -60,6 +60,7 @@ REGISTRY: List[Gimmick] = [
     Gimmick('B06', '色覚破壊',               'both', 5, 6),
     Gimmick('B12', 'ぼかし',                 'both', 5, 5),
     Gimmick('B14', '余白暴走',               'both', 5, 5),
+    Gimmick('B25', 'キャラ妨害',             'both', 5, 5),
     # Stage 6
     Gimmick('B09', '画面縮小',               'both',   6, 6, conflicts=['B03', 'B05']),
     Gimmick('B10', '問題文ランダム出力',     'both',   6, 5, conflicts=['B02', 'B07', 'B15', 'B17']),
