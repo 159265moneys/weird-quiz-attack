@@ -27,10 +27,9 @@
      Stage5: B05, B06, B12, B14             ← Phase 5b-Batch3a (+ B05/B12=5a)
      Stage6: B09, B10, W01, W02, W03, W07, C02  ← Phase 5b-Batch3b (+ W01/W03=5a)
      Stage7: B01, B13, B17, W05, W10, W14, W17, W19  ← Phase 5b-Batch4 (+ B13=5a)
-     Stage8: C04                            ← Phase 5a
+     Stage8: C03, C04, W04, W06, W09, W15, W16  ← Phase 5b-Batch5 (+ C04=5a)
 
-   未実装 (Phase 5b-Batch5〜):
-     Stage8: C03, W04, W06, W09, W15, W16
+   未実装 (Phase 5b-Batch6〜):
      Stage9: B21, W08, W18, W20
    ============================================================ */
 
@@ -597,6 +596,42 @@
         },
     };
 
+    // --- Stage 8 プール (Choice) ---
+
+    const C03_CHAR_CORRUPT = {
+        id: 'C03', name: '選択肢文字変化', supports: 'choice', introducedAt: 8, difficulty: 8,
+        apply(ctx) {
+            const btns = qa(ctx.screen, '.q-choice');
+            if (btns.length === 0) return () => {};
+            // 本物/ダミー問わず全ての選択肢を対象にする (C02 との併用時も整合)
+            const states = btns.map(btn => ({
+                btn,
+                original: btn.textContent,
+                chars: Array.from(btn.textContent),
+            }));
+            const NOISE = '█▓▒░◊#&@?*%ΛΣΞ☆♪♀♂々〆ヾミЯЮЖ';
+            const noiseCh = () => NOISE[Math.floor(Math.random() * NOISE.length)];
+
+            // 1秒ごとにランダムな選択肢のランダムな位置を1文字ずつ壊す
+            const timer = setInterval(() => {
+                const alive = states.filter(s => s.btn.isConnected);
+                if (alive.length === 0) return;
+                const s = alive[Math.floor(Math.random() * alive.length)];
+                if (s.chars.length === 0) return;
+                const pos = Math.floor(Math.random() * s.chars.length);
+                s.chars[pos] = noiseCh();
+                s.btn.textContent = s.chars.join('');
+            }, 1000);
+
+            return () => {
+                clearInterval(timer);
+                states.forEach(s => {
+                    if (s.btn.isConnected) s.btn.textContent = s.original;
+                });
+            };
+        },
+    };
+
     // ========== W (Input/Write only) ==========
 
     const W01_KEYS_INVISIBLE = {
@@ -793,6 +828,224 @@
         },
     };
 
+    // --- Stage 8 プール (Input) ---
+
+    // あいうえお 行内で「1個前の音」へ戻すマップ。行頭は不動。
+    // カタカナの場合は hiraToKata/kataToHira でラップして使う。
+    const W04_SHIFT_MAP = (() => {
+        const rows = [
+            'あいうえお', 'かきくけこ', 'さしすせそ', 'たちつてと',
+            'なにぬねの', 'はひふへほ', 'まみむめも', 'やゆよ',
+            'らりるれろ', 'わをん',
+        ];
+        const m = {};
+        rows.forEach(r => {
+            const arr = Array.from(r);
+            for (let i = 0; i < arr.length; i++) {
+                m[arr[i]] = i === 0 ? arr[0] : arr[i - 1];
+            }
+        });
+        return m;
+    })();
+
+    function w04ShiftChar(ch) {
+        const L = window.KeyboardLayouts;
+        if (!L) return ch;
+        // カタカナ → ひらがな化してマップを引き、元のスクリプトに戻す
+        const isKata = /[\u30A1-\u30F6]/.test(ch);
+        const base = isKata ? L.kataToHira(ch) : ch;
+        const mapped = W04_SHIFT_MAP[base];
+        if (!mapped || mapped === base) return ch;
+        return isKata ? L.hiraToKata(mapped) : mapped;
+    }
+
+    const W04_INPUT_SHIFT = {
+        id: 'W04', name: '入力ズレ', supports: 'input', introducedAt: 8, difficulty: 9,
+        // buffer を捻る系全般と排他
+        conflicts: ['W05', 'W06', 'W07', 'W09', 'W10'],
+        apply(ctx) {
+            const kb = window.Keyboard;
+            if (!kb) return () => {};
+            let prev = kb.getValue() || '';
+            let bypass = false;
+            const unwrap = wrapOnChange((orig) => (val) => {
+                if (bypass) { bypass = false; prev = val; if (orig) orig(val); return; }
+                if (val.length === prev.length + 1 && val.startsWith(prev)) {
+                    const ch = val[val.length - 1];
+                    const shifted = w04ShiftChar(ch);
+                    if (shifted === ch) {
+                        prev = val; if (orig) orig(val); return;
+                    }
+                    const mutated = prev + shifted;
+                    bypass = true;
+                    kb.setValue(mutated);
+                    return;
+                }
+                prev = val;
+                if (orig) orig(val);
+            });
+            return unwrap;
+        },
+    };
+
+    const W06_REVERSE_TEXT = {
+        id: 'W06', name: '文字順逆転', supports: 'input', introducedAt: 8, difficulty: 8,
+        // これは表示のみ反転 (buffer はそのまま) なので buffer 系との併用は許容
+        // だが W05/W09 等と組むとどっちが先に見えているのか混乱するので排他にしておく
+        conflicts: ['W05', 'W04', 'W09', 'W10'],
+        apply(ctx) {
+            // buffer は触らず、onChange に流す「表示用値」だけ反転する
+            // → OK 判定時の onSubmit は本物の buffer を受け取るので
+            //   「見えている文字列を正しく並べて入力する」ゲームになる
+            const unwrap = wrapOnChange((orig) => (val) => {
+                const reversed = Array.from(val).reverse().join('');
+                if (orig) orig(reversed);
+            });
+            return unwrap;
+        },
+    };
+
+    const W09_GHOST_INPUT = {
+        id: 'W09', name: 'ゴースト入力', supports: 'input', introducedAt: 8, difficulty: 8,
+        conflicts: ['W04', 'W05', 'W06', 'W07', 'W10'],
+        apply(ctx) {
+            const kb = window.Keyboard;
+            if (!kb) return () => {};
+            const NOISE = 'がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゃゅょっゞゟヰヱヶ';
+            const noiseCh = () => NOISE[Math.floor(Math.random() * NOISE.length)];
+
+            let bypass = false;
+            // setValue 経由で挿入すると wrapOnChange の他ギミックと競合するが、
+            // 排他設定してあるので単独起動のはず。
+            function inject() {
+                const cur = kb.getValue() || '';
+                if (cur.length >= 19) return; // max 直前は挿入しない (溢れ防止)
+                bypass = true;
+                kb.setValue(cur + noiseCh());
+            }
+            // 4〜6 秒に1回、ランダムにゴミを足す
+            function scheduleNext() {
+                return setTimeout(() => {
+                    inject();
+                    timer = scheduleNext();
+                }, 4000 + Math.random() * 2000);
+            }
+
+            // onChange を素通しさせる薄いラップ (bypass リセットのため)
+            const unwrap = wrapOnChange((orig) => (val) => {
+                bypass = false;
+                if (orig) orig(val);
+            });
+
+            let timer = scheduleNext();
+            return () => {
+                clearTimeout(timer);
+                unwrap();
+            };
+        },
+    };
+
+    const W15_KEY_WARP = {
+        id: 'W15', name: 'キーワープ', supports: 'input', introducedAt: 8, difficulty: 8,
+        // 文字盤の DOM を直接いじるので、再描画系/別DOM操作系と排他
+        conflicts: ['W02', 'W08', 'W16', 'W17'],
+        apply(ctx) {
+            const grid = q(ctx.screen, '.kb-grid');
+            if (!grid) return () => {};
+
+            // スワップ対象は文字キーのみ (fn キーを動かすと OK/BS が行方不明になる)
+            function candidates() {
+                return qa(grid, '.kb-key:not(.kb-empty):not(.kb-fn)');
+            }
+
+            function swapNodes(a, b) {
+                if (a === b) return;
+                const pa = a.parentNode;
+                const pb = b.parentNode;
+                if (!pa || !pb) return;
+                const na = a.nextSibling;
+                const nb = b.nextSibling;
+                pb.insertBefore(a, nb);
+                pa.insertBefore(b, na);
+            }
+
+            function onUp(e) {
+                const keyEl = e.target.closest('.kb-key');
+                if (!keyEl || keyEl.classList.contains('kb-fn') || keyEl.classList.contains('kb-empty')) return;
+                // 実際に文字が入力される (ドラッグなしのタップ) かは判定が難しいので、
+                // キーを触ったら必ずワープさせる。
+                const pool = candidates().filter(k => k !== keyEl);
+                if (pool.length === 0) return;
+                const partner = pool[Math.floor(Math.random() * pool.length)];
+                // ワープは次フレームで (今の pointerup の後処理が済むまで待つ)
+                requestAnimationFrame(() => swapNodes(keyEl, partner));
+            }
+            grid.addEventListener('pointerup', onUp, true);
+            return () => {
+                grid.removeEventListener('pointerup', onUp, true);
+            };
+        },
+    };
+
+    const W16_KEYS_MERGE = {
+        id: 'W16', name: 'キー同士くっつく', supports: 'input', introducedAt: 8, difficulty: 8,
+        conflicts: ['W02', 'W08', 'W15', 'W17'],
+        apply(ctx) {
+            const grid = q(ctx.screen, '.kb-grid');
+            if (!grid) return () => {};
+            const keys = qa(grid, '.kb-key:not(.kb-empty):not(.kb-fn)');
+            if (keys.length < 6) return () => {};
+
+            // 元の data-key と main テキストを退避
+            const snapshot = keys.map(k => ({
+                el: k,
+                dataKey: k.getAttribute('data-key'),
+                mainHTML: (k.querySelector('.kb-main') || {}).textContent || '',
+            }));
+
+            // 3 グループ、各 2〜3 個をランダムに選んで「くっつける」
+            const pool = keys.slice();
+            // Fisher-Yates shuffle
+            for (let i = pool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pool[i], pool[j]] = [pool[j], pool[i]];
+            }
+            const modifiedEls = [];
+            let idx = 0;
+            for (let g = 0; g < 3 && idx < pool.length; g++) {
+                const size = 2 + Math.floor(Math.random() * 2); // 2 or 3
+                const group = pool.slice(idx, idx + size);
+                idx += size;
+                if (group.length < 2) break;
+                const anchor = group[0];
+                const anchorData = anchor.getAttribute('data-key');
+                const anchorMain = (anchor.querySelector('.kb-main') || {}).textContent || '';
+                group.slice(1).forEach(k => {
+                    k.setAttribute('data-key', anchorData);
+                    const main = k.querySelector('.kb-main');
+                    if (main) main.textContent = anchorMain;
+                    // サブ文字 (フリック方向) もアンカーに合わせるより空にする方が整合性高い
+                    qa(k, '.kb-sub').forEach(s => { s.textContent = ''; });
+                    k.classList.add('gk-w16-glued');
+                    modifiedEls.push(k);
+                });
+                // アンカー自身にも見た目のしるしを付けて「どれが本体か」分かるようにする
+                anchor.classList.add('gk-w16-anchor');
+                modifiedEls.push(anchor);
+            }
+
+            return () => {
+                snapshot.forEach(s => {
+                    if (!s.el.isConnected) return;
+                    if (s.dataKey !== null) s.el.setAttribute('data-key', s.dataKey);
+                    const main = s.el.querySelector('.kb-main');
+                    if (main) main.textContent = s.mainHTML;
+                    s.el.classList.remove('gk-w16-glued', 'gk-w16-anchor');
+                });
+            };
+        },
+    };
+
     // ---------- Export ----------
     const map = {
         B11_BLASTER, B16_FAKE_COUNTDOWN, B18_FAKE_ERROR,
@@ -801,9 +1054,10 @@
         B09_SHRINK, B10_SHUFFLE_TEXT,
         B12_BLUR, B13_TINY, B14_MARGIN_CHAOS,
         B01_REVERSE_TAP, B17_NOISE_TEXT,
-        C01_SHUFFLE, C02_DUMMY_CHOICE, C04_FAKE_5050,
+        C01_SHUFFLE, C02_DUMMY_CHOICE, C03_CHAR_CORRUPT, C04_FAKE_5050,
         W01_KEYS_INVISIBLE, W02_KEYS_SHUFFLE, W03_ANSWER_INVISIBLE, W07_CHAR_DROP,
         W05_CURSOR_WILD, W10_INPUT_DELAY, W14_KEY_HUGE, W17_MODE_AUTO_SWAP, W19_FLICK_REVERSE,
+        W04_INPUT_SHIFT, W06_REVERSE_TEXT, W09_GHOST_INPUT, W15_KEY_WARP, W16_KEYS_MERGE,
     };
     const all = Object.values(map).filter(g => g && g.id);
     window.GimmickRegistry = Object.assign({ all }, map);

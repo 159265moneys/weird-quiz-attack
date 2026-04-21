@@ -77,19 +77,18 @@ REGISTRY: List[Gimmick] = [
     Gimmick('W14', 'キー巨大化',             'input',  7, 7),
     Gimmick('W17', 'カナひら勝手切替',       'input',  7, 7),
     Gimmick('W19', 'フリック方向反転',       'input',  7, 7),
-    # Stage 8
+    # Stage 8 (Batch 5)
+    Gimmick('C03', '選択肢文字変化',         'choice', 8, 8),
     Gimmick('C04', '嘘50:50',                'choice', 8, 6, conflicts=['C01']),
+    Gimmick('W04', '入力ズレ',               'input',  8, 9, conflicts=['W05', 'W06', 'W07', 'W09', 'W10']),
+    Gimmick('W06', '文字順逆転',             'input',  8, 8, conflicts=['W04', 'W05', 'W09', 'W10']),
+    Gimmick('W09', 'ゴースト入力',           'input',  8, 8, conflicts=['W04', 'W05', 'W06', 'W07', 'W10']),
+    Gimmick('W15', 'キーワープ',             'input',  8, 8, conflicts=['W02', 'W08', 'W16', 'W17']),
+    Gimmick('W16', 'キー同士くっつく',       'input',  8, 8, conflicts=['W02', 'W08', 'W15', 'W17']),
 ]
 
 # --- 未実装ギミック (参考情報用、シミュレータで "実装後の姿" を見たい時に有効化) ---
 PENDING: List[Gimmick] = [
-    # Stage 8
-    Gimmick('C03', '選択肢文字変化',         'choice', 8, 8, implemented=False),
-    Gimmick('W04', '入力ズレ',               'input',  8, 9, implemented=False),
-    Gimmick('W06', '文字順逆転',             'input',  8, 8, implemented=False),
-    Gimmick('W09', 'ゴースト入力',           'input',  8, 8, implemented=False),
-    Gimmick('W15', 'キーワープ',             'input',  8, 8, implemented=False),
-    Gimmick('W16', 'キー同士くっつく',       'input',  8, 8, implemented=False),
     # Stage 9
     Gimmick('B21', '即死',                   'both',   9, 10, implemented=False),
     Gimmick('W08', '文字盤あべこべv2',       'input',  9, 9, implemented=False),

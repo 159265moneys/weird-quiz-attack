@@ -1,7 +1,7 @@
 ====================================================================
  Stage × Gimmick Pool Report
- Implemented gimmicks: 31
- Registry total:       31
+ Implemented gimmicks: 37
+ Registry total:       37
 ====================================================================
 
 [Stage  1] TUTORIAL ZONE   stress=E  slots=4  K=[1, 1]  diff=[0.8, 0.2, 0.0]
@@ -99,9 +99,9 @@
     [✓] W19 フリック方向反転             sup=input  st7 diff=7
 
 [Stage  8] COLLAPSE        stress=X  slots=20  K=[4, 5]  diff=[0.2, 0.4, 0.4]
-  Pool total:  31  (implemented: 31)
-    choice-applicable:  22 (impl 22)
-    input-applicable:   28 (impl 28)
+  Pool total:  37  (implemented: 37)
+    choice-applicable:  23 (impl 23)
+    input-applicable:   33 (impl 33)
   Members:
     [✓] B11 コーナービーム              sup=both   st1 diff=4
     [✓] B16 高速カウントダウン            sup=both   st1 diff=2
@@ -133,19 +133,31 @@
     [✓] W14 キー巨大化                sup=input  st7 diff=7
     [✓] W17 カナひら勝手切替             sup=input  st7 diff=7
     [✓] W19 フリック方向反転             sup=input  st7 diff=7
+    [✓] C03 選択肢文字変化              sup=choice st8 diff=8
     [✓] C04 嘘50:50               sup=choice st8 diff=6
+    [✓] W04 入力ズレ                 sup=input  st8 diff=9
+    [✓] W06 文字順逆転                sup=input  st8 diff=8
+    [✓] W09 ゴースト入力               sup=input  st8 diff=8
+    [✓] W15 キーワープ                sup=input  st8 diff=8
+    [✓] W16 キー同士くっつく             sup=input  st8 diff=8
 
 [Stage  9] HELL            stress=X  slots=20  K=[4, 5]  diff=[0.15, 0.35, 0.5]
-  Pool total:   1  (implemented: 1)
-    choice-applicable:   1 (impl 1)
-    input-applicable:    0 (impl 0)
+  Pool total:   7  (implemented: 7)
+    choice-applicable:   2 (impl 2)
+    input-applicable:    5 (impl 5)
   Members:
+    [✓] C03 選択肢文字変化              sup=choice st8 diff=8
     [✓] C04 嘘50:50               sup=choice st8 diff=6
+    [✓] W04 入力ズレ                 sup=input  st8 diff=9
+    [✓] W06 文字順逆転                sup=input  st8 diff=8
+    [✓] W09 ゴースト入力               sup=input  st8 diff=8
+    [✓] W15 キーワープ                sup=input  st8 diff=8
+    [✓] W16 キー同士くっつく             sup=input  st8 diff=8
 
 [Stage 10] ABYSS           stress=X  slots=20  K=[4, 5]  diff=[0.1, 0.3, 0.6]
-  Pool total:   6  (implemented: 6)
-    choice-applicable:   4 (impl 4)
-    input-applicable:    5 (impl 5)
+  Pool total:  12  (implemented: 12)
+    choice-applicable:   5 (impl 5)
+    input-applicable:   10 (impl 10)
   Members:
     [✓] C02 ダミー選択肢               sup=choice st6 diff=7
     [✓] W01 文字盤見えない              sup=input  st6 diff=7
@@ -153,3 +165,9 @@
     [✓] B13 フォント極小               sup=both   st7 diff=7
     [✓] B17 問題文めちゃくちゃ            sup=both   st7 diff=7
     [✓] W05 カーソル暴走               sup=input  st7 diff=7
+    [✓] C03 選択肢文字変化              sup=choice st8 diff=8
+    [✓] W04 入力ズレ                 sup=input  st8 diff=9
+    [✓] W06 文字順逆転                sup=input  st8 diff=8
+    [✓] W09 ゴースト入力               sup=input  st8 diff=8
+    [✓] W15 キーワープ                sup=input  st8 diff=8
+    [✓] W16 キー同士くっつく             sup=input  st8 diff=8
