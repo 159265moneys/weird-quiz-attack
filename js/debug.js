@@ -109,7 +109,7 @@
 
             // 各ギミックを手動で試せるボタン (問題画面のときだけ)
             const gkButtons = rtr === 'question'
-                ? all.map(g => `<button data-gk="${g.id}" title="${g.name}">${g.id}</button>`).join('')
+                ? all.map(g => `<button data-gk="${g.id}" title="${g.name} (ST${g.minStage ?? 1}+)">${g.id}<small style="opacity:.5">@${g.minStage ?? 1}</small></button>`).join('')
                 : '';
 
             return `

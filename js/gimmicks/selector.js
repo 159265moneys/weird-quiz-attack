@@ -21,6 +21,11 @@
         return gimmicks.filter(g => g.supports === 'both' || g.supports === qMode);
     }
 
+    // 設計書§9-3 のプール解放ルール: そのステージ以上で出現可
+    function filterByStage(gimmicks, stageNo) {
+        return gimmicks.filter(g => (g.minStage ?? 1) <= stageNo);
+    }
+
     // ステージ開始時に呼び出す: 全問中 slots 個をランダム選抜して
     // ギミック発動問題の index 配列 (0-based) を返す
     function pickGimmickSlots(stageNo, totalQuestions) {
@@ -45,8 +50,13 @@
         const count = pickCount(stageConfig);
         if (count <= 0) return [];
 
-        const pool = filterByMode(window.GimmickRegistry.all, q.mode);
-        if (pool.length === 0) return [];
+        // ①ステージ解放 ②回答モード の二段フィルタ
+        const stageOK = filterByStage(window.GimmickRegistry.all, stageNo);
+        const pool = filterByMode(stageOK, q.mode);
+        if (pool.length === 0) {
+            console.warn(`[Gimmick] no compatible gimmick for stage=${stageNo} mode=${q.mode}`);
+            return [];
+        }
 
         // ランダム順に並べ替えて、conflict を避けつつ count 個取る
         const shuffled = pool.slice().sort(() => Math.random() - 0.5);
