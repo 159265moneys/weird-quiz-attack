@@ -35,3 +35,111 @@
     letter-spacing: 0 !important;
     line-height: 1.2 !important;
 }
+
+/* ============================================================
+   Phase 5b Batch1 — Stage 1 視覚ノイズ系 (B11/B16/B18/B19)
+   ============================================================ */
+
+/* ---------- B11 光沢: 画面全体を流れる白い光沢 ---------- */
+.gk-b11-shine {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    background: linear-gradient(115deg,
+        transparent 0%,
+        transparent 38%,
+        rgba(255, 255, 255, 0.55) 50%,
+        transparent 62%,
+        transparent 100%);
+    background-size: 280% 280%;
+    mix-blend-mode: screen;
+    animation: gkB11Sweep 3.2s linear infinite;
+}
+@keyframes gkB11Sweep {
+    0%   { background-position: 180% 180%; }
+    100% { background-position: -80% -80%; }
+}
+
+/* ---------- B16 偽カウントダウン: 焦らすだけの無意味タイマー ---------- */
+.gk-b16-fake {
+    position: absolute;
+    top: 220px; /* 問題ゾーンの右上あたり */
+    right: 80px;
+    z-index: 40;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    color: var(--accent-red, #ff3030);
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 10px rgba(255, 48, 48, 0.55);
+    animation: gkB16Pulse 0.35s infinite alternate;
+}
+.gk-b16-label {
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    opacity: 0.75;
+}
+.gk-b16-num {
+    font-size: 30px;
+    font-weight: bold;
+    min-width: 180px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+@keyframes gkB16Pulse {
+    from { opacity: 0.95; }
+    to   { opacity: 0.55; }
+}
+
+/* ---------- B18 偽エラー: 通信エラー風のクルクルが時々出る ---------- */
+.gk-b18-fake {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.85);
+    z-index: 60;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.88);
+    border: 2px solid var(--accent-red, #ff3030);
+    color: #fff;
+    padding: 22px 34px;
+    border-radius: 6px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    opacity: 0;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 0 30px rgba(255, 48, 48, 0.35);
+}
+.gk-b18-fake.is-on {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+.gk-b18-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.18);
+    border-top-color: var(--accent-red, #ff3030);
+    border-radius: 50%;
+    animation: gkB18Spin 0.85s linear infinite;
+}
+.gk-b18-text {
+    font-size: 18px;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+}
+.gk-b18-text small {
+    font-size: 13px;
+    opacity: 0.7;
+}
+@keyframes gkB18Spin {
+    to { transform: rotate(360deg); }
+}
+
+/* B19 進捗バー嘘: DOMテキストを直接書き換えるのでCSS不要 */

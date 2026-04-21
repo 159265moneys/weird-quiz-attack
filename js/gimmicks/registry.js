@@ -19,11 +19,16 @@
      Stage 9  : introducedAt ∈ {8, 9}    (8追加分 + 9追加分のみ)
      Stage 10 : CONFIG.STAGE10_POOL 直指定 (最高難度のみ, 重複OK)
 
-   Phase 5a 実装済み 9 ギミック:
-     B03(2) B05(5) B07(2) B12(5) B13(7) C01(4) C04(8) W01(6) W03(6)
+   実装済み:
+     Stage1: B11, B16, B18, B19             ← Phase 5b-Batch1
+     Stage2: B03, B07                       ← Phase 5a
+     Stage4: C01                            ← Phase 5a
+     Stage5: B05, B12                       ← Phase 5a
+     Stage6: W01, W03                       ← Phase 5a
+     Stage7: B13                            ← Phase 5a
+     Stage8: C04                            ← Phase 5a
 
-   未実装 (Phase 5b〜):
-     Stage1: B19, B16, B18, B11
+   未実装 (Phase 5b-Batch2〜):
      Stage3: B02, B08
      Stage4: B04, B15, B20
      Stage5: B06, B14
@@ -39,6 +44,96 @@
     function qa(scope, sel) { return scope ? Array.from(scope.querySelectorAll(sel)) : []; }
 
     // ========== B (Both) ==========
+
+    // --- Stage 1 プール (視覚ノイズ系、ゲーム本体には干渉しない) ---
+
+    const B11_SHINE = {
+        id: 'B11', name: '光沢', supports: 'both', introducedAt: 1, difficulty: 3,
+        apply(ctx) {
+            const host = document.createElement('div');
+            host.className = 'gk-b11-shine';
+            ctx.screen.appendChild(host);
+            return () => host.remove();
+        },
+    };
+
+    const B16_FAKE_COUNTDOWN = {
+        id: 'B16', name: '高速カウントダウン', supports: 'both', introducedAt: 1, difficulty: 2,
+        apply(ctx) {
+            const host = document.createElement('div');
+            host.className = 'gk-b16-fake';
+            host.innerHTML = `
+                <span class="gk-b16-label">SYS</span>
+                <span class="gk-b16-num">0.000</span>
+            `;
+            ctx.screen.appendChild(host);
+            const numEl = host.querySelector('.gk-b16-num');
+            let n = 500 + Math.random() * 500;
+            const timer = setInterval(() => {
+                n -= 3 + Math.random() * 9;
+                if (n < 0) n = 500 + Math.random() * 500;
+                numEl.textContent = n.toFixed(3);
+            }, 45);
+            return () => {
+                clearInterval(timer);
+                host.remove();
+            };
+        },
+    };
+
+    const B18_FAKE_ERROR = {
+        id: 'B18', name: '偽エラー表示', supports: 'both', introducedAt: 1, difficulty: 2,
+        apply(ctx) {
+            const host = document.createElement('div');
+            host.className = 'gk-b18-fake';
+            host.innerHTML = `
+                <div class="gk-b18-spinner"></div>
+                <div class="gk-b18-text">通信エラー<br><small>再試行中…</small></div>
+            `;
+            ctx.screen.appendChild(host);
+            let showTimer = 0, hideTimer = 0;
+            const show = () => {
+                host.classList.add('is-on');
+                hideTimer = setTimeout(hide, 1400 + Math.random() * 600);
+            };
+            const hide = () => {
+                host.classList.remove('is-on');
+                showTimer = setTimeout(show, 2500 + Math.random() * 2000);
+            };
+            showTimer = setTimeout(show, 800);
+            return () => {
+                clearTimeout(showTimer);
+                clearTimeout(hideTimer);
+                host.remove();
+            };
+        },
+    };
+
+    const B19_FAKE_PROGRESS = {
+        id: 'B19', name: '進捗バー嘘', supports: 'both', introducedAt: 1, difficulty: 1,
+        apply(ctx) {
+            const header = q(ctx.screen, '.q-header');
+            if (!header) return () => {};
+            // 「STAGE X / Q N/M」を含む span を取得
+            const span = qa(header, 'span').find(el => /Q\s*\d+\s*\/\s*\d+/.test(el.textContent));
+            if (!span) return () => {};
+            const original = span.textContent;
+            const total = 20;
+            const tick = () => {
+                if (!span.isConnected) return;
+                const fakeN = Math.floor(Math.random() * total) + 1;
+                span.textContent = original.replace(/Q\s*\d+\s*\/\s*\d+/, `Q ${fakeN}/${total}`);
+            };
+            const timer = setInterval(tick, 1200);
+            tick();
+            return () => {
+                clearInterval(timer);
+                if (span.isConnected) span.textContent = original;
+            };
+        },
+    };
+
+    // --- Stage 2+ ---
 
     const B03_REVERSE = {
         id: 'B03', name: '問題文逆さ', supports: 'both', introducedAt: 2, difficulty: 3,
@@ -198,6 +293,7 @@
 
     // ---------- Export ----------
     const map = {
+        B11_SHINE, B16_FAKE_COUNTDOWN, B18_FAKE_ERROR, B19_FAKE_PROGRESS,
         B03_REVERSE, B05_MIRROR, B07_GLITCH, B12_BLUR, B13_TINY,
         C01_SHUFFLE, C04_FAKE_5050,
         W01_KEYS_INVISIBLE, W03_ANSWER_INVISIBLE,
