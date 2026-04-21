@@ -15,6 +15,7 @@ window.GameState = {
         startAt: 0,         // セッション開始時刻 (ms)
         endAt: 0,
         score: 0,
+        gimmickSlots: [],   // ギミック発動問題の index 配列 (0..19)
     },
 
     // 画面遷移パラメータの一時置き場
@@ -28,6 +29,7 @@ window.GameState = {
             startAt: 0,
             endAt: 0,
             score: 0,
+            gimmickSlots: [],
         };
     },
 };

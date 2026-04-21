@@ -78,6 +78,10 @@
             const all = await window.QuizLoader.loadAll();
             const picked = window.QuizLoader.pickForStage(all, no, window.CONFIG.QUESTIONS_PER_STAGE);
             window.GameState.session.questions = picked;
+            // このステージで何問目にギミックを出すか事前抽選
+            window.GameState.session.gimmickSlots =
+                window.GimmickSelector.pickGimmickSlots(no, picked.length);
+            console.log('[Stage]', no, 'gimmick slots:', window.GameState.session.gimmickSlots);
             window.Router.show('question');
         } catch (e) {
             console.error(e);

@@ -123,7 +123,8 @@
                     Q:      ${s.index != null ? (s.index + 1) : '-'}/${s.questions?.length ?? '-'}${q ? ' [' + q.id + ']' : ''}<br>
                     mode:   ${q?.mode ?? '-'} | diff: ${q?.difficulty ?? '-'}${q ? ' | ans:' + (q.mode === 'choice' ? q.answer : q.answer_text) : ''}<br>
                     GK now: <b style="color:#ff0">${active.join(',') || '-'}</b><br>
-                    GK last: ${last.join(',') || '-'}
+                    GK last: ${last.join(',') || '-'}<br>
+                    GK slots: <span style="color:#0ff">${(s.gimmickSlots || []).map(i => i + 1).join(',') || '-'}</span>
                 </div>
                 <div class="dbg-section">Q操作 (W/L/S)</div>
                 <div class="dbg-actions">

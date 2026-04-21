@@ -21,6 +21,23 @@
         return gimmicks.filter(g => g.supports === 'both' || g.supports === qMode);
     }
 
+    // ステージ開始時に呼び出す: 全問中 slots 個をランダム選抜して
+    // ギミック発動問題の index 配列 (0-based) を返す
+    function pickGimmickSlots(stageNo, totalQuestions) {
+        const stageConfig = window.CONFIG.STAGES.find(s => s.no === stageNo);
+        const slots = Math.min(stageConfig?.slots ?? 0, totalQuestions);
+        if (slots <= 0) return [];
+
+        const indices = [];
+        for (let i = 0; i < totalQuestions; i++) indices.push(i);
+        // Fisher-Yates shuffle
+        for (let i = indices.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [indices[i], indices[j]] = [indices[j], indices[i]];
+        }
+        return indices.slice(0, slots).sort((a, b) => a - b);
+    }
+
     function pickGimmicks(stageNo, q) {
         const stageConfig = window.CONFIG.STAGES.find(s => s.no === stageNo);
         if (!stageConfig) return [];
@@ -49,5 +66,5 @@
         return picked;
     }
 
-    window.GimmickSelector = { pickGimmicks };
+    window.GimmickSelector = { pickGimmicks, pickGimmickSlots };
 })();

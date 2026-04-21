@@ -33,11 +33,21 @@
 
         let picked;
         if (forcedIds && forcedIds.length) {
+            // デバッグ強制: mode合致するものだけ適用 (非対応はスキップ)
             picked = forcedIds
                 .map(id => window.GimmickRegistry.all.find(g => g.id === id))
-                .filter(Boolean);
+                .filter(Boolean)
+                .filter(g => g.supports === 'both' || g.supports === q.mode);
             forcedIds = null;
         } else {
+            // このインデックスが今ステージの「ギミック発動スロット」に入っていなければ何もしない
+            const session = window.GameState?.session;
+            const slots = session?.gimmickSlots || [];
+            const idx = session?.index ?? -1;
+            if (!slots.includes(idx)) {
+                lastAppliedIds = [];
+                return [];
+            }
             picked = window.GimmickSelector.pickGimmicks(stageNo, q);
         }
 

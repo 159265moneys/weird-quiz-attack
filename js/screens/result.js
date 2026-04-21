@@ -43,9 +43,12 @@
                     const all = await window.QuizLoader.loadAll();
                     window.GameState.resetSession();
                     window.GameState.session.startAt = Date.now();
-                    window.GameState.session.questions = window.QuizLoader.pickForStage(
+                    const picked = window.QuizLoader.pickForStage(
                         all, no, window.CONFIG.QUESTIONS_PER_STAGE
                     );
+                    window.GameState.session.questions = picked;
+                    window.GameState.session.gimmickSlots =
+                        window.GimmickSelector.pickGimmickSlots(no, picked.length);
                     window.Router.show('question');
                 })();
             });
