@@ -6,19 +6,24 @@
      時間ボーナス: max(0, 残り時間) / 制限時間 * 1000 点
      → 1問最大 2000 点 / 20問で最大 40,000 点
    ランク (6段階): D < C < B < A < S < SS
-     SS: 全問正解 AND 1問平均 <= 15秒
+     SS: [暫定] 全問正解 AND 1問平均 <= 15秒
      S : 正答率 >= 0.95
      A : 正答率 >= 0.85
      B : 正答率 >= 0.70
      C : 正答率 >= 0.50
      D : それ未満
+
+   TODO(Phase 6+): SS判定はステージごとに閾値を厳格化する。
+     例: Stage 1 なら平均8秒以内、Stage 10 なら全問正解+速度+ノーペナルティ等。
+     現状は全ステージ共通の暫定ルール。
    ============================================================ */
 
 (function () {
     const Q_TIME_LIMIT_MS = 100 * 1000; // 1問あたり100秒
     const BASE_POINT = 1000;
     const TIME_BONUS_MAX = 1000;
-    const SS_AVG_TIME_SEC = 15; // 1問平均15秒以内で全問正解ならSS
+    // TODO(Phase 6+): ステージごとの SS閾値 (CONFIG.STAGES[n].ssAvgSec) に置き換え
+    const SS_AVG_TIME_SEC = 15;
 
     function computeQuestionScore(answer) {
         if (!answer || !answer.correct) return { base: 0, timeBonus: 0, total: 0 };
