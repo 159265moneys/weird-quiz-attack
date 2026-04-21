@@ -136,7 +136,9 @@ body {
     align-items: center;
     justify-content: center;
     min-width: 280px;
-    padding: 24px 48px;
+    /* タッチターゲット: scale 0.333 (最小端末) × 140px = 46.6px 実px ≥ 44px (Apple HIG) */
+    min-height: 140px;
+    padding: 40px 48px;
     font-family: inherit;
     font-size: 42px;
     font-weight: bold;
@@ -230,7 +232,9 @@ body {
 }
 .back-btn {
     font-size: 36px;
-    padding: 16px 32px;
+    /* タッチターゲット確保: 実機44px以上 */
+    min-height: 140px;
+    padding: 32px 40px;
     border: 3px solid var(--line);
     background: var(--box-bg);
     color: var(--text-on-dark);
@@ -238,6 +242,9 @@ body {
     font-family: inherit;
     letter-spacing: 2px;
     box-shadow: 5px 5px 0 var(--line);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 .back-btn:active {
     background: var(--line);
@@ -252,6 +259,8 @@ body {
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    /* body の touch-action:none を上書き。これがないとタッチスクロール完全不能 */
+    touch-action: pan-y;
 }
 .scroll-area::-webkit-scrollbar { width: 8px; }
 .scroll-area::-webkit-scrollbar-track { background: var(--bg-panel); }

@@ -79,7 +79,9 @@
     display: flex;
     align-items: center;
     gap: 32px;
-    padding: 20px 40px;
+    /* タッチターゲット確保: scale 0.333 × 140px = 46.6px 実px */
+    min-height: 140px;
+    padding: 36px 40px;
     min-width: 520px;
     font-size: 56px;
     color: var(--text-on-light);
@@ -299,14 +301,20 @@
     bottom: 40px;    /* = height 980 */
 }
 
-/* 選択肢モード: 2×2で回答ゾーンを完全充填 */
+/* 選択肢モード: 2×2グリッド + 下に「回答」ボタン */
+.q-zone-answer.is-choice {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 .q-zone-answer.is-choice .q-choices {
+    flex: 1 1 0;
+    min-height: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     gap: 20px;
     width: 100%;
-    height: 100%;
 }
 
 .q-choice {
@@ -330,11 +338,45 @@
     justify-content: center;
     text-align: center;
     overflow-wrap: anywhere;
-    transition: transform 0.08s ease, box-shadow 0.08s ease;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease, border-color 0.12s ease;
 }
 .q-choice:active {
     transform: translate(3px, 3px);
     box-shadow: 3px 3px 0 var(--line);
+}
+.q-choice.is-selected {
+    background: var(--accent-cyan-dim);
+    border-color: var(--accent-cyan);
+    box-shadow:
+        6px 6px 0 var(--accent-cyan),
+        inset 0 0 0 2px var(--accent-cyan);
+    color: #fff;
+}
+
+/* 「回答」確定ボタン */
+.q-submit {
+    flex: 0 0 140px;
+    background: var(--accent-cyan);
+    color: #0a1a1c;
+    border: 3px solid var(--line);
+    box-shadow:
+        6px 6px 0 var(--line),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    font-size: 56px;
+    font-weight: bold;
+    letter-spacing: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.18s ease, filter 0.18s ease;
+}
+.q-submit:active:not(:disabled) {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 var(--line);
+}
+.q-submit:disabled {
+    opacity: 0.28;
+    cursor: not-allowed;
+    filter: grayscale(0.6);
 }
 
 /* 入力モード: 入力hint / 入力box / キーボード を縦積み */
@@ -403,30 +445,71 @@
 .result-rank.rank-C  { color: var(--text-dim); text-shadow: 8px 8px 0 var(--line-dim); }
 .result-rank.rank-D  { color: var(--accent-red); text-shadow: 8px 8px 0 var(--accent-red-dim); }
 
-/* ---------- 回答フィードバック ◯×  ---------- */
+/* ---------- 回答フィードバック ◯× + 不正解時の正解表示 ---------- */
 .q-feedback {
     position: absolute;
     inset: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 640px;
-    font-weight: bold;
+    gap: 48px;
     z-index: 1500;
     pointer-events: none;
-    white-space: pre;
     text-align: center;
-    line-height: 1;
-    animation: qfbFlash 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    animation: qfbFlash 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    background: rgba(0, 0, 0, 0.55);
 }
-.q-feedback.ok { color: var(--accent-cyan); text-shadow: 0 0 40px var(--accent-cyan); }
-.q-feedback.ng { color: var(--accent-red); text-shadow: 0 0 40px var(--accent-red); }
-.q-feedback.is-timeout { font-size: 280px; letter-spacing: 16px; }
+.q-feedback-mark {
+    font-size: 640px;
+    font-weight: bold;
+    line-height: 1;
+    white-space: pre;
+}
+.q-feedback.ok .q-feedback-mark {
+    color: var(--accent-cyan);
+    text-shadow: 0 0 40px var(--accent-cyan);
+}
+.q-feedback.ng .q-feedback-mark {
+    color: var(--accent-red);
+    text-shadow: 0 0 40px var(--accent-red);
+}
+.q-feedback.is-timeout .q-feedback-mark {
+    font-size: 280px;
+    letter-spacing: 16px;
+}
+/* 不正解時: ×の真下に正解を表示 */
+.q-feedback-answer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    max-width: 900px;
+    padding: 0 40px;
+}
+.q-feedback-answer-label {
+    font-size: 34px;
+    letter-spacing: 12px;
+    color: var(--accent-red);
+    font-weight: bold;
+}
+.q-feedback-answer-text {
+    font-size: 72px;
+    line-height: 1.25;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.75);
+    border: 3px solid var(--accent-red);
+    padding: 20px 36px;
+    box-shadow: 0 0 30px rgba(255, 48, 48, 0.5);
+    word-break: break-word;
+    font-weight: bold;
+}
+/* 「入り」アニメだけ定義。あとはJS側のsetTimeoutで remove される */
 @keyframes qfbFlash {
     0%   { opacity: 0; transform: scale(0.4); }
-    20%  { opacity: 1; transform: scale(1.15); }
-    70%  { opacity: 1; transform: scale(1.05); }
-    100% { opacity: 0; transform: scale(1.0); }
+    40%  { opacity: 1; transform: scale(1.18); }
+    70%  { opacity: 1; transform: scale(1.03); }
+    100% { opacity: 1; transform: scale(1.0); }
 }
 
 /* ---------- デバッグオーバーレイ ---------- */

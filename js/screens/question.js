@@ -8,6 +8,7 @@
     let questionStartAt = 0;
     let timerRAF = 0;
     let resolved = false;
+    let selectedIdx = -1;   // choice モード: 「回答」ボタン押下前に選んでいる選択肢
 
     function currentQ() {
         const s = window.GameState.session;
@@ -34,6 +35,7 @@
                                 <button class="q-choice" data-idx="${i}">${escapeHTML(c)}</button>
                             `).join('')}
                         </div>
+                        <button type="button" class="q-submit" id="qSubmitBtn" disabled>回答</button>
                     </div>
                 `;
             } else {
@@ -75,17 +77,34 @@
             if (!q) return;
 
             resolved = false;
+            selectedIdx = -1;
             questionStartAt = Date.now();
             startTimer();
 
             if (q.mode === 'choice') {
+                // 選択肢タップ = 選択のみ。実際の回答提出は「回答」ボタン
+                // (反転タップ等のギミックで初見殺しを避けるため 2段階化)
                 document.querySelectorAll('.q-choice').forEach((btn) => {
                     btn.addEventListener('click', () => {
+                        if (resolved) return;
                         const idx = parseInt(btn.dataset.idx, 10);
-                        const correct = idx === q.answer;
-                        resolveAnswer(correct, String(idx), 'user');
+                        if (Number.isNaN(idx)) return;  // C02 ダミー選択肢は data-idx 無し
+                        selectedIdx = idx;
+                        document.querySelectorAll('.q-choice').forEach(b => b.classList.remove('is-selected'));
+                        btn.classList.add('is-selected');
+                        const submitBtn = document.getElementById('qSubmitBtn');
+                        if (submitBtn) submitBtn.disabled = false;
                     });
                 });
+                const submitBtn = document.getElementById('qSubmitBtn');
+                if (submitBtn) {
+                    submitBtn.addEventListener('click', () => {
+                        if (resolved) return;
+                        if (selectedIdx < 0) return;
+                        const correct = selectedIdx === q.answer;
+                        resolveAnswer(correct, String(selectedIdx), 'user');
+                    });
+                }
             } else {
                 // 入力モード: 内製文字盤をマウント
                 const suggested = window.Judge.suggestMode(q);
@@ -199,9 +218,10 @@
         // ◯×フラッシュ前にギミックを解除して見た目をリセット
         window.Gimmicks?.dispose();
 
-        showFeedback(correct, reason === 'timeout');
+        // 不正解の場合は正解が読める時間を確保
+        const fbDuration = correct ? 520 : 1500;
+        showFeedback(correct, reason === 'timeout', q, fbDuration);
 
-        const delay = reason === 'timeout' ? 650 : 420;
         setTimeout(() => {
             if (s.index + 1 >= s.questions.length) {
                 s.endAt = Date.now();
@@ -210,18 +230,41 @@
                 s.index += 1;
                 window.Router.reload();
             }
-        }, delay);
+        }, fbDuration);
     }
 
-    function showFeedback(correct, isTimeout) {
+    function answerTextOf(q) {
+        if (!q) return '';
+        if (q.mode === 'choice') return q.choices?.[q.answer] ?? '';
+        if (q.mode === 'input') return q.answer_text ?? '';
+        return '';
+    }
+
+    function showFeedback(correct, isTimeout, q, durationMs) {
         const app = document.getElementById('app');
         if (!app) return;
         const el = document.createElement('div');
         el.className = 'q-feedback ' + (correct ? 'ok' : 'ng');
-        el.textContent = correct ? '◯' : (isTimeout ? 'TIME\nUP' : '✕');
         if (isTimeout) el.classList.add('is-timeout');
+
+        const mark = document.createElement('div');
+        mark.className = 'q-feedback-mark';
+        mark.textContent = correct ? '◯' : (isTimeout ? 'TIME\nUP' : '✕');
+        el.appendChild(mark);
+
+        // 不正解時: × の真下に正解を表示
+        if (!correct) {
+            const ans = answerTextOf(q);
+            if (ans) {
+                const ansEl = document.createElement('div');
+                ansEl.className = 'q-feedback-answer';
+                ansEl.innerHTML = `<span class="q-feedback-answer-label">正解</span><span class="q-feedback-answer-text">${escapeHTML(ans)}</span>`;
+                el.appendChild(ansEl);
+            }
+        }
+
         app.appendChild(el);
-        setTimeout(() => el.remove(), 600);
+        setTimeout(() => el.remove(), durationMs);
     }
 
     function escapeHTML(s) {
