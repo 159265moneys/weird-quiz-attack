@@ -193,7 +193,8 @@
 
     const B04_ZOOM_CHAOS = {
         id: 'B04', name: 'ズーム暴走', supports: 'both', introducedAt: 4, difficulty: 5,
-        conflicts: ['B03', 'B05'],
+        // B14 も .q-stem に animation を当てるため、後勝ちで B04 の scale が完全に消える
+        conflicts: ['B03', 'B05', 'B14'],
         apply(ctx) {
             const stem = q(ctx.screen, '.q-stem');
             if (!stem) return () => {};

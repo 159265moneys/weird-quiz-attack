@@ -51,7 +51,7 @@ REGISTRY: List[Gimmick] = [
     Gimmick('B02', '問題文1文字ずつ',        'both', 3, 4, conflicts=['B07', 'B08', 'B17']),
     Gimmick('B08', 'フェードアウト',         'both', 3, 4, conflicts=['B02', 'B12']),
     # Stage 4 (Batch 2)
-    Gimmick('B04', 'ズーム暴走',             'both', 4, 5, conflicts=['B03', 'B05']),
+    Gimmick('B04', 'ズーム暴走',             'both', 4, 5, conflicts=['B03', 'B05', 'B14']),
     Gimmick('B15', '問題文逆順表示',         'both', 4, 6, conflicts=['B02', 'B07', 'B17']),
     Gimmick('B20', '暗転',                   'both', 4, 5),
     Gimmick('C01', '選択肢シャッフル',       'choice', 4, 5, conflicts=['C04']),
