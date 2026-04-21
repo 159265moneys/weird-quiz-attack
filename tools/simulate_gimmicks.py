@@ -61,8 +61,13 @@ REGISTRY: List[Gimmick] = [
     Gimmick('B12', 'ぼかし',                 'both', 5, 5),
     Gimmick('B14', '余白暴走',               'both', 5, 5),
     # Stage 6
-    Gimmick('W01', '文字盤見えない',         'input', 6, 7),
-    Gimmick('W03', '解答欄見えない',         'input', 6, 6),
+    Gimmick('B09', '画面縮小',               'both',   6, 6, conflicts=['B03', 'B05']),
+    Gimmick('B10', '問題文ランダム出力',     'both',   6, 5, conflicts=['B02', 'B07', 'B15', 'B17']),
+    Gimmick('W01', '文字盤見えない',         'input',  6, 7),
+    Gimmick('W02', '文字盤あべこべ',         'input',  6, 7),
+    Gimmick('W03', '解答欄見えない',         'input',  6, 6),
+    Gimmick('W07', '入力1文字消失',          'input',  6, 7),
+    Gimmick('C02', 'ダミー選択肢',           'choice', 6, 7),
     # Stage 7
     Gimmick('B13', 'フォント極小',           'both', 7, 7),
     # Stage 8
@@ -71,12 +76,6 @@ REGISTRY: List[Gimmick] = [
 
 # --- 未実装ギミック (参考情報用、シミュレータで "実装後の姿" を見たい時に有効化) ---
 PENDING: List[Gimmick] = [
-    # Stage 6
-    Gimmick('B09', '画面縮小',               'both',   6, 6, implemented=False),
-    Gimmick('B10', '問題文ランダム出力',     'both',   6, 5, implemented=False),
-    Gimmick('W02', '文字盤あべこべ',         'input',  6, 7, implemented=False),
-    Gimmick('W07', '入力1文字消失',          'input',  6, 6, implemented=False),
-    Gimmick('C02', 'ダミー選択肢',           'choice', 6, 7, implemented=False),
     # Stage 7
     Gimmick('B01', '反転タップ',             'both',   7, 7, implemented=False),
     Gimmick('B17', '問題文めちゃくちゃ',     'both',   7, 7, implemented=False, conflicts=['B02', 'B15']),

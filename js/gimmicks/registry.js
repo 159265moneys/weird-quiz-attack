@@ -25,12 +25,11 @@
      Stage3: B02, B08                       ← Phase 5b-Batch2
      Stage4: B04, B15, B20, C01             ← Phase 5b-Batch2 (+ C01=5a)
      Stage5: B05, B06, B12, B14             ← Phase 5b-Batch3a (+ B05/B12=5a)
-     Stage6: W01, W03                       ← Phase 5a
+     Stage6: B09, B10, W01, W02, W03, W07, C02  ← Phase 5b-Batch3b (+ W01/W03=5a)
      Stage7: B13                            ← Phase 5a
      Stage8: C04                            ← Phase 5a
 
-   未実装 (Phase 5b-Batch3b〜):
-     Stage6: B09, B10, W02, W07, C02
+   未実装 (Phase 5b-Batch4〜):
      Stage7: B01, B17, W05, W10, W14, W17, W19
      Stage8: C03, W04, W06, W09, W15, W16
      Stage9: B21, W08, W18, W20
@@ -344,6 +343,50 @@
         },
     };
 
+    const B09_SHRINK = {
+        id: 'B09', name: '画面縮小', supports: 'both', introducedAt: 6, difficulty: 6,
+        conflicts: ['B03', 'B05'],  // 画面全体のtransformを奪うため
+        apply(ctx) {
+            const el = ctx.screen;
+            const prev = el.style.transform;
+            const prevOrigin = el.style.transformOrigin;
+            el.style.transform = `${prev ? prev + ' ' : ''}scale(0.6)`;
+            el.style.transformOrigin = 'center center';
+            return () => {
+                el.style.transform = prev;
+                el.style.transformOrigin = prevOrigin;
+            };
+        },
+    };
+
+    const B10_SHUFFLE_TEXT = {
+        id: 'B10', name: '問題文ランダム出力', supports: 'both', introducedAt: 6, difficulty: 5,
+        conflicts: ['B02', 'B07', 'B15', 'B17'],  // stem.textContent を触る他とぶつかる
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            const original = stem.textContent;
+            const chars = Array.from(original);
+
+            const shuffled = () => {
+                const a = chars.slice();
+                for (let i = a.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [a[i], a[j]] = [a[j], a[i]];
+                }
+                return a.join('');
+            };
+            stem.textContent = shuffled();
+            const timer = setInterval(() => {
+                if (stem.isConnected) stem.textContent = shuffled();
+            }, 950);
+            return () => {
+                clearInterval(timer);
+                if (stem.isConnected) stem.textContent = original;
+            };
+        },
+    };
+
     const B13_TINY = {
         id: 'B13', name: 'フォント極小', supports: 'both', introducedAt: 7, difficulty: 7,
         apply(ctx) {
@@ -387,6 +430,39 @@
         },
     };
 
+    const C02_DUMMY_CHOICE = {
+        id: 'C02', name: 'ダミー選択肢', supports: 'choice', introducedAt: 6, difficulty: 7,
+        apply(ctx) {
+            const grid = q(ctx.screen, '.q-choices');
+            if (!grid) return () => {};
+            const existing = qa(grid, '.q-choice');
+            if (existing.length === 0) return () => {};
+
+            // 既存のランダム1つを複製 → 同じラベルのダミーを1個追加
+            // cloneNode は addEventListener を引き継がない → 叩いても無反応
+            const sample = existing[Math.floor(Math.random() * existing.length)];
+            const dummy = sample.cloneNode(true);
+            dummy.classList.add('gk-c02-dummy');
+            dummy.removeAttribute('data-idx');  // 誤って拾われないように
+            // 念のため capture 段で click も殺す
+            const killClick = (e) => {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                dummy.classList.add('gk-c02-deny');
+                setTimeout(() => dummy.classList.remove('gk-c02-deny'), 180);
+            };
+            dummy.addEventListener('click', killClick, { capture: true });
+            dummy.addEventListener('pointerdown', killClick, { capture: true });
+
+            // 挿入位置もランダム
+            const insertAt = Math.floor(Math.random() * (existing.length + 1));
+            if (insertAt >= existing.length) grid.appendChild(dummy);
+            else grid.insertBefore(dummy, existing[insertAt]);
+
+            return () => dummy.remove();
+        },
+    };
+
     const C04_FAKE_5050 = {
         id: 'C04', name: '嘘50:50', supports: 'choice', introducedAt: 8, difficulty: 6,
         conflicts: ['C01'],
@@ -422,6 +498,55 @@
         },
     };
 
+    const W02_KEYS_SHUFFLE = {
+        id: 'W02', name: '文字盤あべこべ', supports: 'input', introducedAt: 6, difficulty: 7,
+        apply(ctx) {
+            const shuffleLabels = () => {
+                // 現在のキーボードから「文字キー」の main ラベルを抽出
+                const keys = qa(ctx.screen, '.kb-key:not(.kb-fn)');
+                const mains = keys.map(k => k.querySelector('.kb-main')).filter(Boolean);
+                if (mains.length < 2) return;
+                const labels = mains.map(m => m.textContent);
+                // Fisher-Yates
+                for (let i = labels.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [labels[i], labels[j]] = [labels[j], labels[i]];
+                }
+                mains.forEach((m, i) => { m.textContent = labels[i]; });
+            };
+            shuffleLabels();
+            const timer = setInterval(shuffleLabels, 2800);
+            return () => clearInterval(timer);
+            // 表示だけのシャッフル。実際のタップ挙動は元の key のまま (=位置が正解)
+            // → ユーザは「表示に騙されて」別の文字を入力してしまう
+        },
+    };
+
+    const W07_CHAR_DROP = {
+        id: 'W07', name: '入力1文字消失', supports: 'input', introducedAt: 6, difficulty: 7,
+        apply(ctx) {
+            const tick = () => {
+                const kb = window.Keyboard;
+                if (!kb || typeof kb.getValue !== 'function') return;
+                const v = kb.getValue();
+                if (!v || v.length === 0) return;
+                const arr = Array.from(v);
+                const idx = Math.floor(Math.random() * arr.length);
+                arr.splice(idx, 1);
+                kb.setValue(arr.join(''));
+            };
+            // 1.6〜2.4秒ごとに1文字消す
+            const schedule = () => {
+                return setTimeout(() => {
+                    tick();
+                    timer = schedule();
+                }, 1600 + Math.random() * 800);
+            };
+            let timer = schedule();
+            return () => clearTimeout(timer);
+        },
+    };
+
     const W03_ANSWER_INVISIBLE = {
         id: 'W03', name: '解答欄見えない', supports: 'input', introducedAt: 6, difficulty: 6,
         apply(ctx) {
@@ -434,9 +559,11 @@
     const map = {
         B11_BLASTER, B16_FAKE_COUNTDOWN, B18_FAKE_ERROR,
         B02_TYPEWRITER, B04_ZOOM_CHAOS, B08_FADEOUT, B15_REVERSED_TEXT, B20_BLACKOUT,
-        B03_REVERSE, B05_MIRROR, B06_COLOR_BREAK, B07_GLITCH, B12_BLUR, B13_TINY, B14_MARGIN_CHAOS,
-        C01_SHUFFLE, C04_FAKE_5050,
-        W01_KEYS_INVISIBLE, W03_ANSWER_INVISIBLE,
+        B03_REVERSE, B05_MIRROR, B06_COLOR_BREAK, B07_GLITCH,
+        B09_SHRINK, B10_SHUFFLE_TEXT,
+        B12_BLUR, B13_TINY, B14_MARGIN_CHAOS,
+        C01_SHUFFLE, C02_DUMMY_CHOICE, C04_FAKE_5050,
+        W01_KEYS_INVISIBLE, W02_KEYS_SHUFFLE, W03_ANSWER_INVISIBLE, W07_CHAR_DROP,
     };
     const all = Object.values(map).filter(g => g && g.id);
     window.GimmickRegistry = Object.assign({ all }, map);

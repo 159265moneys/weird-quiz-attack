@@ -222,6 +222,22 @@
     100% { filter: hue-rotate(360deg) saturate(1.8) contrast(1.15); }
 }
 
+/* ---------- C02 ダミー選択肢: 叩いても反応しない選択肢 ----------
+   見た目は本物と区別つかない。拒否時だけ一瞬フラッシュでフィードバック。 */
+.q-choice.gk-c02-dummy.gk-c02-deny {
+    animation: gkC02Deny 0.18s ease-out;
+}
+@keyframes gkC02Deny {
+    0%   { filter: none; }
+    50%  { filter: brightness(1.4); }
+    100% { filter: none; }
+}
+
+/* B09 画面縮小: インラインtransformで scale(0.6) を適用 */
+/* B10 問題文ランダム出力: textContent を差し替えるのでCSS不要 */
+/* W02 文字盤あべこべ: kb-main の textContent を差し替え */
+/* W07 入力1文字消失: Keyboard.setValue() で buffer 操作 */
+
 /* ---------- B14 余白暴走: 問題文が不規則に上下左右へ踊る ----------
    translate で動かすのでレイアウトは崩さない。
    will-change で合成層に載せて描画を軽くする。 */

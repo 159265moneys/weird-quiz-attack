@@ -1,6 +1,6 @@
 ====================================================================
  Stage × Gimmick Pool Report
- Implemented gimmicks: 19
+ Implemented gimmicks: 24
  Registry total:       41
 ====================================================================
 
@@ -61,34 +61,34 @@
     [✓] B14 余白暴走                 sup=both   st5 diff=5
 
 [Stage  6] FRAGMENTED      stress=M  slots=15  K=[3, 3]  diff=[0.3, 0.45, 0.25]
-  Pool total:  11  (implemented: 6)
-    choice-applicable:   7 (impl 4)
-    input-applicable:   10 (impl 6)
+  Pool total:  11  (implemented: 11)
+    choice-applicable:   7 (impl 7)
+    input-applicable:   10 (impl 10)
   Members:
     [✓] B05 ミラー                  sup=both   st5 diff=5
     [✓] B06 色覚破壊                 sup=both   st5 diff=6
     [✓] B12 ぼかし                  sup=both   st5 diff=5
     [✓] B14 余白暴走                 sup=both   st5 diff=5
-    [ ] B09 画面縮小                 sup=both   st6 diff=6
-    [ ] B10 問題文ランダム出力            sup=both   st6 diff=5
-    [ ] C02 ダミー選択肢               sup=choice st6 diff=7
+    [✓] B09 画面縮小                 sup=both   st6 diff=6
+    [✓] B10 問題文ランダム出力            sup=both   st6 diff=5
+    [✓] C02 ダミー選択肢               sup=choice st6 diff=7
     [✓] W01 文字盤見えない              sup=input  st6 diff=7
-    [ ] W02 文字盤あべこべ              sup=input  st6 diff=7
+    [✓] W02 文字盤あべこべ              sup=input  st6 diff=7
     [✓] W03 解答欄見えない              sup=input  st6 diff=6
-    [ ] W07 入力1文字消失              sup=input  st6 diff=6
+    [✓] W07 入力1文字消失              sup=input  st6 diff=7
 
 [Stage  7] DISTORTED       stress=M  slots=19  K=[3, 4]  diff=[0.25, 0.45, 0.3]
-  Pool total:  15  (implemented: 3)
-    choice-applicable:   6 (impl 1)
-    input-applicable:   14 (impl 3)
+  Pool total:  15  (implemented: 8)
+    choice-applicable:   6 (impl 4)
+    input-applicable:   14 (impl 7)
   Members:
-    [ ] B09 画面縮小                 sup=both   st6 diff=6
-    [ ] B10 問題文ランダム出力            sup=both   st6 diff=5
-    [ ] C02 ダミー選択肢               sup=choice st6 diff=7
+    [✓] B09 画面縮小                 sup=both   st6 diff=6
+    [✓] B10 問題文ランダム出力            sup=both   st6 diff=5
+    [✓] C02 ダミー選択肢               sup=choice st6 diff=7
     [✓] W01 文字盤見えない              sup=input  st6 diff=7
-    [ ] W02 文字盤あべこべ              sup=input  st6 diff=7
+    [✓] W02 文字盤あべこべ              sup=input  st6 diff=7
     [✓] W03 解答欄見えない              sup=input  st6 diff=6
-    [ ] W07 入力1文字消失              sup=input  st6 diff=6
+    [✓] W07 入力1文字消失              sup=input  st6 diff=7
     [ ] B01 反転タップ                sup=both   st7 diff=7
     [✓] B13 フォント極小               sup=both   st7 diff=7
     [ ] B17 問題文めちゃくちゃ            sup=both   st7 diff=7
@@ -99,9 +99,9 @@
     [ ] W19 フリック方向反転             sup=input  st7 diff=7
 
 [Stage  8] COLLAPSE        stress=X  slots=20  K=[4, 5]  diff=[0.2, 0.4, 0.4]
-  Pool total:  37  (implemented: 19)
-    choice-applicable:  23 (impl 17)
-    input-applicable:   33 (impl 17)
+  Pool total:  37  (implemented: 24)
+    choice-applicable:  23 (impl 20)
+    input-applicable:   33 (impl 21)
   Members:
     [✓] B11 コーナービーム              sup=both   st1 diff=4
     [✓] B16 高速カウントダウン            sup=both   st1 diff=2
@@ -118,13 +118,13 @@
     [✓] B06 色覚破壊                 sup=both   st5 diff=6
     [✓] B12 ぼかし                  sup=both   st5 diff=5
     [✓] B14 余白暴走                 sup=both   st5 diff=5
-    [ ] B09 画面縮小                 sup=both   st6 diff=6
-    [ ] B10 問題文ランダム出力            sup=both   st6 diff=5
-    [ ] C02 ダミー選択肢               sup=choice st6 diff=7
+    [✓] B09 画面縮小                 sup=both   st6 diff=6
+    [✓] B10 問題文ランダム出力            sup=both   st6 diff=5
+    [✓] C02 ダミー選択肢               sup=choice st6 diff=7
     [✓] W01 文字盤見えない              sup=input  st6 diff=7
-    [ ] W02 文字盤あべこべ              sup=input  st6 diff=7
+    [✓] W02 文字盤あべこべ              sup=input  st6 diff=7
     [✓] W03 解答欄見えない              sup=input  st6 diff=6
-    [ ] W07 入力1文字消失              sup=input  st6 diff=6
+    [✓] W07 入力1文字消失              sup=input  st6 diff=7
     [ ] B01 反転タップ                sup=both   st7 diff=7
     [✓] B13 フォント極小               sup=both   st7 diff=7
     [ ] B17 問題文めちゃくちゃ            sup=both   st7 diff=7
@@ -159,11 +159,11 @@
     [ ] W20 フリック方向シャッフル          sup=input  st9 diff=10
 
 [Stage 10] ABYSS           stress=X  slots=20  K=[4, 5]  diff=[0.1, 0.3, 0.6]
-  Pool total:  16  (implemented: 2)
-    choice-applicable:   6 (impl 1)
+  Pool total:  16  (implemented: 3)
+    choice-applicable:   6 (impl 2)
     input-applicable:   14 (impl 2)
   Members:
-    [ ] C02 ダミー選択肢               sup=choice st6 diff=7
+    [✓] C02 ダミー選択肢               sup=choice st6 diff=7
     [✓] W01 文字盤見えない              sup=input  st6 diff=7
     [ ] B01 反転タップ                sup=both   st7 diff=7
     [✓] B13 フォント極小               sup=both   st7 diff=7
