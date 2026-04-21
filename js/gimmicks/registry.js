@@ -1338,6 +1338,156 @@
         },
     };
 
+    // ============================================================
+    // Phase 5-Special — Stage 10 理不尽ギミック G1-G8
+    // 親仕様書 5章。Stage 10 専用プール (CONFIG.STAGE10_POOL) からのみ抽選。
+    // supports は全て 'both' or 'choice' とし、input モードでも破綻しない設計。
+    // ============================================================
+
+    // --- G1: ランダム即死 ---
+    // 問題表示から 200-700ms 後、10% の確率で問答無用に不正解扱いで進める。
+    // "問題を見る時間すら与えない" の理不尽具合が肝。
+    // 10% で発動 → 発動しない時は「何もしない」の普通の問題になる (ギミック枠1つが無駄打ち)。
+    const G1_RANDOM_DEATH = {
+        id: 'G1', name: 'ランダム即死', supports: 'both', introducedAt: 10, difficulty: 10,
+        apply(ctx) {
+            if (Math.random() >= 0.10) return () => {};
+            const delay = 200 + Math.random() * 500;
+            const t = setTimeout(() => {
+                // debug ルートを再利用して強制不正解扱い
+                window.dispatchEvent(new CustomEvent('debug:forceAnswer', { detail: 'lose' }));
+            }, delay);
+            return () => clearTimeout(t);
+        },
+    };
+
+    // --- G2: 誤判定 ---
+    // 正解しても 15% の確率で不正解として処理させる。
+    // session フラグを立て、question.js resolveAnswer 側で拾う。
+    const G2_MISJUDGE = {
+        id: 'G2', name: '誤判定', supports: 'both', introducedAt: 10, difficulty: 10,
+        apply(ctx) {
+            const s = window.GameState?.session;
+            if (s) s.misjudge = true;
+            return () => {
+                if (s) s.misjudge = false;
+            };
+        },
+    };
+
+    // --- G4: 文字化け ---
+    // 50% の確率で発動。発動時、問題文を Unicode 記号・ギリシャ文字・ラテン拡張等に
+    // 置換して「読めないけど何となく推測するゲー」にする。
+    // 文字数はほぼ元と同じ。空白は保持 (単語区切りを残すと推測しやすい = 難易度調整)。
+    const G4_GARBLED_TEXT = {
+        id: 'G4', name: '文字化け問題', supports: 'both', introducedAt: 10, difficulty: 9,
+        conflicts: ['B02', 'B07', 'B08', 'B10', 'B15', 'B17'], // stem.textContent を触る他
+        apply(ctx) {
+            if (Math.random() >= 0.5) return () => {};
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            const original = stem.textContent;
+            // 文字化けに使う文字群 (ASCII art 風 + 記号)
+            const GARBLE = '▓▒░█▌▐▄▀■□●○◆◇★☆※§¶†‡◘◙♪♫∴∵∞≒≠±∫∮∑∏√';
+            const out = Array.from(original).map(ch => {
+                if (/\s/.test(ch)) return ch;
+                return GARBLE[Math.floor(Math.random() * GARBLE.length)];
+            }).join('');
+            stem.textContent = out;
+            return () => { stem.textContent = original; };
+        },
+    };
+
+    // --- G5: 選択肢ワープ ---
+    // 選択中の回答が、送信の瞬間 (回答ボタン押下直前) に別の位置に入れ替わる。
+    // 具体: 回答ボタン click を capture で横取り → 選択状態を他の選択肢に移動 → 通常処理へ流す。
+    // 入れ替え後の is-selected はそのまま残すので、本人が選んだはずの答えが変わったと分かる
+    // (ただし一瞬なので気づきにくい = 理不尽演出)。
+    const G5_CHOICE_WARP = {
+        id: 'G5', name: '選択肢ワープ', supports: 'choice', introducedAt: 10, difficulty: 10,
+        apply(ctx) {
+            const submit = q(ctx.screen, '#qSubmitBtn');
+            if (!submit) return () => {};
+            function interceptor(ev) {
+                // 選択肢が複数ないと意味がない
+                const choices = qa(ctx.screen, '.q-choice');
+                if (choices.length < 2) return;
+                const cur = qa(ctx.screen, '.q-choice.is-selected')[0];
+                if (!cur) return;
+                const others = Array.from(choices).filter(c => c !== cur);
+                const next = others[Math.floor(Math.random() * others.length)];
+                if (!next) return;
+                cur.classList.remove('is-selected');
+                next.classList.add('is-selected');
+                // data-idx を dispatch し直す: 既存 click ハンドラで selectedIdx が更新される
+                next.click();
+                // 少し待って回答処理を続行
+                ev.stopPropagation();
+                ev.preventDefault();
+                setTimeout(() => {
+                    submit.removeEventListener('click', interceptor, true);
+                    submit.click();
+                }, 80);
+            }
+            submit.addEventListener('click', interceptor, true);
+            return () => {
+                submit.removeEventListener('click', interceptor, true);
+            };
+        },
+    };
+
+    // --- G7: スコア煽り ---
+    // 今回は "session フラグを立てるだけ" のシンプル実装。
+    // 実際のアニメは result.js がフラグを拾って描画する。
+    // 表示は「SCORE 0」→ 1.2秒静止 → 実スコアがバラバラっと回って実数値に着地、の2段構え。
+    const G7_SCORE_TAUNT = {
+        id: 'G7', name: 'スコア煽り', supports: 'both', introducedAt: 10, difficulty: 7,
+        apply(ctx) {
+            const s = window.GameState?.session;
+            if (s) s.scoreTaunt = true;
+            // 単発問題ごとの gimmick だが、フラグは終了時まで残したいので
+            // dispose では戻さない (result 到達時にまだ立っている必要あり)。
+            // 次セッションでは resetSession で消えるので副作用なし。
+            return () => {};
+        },
+    };
+
+    // --- G8: 易問トラップ ---
+    // シンプルな問題 (1+1=? 等) に紛らわしい漢字の選択肢を割り当てる。
+    // Stage 10 で実装済み choice 問題にこれを "上書き" するのは危険なので、
+    // 現在は B17 (問題文めちゃくちゃ) と同等の視覚トラップに留めて placeholder 実装とする。
+    // 本格実装には専用問題 JSON が必要 (今後の拡張)。
+    const G8_EASY_TRAP = {
+        id: 'G8', name: '易問トラップ', supports: 'choice', introducedAt: 10, difficulty: 8,
+        conflicts: ['C03'], // 選択肢文字化けとかぶる
+        apply(ctx) {
+            // 選択肢を視覚的に紛らわしい漢字で「覆う」。 underlying data-idx は維持するので
+            // 回答判定は壊れない (見た目のみ狂う)。
+            const choices = qa(ctx.screen, '.q-choice');
+            if (choices.length < 2) return () => {};
+            // 似た形の漢字4字セットから1セットを使う
+            const SETS = [
+                ['田', '由', '甲', '申'],
+                ['午', '牛', '半', '牟'],
+                ['木', '本', '末', '未'],
+                ['土', '士', '王', '玉'],
+                ['日', '目', '白', '百'],
+                ['人', '入', '八', '个'],
+            ];
+            const set = SETS[Math.floor(Math.random() * SETS.length)];
+            const saved = [];
+            choices.forEach((c, i) => {
+                saved.push(c.textContent);
+                c.textContent = set[i % set.length];
+            });
+            return () => {
+                choices.forEach((c, i) => {
+                    if (saved[i] !== undefined) c.textContent = saved[i];
+                });
+            };
+        },
+    };
+
     // ---------- Export ----------
     const map = {
         B11_BLASTER, B16_FAKE_COUNTDOWN, B18_FAKE_ERROR,
@@ -1351,6 +1501,7 @@
         W05_CURSOR_WILD, W10_INPUT_DELAY, W14_KEY_HUGE, W17_MODE_AUTO_SWAP, W19_FLICK_REVERSE,
         W04_INPUT_SHIFT, W06_REVERSE_TEXT, W09_GHOST_INPUT, W15_KEY_WARP, W16_KEYS_MERGE,
         B21_INSTANT_DEATH, W08_KEYS_RESHUFFLE, W18_KEY_VANISH, W20_FLICK_SHUFFLE,
+        G1_RANDOM_DEATH, G2_MISJUDGE, G4_GARBLED_TEXT, G5_CHOICE_WARP, G7_SCORE_TAUNT, G8_EASY_TRAP,
     };
     const all = Object.values(map).filter(g => g && g.id);
     window.GimmickRegistry = Object.assign({ all }, map);

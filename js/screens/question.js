@@ -206,6 +206,13 @@
         const s = window.GameState.session;
         const timeMs = Math.min(Q_TIME_LIMIT_MS, Date.now() - questionStartAt);
 
+        // G2 誤判定: 正解かつ user 由来回答に限り 15% で裏返す。
+        // timeout や debug の強制判定には干渉しない。
+        if (correct && s.misjudge && reason === 'user' && Math.random() < 0.15) {
+            correct = false;
+            reason = 'misjudge';
+        }
+
         s.answers.push({
             id: q.id,
             correct,

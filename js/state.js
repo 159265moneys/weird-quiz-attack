@@ -19,6 +19,8 @@ window.GameState = {
         kAssignment: {},    // { slotIdx: K } そのスロットで同時発動するギミック数
         instantDeath: false,// B21 適用中フラグ
         deathEnd: false,    // B21 で強制終了したか (結果画面の演出用)
+        misjudge: false,    // G2 誤判定 適用中フラグ (正解を不正解にすり替える確率)
+        scoreTaunt: false,  // G7 スコア煽り: result 画面で一度 0 を表示
     },
 
     // 画面遷移パラメータの一時置き場
@@ -36,6 +38,8 @@ window.GameState = {
             kAssignment: {},
             instantDeath: false,
             deathEnd: false,
+            misjudge: false,
+            scoreTaunt: false,
         };
     },
 };

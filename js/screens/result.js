@@ -17,10 +17,14 @@
             // タイムアウト回数
             const timeouts = s.answers.filter(a => a.reason === 'timeout').length;
 
+            // G7 スコア煽り: 最初は 0 を出しておく (init で本物に差し替え)
+            const taunt = !!s.scoreTaunt;
+            const initialScore = taunt ? 0 : result.score;
+
             return `
                 <div class="screen result-screen">
                     <div class="result-rank rank-${result.rank}">${result.rank}</div>
-                    <div class="result-score">${result.score.toLocaleString()}</div>
+                    <div class="result-score" id="resultScore">${initialScore.toLocaleString()}</div>
                     <div class="result-detail">
                         正解 ${result.correct} / ${result.total} (${Math.round(result.accuracy * 100)}%)<br>
                         TOTAL ${result.totalTimeSec.toFixed(1)}s / AVG ${result.avgTimeSec.toFixed(1)}s<br>
@@ -39,6 +43,34 @@
         },
 
         init() {
+            // G7 スコア煽り: 1.4秒 "0" → カウントアップで本物スコアに着地
+            (() => {
+                const s = window.GameState.session;
+                if (!s.scoreTaunt) return;
+                const target = window.Scoring.compute(s).score;
+                const el = document.getElementById('resultScore');
+                if (!el) return;
+                el.classList.add('is-taunting');
+                const HOLD = 1400, TICKS = 24, DUR = 900;
+                setTimeout(() => {
+                    let n = 0;
+                    const step = () => {
+                        n++;
+                        // ランダムな桁を表示してカウントアップ感
+                        const r = Math.floor(Math.random() * target * 2);
+                        el.textContent = r.toLocaleString();
+                        if (n < TICKS) {
+                            setTimeout(step, DUR / TICKS);
+                        } else {
+                            el.classList.remove('is-taunting');
+                            el.classList.add('is-settled');
+                            el.textContent = target.toLocaleString();
+                        }
+                    };
+                    step();
+                }, HOLD);
+            })();
+
             // シェアボタン
             document.querySelector('[data-action="share"]')?.addEventListener('click', async (e) => {
                 const btn = e.currentTarget;

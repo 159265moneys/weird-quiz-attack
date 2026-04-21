@@ -91,6 +91,14 @@ REGISTRY: List[Gimmick] = [
     Gimmick('W08', '文字盤あべこべv2',       'input',  9, 9,  conflicts=['W02', 'W15', 'W16', 'W17', 'W18']),
     Gimmick('W18', 'キー消失',               'input',  9, 9,  conflicts=['W02', 'W08', 'W15', 'W16', 'W17']),
     Gimmick('W20', 'フリック方向シャッフル', 'input',  9, 10, conflicts=['W19']),
+    # Stage 10 専用 (理不尽ギミック G1-G8)
+    Gimmick('G1', 'ランダム即死',     'both',   10, 10),
+    Gimmick('G2', '誤判定',           'both',   10, 10),
+    Gimmick('G4', '文字化け',         'both',   10, 9,
+            conflicts=['B02', 'B07', 'B08', 'B10', 'B15', 'B17']),
+    Gimmick('G5', '選択肢ワープ',     'choice', 10, 10),
+    Gimmick('G7', 'スコア煽り',       'both',   10, 7),
+    Gimmick('G8', '易問トラップ',     'choice', 10, 8, conflicts=['C03']),
 ]
 
 # --- 未実装ギミック ---
@@ -127,6 +135,7 @@ STAGES: List[StageConfig] = [
 ]
 
 STAGE10_POOL_IDS = [
+    'G1', 'G2', 'G4', 'G5', 'G7', 'G8',
     'B21', 'W20', 'W04', 'W08', 'W18', 'C03', 'W05', 'W06', 'W09',
     'W15', 'W16', 'B01', 'B13', 'B17', 'C02', 'W01',
 ]

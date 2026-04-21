@@ -1,7 +1,7 @@
 ====================================================================
  Stage × Gimmick Pool Report
- Implemented gimmicks: 42
- Registry total:       42
+ Implemented gimmicks: 48
+ Registry total:       48
 ====================================================================
 
 [Stage  1] TUTORIAL ZONE   stress=E  slots=4  kDist=[K1×4]  diff=[0.8, 0.2, 0.0]
@@ -162,9 +162,9 @@
     [✓] W20 フリック方向シャッフル          sup=input  st9 diff=10
 
 [Stage 10] ABYSS           stress=X  slots=20  kDist=[K2×13 + K3×7]  diff=[0.1, 0.3, 0.6]
-  Pool total:  16  (implemented: 16)
-    choice-applicable:   6 (impl 6)
-    input-applicable:   14 (impl 14)
+  Pool total:  22  (implemented: 22)
+    choice-applicable:  12 (impl 12)
+    input-applicable:   18 (impl 18)
   Members:
     [✓] C02 ダミー選択肢               sup=choice st6 diff=7
     [✓] W01 文字盤見えない              sup=input  st6 diff=7
@@ -182,3 +182,9 @@
     [✓] W08 文字盤あべこべv2            sup=input  st9 diff=9
     [✓] W18 キー消失                 sup=input  st9 diff=9
     [✓] W20 フリック方向シャッフル          sup=input  st9 diff=10
+    [✓] G1  ランダム即死               sup=both   st10 diff=10
+    [✓] G2  誤判定                  sup=both   st10 diff=10
+    [✓] G4  文字化け                 sup=both   st10 diff=9
+    [✓] G5  選択肢ワープ               sup=choice st10 diff=10
+    [✓] G7  スコア煽り                sup=both   st10 diff=7
+    [✓] G8  易問トラップ               sup=choice st10 diff=8
