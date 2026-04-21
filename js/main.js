@@ -40,6 +40,7 @@
         }, { passive: false });
 
         window.Debug?.init();
+        window.FloatingTextFX?.mount();
         window.ButterflyFX?.mount();
         window.Router.show('title');
     }

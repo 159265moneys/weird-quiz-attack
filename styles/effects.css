@@ -45,3 +45,42 @@
     0%   { transform: translate(-50%, -50%) scale(1.05, 0.45); }
     100% { transform: translate(-50%, -50%) scale(0.95, 1.05); }
 }
+
+/* ---------- 浮遊文字背景 ---------- */
+/* #stage 内に absolute で配置。1080x1920 の論理座標内を流れる。
+   screen よりも前面に表示するが、low alpha + pointer-events:none で操作に干渉しない。 */
+.fx-floating {
+    position: absolute;
+    inset: 0;
+    width: 1080px;
+    height: 1920px;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 5;
+    transition: opacity 0.4s ease;
+}
+.fx-floating.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.fx-floating-item {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: 'Courier New', 'Yu Gothic', monospace;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    will-change: transform;
+    user-select: none;
+    pointer-events: none;
+    mix-blend-mode: multiply; /* 白ベースの画面で濃く、暗い画面では見えにくくなる */
+}
+
+/* ダーク画面では multiply だと沈むので blend 切替 */
+body[data-screen="question"] .fx-floating-item,
+body[data-screen="result"] .fx-floating-item {
+    mix-blend-mode: screen;
+}
+
