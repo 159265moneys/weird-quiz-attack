@@ -5,8 +5,21 @@
 (function () {
     const Screen = {
         render() {
+            // 浮遊文字 (3SEC風): 英数字・記号をランダムに散らす
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@!?*+=/\\'.split('');
+            const floaters = Array.from({ length: 28 }, () => {
+                const c = chars[Math.floor(Math.random() * chars.length)];
+                const top = Math.floor(Math.random() * 96);
+                const left = Math.floor(Math.random() * 96);
+                const delay = (Math.random() * 18).toFixed(1);
+                const size = 24 + Math.floor(Math.random() * 28);
+                const op = (0.2 + Math.random() * 0.25).toFixed(2);
+                return `<span style="top:${top}%;left:${left}%;font-size:${size}px;opacity:${op};animation-delay:${delay}s;">${c}</span>`;
+            }).join('');
+
             return `
                 <div class="screen title-screen">
+                    <div class="title-floaters">${floaters}</div>
                     <div class="title-logo">変なクイズ</div>
                     <div class="title-sub">WEIRD QUIZ ATTACK</div>
 

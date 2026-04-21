@@ -5,18 +5,51 @@
 /* ========== TITLE ========== */
 .title-screen {
     justify-content: space-between;
+    /* 3SEC風: 明るい背景に薄い水平ノイズ (後でJSで浮遊文字を足す) */
+    background-image:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0 3px,
+            rgba(0, 0, 0, 0.025) 3px 4px
+        );
 }
 
+/* 浮遊文字レイヤ (Phase 4でJSから動かす想定、今は静的装飾) */
+.title-floaters {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+    color: rgba(0, 0, 0, 0.28);
+    font-size: 32px;
+    letter-spacing: 4px;
+    font-family: inherit;
+}
+.title-floaters span {
+    position: absolute;
+    white-space: nowrap;
+    animation: floater-drift 18s ease-in-out infinite;
+}
+@keyframes floater-drift {
+    0%, 100% { transform: translate(0, 0); opacity: 0.45; }
+    50%      { transform: translate(20px, -14px); opacity: 0.25; }
+}
+
+.title-screen > * { position: relative; z-index: 1; }
+.title-screen .title-floaters { z-index: 0; }
+
+/* ロゴ: 黒 + 差し色のクロマティックシャドウ (3SEC流) */
 .title-logo {
     margin-top: 240px;
     font-size: 140px;
     font-weight: bold;
     letter-spacing: 12px;
     text-align: center;
-    color: var(--text);
+    color: var(--text-on-light);
     text-shadow:
         8px 8px 0 var(--accent-red),
-        -4px -4px 0 var(--accent-cyan);
+        -6px -6px 0 var(--accent-cyan);
     animation: logo-shake 6s infinite;
 }
 @keyframes logo-shake {
@@ -30,7 +63,7 @@
 .title-sub {
     margin-top: 32px;
     font-size: 36px;
-    color: var(--text-dim);
+    color: var(--text-mute);
     letter-spacing: 6px;
     text-align: center;
 }
@@ -49,7 +82,7 @@
     padding: 20px 40px;
     min-width: 520px;
     font-size: 56px;
-    color: var(--text);
+    color: var(--text-on-light);
     background: transparent;
     border: none;
     font-family: inherit;
@@ -78,6 +111,7 @@
     font-size: 28px;
     color: var(--text-mute);
     letter-spacing: 2px;
+    opacity: 0.7;
 }
 
 .title-navigator {
@@ -97,6 +131,8 @@
     margin-bottom: 32px;
     text-align: center;
     width: 100%;
+    color: var(--text-on-light);
+    text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
 }
 
 .stage-list {
@@ -106,18 +142,21 @@
     padding-bottom: 80px;
 }
 
+/* ステージカード: 暗い地 + 白ダブル枠 (グレー背景の上で映える) */
 .stage-card {
     display: grid;
     grid-template-columns: 140px 1fr auto;
     align-items: center;
     gap: 32px;
     padding: 40px 48px;
-    background: var(--bg-panel);
+    background: var(--box-bg);
     border: 3px solid var(--line);
-    box-shadow: 8px 8px 0 var(--line);
+    box-shadow:
+        8px 8px 0 var(--line),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
     cursor: pointer;
     font-family: inherit;
-    color: var(--text);
+    color: var(--text-on-dark);
     text-align: left;
     transition: transform 0.08s ease, box-shadow 0.08s ease;
 }
@@ -126,8 +165,9 @@
     box-shadow: 4px 4px 0 var(--line);
 }
 .stage-card.is-locked {
-    opacity: 0.35;
+    opacity: 0.4;
     cursor: not-allowed;
+    background: var(--box-bg-deep);
     box-shadow: 8px 8px 0 var(--line-dim);
     border-color: var(--line-dim);
 }
@@ -163,7 +203,7 @@
     text-align: center;
 }
 
-/* ========== QUESTION (Phase 1 placeholder) ========== */
+/* ========== QUESTION (バトル画面相当: ダーク) ========== */
 .question-screen {
     justify-content: flex-start;
     padding: 60px 60px;
@@ -174,7 +214,7 @@
     justify-content: space-between;
     width: 100%;
     font-size: 32px;
-    color: var(--text-dim);
+    color: var(--text-faint);
     letter-spacing: 3px;
     margin-bottom: 24px;
 }
@@ -182,7 +222,7 @@
 .q-timer-bar {
     width: 100%;
     height: 12px;
-    background: var(--bg-panel);
+    background: var(--box-bg-deep);
     border: 2px solid var(--line);
     margin-bottom: 40px;
     overflow: hidden;
@@ -200,11 +240,14 @@
     padding: 48px;
     font-size: 56px;
     line-height: 1.5;
-    background: var(--bg-panel);
+    background: var(--box-bg);
     border: 3px solid var(--line);
-    box-shadow: 8px 8px 0 var(--line);
+    box-shadow:
+        8px 8px 0 var(--line),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08);
     margin-bottom: 48px;
     letter-spacing: 2px;
+    color: var(--text-on-dark);
 }
 .q-stem-compact {
     min-height: 200px;
@@ -233,13 +276,16 @@
 .q-choice {
     padding: 32px;
     font-size: 44px;
-    background: var(--bg-panel);
+    background: var(--box-bg);
     border: 3px solid var(--line);
-    box-shadow: 6px 6px 0 var(--line);
+    box-shadow:
+        6px 6px 0 var(--line),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08);
     cursor: pointer;
     font-family: inherit;
-    color: var(--text);
+    color: var(--text-on-dark);
     letter-spacing: 2px;
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
 }
 .q-choice:active {
     transform: translate(3px, 3px);
@@ -267,13 +313,13 @@
 .result-score {
     font-size: 96px;
     letter-spacing: 6px;
-    color: var(--text);
+    color: var(--text-on-dark);
     margin-bottom: 24px;
 }
 
 .result-detail {
     font-size: 36px;
-    color: var(--text-dim);
+    color: var(--text-faint);
     margin-bottom: 80px;
     letter-spacing: 3px;
     text-align: center;
@@ -290,9 +336,9 @@
 
 .result-rank.rank-SS { color: var(--accent-warn); text-shadow: 12px 12px 0 var(--accent-red), -6px -6px 0 var(--accent-cyan); }
 .result-rank.rank-S  { color: var(--accent-cyan); }
-.result-rank.rank-A  { color: var(--text); }
-.result-rank.rank-B  { color: var(--text-dim); text-shadow: 8px 8px 0 var(--line-dim); }
-.result-rank.rank-C  { color: var(--text-mute); text-shadow: 8px 8px 0 var(--line-dim); }
+.result-rank.rank-A  { color: var(--text-on-dark); }
+.result-rank.rank-B  { color: var(--text-faint); text-shadow: 8px 8px 0 var(--line-dim); }
+.result-rank.rank-C  { color: var(--text-dim); text-shadow: 8px 8px 0 var(--line-dim); }
 .result-rank.rank-D  { color: var(--accent-red); text-shadow: 8px 8px 0 var(--accent-red-dim); }
 
 /* ---------- 回答フィードバック ◯×  ---------- */

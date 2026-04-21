@@ -4,21 +4,50 @@
    ============================================================ */
 
 :root {
-    /* --- 配色 (monochrome + cyan/red accent : 3SEC継承) --- */
-    --bg-deep: #050508;
-    --bg-panel: #0a0a0f;
-    --bg-elevated: #111118;
-    --line: #ffffff;
-    --line-dim: #6a6a78;
-    --text: #ffffff;
-    --text-dim: #9c9cab;
-    --text-mute: #5a5a66;
+    /* ============================================================
+       3SEC配色 (実際は「明るいベース+ダークボックス+差し色」)
+       - Canvas (画面外側): light系 or dark系 の2系統
+       - Box (パネル/カード): 常に dark + 白ダブル枠 + 影
+       ============================================================ */
 
+    /* --- キャンバス (外側背景) --- */
+    --canvas-light: #f0f0f2;     /* タイトル (ほぼ白) */
+    --canvas-gray: #bbbbbb;      /* ステージ選択 (グレー) */
+    --canvas-dark: #111116;      /* 問題/リザルト (ほぼ黒 = バトル相当) */
+
+    /* --- ボックス (暗い地 + 白枠) --- */
+    --box-bg: #2a2a2a;
+    --box-bg-deep: #151519;
+    --box-bg-elevated: #1f1f24;
+
+    /* --- ライン/枠 --- */
+    --line: #ffffff;             /* ボックス枠 (白) */
+    --line-dim: #888892;         /* 控えめライン */
+    --line-black: #0a0a0a;       /* 明るい背景上の枠 */
+
+    /* --- テキスト --- */
+    --text-on-dark: #ffffff;     /* ボックス内・バトル画面 */
+    --text-on-light: #0a0a0a;    /* 明るい背景上 */
+    --text-dim: #888892;
+    --text-mute: #5a5a66;
+    --text-faint: #aaaaaa;
+
+    /* --- アクセント --- */
     --accent-cyan: #00e5ff;
     --accent-cyan-dim: #007a88;
-    --accent-red: #ff3040;
+    --accent-red: #ff3340;
     --accent-red-dim: #8a1a22;
-    --accent-warn: #ffd400;
+    --accent-warn: #ffcc00;
+
+    /* --- グリッドパターン --- */
+    --grid-on-light: rgba(0, 0, 0, 0.12);
+    --grid-on-dark: rgba(255, 255, 255, 0.06);
+
+    /* 既存の互換エイリアス (旧コード用) */
+    --bg-deep: var(--canvas-dark);
+    --bg-panel: var(--box-bg-deep);
+    --bg-elevated: var(--box-bg-elevated);
+    --text: var(--text-on-dark);
 
     /* --- スケール係数 (JSで上書き) --- */
     --scale: 1;
@@ -61,7 +90,8 @@ html, body {
     margin-top: -960px;    /* -height/2 */
     width: 1080px;
     height: 1920px;
-    background: var(--bg-deep);
+    /* 背景は .screen 側で指定する (画面タイプでライト/ダーク切替) */
+    background: var(--canvas-dark);
     transform: scale(var(--scale));
     transform-origin: center center;
     overflow: hidden;
@@ -76,22 +106,23 @@ html, body {
 
 /* --- 共通UIパーツ --- */
 
-/* 3Dボックス (3SEC流) */
+/* 3Dボックス (3SEC流): 常に暗い地 + 白ダブル枠 + シャドウ */
 .box-3d {
     position: relative;
-    background: var(--bg-panel);
+    background: var(--box-bg);
     border: 2px solid var(--line);
     box-shadow:
         6px 6px 0 var(--line),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        inset 0 0 0 1px rgba(255, 255, 255, 0.12);
     transition: transform 0.08s ease, box-shadow 0.08s ease;
+    color: var(--text-on-dark);
 }
 .box-3d:active {
     transform: translate(3px, 3px);
     box-shadow: 3px 3px 0 var(--line);
 }
 
-/* ボタン */
+/* ボタン (3Dボックス継承) */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -101,8 +132,8 @@ html, body {
     font-family: inherit;
     font-size: 42px;
     font-weight: bold;
-    color: var(--text);
-    background: var(--bg-panel);
+    color: var(--text-on-dark);
+    background: var(--box-bg);
     border: 3px solid var(--line);
     box-shadow: 8px 8px 0 var(--line);
     cursor: pointer;
@@ -143,7 +174,7 @@ html, body {
     margin: 24px 0;
 }
 
-/* 画面コンテナ */
+/* 画面コンテナ: タイプで背景切替 */
 .screen {
     position: absolute;
     inset: 0;
@@ -151,6 +182,34 @@ html, body {
     flex-direction: column;
     align-items: center;
     padding: 80px 60px;
+    color: var(--text-on-dark);
+}
+
+/* === ライト背景の画面 (タイトル・ステージ選択) === */
+.screen.title-screen {
+    background: var(--canvas-light);
+    color: var(--text-on-light);
+}
+.screen.stage-select-screen {
+    color: var(--text-on-light);
+    background-color: var(--canvas-gray);
+    /* 黒グリッド */
+    background-image:
+        linear-gradient(to right, var(--grid-on-light) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-on-light) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px;
+}
+
+/* === ダーク背景の画面 (バトル相当: 問題・リザルト) === */
+.screen.question-screen,
+.screen.result-screen {
+    color: var(--text-on-dark);
+    background-color: var(--canvas-dark);
+    /* 白6%グリッド */
+    background-image:
+        linear-gradient(to right, var(--grid-on-dark) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-on-dark) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px;
 }
 
 /* 画面ヘッダ */
@@ -164,14 +223,20 @@ html, body {
 .back-btn {
     font-size: 36px;
     padding: 16px 32px;
-    border: 2px solid var(--line);
-    background: var(--bg-panel);
-    color: var(--text);
+    border: 3px solid var(--line);
+    background: var(--box-bg);
+    color: var(--text-on-dark);
     cursor: pointer;
     font-family: inherit;
     letter-spacing: 2px;
+    box-shadow: 5px 5px 0 var(--line);
 }
-.back-btn:active { background: var(--line); color: var(--bg-deep); }
+.back-btn:active {
+    background: var(--line);
+    color: var(--box-bg);
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0 var(--line);
+}
 
 /* スクロール可能領域 */
 .scroll-area {
