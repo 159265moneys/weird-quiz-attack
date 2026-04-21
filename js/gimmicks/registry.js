@@ -22,15 +22,14 @@
    実装済み:
      Stage1: B11, B16, B18, B19             ← Phase 5b-Batch1
      Stage2: B03, B07                       ← Phase 5a
-     Stage4: C01                            ← Phase 5a
+     Stage3: B02, B08                       ← Phase 5b-Batch2
+     Stage4: B04, B15, B20, C01             ← Phase 5b-Batch2 (+ C01=5a)
      Stage5: B05, B12                       ← Phase 5a
      Stage6: W01, W03                       ← Phase 5a
      Stage7: B13                            ← Phase 5a
      Stage8: C04                            ← Phase 5a
 
-   未実装 (Phase 5b-Batch2〜):
-     Stage3: B02, B08
-     Stage4: B04, B15, B20
+   未実装 (Phase 5b-Batch3〜):
      Stage5: B06, B14
      Stage6: B09, B10, W02, W07, C02
      Stage7: B01, B17, W05, W10, W14, W17, W19
@@ -134,6 +133,105 @@
     };
 
     // --- Stage 2+ ---
+
+    const B02_TYPEWRITER = {
+        id: 'B02', name: '問題文1文字ずつ', supports: 'both', introducedAt: 3, difficulty: 4,
+        conflicts: ['B07', 'B08', 'B17'],
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            const original = stem.textContent;
+            const chars = Array.from(original);
+            stem.textContent = '';
+            let i = 0;
+            let done = false;
+            const timer = setInterval(() => {
+                if (i >= chars.length) {
+                    clearInterval(timer);
+                    done = true;
+                    return;
+                }
+                stem.textContent = chars.slice(0, i + 1).join('');
+                i++;
+            }, 90 + Math.random() * 40);
+            return () => {
+                clearInterval(timer);
+                if (stem.isConnected && !done) stem.textContent = original;
+            };
+        },
+    };
+
+    const B04_ZOOM_CHAOS = {
+        id: 'B04', name: 'ズーム暴走', supports: 'both', introducedAt: 4, difficulty: 5,
+        conflicts: ['B03', 'B05'],
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            stem.classList.add('gk-b04-zoom');
+            return () => stem.classList.remove('gk-b04-zoom');
+        },
+    };
+
+    const B08_FADEOUT = {
+        id: 'B08', name: 'フェードアウト', supports: 'both', introducedAt: 3, difficulty: 4,
+        conflicts: ['B02', 'B12'],
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            const prevTransition = stem.style.transition;
+            const prevOpacity = stem.style.opacity;
+            stem.style.transition = 'opacity 4.5s linear';
+            const timer = setTimeout(() => {
+                if (stem.isConnected) stem.style.opacity = '0';
+            }, 1000);
+            return () => {
+                clearTimeout(timer);
+                if (stem.isConnected) {
+                    stem.style.transition = prevTransition;
+                    stem.style.opacity = prevOpacity;
+                }
+            };
+        },
+    };
+
+    const B15_REVERSED_TEXT = {
+        id: 'B15', name: '問題文逆順表示', supports: 'both', introducedAt: 4, difficulty: 6,
+        conflicts: ['B02', 'B07', 'B17'],
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            const original = stem.textContent;
+            stem.textContent = Array.from(original).reverse().join('');
+            return () => {
+                if (stem.isConnected) stem.textContent = original;
+            };
+        },
+    };
+
+    const B20_BLACKOUT = {
+        id: 'B20', name: '暗転', supports: 'both', introducedAt: 4, difficulty: 5,
+        apply(ctx) {
+            const host = document.createElement('div');
+            host.className = 'gk-b20-blackout';
+            ctx.screen.appendChild(host);
+            let showTimer = 0, hideTimer = 0;
+            const show = () => {
+                host.classList.add('is-on');
+                hideTimer = setTimeout(hide, 2600 + Math.random() * 800);
+            };
+            const hide = () => {
+                host.classList.remove('is-on');
+                showTimer = setTimeout(show, 6000 + Math.random() * 4000);
+            };
+            // 最初は少し遅らせて発動 (問題が見える時間を確保)
+            showTimer = setTimeout(show, 4000 + Math.random() * 3000);
+            return () => {
+                clearTimeout(showTimer);
+                clearTimeout(hideTimer);
+                host.remove();
+            };
+        },
+    };
 
     const B03_REVERSE = {
         id: 'B03', name: '問題文逆さ', supports: 'both', introducedAt: 2, difficulty: 3,
@@ -294,6 +392,7 @@
     // ---------- Export ----------
     const map = {
         B11_SHINE, B16_FAKE_COUNTDOWN, B18_FAKE_ERROR, B19_FAKE_PROGRESS,
+        B02_TYPEWRITER, B04_ZOOM_CHAOS, B08_FADEOUT, B15_REVERSED_TEXT, B20_BLACKOUT,
         B03_REVERSE, B05_MIRROR, B07_GLITCH, B12_BLUR, B13_TINY,
         C01_SHUFFLE, C04_FAKE_5050,
         W01_KEYS_INVISIBLE, W03_ANSWER_INVISIBLE,

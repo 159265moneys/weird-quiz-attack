@@ -70,6 +70,25 @@
         return indices.slice(0, slots).sort((a, b) => a - b);
     }
 
+    // Registry 全体から双方向の conflict map を構築。
+    // "B07 conflicts: [B12]" としか書いていなくても、B12→B07 も遮断する。
+    let _conflictMapCache = null;
+    function buildConflictMap() {
+        if (_conflictMapCache) return _conflictMapCache;
+        const map = {};
+        const all = window.GimmickRegistry?.all || [];
+        for (const g of all) {
+            if (!map[g.id]) map[g.id] = new Set();
+            for (const c of (g.conflicts || [])) {
+                map[g.id].add(c);
+                if (!map[c]) map[c] = new Set();
+                map[c].add(g.id);
+            }
+        }
+        _conflictMapCache = map;
+        return map;
+    }
+
     function pickGimmicks(stageNo, q) {
         const stageConfig = window.CONFIG.STAGES.find(s => s.no === stageNo);
         if (!stageConfig) return [];
@@ -85,20 +104,22 @@
             return [];
         }
 
+        const conflictMap = buildConflictMap();
+
         // ランダム順に並べ替えて、conflict を避けつつ count 個取る
         const shuffled = pool.slice().sort(() => Math.random() - 0.5);
 
         const picked = [];
         const usedIds = new Set();
-        const blockedIds = new Set();
 
         for (const g of shuffled) {
             if (picked.length >= count) break;
             if (usedIds.has(g.id)) continue;
-            if (blockedIds.has(g.id)) continue;
+            // 双方向conflict: g が既存採用と衝突するなら除外
+            const blocks = conflictMap[g.id];
+            if (blocks && Array.from(blocks).some(id => usedIds.has(id))) continue;
             picked.push(g);
             usedIds.add(g.id);
-            (g.conflicts || []).forEach(c => blockedIds.add(c));
         }
         return picked;
     }

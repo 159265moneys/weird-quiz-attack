@@ -143,3 +143,35 @@
 }
 
 /* B19 進捗バー嘘: DOMテキストを直接書き換えるのでCSS不要 */
+
+/* ============================================================
+   Phase 5b Batch2 — Stage 3-4 (B02/B04/B08/B15/B20)
+   ============================================================ */
+
+/* ---------- B04 ズーム暴走: 問題文が拡大縮小を繰り返す ---------- */
+.q-stem.gk-b04-zoom {
+    animation: gkB04Zoom 1.6s ease-in-out infinite;
+    transform-origin: center center;
+}
+@keyframes gkB04Zoom {
+    0%, 100% { transform: scale(0.55); }
+    50%      { transform: scale(1.4); }
+}
+
+/* ---------- B20 暗転: 突然画面が真っ暗になる ---------- */
+.gk-b20-blackout {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 70;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s linear;
+}
+.gk-b20-blackout.is-on {
+    opacity: 1;
+}
+
+/* B02 タイプライター: textContent を徐々に差し替えるのでCSS不要 */
+/* B08 フェードアウト: transition/opacity をインラインで操作 */
+/* B15 逆順: textContent を反転するだけ */
