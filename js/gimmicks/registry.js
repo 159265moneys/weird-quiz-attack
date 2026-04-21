@@ -24,13 +24,12 @@
      Stage2: B03, B07                       ← Phase 5a
      Stage3: B02, B08                       ← Phase 5b-Batch2
      Stage4: B04, B15, B20, C01             ← Phase 5b-Batch2 (+ C01=5a)
-     Stage5: B05, B12                       ← Phase 5a
+     Stage5: B05, B06, B12, B14             ← Phase 5b-Batch3a (+ B05/B12=5a)
      Stage6: W01, W03                       ← Phase 5a
      Stage7: B13                            ← Phase 5a
      Stage8: C04                            ← Phase 5a
 
-   未実装 (Phase 5b-Batch3〜):
-     Stage5: B06, B14
+   未実装 (Phase 5b-Batch3b〜):
      Stage6: B09, B10, W02, W07, C02
      Stage7: B01, B17, W05, W10, W14, W17, W19
      Stage8: C03, W04, W06, W09, W15, W16
@@ -46,27 +45,17 @@
 
     // --- Stage 1 プール (視覚ノイズ系、ゲーム本体には干渉しない) ---
 
-    const B11_SHINE = {
-        id: 'B11', name: 'ホワイトフラッシュ', supports: 'both', introducedAt: 1, difficulty: 4,
+    const B11_BLASTER = {
+        id: 'B11', name: 'クロスビーム', supports: 'both', introducedAt: 1, difficulty: 4,
         apply(ctx) {
             const host = document.createElement('div');
-            host.className = 'gk-b11-flash';
+            host.className = 'gk-b11-host';
+            host.innerHTML = `
+                <div class="gk-b11-beam gk-b11-a"></div>
+                <div class="gk-b11-beam gk-b11-b"></div>
+            `;
             ctx.screen.appendChild(host);
-            // ランダム間隔で瞬間的に真っ白、短時間 "何も見えない" 状態を作る
-            let showTimer = 0, hideTimer = 0;
-            const flash = () => {
-                host.classList.add('is-on');
-                hideTimer = setTimeout(() => {
-                    host.classList.remove('is-on');
-                    showTimer = setTimeout(flash, 2200 + Math.random() * 2400);
-                }, 280 + Math.random() * 220);
-            };
-            showTimer = setTimeout(flash, 1200 + Math.random() * 1500);
-            return () => {
-                clearTimeout(showTimer);
-                clearTimeout(hideTimer);
-                host.remove();
-            };
+            return () => host.remove();
         },
     };
 
@@ -245,6 +234,24 @@
         },
     };
 
+    const B06_COLOR_BREAK = {
+        id: 'B06', name: '色覚破壊', supports: 'both', introducedAt: 5, difficulty: 6,
+        apply(ctx) {
+            ctx.screen.classList.add('gk-b06');
+            return () => ctx.screen.classList.remove('gk-b06');
+        },
+    };
+
+    const B14_MARGIN_CHAOS = {
+        id: 'B14', name: '余白暴走', supports: 'both', introducedAt: 5, difficulty: 5,
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            stem.classList.add('gk-b14');
+            return () => stem.classList.remove('gk-b14');
+        },
+    };
+
     const B07_GLITCH = {
         id: 'B07', name: 'グリッチ', supports: 'both', introducedAt: 2, difficulty: 3,
         conflicts: ['B12', 'B13'],
@@ -381,9 +388,9 @@
 
     // ---------- Export ----------
     const map = {
-        B11_SHINE, B16_FAKE_COUNTDOWN, B18_FAKE_ERROR,
+        B11_BLASTER, B16_FAKE_COUNTDOWN, B18_FAKE_ERROR,
         B02_TYPEWRITER, B04_ZOOM_CHAOS, B08_FADEOUT, B15_REVERSED_TEXT, B20_BLACKOUT,
-        B03_REVERSE, B05_MIRROR, B07_GLITCH, B12_BLUR, B13_TINY,
+        B03_REVERSE, B05_MIRROR, B06_COLOR_BREAK, B07_GLITCH, B12_BLUR, B13_TINY, B14_MARGIN_CHAOS,
         C01_SHUFFLE, C04_FAKE_5050,
         W01_KEYS_INVISIBLE, W03_ANSWER_INVISIBLE,
     };

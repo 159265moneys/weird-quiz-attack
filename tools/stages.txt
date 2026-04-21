@@ -1,6 +1,6 @@
 ====================================================================
  Stage × Gimmick Pool Report
- Implemented gimmicks: 17
+ Implemented gimmicks: 19
  Registry total:       41
 ====================================================================
 
@@ -9,7 +9,7 @@
     choice-applicable:   3 (impl 3)
     input-applicable:    3 (impl 3)
   Members:
-    [✓] B11 ホワイトフラッシュ            sup=both   st1 diff=4
+    [✓] B11 クロスビーム               sup=both   st1 diff=4
     [✓] B16 高速カウントダウン            sup=both   st1 diff=2
     [✓] B18 偽エラー表示               sup=both   st1 diff=2
 
@@ -18,7 +18,7 @@
     choice-applicable:   5 (impl 5)
     input-applicable:    5 (impl 5)
   Members:
-    [✓] B11 ホワイトフラッシュ            sup=both   st1 diff=4
+    [✓] B11 クロスビーム               sup=both   st1 diff=4
     [✓] B16 高速カウントダウン            sup=both   st1 diff=2
     [✓] B18 偽エラー表示               sup=both   st1 diff=2
     [✓] B03 問題文逆さ                sup=both   st2 diff=3
@@ -47,28 +47,28 @@
     [✓] C01 選択肢シャッフル             sup=choice st4 diff=5
 
 [Stage  5] NOISE FLOOR     stress=E  slots=12  K=[2, 3]  diff=[0.4, 0.4, 0.2]
-  Pool total:   8  (implemented: 6)
-    choice-applicable:   8 (impl 6)
-    input-applicable:    7 (impl 5)
+  Pool total:   8  (implemented: 8)
+    choice-applicable:   8 (impl 8)
+    input-applicable:    7 (impl 7)
   Members:
     [✓] B04 ズーム暴走                sup=both   st4 diff=5
     [✓] B15 問題文逆順表示              sup=both   st4 diff=6
     [✓] B20 暗転                   sup=both   st4 diff=5
     [✓] C01 選択肢シャッフル             sup=choice st4 diff=5
     [✓] B05 ミラー                  sup=both   st5 diff=5
-    [ ] B06 色覚破壊                 sup=both   st5 diff=6
+    [✓] B06 色覚破壊                 sup=both   st5 diff=6
     [✓] B12 ぼかし                  sup=both   st5 diff=5
-    [ ] B14 余白暴走                 sup=both   st5 diff=5
+    [✓] B14 余白暴走                 sup=both   st5 diff=5
 
 [Stage  6] FRAGMENTED      stress=M  slots=15  K=[3, 3]  diff=[0.3, 0.45, 0.25]
-  Pool total:  11  (implemented: 4)
-    choice-applicable:   7 (impl 2)
-    input-applicable:   10 (impl 4)
+  Pool total:  11  (implemented: 6)
+    choice-applicable:   7 (impl 4)
+    input-applicable:   10 (impl 6)
   Members:
     [✓] B05 ミラー                  sup=both   st5 diff=5
-    [ ] B06 色覚破壊                 sup=both   st5 diff=6
+    [✓] B06 色覚破壊                 sup=both   st5 diff=6
     [✓] B12 ぼかし                  sup=both   st5 diff=5
-    [ ] B14 余白暴走                 sup=both   st5 diff=5
+    [✓] B14 余白暴走                 sup=both   st5 diff=5
     [ ] B09 画面縮小                 sup=both   st6 diff=6
     [ ] B10 問題文ランダム出力            sup=both   st6 diff=5
     [ ] C02 ダミー選択肢               sup=choice st6 diff=7
@@ -99,11 +99,11 @@
     [ ] W19 フリック方向反転             sup=input  st7 diff=7
 
 [Stage  8] COLLAPSE        stress=X  slots=20  K=[4, 5]  diff=[0.2, 0.4, 0.4]
-  Pool total:  37  (implemented: 17)
-    choice-applicable:  23 (impl 15)
-    input-applicable:   33 (impl 15)
+  Pool total:  37  (implemented: 19)
+    choice-applicable:  23 (impl 17)
+    input-applicable:   33 (impl 17)
   Members:
-    [✓] B11 ホワイトフラッシュ            sup=both   st1 diff=4
+    [✓] B11 クロスビーム               sup=both   st1 diff=4
     [✓] B16 高速カウントダウン            sup=both   st1 diff=2
     [✓] B18 偽エラー表示               sup=both   st1 diff=2
     [✓] B03 問題文逆さ                sup=both   st2 diff=3
@@ -115,9 +115,9 @@
     [✓] B20 暗転                   sup=both   st4 diff=5
     [✓] C01 選択肢シャッフル             sup=choice st4 diff=5
     [✓] B05 ミラー                  sup=both   st5 diff=5
-    [ ] B06 色覚破壊                 sup=both   st5 diff=6
+    [✓] B06 色覚破壊                 sup=both   st5 diff=6
     [✓] B12 ぼかし                  sup=both   st5 diff=5
-    [ ] B14 余白暴走                 sup=both   st5 diff=5
+    [✓] B14 余白暴走                 sup=both   st5 diff=5
     [ ] B09 画面縮小                 sup=both   st6 diff=6
     [ ] B10 問題文ランダム出力            sup=both   st6 diff=5
     [ ] C02 ダミー選択肢               sup=choice st6 diff=7

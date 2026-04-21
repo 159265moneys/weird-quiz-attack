@@ -41,7 +41,7 @@ class Gimmick:
 # --- MVP 実装済み 18 ギミック (registry.js と同期) ---
 REGISTRY: List[Gimmick] = [
     # Stage 1 (Batch 1)
-    Gimmick('B11', 'ホワイトフラッシュ',     'both', 1, 4),
+    Gimmick('B11', 'クロスビーム',           'both', 1, 4),
     Gimmick('B16', '高速カウントダウン',     'both', 1, 2),
     Gimmick('B18', '偽エラー表示',           'both', 1, 2),
     # Stage 2
@@ -57,7 +57,9 @@ REGISTRY: List[Gimmick] = [
     Gimmick('C01', '選択肢シャッフル',       'choice', 4, 5, conflicts=['C04']),
     # Stage 5
     Gimmick('B05', 'ミラー',                 'both', 5, 5, conflicts=['B03']),
+    Gimmick('B06', '色覚破壊',               'both', 5, 6),
     Gimmick('B12', 'ぼかし',                 'both', 5, 5),
+    Gimmick('B14', '余白暴走',               'both', 5, 5),
     # Stage 6
     Gimmick('W01', '文字盤見えない',         'input', 6, 7),
     Gimmick('W03', '解答欄見えない',         'input', 6, 6),
@@ -69,9 +71,6 @@ REGISTRY: List[Gimmick] = [
 
 # --- 未実装ギミック (参考情報用、シミュレータで "実装後の姿" を見たい時に有効化) ---
 PENDING: List[Gimmick] = [
-    # Stage 5
-    Gimmick('B06', '色覚破壊',               'both',   5, 6, implemented=False),
-    Gimmick('B14', '余白暴走',               'both',   5, 5, implemented=False),
     # Stage 6
     Gimmick('B09', '画面縮小',               'both',   6, 6, implemented=False),
     Gimmick('B10', '問題文ランダム出力',     'both',   6, 5, implemented=False),
