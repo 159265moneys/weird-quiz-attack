@@ -1,0 +1,298 @@
+/* ============================================================
+   screens.css — 画面ごとの最小スタイル (Phase 1)
+   ============================================================ */
+
+/* ========== TITLE ========== */
+.title-screen {
+    justify-content: space-between;
+}
+
+.title-logo {
+    margin-top: 240px;
+    font-size: 140px;
+    font-weight: bold;
+    letter-spacing: 12px;
+    text-align: center;
+    color: var(--text);
+    text-shadow:
+        8px 8px 0 var(--accent-red),
+        -4px -4px 0 var(--accent-cyan);
+    animation: logo-shake 6s infinite;
+}
+@keyframes logo-shake {
+    0%, 92%, 100% { transform: translate(0, 0); }
+    93% { transform: translate(-6px, 2px); }
+    94% { transform: translate(4px, -2px); }
+    95% { transform: translate(-2px, 4px); }
+    96% { transform: translate(0, 0); }
+}
+
+.title-sub {
+    margin-top: 32px;
+    font-size: 36px;
+    color: var(--text-dim);
+    letter-spacing: 6px;
+    text-align: center;
+}
+
+.title-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-top: 120px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 20px 40px;
+    min-width: 520px;
+    font-size: 56px;
+    color: var(--text);
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 4px;
+}
+.menu-item .butterfly {
+    width: 48px;
+    height: 48px;
+    opacity: 0;
+    transition: opacity 0.12s ease;
+}
+.menu-item.is-active .butterfly,
+.menu-item:hover .butterfly {
+    opacity: 1;
+}
+.menu-item:active {
+    transform: translate(2px, 2px);
+}
+
+.title-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 28px;
+    color: var(--text-mute);
+    letter-spacing: 2px;
+}
+
+.title-navigator {
+    position: absolute;
+    right: 40px;
+    bottom: 120px;
+    width: 360px;
+    height: auto;
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+/* ========== STAGE SELECT ========== */
+.stage-title {
+    font-size: 80px;
+    letter-spacing: 8px;
+    margin-bottom: 32px;
+    text-align: center;
+    width: 100%;
+}
+
+.stage-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-bottom: 80px;
+}
+
+.stage-card {
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    align-items: center;
+    gap: 32px;
+    padding: 40px 48px;
+    background: var(--bg-panel);
+    border: 3px solid var(--line);
+    box-shadow: 8px 8px 0 var(--line);
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--text);
+    text-align: left;
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.stage-card:active {
+    transform: translate(4px, 4px);
+    box-shadow: 4px 4px 0 var(--line);
+}
+.stage-card.is-locked {
+    opacity: 0.35;
+    cursor: not-allowed;
+    box-shadow: 8px 8px 0 var(--line-dim);
+    border-color: var(--line-dim);
+}
+
+.stage-card .stage-no {
+    font-size: 96px;
+    font-weight: bold;
+    line-height: 1;
+    color: var(--accent-cyan);
+}
+.stage-card.is-stress .stage-no { color: var(--accent-warn); }
+.stage-card.is-extreme .stage-no { color: var(--accent-red); }
+
+.stage-card .stage-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.stage-card .stage-name {
+    font-size: 44px;
+    letter-spacing: 2px;
+}
+.stage-card .stage-meta {
+    font-size: 28px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+}
+
+.stage-card .stage-rank {
+    font-size: 72px;
+    font-weight: bold;
+    min-width: 80px;
+    text-align: center;
+}
+
+/* ========== QUESTION (Phase 1 placeholder) ========== */
+.question-screen {
+    justify-content: flex-start;
+    padding: 60px 60px;
+}
+
+.q-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 32px;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    margin-bottom: 24px;
+}
+
+.q-timer-bar {
+    width: 100%;
+    height: 12px;
+    background: var(--bg-panel);
+    border: 2px solid var(--line);
+    margin-bottom: 40px;
+    overflow: hidden;
+}
+.q-timer-fill {
+    height: 100%;
+    background: var(--accent-cyan);
+    width: 100%;
+    transition: width 0.1s linear, background 0.2s ease;
+}
+
+.q-stem {
+    width: 100%;
+    min-height: 400px;
+    padding: 48px;
+    font-size: 56px;
+    line-height: 1.5;
+    background: var(--bg-panel);
+    border: 3px solid var(--line);
+    box-shadow: 8px 8px 0 var(--line);
+    margin-bottom: 48px;
+    letter-spacing: 2px;
+}
+
+.q-choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    width: 100%;
+}
+.q-choice {
+    padding: 32px;
+    font-size: 44px;
+    background: var(--bg-panel);
+    border: 3px solid var(--line);
+    box-shadow: 6px 6px 0 var(--line);
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--text);
+    letter-spacing: 2px;
+}
+.q-choice:active {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 var(--line);
+}
+
+.q-input-area {
+    width: 100%;
+    min-height: 200px;
+    padding: 32px;
+    font-size: 72px;
+    background: var(--bg-panel);
+    border: 3px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+    text-align: center;
+    letter-spacing: 4px;
+    margin-bottom: 48px;
+    min-height: 160px;
+}
+
+.q-submit {
+    width: 100%;
+    padding: 32px;
+    font-size: 48px;
+    background: var(--accent-cyan);
+    color: var(--bg-deep);
+    border: 3px solid var(--accent-cyan);
+    box-shadow: 8px 8px 0 var(--accent-cyan-dim);
+    cursor: pointer;
+    font-family: inherit;
+    letter-spacing: 4px;
+    font-weight: bold;
+}
+
+/* ========== RESULT (Phase 1 placeholder) ========== */
+.result-screen {
+    align-items: center;
+    justify-content: center;
+}
+
+.result-rank {
+    font-size: 400px;
+    font-weight: bold;
+    line-height: 1;
+    color: var(--accent-cyan);
+    text-shadow:
+        12px 12px 0 var(--accent-red);
+    margin-bottom: 48px;
+}
+
+.result-score {
+    font-size: 96px;
+    letter-spacing: 6px;
+    color: var(--text);
+    margin-bottom: 24px;
+}
+
+.result-detail {
+    font-size: 36px;
+    color: var(--text-dim);
+    margin-bottom: 80px;
+    letter-spacing: 3px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.result-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    align-items: center;
+}

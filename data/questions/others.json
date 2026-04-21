@@ -1,0 +1,598 @@
+[
+  {
+    "id": "O01",
+    "genre": "その他",
+    "subgenre": "体育",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "夏季オリンピックは何年に一度開催される？",
+    "answer_text": "4",
+    "answer_variants": [],
+    "explanation": "原則4年に一度。"
+  },
+  {
+    "id": "O02",
+    "genre": "その他",
+    "subgenre": "体育",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "サッカーの1チームの人数は？",
+    "answer_text": "11",
+    "answer_variants": [],
+    "explanation": "フィールド上は11人(GK含む)。"
+  },
+  {
+    "id": "O03",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "五線譜の線は何本？",
+    "choices": [
+      "3本",
+      "4本",
+      "5本",
+      "6本"
+    ],
+    "answer": 2,
+    "explanation": "五線譜は5本の線。"
+  },
+  {
+    "id": "O04",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "赤と黄色を混ぜると何色になる？",
+    "choices": [
+      "緑",
+      "紫",
+      "オレンジ",
+      "茶色"
+    ],
+    "answer": 2,
+    "explanation": "赤+黄=オレンジ(橙)。"
+  },
+  {
+    "id": "O05",
+    "genre": "その他",
+    "subgenre": "家庭科",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "野菜を切るときに使う道具は？",
+    "choices": [
+      "フライパン",
+      "包丁",
+      "しゃもじ",
+      "おたま"
+    ],
+    "answer": 1,
+    "explanation": "切るのは包丁。"
+  },
+  {
+    "id": "O06",
+    "genre": "その他",
+    "subgenre": "体育",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "バスケットボールの1チームの人数(コート上)は？",
+    "choices": [
+      "4人",
+      "5人",
+      "6人",
+      "7人"
+    ],
+    "answer": 1,
+    "explanation": "コート上は5人。"
+  },
+  {
+    "id": "O07",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "全音符は4分音符いくつ分の長さ？",
+    "answer_text": "4",
+    "answer_variants": [],
+    "explanation": "全音符 = 4分音符4つ分。"
+  },
+  {
+    "id": "O08",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "青と黄色を混ぜると何色になる？",
+    "choices": [
+      "緑",
+      "紫",
+      "茶色",
+      "灰色"
+    ],
+    "answer": 0,
+    "explanation": "青+黄=緑。"
+  },
+  {
+    "id": "O09",
+    "genre": "その他",
+    "subgenre": "家庭科",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "五大栄養素に含まれないのはどれ？",
+    "choices": [
+      "たんぱく質",
+      "脂質",
+      "炭水化物",
+      "水分"
+    ],
+    "answer": 3,
+    "explanation": "五大栄養素は炭水化物・脂質・たんぱく質・ビタミン・無機質(ミネラル)。"
+  },
+  {
+    "id": "O10",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "鉛筆の芯がより濃いのはどれ？",
+    "choices": [
+      "2H",
+      "H",
+      "HB",
+      "2B"
+    ],
+    "answer": 3,
+    "explanation": "Bが大きいほど濃い。2Bが最も濃い。"
+  },
+  {
+    "id": "O11",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "ピアノの白鍵は1オクターブに何個ある？",
+    "choices": [
+      "5個",
+      "6個",
+      "7個",
+      "8個"
+    ],
+    "answer": 2,
+    "explanation": "ドレミファソラシの7個。"
+  },
+  {
+    "id": "O12",
+    "genre": "その他",
+    "subgenre": "体育",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "野球の1チームの人数(守備)は？",
+    "answer_text": "9",
+    "answer_variants": [],
+    "explanation": "野球は9人で守備につく。"
+  },
+  {
+    "id": "O13",
+    "genre": "その他",
+    "subgenre": "家庭科",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "ご飯を炊くための道具はどれ？",
+    "choices": [
+      "炊飯器",
+      "電子レンジ",
+      "トースター",
+      "ミキサー"
+    ],
+    "answer": 0,
+    "explanation": "炊飯器で米を炊く。"
+  },
+  {
+    "id": "O14",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "色の三原色でないものはどれ？",
+    "choices": [
+      "シアン",
+      "マゼンタ",
+      "イエロー",
+      "グリーン"
+    ],
+    "answer": 3,
+    "explanation": "色の三原色はシアン・マゼンタ・イエロー(CMY)。"
+  },
+  {
+    "id": "O15",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "ト音記号は何の音の位置を示す？",
+    "choices": [
+      "ド",
+      "レ",
+      "ソ",
+      "シ"
+    ],
+    "answer": 2,
+    "explanation": "日本音名で『ト』=G=ソ。ト音記号は五線のソの位置を示す。"
+  },
+  {
+    "id": "O16",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "八分音符は4分音符の何倍の長さ？",
+    "choices": [
+      "2倍",
+      "1倍",
+      "1/2倍",
+      "1/4倍"
+    ],
+    "answer": 2,
+    "explanation": "八分音符は4分音符の半分(1/2)。"
+  },
+  {
+    "id": "O17",
+    "genre": "その他",
+    "subgenre": "家庭科",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "『まつり縫い』は主に何に使う縫い方？",
+    "choices": [
+      "ボタン付け",
+      "穴かがり",
+      "裾上げ",
+      "ポケット口"
+    ],
+    "answer": 2,
+    "explanation": "布端を折り返して目立たせずに縫う、裾上げの代表技法。"
+  },
+  {
+    "id": "O18",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "変ロ長調(B♭メジャー)の調号のフラットは何個？",
+    "answer_text": "2",
+    "answer_variants": [],
+    "explanation": "B♭とE♭の2個。"
+  },
+  {
+    "id": "O19",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "『叫び』を描いた画家は？",
+    "choices": [
+      "ゴッホ",
+      "ピカソ",
+      "ムンク",
+      "モネ"
+    ],
+    "answer": 2,
+    "explanation": "ノルウェーの画家エドヴァルド・ムンク。"
+  },
+  {
+    "id": "O20",
+    "genre": "その他",
+    "subgenre": "家庭科",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "『玉結び』は何のためにする？",
+    "choices": [
+      "縫い始めに糸が抜けないようにする",
+      "縫い終わりの糸処理",
+      "布と布を貼り合わせる",
+      "糸を切るため"
+    ],
+    "answer": 0,
+    "explanation": "縫い始めに糸端に作り、抜けるのを防ぐ結び目。"
+  },
+  {
+    "id": "O21",
+    "genre": "その他",
+    "subgenre": "体育",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "バレーボールの1チームの人数(コート上)は？",
+    "answer_text": "6",
+    "answer_variants": [],
+    "explanation": "バレーは6人制。"
+  },
+  {
+    "id": "O22",
+    "genre": "その他",
+    "subgenre": "体育",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "陸上の100m走はどの種目に分類される？",
+    "choices": [
+      "長距離走",
+      "中距離走",
+      "短距離走",
+      "障害走"
+    ],
+    "answer": 2,
+    "explanation": "400m以下は短距離。"
+  },
+  {
+    "id": "O23",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "ドレミファソの次に来る音は？(ひらがなで)",
+    "answer_text": "ら",
+    "answer_variants": [
+      "ラ"
+    ],
+    "explanation": "ドレミファソラシド。"
+  },
+  {
+    "id": "O24",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "絵の具の基本3色を何という？",
+    "choices": [
+      "三原色",
+      "三基色",
+      "三本色",
+      "三大色"
+    ],
+    "answer": 0,
+    "explanation": "三原色。シアン・マゼンタ・イエロー。"
+  },
+  {
+    "id": "O25",
+    "genre": "その他",
+    "subgenre": "家庭科",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "調味料「さしすせそ」の「さ」は？(ひらがなで)",
+    "answer_text": "さとう",
+    "answer_variants": [
+      "サトウ"
+    ],
+    "explanation": "さ=砂糖、し=塩、す=酢、せ=醤油、そ=味噌。"
+  },
+  {
+    "id": "O26",
+    "genre": "その他",
+    "subgenre": "家庭科",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "おせち料理は主にいつ食べる？",
+    "choices": [
+      "お盆",
+      "正月",
+      "節分",
+      "七夕"
+    ],
+    "answer": 1,
+    "explanation": "正月の伝統料理。"
+  },
+  {
+    "id": "O27",
+    "genre": "その他",
+    "subgenre": "体育",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "競泳の公式種目は全部で何泳法？",
+    "answer_text": "4",
+    "answer_variants": [],
+    "explanation": "自由形・平泳ぎ・背泳ぎ・バタフライの4種。"
+  },
+  {
+    "id": "O28",
+    "genre": "その他",
+    "subgenre": "体育",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "サッカーのPK(ペナルティキック)の距離は？",
+    "choices": [
+      "9m",
+      "11m",
+      "13m",
+      "15m"
+    ],
+    "answer": 1,
+    "explanation": "ゴールから11m。"
+  },
+  {
+    "id": "O29",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "4分音符1つ分の長さは何拍？",
+    "choices": [
+      "0.5拍",
+      "1拍",
+      "2拍",
+      "4拍"
+    ],
+    "answer": 1,
+    "explanation": "基準単位で1拍。"
+  },
+  {
+    "id": "O30",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「♯(シャープ)」の音楽的な意味は？",
+    "choices": [
+      "半音上げる",
+      "半音下げる",
+      "元に戻す",
+      "2倍の長さ"
+    ],
+    "answer": 0,
+    "explanation": "♯=半音上げる。"
+  },
+  {
+    "id": "O31",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "赤と青を混ぜると何色になる？",
+    "choices": [
+      "緑",
+      "紫",
+      "橙",
+      "茶"
+    ],
+    "answer": 1,
+    "explanation": "赤+青=紫。"
+  },
+  {
+    "id": "O32",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "水墨画で主に使う色は？",
+    "choices": [
+      "赤",
+      "青",
+      "緑",
+      "黒"
+    ],
+    "answer": 3,
+    "explanation": "墨の濃淡で表現。"
+  },
+  {
+    "id": "O33",
+    "genre": "その他",
+    "subgenre": "家庭科",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "玉ねぎを切るとよく起こることは？",
+    "choices": [
+      "涙が出る",
+      "手が赤くなる",
+      "においが消える",
+      "固まる"
+    ],
+    "answer": 0,
+    "explanation": "刺激成分(硫化アリル)が目の粘膜を刺激する。"
+  },
+  {
+    "id": "O34",
+    "genre": "その他",
+    "subgenre": "家庭科",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "白米に対して、もみ殻だけ取り除いた米を何という？",
+    "choices": [
+      "無洗米",
+      "玄米",
+      "胚芽米",
+      "精米"
+    ],
+    "answer": 1,
+    "explanation": "玄米。さらに精米すると白米になる。"
+  },
+  {
+    "id": "O35",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "『運命』交響曲を作曲したのは誰？",
+    "choices": [
+      "モーツァルト",
+      "ベートーヴェン",
+      "バッハ",
+      "ショパン"
+    ],
+    "answer": 1,
+    "explanation": "ベートーヴェンの交響曲第5番。"
+  },
+  {
+    "id": "O36",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "日本の国歌の曲名は？(ひらがなで)",
+    "answer_text": "きみがよ",
+    "answer_variants": [
+      "キミガヨ"
+    ],
+    "explanation": "『君が代』。"
+  },
+  {
+    "id": "O37",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "印象派の代表的な画家は？",
+    "choices": [
+      "モネ",
+      "ピカソ",
+      "ダリ",
+      "ゴーギャン"
+    ],
+    "answer": 0,
+    "explanation": "クロード・モネは印象派の中心人物。"
+  },
+  {
+    "id": "O38",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "葛飾北斎の代表作として有名なシリーズは？",
+    "choices": [
+      "東海道五十三次",
+      "富嶽三十六景",
+      "見返り美人図",
+      "鳥獣戯画"
+    ],
+    "answer": 1,
+    "explanation": "『富嶽三十六景』。『神奈川沖浪裏』もこのシリーズ。"
+  },
+  {
+    "id": "O39",
+    "genre": "その他",
+    "subgenre": "家庭科",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「なみ縫い」の縫い目の特徴は？",
+    "choices": [
+      "ジグザグ",
+      "等間隔",
+      "重ね縫い",
+      "飾り縫い"
+    ],
+    "answer": 1,
+    "explanation": "等間隔に表裏交互で縫う基本縫い。"
+  },
+  {
+    "id": "O40",
+    "genre": "その他",
+    "subgenre": "家庭科",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "野菜の「旬」とは？",
+    "choices": [
+      "収穫の最盛期で一番おいしい時期",
+      "種まきの時期",
+      "苗を植える時期",
+      "害虫が多い時期"
+    ],
+    "answer": 0,
+    "explanation": "旬=最もおいしくて栄養価も高い時期。"
+  }
+]

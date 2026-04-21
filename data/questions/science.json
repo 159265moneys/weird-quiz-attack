@@ -1,0 +1,280 @@
+[
+  {
+    "id": "R01",
+    "genre": "理科",
+    "subgenre": "物質",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "水は何℃で沸騰する？",
+    "choices": [
+      "50℃",
+      "80℃",
+      "100℃",
+      "120℃"
+    ],
+    "answer": 2,
+    "explanation": "1気圧のもとで水の沸点は100℃。"
+  },
+  {
+    "id": "R02",
+    "genre": "理科",
+    "subgenre": "地学",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "太陽系の惑星は何個？",
+    "choices": [
+      "6個",
+      "7個",
+      "8個",
+      "9個"
+    ],
+    "answer": 2,
+    "explanation": "2006年以降、冥王星を除き8個。"
+  },
+  {
+    "id": "R03",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "ヒトの心臓の部屋の数は？",
+    "answer_text": "4",
+    "answer_variants": [],
+    "explanation": "左右の心房と心室で4つ。"
+  },
+  {
+    "id": "R04",
+    "genre": "理科",
+    "subgenre": "植物",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "光合成に必要な気体は？",
+    "choices": [
+      "酸素",
+      "二酸化炭素",
+      "窒素",
+      "水素"
+    ],
+    "answer": 1,
+    "explanation": "光合成は二酸化炭素と水から酸素とデンプンを作る。"
+  },
+  {
+    "id": "R05",
+    "genre": "理科",
+    "subgenre": "磁石",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "磁石のN極とN極を近づけるとどうなる？",
+    "choices": [
+      "引き合う",
+      "しりぞけ合う",
+      "変わらない",
+      "回転する"
+    ],
+    "answer": 1,
+    "explanation": "同極はしりぞけ合い、異極は引き合う。"
+  },
+  {
+    "id": "R06",
+    "genre": "理科",
+    "subgenre": "地学",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "地球の周りを回っている天体は？",
+    "answer_text": "つき",
+    "answer_variants": [
+      "ツキ"
+    ],
+    "explanation": "月は地球の衛星。"
+  },
+  {
+    "id": "R07",
+    "genre": "理科",
+    "subgenre": "電気",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "同じ豆電球2つを乾電池1個に直列つなぎすると、1つずつより明るさは？",
+    "choices": [
+      "明るくなる",
+      "暗くなる",
+      "変わらない",
+      "消える"
+    ],
+    "answer": 1,
+    "explanation": "直列では抵抗が増えて電流が減り、暗くなる。"
+  },
+  {
+    "id": "R08",
+    "genre": "理科",
+    "subgenre": "植物",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "植物の茎の中で、水や養分の通り道になる束状の組織を何と呼ぶ？",
+    "answer_text": "いかんそく",
+    "answer_variants": [],
+    "explanation": "維管束は道管と師管をまとめた組織。"
+  },
+  {
+    "id": "R09",
+    "genre": "理科",
+    "subgenre": "植物",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "葉から水分が水蒸気となって出ていく現象を何という？",
+    "answer_text": "じょうさん",
+    "answer_variants": [],
+    "explanation": "気孔を通して植物体外に水蒸気が出る現象=蒸散。"
+  },
+  {
+    "id": "R10",
+    "genre": "理科",
+    "subgenre": "植物",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "被子植物で、胚珠を包んでいる部分はどこ？",
+    "answer_text": "しぼう",
+    "answer_variants": [],
+    "explanation": "子房が胚珠を包み、やがて果実になる。"
+  },
+  {
+    "id": "R11",
+    "genre": "理科",
+    "subgenre": "物質",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "氷がとけて水になるのは何℃？",
+    "answer_text": "0",
+    "answer_variants": [],
+    "explanation": "1気圧で水の融点は0℃。"
+  },
+  {
+    "id": "R12",
+    "genre": "理科",
+    "subgenre": "地学",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "太陽はどの方角から昇る？",
+    "choices": [
+      "東",
+      "西",
+      "南",
+      "北"
+    ],
+    "answer": 0,
+    "explanation": "太陽は東から昇り西に沈む。"
+  },
+  {
+    "id": "R13",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "ヒトの永久歯は全部で何本？",
+    "answer_text": "32",
+    "answer_variants": [],
+    "explanation": "親知らず含めて32本。"
+  },
+  {
+    "id": "R14",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "酸素を表す元素記号は？(英字で)",
+    "answer_text": "O",
+    "answer_variants": [
+      "o"
+    ],
+    "explanation": "酸素=Oxygenの頭文字O。"
+  },
+  {
+    "id": "R15",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "てこの3つの点に含まれないものは？",
+    "choices": [
+      "支点",
+      "力点",
+      "作用点",
+      "定点"
+    ],
+    "answer": 3,
+    "explanation": "てこの3点は支点・力点・作用点。"
+  },
+  {
+    "id": "R16",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "花粉を運ぶ代表的な虫は？(ひらがなで)",
+    "answer_text": "はち",
+    "answer_variants": [
+      "ハチ"
+    ],
+    "explanation": "ハチ(特にミツバチ)が代表的な送粉者。"
+  },
+  {
+    "id": "R17",
+    "genre": "理科",
+    "subgenre": "地学",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "月が満ち欠けする周期は約何日？",
+    "choices": [
+      "約15日",
+      "約22日",
+      "約29日",
+      "約35日"
+    ],
+    "answer": 2,
+    "explanation": "新月から新月まで約29.5日。"
+  },
+  {
+    "id": "R18",
+    "genre": "理科",
+    "subgenre": "植物",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "植物の道管は主に何を運ぶ？(ひらがなで)",
+    "answer_text": "みず",
+    "answer_variants": [
+      "水"
+    ],
+    "explanation": "道管は根から吸い上げた水を運ぶ。"
+  },
+  {
+    "id": "R19",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "えら呼吸をする動物はどれ？",
+    "choices": [
+      "カエル",
+      "イルカ",
+      "魚",
+      "トカゲ"
+    ],
+    "answer": 2,
+    "explanation": "魚類はえら呼吸。カエルは肺+皮膚、イルカは肺呼吸。"
+  },
+  {
+    "id": "R20",
+    "genre": "理科",
+    "subgenre": "植物",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "被子植物に分類されるものはどれ？",
+    "choices": [
+      "マツ",
+      "イチョウ",
+      "アサガオ",
+      "スギ"
+    ],
+    "answer": 2,
+    "explanation": "アサガオは被子植物。残りは裸子植物。"
+  }
+]

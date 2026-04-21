@@ -1,0 +1,564 @@
+[
+  {
+    "id": "J01",
+    "genre": "国語",
+    "subgenre": "漢字の読み",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「空」の読みは？",
+    "answer_text": "そら",
+    "answer_variants": [],
+    "explanation": "訓読みで「そら」。"
+  },
+  {
+    "id": "J02",
+    "genre": "国語",
+    "subgenre": "漢字の読み",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「本」の読みは？",
+    "answer_text": "ほん",
+    "answer_variants": [],
+    "explanation": "一般的な読みは「ほん」。"
+  },
+  {
+    "id": "J03",
+    "genre": "国語",
+    "subgenre": "反対語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「大きい」の反対語は？",
+    "answer_text": "ちいさい",
+    "answer_variants": [
+      "ちいさな"
+    ],
+    "explanation": "大きい ⇔ 小さい。"
+  },
+  {
+    "id": "J04",
+    "genre": "国語",
+    "subgenre": "漢字の読み",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「山」の訓読みは？",
+    "answer_text": "やま",
+    "answer_variants": [],
+    "explanation": "訓読みは「やま」、音読みは「サン」。"
+  },
+  {
+    "id": "J05",
+    "genre": "国語",
+    "subgenre": "五十音",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "ひらがな「さ」の次の文字は？",
+    "choices": [
+      "し",
+      "す",
+      "せ",
+      "そ"
+    ],
+    "answer": 0,
+    "explanation": "さ・し・す・せ・そ。"
+  },
+  {
+    "id": "J06",
+    "genre": "国語",
+    "subgenre": "反対語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「右」の反対は？",
+    "answer_text": "ひだり",
+    "answer_variants": [],
+    "explanation": "右 ⇔ 左。"
+  },
+  {
+    "id": "J07",
+    "genre": "国語",
+    "subgenre": "漢字の読み",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「発表」の読みは？",
+    "answer_text": "はっぴょう",
+    "answer_variants": [],
+    "explanation": "促音化して「はっぴょう」。"
+  },
+  {
+    "id": "J08",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「猿も木から○○」。○○は？",
+    "choices": [
+      "落ちる",
+      "降りる",
+      "飛ぶ",
+      "転ぶ"
+    ],
+    "answer": 0,
+    "explanation": "名人でも失敗することがある、の意味。"
+  },
+  {
+    "id": "J09",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「急がば○○」。○○は？",
+    "choices": [
+      "走れ",
+      "回れ",
+      "止まれ",
+      "越えろ"
+    ],
+    "answer": 1,
+    "explanation": "急ぐときほど遠回りが安全、の意味。"
+  },
+  {
+    "id": "J10",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「一石二○」。○に入るのは？",
+    "choices": [
+      "兎",
+      "鳥",
+      "魚",
+      "羽"
+    ],
+    "answer": 1,
+    "explanation": "一石二鳥(いっせきにちょう)。"
+  },
+  {
+    "id": "J11",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「○の耳に念仏」。○に入るのは？",
+    "choices": [
+      "犬",
+      "猫",
+      "馬",
+      "牛"
+    ],
+    "answer": 2,
+    "explanation": "馬の耳に念仏。言っても無駄の意。"
+  },
+  {
+    "id": "J12",
+    "genre": "国語",
+    "subgenre": "文法",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「花が咲いた。」の主語は？",
+    "choices": [
+      "花が",
+      "咲いた",
+      "花",
+      "咲く"
+    ],
+    "answer": 0,
+    "explanation": "主語は「〜が」「〜は」。"
+  },
+  {
+    "id": "J13",
+    "genre": "国語",
+    "subgenre": "文法",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「美しい」の品詞は？",
+    "choices": [
+      "動詞",
+      "名詞",
+      "形容詞",
+      "副詞"
+    ],
+    "answer": 2,
+    "explanation": "「〜い」で終わる言い切り。形容詞。"
+  },
+  {
+    "id": "J14",
+    "genre": "国語",
+    "subgenre": "漢字の読み",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「読書」の読みは？",
+    "answer_text": "どくしょ",
+    "answer_variants": [],
+    "explanation": "音読みで「どくしょ」。"
+  },
+  {
+    "id": "J15",
+    "genre": "国語",
+    "subgenre": "古典文学",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "『枕草子』の作者は？",
+    "choices": [
+      "紫式部",
+      "清少納言",
+      "兼好法師",
+      "鴨長明"
+    ],
+    "answer": 1,
+    "explanation": "平安時代の随筆。作者は清少納言。"
+  },
+  {
+    "id": "J16",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「五十歩百歩」の意味は？",
+    "choices": [
+      "大きな差がある",
+      "ほとんど差がない",
+      "努力の末の成功",
+      "遠い道のり"
+    ],
+    "answer": 1,
+    "explanation": "少しの違いで本質的に同じ、の意。"
+  },
+  {
+    "id": "J17",
+    "genre": "国語",
+    "subgenre": "部首",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「寂」の部首は？",
+    "choices": [
+      "うかんむり",
+      "きへん",
+      "ごんべん",
+      "さんずい"
+    ],
+    "answer": 0,
+    "explanation": "宀（うかんむり）。"
+  },
+  {
+    "id": "J18",
+    "genre": "国語",
+    "subgenre": "古典文学",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「つれづれなるままに」で始まる作品は？",
+    "choices": [
+      "枕草子",
+      "方丈記",
+      "徒然草",
+      "源氏物語"
+    ],
+    "answer": 2,
+    "explanation": "兼好法師『徒然草』の冒頭。"
+  },
+  {
+    "id": "J19",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「呉越同舟」の読みは？",
+    "answer_text": "ごえつどうしゅう",
+    "answer_variants": [],
+    "explanation": "ごえつどうしゅう。敵同士が同じ場に居合わせること。"
+  },
+  {
+    "id": "J20",
+    "genre": "国語",
+    "subgenre": "部首",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「雷」の部首は？",
+    "choices": [
+      "あめかんむり",
+      "たけかんむり",
+      "くさかんむり",
+      "うかんむり"
+    ],
+    "answer": 0,
+    "explanation": "雨（あめかんむり）。"
+  },
+  {
+    "id": "J21",
+    "genre": "国語",
+    "subgenre": "漢字の読み",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「火」の訓読みは？",
+    "answer_text": "ひ",
+    "answer_variants": [],
+    "explanation": "訓読みは「ひ」、音読みは「カ」。"
+  },
+  {
+    "id": "J22",
+    "genre": "国語",
+    "subgenre": "漢字の読み",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「木」の訓読みは？",
+    "answer_text": "き",
+    "answer_variants": [],
+    "explanation": "訓読みは「き」、音読みは「ボク/モク」。"
+  },
+  {
+    "id": "J23",
+    "genre": "国語",
+    "subgenre": "漢字の読み",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「水」の訓読みは？",
+    "answer_text": "みず",
+    "answer_variants": [],
+    "explanation": "訓読みは「みず」、音読みは「スイ」。"
+  },
+  {
+    "id": "J24",
+    "genre": "国語",
+    "subgenre": "反対語",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「上」の反対語は？",
+    "choices": [
+      "下",
+      "横",
+      "前",
+      "後"
+    ],
+    "answer": 0,
+    "explanation": "上 ⇔ 下。"
+  },
+  {
+    "id": "J25",
+    "genre": "国語",
+    "subgenre": "漢字の読み",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「月」の音読みは？",
+    "choices": [
+      "つき",
+      "げつ",
+      "カ",
+      "ボク"
+    ],
+    "answer": 1,
+    "explanation": "月の音読みはゲツ/ガツ。"
+  },
+  {
+    "id": "J26",
+    "genre": "国語",
+    "subgenre": "五十音",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "ひらがな「あ」から数えて6番目は？",
+    "choices": [
+      "か",
+      "き",
+      "く",
+      "け"
+    ],
+    "answer": 0,
+    "explanation": "あ・い・う・え・お・か。"
+  },
+  {
+    "id": "J27",
+    "genre": "国語",
+    "subgenre": "漢字の読み",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「学校」の読みは？",
+    "answer_text": "がっこう",
+    "answer_variants": [],
+    "explanation": "音読み「がっこう」。"
+  },
+  {
+    "id": "J28",
+    "genre": "国語",
+    "subgenre": "漢字の読み",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「公園」の読みは？",
+    "answer_text": "こうえん",
+    "answer_variants": [],
+    "explanation": "音読み「こうえん」。"
+  },
+  {
+    "id": "J29",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「犬も歩けば○○に当たる」。○○は？",
+    "choices": [
+      "石",
+      "棒",
+      "犬",
+      "穴"
+    ],
+    "answer": 1,
+    "explanation": "思いがけない幸運・災難に遭う意。"
+  },
+  {
+    "id": "J30",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「人の振り見て○が振り直せ」。○は？",
+    "choices": [
+      "人",
+      "我",
+      "子",
+      "家"
+    ],
+    "answer": 1,
+    "explanation": "我が振り=自分の振る舞い。"
+  },
+  {
+    "id": "J31",
+    "genre": "国語",
+    "subgenre": "文法",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「走る」の品詞は？",
+    "choices": [
+      "名詞",
+      "動詞",
+      "形容詞",
+      "副詞"
+    ],
+    "answer": 1,
+    "explanation": "動作を表すので動詞。"
+  },
+  {
+    "id": "J32",
+    "genre": "国語",
+    "subgenre": "文法",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「赤い」の品詞は？",
+    "choices": [
+      "動詞",
+      "名詞",
+      "形容詞",
+      "形容動詞"
+    ],
+    "answer": 2,
+    "explanation": "「〜い」で言い切る=形容詞。"
+  },
+  {
+    "id": "J33",
+    "genre": "国語",
+    "subgenre": "漢字の読み",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「音楽」の読みは？",
+    "answer_text": "おんがく",
+    "answer_variants": [],
+    "explanation": "音読み「おんがく」。"
+  },
+  {
+    "id": "J34",
+    "genre": "国語",
+    "subgenre": "文法",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "文末の「。」を何と呼ぶ？",
+    "choices": [
+      "句点",
+      "読点",
+      "感嘆符",
+      "疑問符"
+    ],
+    "answer": 0,
+    "explanation": "「。」=句点、「、」=読点。"
+  },
+  {
+    "id": "J35",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「我田引水」の読みは？",
+    "answer_text": "がでんいんすい",
+    "answer_variants": [],
+    "explanation": "自分の都合のいいように物事を運ぶ意。"
+  },
+  {
+    "id": "J36",
+    "genre": "国語",
+    "subgenre": "古典文学",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "『源氏物語』の作者は？",
+    "choices": [
+      "清少納言",
+      "紫式部",
+      "兼好法師",
+      "鴨長明"
+    ],
+    "answer": 1,
+    "explanation": "平安時代、紫式部による長編物語。"
+  },
+  {
+    "id": "J37",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「臥薪嘗胆」の読みは？",
+    "answer_text": "がしんしょうたん",
+    "answer_variants": [],
+    "explanation": "目的のために苦労を耐え忍ぶ意。"
+  },
+  {
+    "id": "J38",
+    "genre": "国語",
+    "subgenre": "古典文学",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "『徒然草』の作者は？",
+    "choices": [
+      "鴨長明",
+      "兼好法師",
+      "紀貫之",
+      "大伴家持"
+    ],
+    "answer": 1,
+    "explanation": "鎌倉末期の兼好法師による随筆。"
+  },
+  {
+    "id": "J39",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「朱に交われば○○なる」。○○は？",
+    "choices": [
+      "黒く",
+      "白く",
+      "赤く",
+      "青く"
+    ],
+    "answer": 2,
+    "explanation": "人は交わる相手に感化される意。"
+  },
+  {
+    "id": "J40",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「百聞は一○にしかず」。○は？",
+    "choices": [
+      "聞",
+      "見",
+      "行",
+      "知"
+    ],
+    "answer": 1,
+    "explanation": "百聞は一見にしかず。実際に見るのが一番。"
+  }
+]

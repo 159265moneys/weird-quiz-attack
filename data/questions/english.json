@@ -1,0 +1,591 @@
+[
+  {
+    "id": "E01",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「apple」の意味は？",
+    "answer_text": "りんご",
+    "answer_variants": [
+      "リンゴ"
+    ],
+    "explanation": "apple = りんご。"
+  },
+  {
+    "id": "E02",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「dog」の意味は？",
+    "answer_text": "いぬ",
+    "answer_variants": [
+      "イヌ"
+    ],
+    "explanation": "dog = 犬。"
+  },
+  {
+    "id": "E03",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「red」の意味は？",
+    "answer_text": "あか",
+    "answer_variants": [
+      "アカ"
+    ],
+    "explanation": "red = 赤。"
+  },
+  {
+    "id": "E04",
+    "genre": "英語",
+    "subgenre": "数",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "one, two, ___ の空欄に入るのは？",
+    "choices": [
+      "three",
+      "four",
+      "five",
+      "six"
+    ],
+    "answer": 0,
+    "explanation": "1, 2, 3 = one, two, three。"
+  },
+  {
+    "id": "E05",
+    "genre": "英語",
+    "subgenre": "be動詞",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "I ___ a student. の空欄に入るのは？",
+    "choices": [
+      "is",
+      "am",
+      "are",
+      "be"
+    ],
+    "answer": 1,
+    "explanation": "主語がIのときは am。"
+  },
+  {
+    "id": "E06",
+    "genre": "英語",
+    "subgenre": "曜日",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "Mondayの次の曜日は？",
+    "choices": [
+      "Sunday",
+      "Tuesday",
+      "Wednesday",
+      "Friday"
+    ],
+    "answer": 1,
+    "explanation": "月→火。Tuesday。"
+  },
+  {
+    "id": "E07",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「dog」の複数形は？",
+    "choices": [
+      "dog",
+      "dogs",
+      "doges",
+      "dog's"
+    ],
+    "answer": 1,
+    "explanation": "複数形はsをつけて dogs。"
+  },
+  {
+    "id": "E08",
+    "genre": "英語",
+    "subgenre": "時制",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "I ___ to school yesterday. の空欄は？",
+    "choices": [
+      "go",
+      "goes",
+      "went",
+      "going"
+    ],
+    "answer": 2,
+    "explanation": "yesterday(過去)なので go の過去形 went。"
+  },
+  {
+    "id": "E09",
+    "genre": "英語",
+    "subgenre": "月",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "Augustは何月？",
+    "answer_text": "8",
+    "answer_variants": [
+      "はち"
+    ],
+    "explanation": "August = 8月。"
+  },
+  {
+    "id": "E10",
+    "genre": "英語",
+    "subgenre": "曜日",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "Thursday は何曜日？",
+    "choices": [
+      "火曜日",
+      "水曜日",
+      "木曜日",
+      "金曜日"
+    ],
+    "answer": 2,
+    "explanation": "Thursday = 木曜日。"
+  },
+  {
+    "id": "E11",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「消しゴム」を英語で言うと？",
+    "answer_text": "eraser",
+    "answer_variants": [
+      "ERASER"
+    ],
+    "explanation": "消しゴム = eraser。"
+  },
+  {
+    "id": "E12",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「キツネ」を英語で言うと？",
+    "answer_text": "fox",
+    "answer_variants": [
+      "FOX"
+    ],
+    "explanation": "キツネ = fox。"
+  },
+  {
+    "id": "E13",
+    "genre": "英語",
+    "subgenre": "三人称単数",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "He ___ soccer every day. の空欄は？",
+    "choices": [
+      "play",
+      "plays",
+      "played",
+      "playing"
+    ],
+    "answer": 1,
+    "explanation": "主語が三人称単数のときは動詞にsがつき plays。"
+  },
+  {
+    "id": "E14",
+    "genre": "英語",
+    "subgenre": "疑問文",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「今何時？」は What ___ is it?",
+    "choices": [
+      "day",
+      "time",
+      "date",
+      "color"
+    ],
+    "answer": 1,
+    "explanation": "What time is it? = 今何時？"
+  },
+  {
+    "id": "E15",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「水族館」を英語で言うと？",
+    "choices": [
+      "aquarium",
+      "zoo",
+      "museum",
+      "stadium"
+    ],
+    "answer": 0,
+    "explanation": "水族館 = aquarium。"
+  },
+  {
+    "id": "E16",
+    "genre": "英語",
+    "subgenre": "時制",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「receive」の過去形は？",
+    "choices": [
+      "received",
+      "receiven",
+      "receive",
+      "recept"
+    ],
+    "answer": 0,
+    "explanation": "規則変化で d をつけて received。"
+  },
+  {
+    "id": "E17",
+    "genre": "英語",
+    "subgenre": "スペル",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「木曜日」の正しいスペルは？",
+    "choices": [
+      "Tuesday",
+      "Thursday",
+      "Thirsday",
+      "Thusday"
+    ],
+    "answer": 1,
+    "explanation": "正しくは Thursday。"
+  },
+  {
+    "id": "E18",
+    "genre": "英語",
+    "subgenre": "月",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "Septemberは何月？",
+    "answer_text": "9",
+    "answer_variants": [
+      "く",
+      "きゅう"
+    ],
+    "explanation": "September = 9月。"
+  },
+  {
+    "id": "E19",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「library」の意味は？",
+    "choices": [
+      "図書館",
+      "博物館",
+      "劇場",
+      "体育館"
+    ],
+    "answer": 0,
+    "explanation": "library = 図書館。"
+  },
+  {
+    "id": "E20",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「bridge」の意味は？",
+    "answer_text": "はし",
+    "answer_variants": [
+      "ハシ"
+    ],
+    "explanation": "bridge = 橋。"
+  },
+  {
+    "id": "E21",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「cat」の意味は？(ひらがなで)",
+    "answer_text": "ねこ",
+    "answer_variants": [
+      "ネコ"
+    ],
+    "explanation": "cat=ねこ。"
+  },
+  {
+    "id": "E22",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「book」の意味は？(ひらがなで)",
+    "answer_text": "ほん",
+    "answer_variants": [
+      "ホン"
+    ],
+    "explanation": "book=ほん。"
+  },
+  {
+    "id": "E23",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「blue」の意味は？(ひらがなで)",
+    "answer_text": "あお",
+    "answer_variants": [
+      "アオ"
+    ],
+    "explanation": "blue=あお。"
+  },
+  {
+    "id": "E24",
+    "genre": "英語",
+    "subgenre": "曜日",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「金曜日」を英語で言うと？",
+    "choices": [
+      "Friday",
+      "Saturday",
+      "Sunday",
+      "Wednesday"
+    ],
+    "answer": 0,
+    "explanation": "金曜日=Friday。"
+  },
+  {
+    "id": "E25",
+    "genre": "英語",
+    "subgenre": "数",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「five」は数字でいくつ？",
+    "answer_text": "5",
+    "answer_variants": [],
+    "explanation": "five=5。"
+  },
+  {
+    "id": "E26",
+    "genre": "英語",
+    "subgenre": "be動詞",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "My name ___ Ken. の空欄は？",
+    "choices": [
+      "am",
+      "is",
+      "are",
+      "be"
+    ],
+    "answer": 1,
+    "explanation": "三人称単数はis。"
+  },
+  {
+    "id": "E27",
+    "genre": "英語",
+    "subgenre": "時制",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「have」の過去形は？",
+    "choices": [
+      "haved",
+      "had",
+      "has",
+      "having"
+    ],
+    "answer": 1,
+    "explanation": "have→had(不規則変化)。"
+  },
+  {
+    "id": "E28",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「cat」の複数形は？",
+    "choices": [
+      "cat",
+      "cats",
+      "cates",
+      "catses"
+    ],
+    "answer": 1,
+    "explanation": "catは規則複数形でcats。"
+  },
+  {
+    "id": "E29",
+    "genre": "英語",
+    "subgenre": "月",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "Mayは何月？(数字で)",
+    "answer_text": "5",
+    "answer_variants": [
+      "ご"
+    ],
+    "explanation": "May=5月。"
+  },
+  {
+    "id": "E30",
+    "genre": "英語",
+    "subgenre": "曜日",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "Wednesdayは何曜日？",
+    "choices": [
+      "火曜日",
+      "水曜日",
+      "木曜日",
+      "金曜日"
+    ],
+    "answer": 1,
+    "explanation": "Wednesday=水曜日。"
+  },
+  {
+    "id": "E31",
+    "genre": "英語",
+    "subgenre": "三人称単数",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "She ___ a car. の空欄は？",
+    "choices": [
+      "have",
+      "has",
+      "had",
+      "having"
+    ],
+    "answer": 1,
+    "explanation": "三人称単数はhas。"
+  },
+  {
+    "id": "E32",
+    "genre": "英語",
+    "subgenre": "疑問文",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「How many 〜？」で聞かれるのは？",
+    "choices": [
+      "時間",
+      "値段",
+      "数",
+      "場所"
+    ],
+    "answer": 2,
+    "explanation": "数を尋ねる疑問詞。"
+  },
+  {
+    "id": "E33",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「机」を英語で書くと？(英字で)",
+    "answer_text": "desk",
+    "answer_variants": [
+      "DESK"
+    ],
+    "explanation": "机=desk。"
+  },
+  {
+    "id": "E34",
+    "genre": "英語",
+    "subgenre": "月",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "Octoberは何月？",
+    "choices": [
+      "8月",
+      "9月",
+      "10月",
+      "11月"
+    ],
+    "answer": 2,
+    "explanation": "October=10月。"
+  },
+  {
+    "id": "E35",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「science」の意味は？",
+    "choices": [
+      "算数",
+      "理科",
+      "社会",
+      "国語"
+    ],
+    "answer": 1,
+    "explanation": "science=理科/科学。"
+  },
+  {
+    "id": "E36",
+    "genre": "英語",
+    "subgenre": "時制",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「write」の過去形は？",
+    "choices": [
+      "writed",
+      "wrote",
+      "writen",
+      "writ"
+    ],
+    "answer": 1,
+    "explanation": "write→wrote(不規則)。"
+  },
+  {
+    "id": "E37",
+    "genre": "英語",
+    "subgenre": "スペル",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「2月」の正しいスペルは？",
+    "choices": [
+      "Feburary",
+      "February",
+      "Februrary",
+      "Febuary"
+    ],
+    "answer": 1,
+    "explanation": "正しくはFebruary。"
+  },
+  {
+    "id": "E38",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「hospital」の意味は？(ひらがなで)",
+    "answer_text": "びょういん",
+    "answer_variants": [
+      "ビョウイン"
+    ],
+    "explanation": "hospital=病院。"
+  },
+  {
+    "id": "E39",
+    "genre": "英語",
+    "subgenre": "月",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "Novemberは何月？(数字で)",
+    "answer_text": "11",
+    "answer_variants": [],
+    "explanation": "November=11月。"
+  },
+  {
+    "id": "E40",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「restaurant」の意味は？",
+    "choices": [
+      "レストラン",
+      "公園",
+      "図書館",
+      "駅"
+    ],
+    "answer": 0,
+    "explanation": "restaurant=レストラン。"
+  }
+]

@@ -1,0 +1,111 @@
+# 変なクイズ (WEIRD QUIZ ATTACK)
+
+崩壊UIが襲いかかる、バイラル狙いのスコアアタック型クイズアプリ。  
+技術スタック: **HTML / CSS / Vanilla JavaScript** (ビルドツール無し) + **Capacitor** (最終段階でネイティブ化)。
+
+---
+
+## 現状 (Phase 1 完了)
+
+- タイトル / ステージ選択 / 問題 (プレースホルダー) / リザルト の画面遷移が動作
+- 10ステージ定義済み（Stage 1のみ解放、クリアで次が解放）
+- 問題JSONから抽選し20問のセッションを構築
+- localStorage によるスコア・進捗永続化
+- 1080×1920 論理解像度 + 自動スケーリングで任意の縦横比に追従
+
+### まだ無いもの (今後のフェーズ)
+
+- 崩壊UIギミック全般 (Phase 5)
+- 内製文字盤 = カスタムキーボード (Phase 3)
+- タイマー / スコア演算の精度 / ランク計算の厳密化 (Phase 2)
+- シェア機能・スクショ生成 (Phase 6)
+- Capacitor ネイティブ化 (Phase 8)
+
+詳細は `設計書v1.0.md` 参照。
+
+---
+
+## 起動方法
+
+### ローカル開発 (推奨: Python)
+
+```bash
+# プロジェクトルートで
+python3 -m http.server 8000
+```
+
+ブラウザで `http://localhost:8000` を開く。
+
+> **注意**: `index.html` を file:// でダブルクリック起動すると `fetch()` が失敗し、問題データが読めません。必ずHTTPサーバ経由で開いてください。
+
+### Node.js派の場合
+
+```bash
+npx serve .
+# または
+npx http-server -p 8000
+```
+
+### スマホ実機テスト (同一LAN)
+
+```bash
+python3 -m http.server 8000
+# 同じWi-Fiのスマホから http://<MacのIP>:8000 を開く
+```
+
+### GitHub Pages デプロイ
+
+1. このディレクトリをGitHubリポジトリにpush
+2. Settings → Pages → Source: main / root を選択
+3. `https://<user>.github.io/<repo>/` にアクセス
+
+ビルド工程ゼロなのでそのまま動きます。
+
+---
+
+## ディレクトリ構造
+
+```
+.
+├── index.html              # エントリ
+├── styles/
+│   ├── base.css            # カラーパレット / フォント / スケーリング
+│   └── screens.css         # 画面別スタイル
+├── js/
+│   ├── config.js           # 不変の設定値 (ステージ定義等)
+│   ├── state.js            # ランタイム状態
+│   ├── save.js             # localStorage ラッパー
+│   ├── router.js           # 画面切替
+│   ├── quiz/
+│   │   └── loader.js       # 問題JSONロード & 抽選
+│   ├── screens/
+│   │   ├── title.js
+│   │   ├── stageSelect.js
+│   │   ├── question.js
+│   │   └── result.js
+│   └── main.js             # エントリJS
+├── data/
+│   └── questions/          # 200問の問題データ (6ジャンル)
+│       ├── math.json
+│       ├── english.json
+│       ├── japanese.json
+│       ├── science.json
+│       ├── social.json
+│       └── others.json
+├── sprite/                 # スプライト (butterfly, girl)
+├── 参考/                    # 3SEC デザイン参考
+├── 設計書v1.0.md
+├── クソゲー仕様書v1.0.md
+└── ギミック一覧.md
+```
+
+---
+
+## キャッシュリセット
+
+開発中にセーブデータを消したい時は、ブラウザのDevTools → Application → Local Storage から `kuso_quiz_save_v1` を削除、または console で:
+
+```js
+Save.reset();
+location.reload();
+```

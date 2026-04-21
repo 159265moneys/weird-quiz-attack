@@ -1,0 +1,288 @@
+[
+  {
+    "id": "S01",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "日本の首都はどこ？",
+    "answer_text": "とうきょう",
+    "answer_variants": [
+      "トウキョウ"
+    ],
+    "explanation": "日本の首都は東京。"
+  },
+  {
+    "id": "S02",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "富士山は山梨県と何県にまたがる？",
+    "choices": [
+      "神奈川県",
+      "静岡県",
+      "長野県",
+      "東京都"
+    ],
+    "answer": 1,
+    "explanation": "富士山は山梨県と静岡県にまたがる。"
+  },
+  {
+    "id": "S03",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "日本の都道府県は全部でいくつ？",
+    "answer_text": "47",
+    "answer_variants": [],
+    "explanation": "1都1道2府43県=47。"
+  },
+  {
+    "id": "S04",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "鎌倉幕府を開いたのは誰？",
+    "choices": [
+      "源義経",
+      "源頼朝",
+      "平清盛",
+      "足利尊氏"
+    ],
+    "answer": 1,
+    "explanation": "1192年(※近年は1185年説)に源頼朝が鎌倉幕府を開いた。"
+  },
+  {
+    "id": "S05",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "三権分立の三権に含まれないものは？",
+    "choices": [
+      "立法",
+      "行政",
+      "司法",
+      "財政"
+    ],
+    "answer": 3,
+    "explanation": "三権は立法・行政・司法。"
+  },
+  {
+    "id": "S06",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "日本で一番長い川は？",
+    "answer_text": "しなのがわ",
+    "answer_variants": [],
+    "explanation": "信濃川(367km)が日本最長。"
+  },
+  {
+    "id": "S07",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "第二次世界大戦が終わった年は？",
+    "answer_text": "1945",
+    "answer_variants": [],
+    "explanation": "1945年8月15日終戦。"
+  },
+  {
+    "id": "S08",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "墾田永年私財法が出されたのは西暦何年？",
+    "choices": [
+      "710年",
+      "743年",
+      "794年",
+      "801年"
+    ],
+    "answer": 1,
+    "explanation": "743年(天平15年)、聖武天皇の時代。"
+  },
+  {
+    "id": "S09",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "明との勘合貿易を始めた室町幕府の将軍は？",
+    "choices": [
+      "足利尊氏",
+      "足利義満",
+      "足利義政",
+      "足利義昭"
+    ],
+    "answer": 1,
+    "explanation": "3代将軍・足利義満が勘合貿易を開始。"
+  },
+  {
+    "id": "S10",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "班田収授法が定められた律令は？",
+    "choices": [
+      "大宝律令",
+      "御成敗式目",
+      "武家諸法度",
+      "大日本帝国憲法"
+    ],
+    "answer": 0,
+    "explanation": "701年に制定された大宝律令により整備された。"
+  },
+  {
+    "id": "S11",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "日本で最大の湖は？(ひらがなで)",
+    "answer_text": "びわこ",
+    "answer_variants": [
+      "ビワコ"
+    ],
+    "explanation": "滋賀県にある琵琶湖。"
+  },
+  {
+    "id": "S12",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "アメリカの首都は？(ひらがなで)",
+    "answer_text": "わしんとん",
+    "answer_variants": [
+      "ワシントン"
+    ],
+    "explanation": "ワシントンD.C.。"
+  },
+  {
+    "id": "S13",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "縄文時代の次の時代は？",
+    "choices": [
+      "古墳時代",
+      "飛鳥時代",
+      "弥生時代",
+      "奈良時代"
+    ],
+    "answer": 2,
+    "explanation": "縄文→弥生→古墳の順。"
+  },
+  {
+    "id": "S14",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "江戸幕府を開いたのは誰？",
+    "choices": [
+      "織田信長",
+      "豊臣秀吉",
+      "徳川家康",
+      "徳川家光"
+    ],
+    "answer": 2,
+    "explanation": "1603年、徳川家康が江戸幕府を開府。"
+  },
+  {
+    "id": "S15",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "国会議事堂がある場所は？",
+    "choices": [
+      "霞が関",
+      "永田町",
+      "丸の内",
+      "赤坂"
+    ],
+    "answer": 1,
+    "explanation": "東京都千代田区永田町。"
+  },
+  {
+    "id": "S16",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "消費税は何税に分類される？",
+    "choices": [
+      "直接税",
+      "間接税",
+      "地方税",
+      "関税"
+    ],
+    "answer": 1,
+    "explanation": "納税者と担税者が異なる=間接税。"
+  },
+  {
+    "id": "S17",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "日本の三大工業地帯に含まれないものは？",
+    "choices": [
+      "京浜",
+      "中京",
+      "阪神",
+      "東海"
+    ],
+    "answer": 3,
+    "explanation": "三大は京浜・中京・阪神。東海は四大。"
+  },
+  {
+    "id": "S18",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "卑弥呼が支配していた国は？",
+    "choices": [
+      "邪馬台国",
+      "大和国",
+      "奴国",
+      "倭国"
+    ],
+    "answer": 0,
+    "explanation": "『魏志倭人伝』に記される邪馬台国。"
+  },
+  {
+    "id": "S19",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "日清戦争が終結した年は？(西暦)",
+    "answer_text": "1895",
+    "answer_variants": [],
+    "explanation": "下関条約で1895年に終結。"
+  },
+  {
+    "id": "S20",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "大化の改新が始まったのは西暦何年？",
+    "answer_text": "645",
+    "answer_variants": [],
+    "explanation": "645年、中大兄皇子らによる改革。"
+  }
+]

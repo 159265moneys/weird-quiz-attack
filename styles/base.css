@@ -1,0 +1,183 @@
+/* ============================================================
+   base.css — カラーパレット / フォント / スケーリング / リセット
+   論理解像度 1080 x 1920 (縦) を想定
+   ============================================================ */
+
+:root {
+    /* --- 配色 (monochrome + cyan/red accent : 3SEC継承) --- */
+    --bg-deep: #050508;
+    --bg-panel: #0a0a0f;
+    --bg-elevated: #111118;
+    --line: #ffffff;
+    --line-dim: #6a6a78;
+    --text: #ffffff;
+    --text-dim: #9c9cab;
+    --text-mute: #5a5a66;
+
+    --accent-cyan: #00e5ff;
+    --accent-cyan-dim: #007a88;
+    --accent-red: #ff3040;
+    --accent-red-dim: #8a1a22;
+    --accent-warn: #ffd400;
+
+    /* --- スケール係数 (JSで上書き) --- */
+    --scale: 1;
+}
+
+/* --- リセット --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    color: var(--text);
+    font-family: 'Courier New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', monospace;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* iOSのsafe-area考慮 */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* --- 仮想ステージ (1080x1920 論理ピクセル) --- */
+#stage {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    background: var(--bg-deep);
+    transform: scale(var(--scale));
+    transform-origin: center center;
+    overflow: hidden;
+}
+
+#app {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* --- 共通UIパーツ --- */
+
+/* 3Dボックス (3SEC流) */
+.box-3d {
+    position: relative;
+    background: var(--bg-panel);
+    border: 2px solid var(--line);
+    box-shadow:
+        6px 6px 0 var(--line),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.box-3d:active {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 var(--line);
+}
+
+/* ボタン */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 280px;
+    padding: 24px 48px;
+    font-family: inherit;
+    font-size: 42px;
+    font-weight: bold;
+    color: var(--text);
+    background: var(--bg-panel);
+    border: 3px solid var(--line);
+    box-shadow: 8px 8px 0 var(--line);
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 4px 4px 0 var(--line);
+}
+.btn-accent-cyan {
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+    box-shadow: 8px 8px 0 var(--accent-cyan);
+}
+.btn-accent-cyan:active { box-shadow: 4px 4px 0 var(--accent-cyan); }
+
+.btn-accent-red {
+    color: var(--accent-red);
+    border-color: var(--accent-red);
+    box-shadow: 8px 8px 0 var(--accent-red);
+}
+.btn-accent-red:active { box-shadow: 4px 4px 0 var(--accent-red); }
+
+/* テキストユーティリティ */
+.text-dim { color: var(--text-dim); }
+.text-mute { color: var(--text-mute); }
+.text-cyan { color: var(--accent-cyan); }
+.text-red { color: var(--accent-red); }
+.text-center { text-align: center; }
+.mono-upper { letter-spacing: 4px; text-transform: uppercase; }
+
+/* 区切り線 */
+.hr-line {
+    width: 100%;
+    height: 2px;
+    background: var(--line);
+    margin: 24px 0;
+}
+
+/* 画面コンテナ */
+.screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 60px;
+}
+
+/* 画面ヘッダ */
+.screen-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 40px;
+}
+.back-btn {
+    font-size: 36px;
+    padding: 16px 32px;
+    border: 2px solid var(--line);
+    background: var(--bg-panel);
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    letter-spacing: 2px;
+}
+.back-btn:active { background: var(--line); color: var(--bg-deep); }
+
+/* スクロール可能領域 */
+.scroll-area {
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.scroll-area::-webkit-scrollbar { width: 8px; }
+.scroll-area::-webkit-scrollbar-track { background: var(--bg-panel); }
+.scroll-area::-webkit-scrollbar-thumb { background: var(--line-dim); }

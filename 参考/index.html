@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>1SEC - 3秒で世界を変える</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+        }
+        
+        #gameContainer {
+            position: relative;
+            width: 1920px;
+            height: 1080px;
+            background: #050508;
+        }
+        
+        #gameCanvas {
+            display: block;
+        }
+        
+        /* ゲームオーバー画面 */
+        #gameOver {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #fff;
+            z-index: 100;
+        }
+        
+        #gameOver h1 {
+            font-size: 48px;
+            color: #f44;
+            margin-bottom: 20px;
+        }
+        
+        #gameOver p {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+        
+        #restartBtn {
+            background: #0af;
+            border: none;
+            color: #000;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        #restartBtn:hover {
+            background: #0ff;
+            transform: scale(1.05);
+        }
+        
+        /* レスポンシブ対応（縮小表示） */
+        #gameContainer {
+            transform-origin: top left;
+        }
+        
+        @media (max-width: 1920px), (max-height: 1080px) {
+            body {
+                justify-content: flex-start;
+                align-items: flex-start;
+            }
+            #gameContainer {
+                transform: scale(var(--scale));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="1920" height="1080"></canvas>
+        
+        <!-- ゲームオーバー画面 -->
+        <div id="gameOver">
+            <h1>GAME OVER</h1>
+            <p>SCORE: <span id="finalScore">0</span></p>
+            <button id="restartBtn">RESTART</button>
+        </div>
+    </div>
+    
+    <script>
+        // 画面サイズに合わせてスケーリング
+        function updateScale() {
+            const scaleX = window.innerWidth / 1920;
+            const scaleY = window.innerHeight / 1080;
+            const scale = Math.min(scaleX, scaleY);
+            document.documentElement.style.setProperty('--scale', scale);
+        }
+        updateScale();
+        window.addEventListener('resize', updateScale);
+    </script>
+    <!-- ★モジュール化されたJSファイル読み込み -->
+    <!-- 設定・状態 -->
+    <script src="js/config.js"></script>
+    <script src="js/state.js"></script>
+    
+    <!-- ステージ設定 -->
+    <script src="js/stages/stage1/config.js"></script>
+    <script src="js/stages/stage1/story.js"></script>
+    <script src="js/stages/stage1/boss.js"></script>
+    <script src="js/stages/stage2/config.js"></script>
+    <script src="js/stages/stage2/story.js"></script>
+    <script src="js/stages/stage2/boss.js"></script>
+    <script src="js/stages/stage3/config.js"></script>
+    <script src="js/stages/stage3/story.js"></script>
+    <script src="js/stages/stage3/boss.js"></script>
+    <script src="js/stages/upgrade/rewind.js"></script>
+    
+    <!-- コアデータ（敵図鑑）-->
+    <script src="js/data/coreData.js"></script>
+    
+    <!-- コア機能 -->
+    <script src="js/save.js"></script>
+    <script src="js/speech.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/enemies.js"></script>
+    <script src="js/ghost.js"></script>
+    <script src="js/collision.js"></script>
+    
+    <!-- ボス -->
+    <script src="js/bosses/base.js"></script>
+    <script src="js/bosses/boss.js"></script>
+    <script src="js/bosses/stageBoss.js"></script>
+    
+    <!-- スキル -->
+    <script src="js/skills/base.js"></script>
+    <script src="js/skills/rewind.js"></script>
+    <script src="js/skills/timestop.js"></script>
+    <script src="js/skills/voidcut.js"></script>
+    
+    <!-- UI・描画 -->
+    <script src="js/ui.js"></script>
+    <script src="js/render.js"></script>
+    <script src="js/render_skills.js"></script>
+    
+    <!-- 画面 -->
+    <script src="js/screens/title.js"></script>
+    <script src="js/screens/nameInput.js"></script>
+    <script src="js/screens/home.js"></script>
+    <script src="js/screens/status.js"></script>
+    <script src="js/screens/skillSet.js"></script>
+    <script src="js/screens/tutorial.js"></script>
+    <script src="js/screens/coreGallery.js"></script>
+    
+    <!-- システム -->
+    <script src="js/pause.js"></script>
+    <script src="js/input.js"></script>
+    <script src="js/debug.js"></script>
+    <script src="js/debug/bulletPatternSamples.js"></script>
+    <script src="js/test/void_bullet_test.js"></script>
+    
+    <!-- メイン（最後に読み込み）-->
+    <script src="js/main.js"></script>
+</body>
+</html>
