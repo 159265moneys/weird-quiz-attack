@@ -41,9 +41,11 @@
    ============================================================ */
 
 /* ---------- B11 コーナービーム: 4隅から独立ランダム発射 ----------
-   各ビームはJSで個別にスケジュール制御。排他フラグで同時発射を防ぐ。
-   1本1秒発射 → 1.5〜4秒休み をビームごとに独立実行。
-   長辺方向のグラデで「青 → 中心白 → 青」を表現。 */
+   外側 .gk-b11-beam: 角からの位置決めと回転のみ。
+   内側 .gk-b11-core: 実際の光・グラデ・scaleX アニメ (ビビビ→ビー)。
+   発射は scaleX(0→1) を4段階フリッカーで立ち上げる "gaster blaster" 風。
+   グラデ: 中心60% = pure white, 白→シアン 20%, シアン→透明 20%。
+   色はテーマカラー #00e5ff (var(--accent-cyan)) 統一。 */
 .gk-b11-host {
     position: absolute;
     inset: 0;
@@ -53,33 +55,65 @@
 }
 .gk-b11-beam {
     position: absolute;
-    width: 2400px;              /* 画面対角 (≈2200px) より十分長く */
-    height: 140px;
-    margin-top: -70px;           /* 縦中央を基準点 (corner) に合わせる */
+    width: 2600px;              /* 画面対角 (≈2200px) より十分長く */
+    height: 320px;              /* 極太ビーム */
+    margin-top: -160px;          /* 縦中央を基準点 (corner) に合わせる */
     transform-origin: 0 50%;     /* 左端中央を回転軸 = 各corner */
-    background: linear-gradient(to bottom,
-        transparent 0%,
-        rgba(40, 130, 255, 0.08) 8%,
-        rgba(70, 170, 255, 0.40) 20%,
-        rgba(110, 200, 255, 0.85) 32%,
-        rgba(190, 235, 255, 0.98) 44%,
-        #ffffff 48%,
-        #ffffff 52%,
-        rgba(190, 235, 255, 0.98) 56%,
-        rgba(110, 200, 255, 0.85) 68%,
-        rgba(70, 170, 255, 0.40) 80%,
-        rgba(40, 130, 255, 0.08) 92%,
-        transparent 100%);
-    box-shadow:
-        0 0 40px rgba(80, 190, 255, 0.95),
-        0 0 110px rgba(130, 210, 255, 0.55),
-        0 0 200px rgba(160, 225, 255, 0.25);
-    mix-blend-mode: screen;
-    opacity: 0;
-    transition: opacity 0.12s ease-out;
-    will-change: opacity;
+    pointer-events: none;
 }
-.gk-b11-beam.is-fire { opacity: 1; }
+.gk-b11-core {
+    position: absolute;
+    inset: 0;
+    transform-origin: 0 50%;     /* 角から外側に向かって「伸びる」 */
+    transform: scaleX(0);
+    opacity: 0;
+    background: linear-gradient(to bottom,
+        /* 下側 20% : 透明 → シアン (エッジ) */
+        transparent                  0%,
+        rgba(0, 229, 255, 0.25)      5%,
+        rgba(0, 229, 255, 1.0)      10%,
+        /* 下側 20% : シアン → 白 */
+        #ffffff                     20%,
+        /* 中心 60% : 純白 */
+        #ffffff                     80%,
+        /* 上側 20% : 白 → シアン */
+        rgba(0, 229, 255, 1.0)      90%,
+        /* 上側 20% : シアン → 透明 */
+        rgba(0, 229, 255, 0.25)     95%,
+        transparent                100%);
+    box-shadow:
+        0 0 80px  rgba(0, 229, 255, 0.95),
+        0 0 200px rgba(0, 229, 255, 0.55),
+        0 0 360px rgba(0, 229, 255, 0.25);
+    mix-blend-mode: screen;
+    will-change: opacity, transform;
+}
+
+/* is-fire で 1.2 秒の発射アニメを開始 (forwards で終端保持) */
+.gk-b11-beam.is-fire .gk-b11-core {
+    animation: gkB11Fire 1.2s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+/* チャージ (0-36%) = ビビビビビー, サステイン (36-88%), フェード (88-100%)
+   on/off を繰り返しながら scaleX が段階的に伸びて本射撃へ。 */
+@keyframes gkB11Fire {
+    /* --- charge-up: 4 pulses, 各 on ≒ 40ms, off ≒ 60ms --- */
+    0%   { opacity: 0; transform: scaleX(0); }
+    3%   { opacity: 1; transform: scaleX(0.15); }
+    8%   { opacity: 0; transform: scaleX(0.15); }
+    12%  { opacity: 1; transform: scaleX(0.35); }
+    18%  { opacity: 0; transform: scaleX(0.35); }
+    22%  { opacity: 1; transform: scaleX(0.60); }
+    28%  { opacity: 0; transform: scaleX(0.60); }
+    32%  { opacity: 1; transform: scaleX(0.88); }
+    /* --- sustained fire (36-88%) --- */
+    36%  { opacity: 1; transform: scaleX(1); }
+    44%  { opacity: 0.92; transform: scaleX(1.005); }
+    60%  { opacity: 1; transform: scaleX(1); }
+    82%  { opacity: 1; transform: scaleX(1); }
+    /* --- dissipation --- */
+    100% { opacity: 0; transform: scaleX(1); }
+}
 
 /* 1080:1920 のスクリーン対角線 ≈ 60.6° (atan(1920/1080))
    各cornerから対角cornerに向かう方向に回転 */

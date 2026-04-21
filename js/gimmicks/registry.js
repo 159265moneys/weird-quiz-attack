@@ -47,11 +47,12 @@
         apply(ctx) {
             const host = document.createElement('div');
             host.className = 'gk-b11-host';
+            // 外側は位置と回転を担当。内側 .gk-b11-core が実際の発光・scaleX アニメ。
             host.innerHTML = `
-                <div class="gk-b11-beam gk-b11-tl"></div>
-                <div class="gk-b11-beam gk-b11-tr"></div>
-                <div class="gk-b11-beam gk-b11-br"></div>
-                <div class="gk-b11-beam gk-b11-bl"></div>
+                <div class="gk-b11-beam gk-b11-tl"><div class="gk-b11-core"></div></div>
+                <div class="gk-b11-beam gk-b11-tr"><div class="gk-b11-core"></div></div>
+                <div class="gk-b11-beam gk-b11-br"><div class="gk-b11-core"></div></div>
+                <div class="gk-b11-beam gk-b11-bl"><div class="gk-b11-core"></div></div>
             `;
             ctx.screen.appendChild(host);
 
@@ -59,6 +60,10 @@
             const timers = new Set();
             let firing = false;   // 発射中フラグ (排他制御: 同時発射させない)
             let alive = true;
+
+            // チャージ+発射+フェード で1本あたり合計 1.2 秒。
+            // CSSのキーフレームと揃える必要があるので定数化。
+            const FIRE_DURATION = 1200;
 
             function schedule(fn, delay) {
                 const t = setTimeout(() => {
@@ -77,18 +82,16 @@
                 }
                 firing = true;
                 beam.classList.add('is-fire');
-                // 1秒間発射
                 schedule(() => {
                     beam.classList.remove('is-fire');
                     firing = false;
-                    // 休憩 1.5〜4秒の後、再発射スケジュール
-                    schedule(() => fire(beam), 1500 + Math.random() * 2500);
-                }, 1000);
+                    // 休憩 1.8〜3.5秒
+                    schedule(() => fire(beam), 1800 + Math.random() * 1700);
+                }, FIRE_DURATION);
             }
 
-            // 初期ばらけ: 4本それぞれ別タイミングで開始
             beams.forEach((beam, i) => {
-                schedule(() => fire(beam), 300 + i * 700 + Math.random() * 600);
+                schedule(() => fire(beam), 300 + i * 800 + Math.random() * 600);
             });
 
             return () => {
