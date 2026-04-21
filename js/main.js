@@ -10,11 +10,14 @@
         document.documentElement.style.setProperty('--scale', scale);
     }
 
+    // 初期フラッシュ抑制: DOMContentLoadedを待たずに即時反映
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    window.addEventListener('orientationchange', updateScale);
+
     function boot() {
         window.Save.load();
         updateScale();
-        window.addEventListener('resize', updateScale);
-        window.addEventListener('orientationchange', updateScale);
 
         // ダブルタップズーム抑制 (iOS)
         let lastTap = 0;

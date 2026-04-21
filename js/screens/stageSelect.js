@@ -42,11 +42,11 @@
 
             return `
                 <div class="screen stage-select-screen">
-                    <div class="screen-header">
+                    <div class="screen-header" style="margin-bottom:16px;">
                         <button class="back-btn" data-action="back">◀ BACK</button>
-                        <div class="stage-title" style="flex:1; margin-bottom:0;">STAGE SELECT</div>
-                        <div style="width:160px;"></div>
+                        <div class="text-mute" style="font-size:24px;letter-spacing:3px;">v${window.CONFIG.VERSION}</div>
                     </div>
+                    <div class="stage-title">STAGE SELECT</div>
                     <div class="scroll-area">
                         <div class="stage-list">${list}</div>
                     </div>

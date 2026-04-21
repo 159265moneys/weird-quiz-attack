@@ -44,19 +44,21 @@ html, body {
     -webkit-user-select: none;
     user-select: none;
     touch-action: manipulation;
-}
-
-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* iOSのsafe-area考慮 */
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-}
-
-/* --- 仮想ステージ (1080x1920 論理ピクセル) --- */
-#stage {
     position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- 仮想ステージ (1080x1920 論理ピクセル) ---
+   絶対配置 + 負マージンで中心寄せ → その上で scale。
+   注意: body を flex にすると flex-shrink で 1080px が viewport 幅に
+   強制圧縮されてしまい scale 後に極細になるため、flex は禁止。 */
+#stage {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -540px;   /* -width/2 */
+    margin-top: -960px;    /* -height/2 */
     width: 1080px;
     height: 1920px;
     background: var(--bg-deep);
