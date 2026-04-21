@@ -28,10 +28,10 @@
             { c: 'ま', u: 'む', l: 'み', r: 'め', d: 'も' },
             { c: 'や', u: 'ゆ', l: '(', r: ')', d: 'よ' },
             { c: 'ら', u: 'る', l: 'り', r: 'れ', d: 'ろ' },
-            { fn: 'dakuten', label: '゛゜小' },
+            { fn: 'mode-alpha', label: 'ABC' },
         ],
         [
-            { fn: 'mode-alpha', label: 'ABC' },
+            { fn: 'dakuten', label: '゛゜小' },
             { c: 'わ', u: 'ん', l: 'を', r: 'ー', d: '、' },
             { fn: 'mode-num', label: '123' },
             { fn: 'ok', label: 'OK' },

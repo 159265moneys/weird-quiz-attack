@@ -50,11 +50,11 @@
         },
 
         unmount() {
+            cleanupDragging();
             if (host) host.innerHTML = '';
             host = null;
             opts = null;
             buffer = '';
-            dragging = null;
         },
 
         getValue() { return buffer; },
@@ -158,18 +158,30 @@
     function attachHandlers() {
         host.querySelectorAll('.kb-key').forEach((el) => {
             el.addEventListener('pointerdown', onPointerDown);
-            // フォーカスで余計な挙動を防ぐ
             el.addEventListener('contextmenu', (e) => e.preventDefault());
         });
     }
 
+    function cleanupDragging() {
+        // 見た目の残骸を全部消す
+        if (dragging && dragging.keyEl) {
+            dragging.keyEl.classList.remove('is-pressed');
+        }
+        hidePreview();
+        dragging = null;
+    }
+
     function onPointerDown(e) {
         e.preventDefault();
+
+        // 既にドラッグ中なら前のセッションを強制クリーンアップ
+        // (iOS で pointerup を取りこぼすと preview が残る問題の保険)
+        if (dragging) cleanupDragging();
+
         const el = e.currentTarget;
         const keyStr = el.dataset.key;
         if (!keyStr) return;
         const key = JSON.parse(keyStr.replace(/&#39;/g, "'"));
-        el.setPointerCapture?.(e.pointerId);
         el.classList.add('is-pressed');
 
         dragging = {
@@ -182,34 +194,27 @@
         };
         showPreview(el, key, 'c');
 
-        const onMove = (ev) => onPointerMove(ev, el, key);
-        const onEnd = (ev) => {
-            el.removeEventListener('pointermove', onMove);
-            el.removeEventListener('pointerup', onEnd);
-            el.removeEventListener('pointercancel', onEnd);
-            onPointerUp(ev, el, key);
+        // 移動/終了系は window に付ける (指が別のキーに飛んでも追える)
+        const onMove = (ev) => {
+            if (!dragging || dragging.pointerId !== ev.pointerId) return;
+            const dx = ev.clientX - dragging.x;
+            const dy = ev.clientY - dragging.y;
+            dragging.direction = computeDirection(dx, dy);
+            showPreview(el, key, dragging.direction);
         };
-        el.addEventListener('pointermove', onMove);
-        el.addEventListener('pointerup', onEnd);
-        el.addEventListener('pointercancel', onEnd);
-    }
+        const onEnd = (ev) => {
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onEnd);
+            window.removeEventListener('pointercancel', onEnd);
 
-    function onPointerMove(e, el, key) {
-        if (!dragging || dragging.pointerId !== e.pointerId) return;
-        const dx = e.clientX - dragging.x;
-        const dy = e.clientY - dragging.y;
-        dragging.direction = computeDirection(dx, dy);
-        showPreview(el, key, dragging.direction);
-    }
-
-    function onPointerUp(e, el, key) {
-        if (!dragging || dragging.pointerId !== e.pointerId) return;
-        const dir = dragging.direction;
-        hidePreview();
-        el.classList.remove('is-pressed');
-        dragging = null;
-
-        handleKey(key, dir);
+            const match = dragging && dragging.pointerId === ev.pointerId;
+            const dir = match ? dragging.direction : 'c';
+            cleanupDragging();   // pointerId不一致でも必ず掃除
+            if (match) handleKey(key, dir);
+        };
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onEnd);
+        window.addEventListener('pointercancel', onEnd);
     }
 
     function computeDirection(dx, dy) {
@@ -310,7 +315,10 @@
 
     function hidePreview() {
         const preview = document.getElementById('kbPreview');
-        if (preview) preview.style.display = 'none';
+        if (preview) {
+            preview.style.display = 'none';
+            preview.innerHTML = '';
+        }
     }
 
     window.Keyboard = Keyboard;
