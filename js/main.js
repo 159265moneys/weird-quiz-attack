@@ -40,6 +40,7 @@
         }, { passive: false });
 
         window.Debug?.init();
+        window.ButterflyFX?.mount();
         window.Router.show('title');
     }
 

@@ -40,6 +40,10 @@
             if (window.Debug?.refresh) {
                 try { window.Debug.refresh(); } catch (e) { /* noop */ }
             }
+
+            if (window.ButterflyFX?.onScreenChange) {
+                try { window.ButterflyFX.onScreenChange(name); } catch (e) { /* noop */ }
+            }
         },
 
         reload() {
