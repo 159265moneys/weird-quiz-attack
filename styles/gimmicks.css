@@ -1,0 +1,37 @@
+/* ============================================================
+   gimmicks.css — 崩壊UI用のクラスベース表現
+   ------------------------------------------------------------
+   インラインstyleで済むギミックは registry.js 側で完結させ、
+   ここには「複数要素に影響する」「疑似要素が必要」なものだけ置く。
+   ============================================================ */
+
+/* ---------- W01: 文字盤見えない ----------
+   function key (OK/BS) は押せる必要があるので見えるまま。
+   メインキーとフリック方向サブ文字だけ透明化。 */
+.question-screen.gk-w01 .kb-key:not(.kb-fn) .kb-main,
+.question-screen.gk-w01 .kb-key:not(.kb-fn) .kb-sub {
+    color: transparent !important;
+    text-shadow: none !important;
+}
+
+/* ---------- W03: 解答欄見えない ----------
+   ユーザが打った文字が見えない。キャレットも消す。
+   ただし placeholder (is-empty時のガイド文言) は見えていてOK。 */
+.question-screen.gk-w03 .q-input-box:not(.is-empty) .q-input-text {
+    color: transparent !important;
+}
+.question-screen.gk-w03 .q-input-box .q-caret {
+    background: transparent !important;
+}
+
+/* ---------- B13: フォント極小 ----------
+   問題文は registry.js 側で inline style 指定。
+   キーボードキーは class ベースで縮小。 */
+.question-screen.gk-b13 .kb-key:not(.kb-fn) .kb-main {
+    font-size: 14px !important;
+}
+.question-screen.gk-b13 .q-choice {
+    font-size: 14px !important;
+    letter-spacing: 0 !important;
+    line-height: 1.2 !important;
+}

@@ -102,11 +102,20 @@
             }
 
             window.addEventListener('debug:forceAnswer', onDebugForce);
+
+            // --- 崩壊UIギミック適用 ---
+            // DOMが整い、キーボードもmountされた後に適用する必要があるため
+            // 次ティックに回す (Keyboard.mount 内で innerHTML 差し替えが走るため)
+            setTimeout(() => {
+                if (resolved) return;
+                window.Gimmicks?.applyForQuestion(window.GameState.currentStage, q);
+            }, 0);
         },
 
         destroy() {
             stopTimer();
             window.removeEventListener('debug:forceAnswer', onDebugForce);
+            window.Gimmicks?.dispose();
             if (window.Keyboard?.unmount) window.Keyboard.unmount();
         },
     };
@@ -184,7 +193,11 @@
             userInput,
             timeMs,
             reason,
+            gimmicks: window.Gimmicks?.listLastApplied() || [],
         });
+
+        // ◯×フラッシュ前にギミックを解除して見た目をリセット
+        window.Gimmicks?.dispose();
 
         showFeedback(correct, reason === 'timeout');
 

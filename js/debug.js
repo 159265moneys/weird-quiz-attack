@@ -101,6 +101,17 @@
             const s = window.GameState?.session || {};
             const q = s.questions?.[s.index];
             const rtr = window.Router?.current || '-';
+
+            // 現在のギミック一覧
+            const active = window.Gimmicks?.listActive?.() || [];
+            const last = window.Gimmicks?.listLastApplied?.() || [];
+            const all = window.GimmickRegistry?.all || [];
+
+            // 各ギミックを手動で試せるボタン (問題画面のときだけ)
+            const gkButtons = rtr === 'question'
+                ? all.map(g => `<button data-gk="${g.id}" title="${g.name}">${g.id}</button>`).join('')
+                : '';
+
             return `
                 <div class="dbg-head">
                     <span>DEBUG</span>
@@ -110,7 +121,9 @@
                     screen: <b>${rtr}</b><br>
                     stage:  ${window.GameState?.currentStage ?? '-'}<br>
                     Q:      ${s.index != null ? (s.index + 1) : '-'}/${s.questions?.length ?? '-'}${q ? ' [' + q.id + ']' : ''}<br>
-                    mode:   ${q?.mode ?? '-'} | diff: ${q?.difficulty ?? '-'}${q ? ' | ans:' + (q.mode === 'choice' ? q.answer : q.answer_text) : ''}
+                    mode:   ${q?.mode ?? '-'} | diff: ${q?.difficulty ?? '-'}${q ? ' | ans:' + (q.mode === 'choice' ? q.answer : q.answer_text) : ''}<br>
+                    GK now: <b style="color:#ff0">${active.join(',') || '-'}</b><br>
+                    GK last: ${last.join(',') || '-'}
                 </div>
                 <div class="dbg-section">Q操作 (W/L/S)</div>
                 <div class="dbg-actions">
@@ -118,6 +131,16 @@
                     <button data-act="lose" class="ng">強制不正解 (L)</button>
                     <button data-act="skip">SKIP (S)</button>
                 </div>
+                ${rtr === 'question' ? `
+                <div class="dbg-section">崩壊UIギミック</div>
+                <div class="dbg-actions">
+                    <button data-act="gk-clear">CLEAR</button>
+                    <button data-act="gk-reapply">RE-APPLY</button>
+                </div>
+                <div class="dbg-actions" style="grid-template-columns: repeat(3, 1fr);">
+                    ${gkButtons}
+                </div>
+                ` : ''}
                 <div class="dbg-section">セーブ</div>
                 <div class="dbg-actions">
                     <button data-act="unlock">全ステージ解放</button>
@@ -138,6 +161,18 @@
                     ev.stopPropagation();
                     const act = btn.dataset.act;
                     this.handle(act);
+                    setTimeout(() => this.refresh(), 80);
+                });
+            });
+            // ギミック個別ボタン: 現在の問題に対して単発で適用
+            this.overlayEl.querySelectorAll('[data-gk]').forEach((btn) => {
+                btn.addEventListener('click', (ev) => {
+                    ev.stopPropagation();
+                    const id = btn.dataset.gk;
+                    const q = window.GameState.session.questions?.[window.GameState.session.index];
+                    if (!q) return;
+                    window.Gimmicks.setForced([id]);
+                    window.Gimmicks.applyForQuestion(window.GameState.currentStage, q);
                     setTimeout(() => this.refresh(), 80);
                 });
             });
@@ -180,6 +215,13 @@
                     gs.session.startAt = Date.now() - 200000;
                     gs.session.endAt = Date.now();
                     window.Router.show('result');
+                    return;
+                case 'gk-clear':
+                    window.Gimmicks?.dispose();
+                    return;
+                case 'gk-reapply':
+                    const gq = window.GameState.session.questions?.[window.GameState.session.index];
+                    if (gq) window.Gimmicks?.applyForQuestion(window.GameState.currentStage, gq);
                     return;
             }
         },
