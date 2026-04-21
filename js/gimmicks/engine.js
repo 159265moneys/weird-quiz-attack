@@ -48,7 +48,9 @@
                 lastAppliedIds = [];
                 return [];
             }
-            picked = window.GimmickSelector.pickGimmicks(stageNo, q);
+            // このスロットに割り当てられた K 値を引く (未設定なら 1)
+            const k = (session?.kAssignment && session.kAssignment[idx]) || 1;
+            picked = window.GimmickSelector.pickGimmicks(stageNo, q, k);
         }
 
         picked.forEach(g => {

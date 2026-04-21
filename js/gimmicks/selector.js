@@ -1,20 +1,18 @@
 /* ============================================================
    gimmicks/selector.js — ステージ設定と問題modeから崩壊ギミックを抽選
    ------------------------------------------------------------
-   ルール:
-     - 件数は stageConfig.K = [min, max] の範囲からランダム
-     - 問題の mode (choice|input) に対応するものだけを候補とする
-     - conflicts に挙がっているIDは同時採用しない
+   構成:
+     - poolForStage(stageNo)     : ステージ別プール (introducedAt 窓 ルール)
+     - buildConflictMap()        : conflict を双方向 Map 化
+     - pickGimmicks(stageNo,q,K) : K個を conflict 回避しつつランダム抽選
+                                   (不足時は K-1 → K-2 → … にフォールバック)
+     - pickGimmickSlots(stageNo) : 20問中どのindexでギミック発動するか
+     - generateKAssignment       : 各 slot 問題に K値を割当 (kDist 展開 + shuffle)
    ============================================================ */
 
 (function () {
     function randInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function pickCount(stageConfig) {
-        const [kmin, kmax] = stageConfig?.K || [0, 0];
-        return randInt(kmin, kmax);
     }
 
     function filterByMode(gimmicks, qMode) {
@@ -70,6 +68,41 @@
         return indices.slice(0, slots).sort((a, b) => a - b);
     }
 
+    // ステージ開始時に呼び出す: 各 gimmickSlot index に K値を割り当てる
+    // kDist = [[k1, c1], [k2, c2], ...]  (合計が slots と一致)
+    // 返り値: { [slotIdx]: kValue }
+    function generateKAssignment(stageNo, gimmickSlots) {
+        const stageConfig = window.CONFIG.STAGES.find(s => s.no === stageNo);
+        const kDist = stageConfig?.kDist || [[1, gimmickSlots.length]];
+
+        // kDist を展開: [[1,13],[2,7]] → [1,1,...(13個),...2,2,...(7個)]
+        const kList = [];
+        kDist.forEach(([k, count]) => {
+            for (let i = 0; i < count; i++) kList.push(k);
+        });
+
+        // slots数と不一致なら警告 (config書き間違い防止)
+        if (kList.length !== gimmickSlots.length) {
+            console.warn('[Gimmick] kDist sum mismatch: stage', stageNo,
+                'kDist total=', kList.length, 'slots=', gimmickSlots.length,
+                '→ truncate/pad to', gimmickSlots.length);
+            while (kList.length < gimmickSlots.length) kList.push(1);
+            kList.length = gimmickSlots.length;
+        }
+
+        // shuffle して「どの slot が K=何か」をランダム化
+        for (let i = kList.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [kList[i], kList[j]] = [kList[j], kList[i]];
+        }
+
+        const map = {};
+        gimmickSlots.forEach((slotIdx, i) => {
+            map[slotIdx] = kList[i];
+        });
+        return map;
+    }
+
     // Registry 全体から双方向の conflict map を構築。
     // "B07 conflicts: [B12]" としか書いていなくても、B12→B07 も遮断する。
     let _conflictMapCache = null;
@@ -89,12 +122,11 @@
         return map;
     }
 
-    function pickGimmicks(stageNo, q) {
+    // count 個、conflict を回避しながら抽選。取れなければ取れた分だけ返す。
+    function pickGimmicks(stageNo, q, count) {
         const stageConfig = window.CONFIG.STAGES.find(s => s.no === stageNo);
         if (!stageConfig) return [];
-
-        const count = pickCount(stageConfig);
-        if (count <= 0) return [];
+        if (!count || count <= 0) return [];
 
         // ①ステージ別プール ②回答モード の二段フィルタ
         const stageOK = poolForStage(window.GimmickRegistry.all, stageNo);
@@ -115,14 +147,20 @@
         for (const g of shuffled) {
             if (picked.length >= count) break;
             if (usedIds.has(g.id)) continue;
-            // 双方向conflict: g が既存採用と衝突するなら除外
             const blocks = conflictMap[g.id];
             if (blocks && Array.from(blocks).some(id => usedIds.has(id))) continue;
             picked.push(g);
             usedIds.add(g.id);
         }
+        // count より少なくてもそのまま返す (プール枯渇やconflict集中で発生しうる)
         return picked;
     }
 
-    window.GimmickSelector = { pickGimmicks, pickGimmickSlots, poolForStage };
+    window.GimmickSelector = {
+        pickGimmicks,
+        pickGimmickSlots,
+        generateKAssignment,
+        poolForStage,
+        buildConflictMap,
+    };
 })();

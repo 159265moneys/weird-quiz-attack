@@ -124,7 +124,10 @@
                     mode:   ${q?.mode ?? '-'} | diff: ${q?.difficulty ?? '-'}${q ? ' | ans:' + (q.mode === 'choice' ? q.answer : q.answer_text) : ''}<br>
                     GK now: <b style="color:#ff0">${active.join(',') || '-'}</b><br>
                     GK last: ${last.join(',') || '-'}<br>
-                    GK slots: <span style="color:#0ff">${(s.gimmickSlots || []).map(i => i + 1).join(',') || '-'}</span>
+                    GK slots: <span style="color:#0ff">${(s.gimmickSlots || []).map(i => {
+                        const k = s.kAssignment?.[i];
+                        return `${i + 1}${k ? `(K${k})` : ''}`;
+                    }).join(',') || '-'}</span>
                 </div>
                 <div class="dbg-section">Q操作 (W/L/S)</div>
                 <div class="dbg-actions">

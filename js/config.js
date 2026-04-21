@@ -9,24 +9,28 @@ window.CONFIG = Object.freeze({
     // --- ステージ定義 (クソゲー仕様書v1.0 §3-1 / 設計書v1.0 §9-3) ---
     // name: 仮名 / stress: E=楽しい, M=軽ストレス, X=超ストレス
     // slots: ステージ20問のうち何問ギミックが発動するか (仕様書の「崩壊UI数」)
-    // K: 1問あたりの同時ギミック数 [min, max]
+    // kDist: そのステージの slots 個の問題に対する K値分布 [[k, count], ...]
+    //        各 [k,count] の合計が slots と一致すること。
+    //        stage開始時にシャッフルして 各 gimmickSlot に K を割当。
     // diff: 出題難易度ratio [L1, L2, L3]
     //
-    // 【重要】Stage 8/9/10 の差別化は K値ではなく "ギミックプール" で付ける:
-    //   - Stage 8 : 既存 Aランク全開放 (minStage<=8)
-    //   - Stage 9 : + パラメータMAX / 動的切替 / ミスペナルティ (Phase 6)
-    //   - Stage 10: + 理不尽ギミック・X系 (毎タップ配列替え等, Phase 6)
+    // 【重要】K方針 (2025 rev2):
+    //   Stage 1-7 : 全スロット K=1 固定 (1ギミックずつ)
+    //   Stage 8   : K=1×13 + K=2×7  (約1/3で2重)
+    //   Stage 9   : K=2×20          (全問2重)
+    //   Stage 10  : K=2×13 + K=3×7  (約1/3で3重)
+    // 8/9/10 の差別化は K分布 + ギミックプールで付ける。
     STAGES: [
-        { no: 1,  name: 'TUTORIAL ZONE',     stress: 'E', slots: 4,  K: [1, 1], diff: [0.80, 0.20, 0.00] },
-        { no: 2,  name: 'WARMUP',            stress: 'E', slots: 5,  K: [1, 1], diff: [0.70, 0.25, 0.05] },
-        { no: 3,  name: 'GENTLE GLITCH',     stress: 'E', slots: 7,  K: [1, 2], diff: [0.60, 0.30, 0.10] },
-        { no: 4,  name: 'SOFT CHAOS',        stress: 'E', slots: 10, K: [2, 2], diff: [0.50, 0.35, 0.15] },
-        { no: 5,  name: 'NOISE FLOOR',       stress: 'E', slots: 12, K: [2, 3], diff: [0.40, 0.40, 0.20] },
-        { no: 6,  name: 'FRAGMENTED',        stress: 'M', slots: 15, K: [3, 3], diff: [0.30, 0.45, 0.25] },
-        { no: 7,  name: 'DISTORTED',         stress: 'M', slots: 19, K: [3, 4], diff: [0.25, 0.45, 0.30] },
-        { no: 8,  name: 'COLLAPSE',          stress: 'X', slots: 20, K: [4, 5], diff: [0.20, 0.40, 0.40] },
-        { no: 9,  name: 'HELL',              stress: 'X', slots: 20, K: [4, 5], diff: [0.15, 0.35, 0.50] }, // パラメータMAX・動的切替はPhase6
-        { no: 10, name: 'ABYSS',             stress: 'X', slots: 20, K: [4, 5], diff: [0.10, 0.30, 0.60] }, // 理不尽ギミック(毎タップ配列替え等)はPhase6
+        { no: 1,  name: 'TUTORIAL ZONE',     stress: 'E', slots: 4,  kDist: [[1, 4]],            diff: [0.80, 0.20, 0.00] },
+        { no: 2,  name: 'WARMUP',            stress: 'E', slots: 5,  kDist: [[1, 5]],            diff: [0.70, 0.25, 0.05] },
+        { no: 3,  name: 'GENTLE GLITCH',     stress: 'E', slots: 7,  kDist: [[1, 7]],            diff: [0.60, 0.30, 0.10] },
+        { no: 4,  name: 'SOFT CHAOS',        stress: 'E', slots: 10, kDist: [[1, 10]],           diff: [0.50, 0.35, 0.15] },
+        { no: 5,  name: 'NOISE FLOOR',       stress: 'E', slots: 12, kDist: [[1, 12]],           diff: [0.40, 0.40, 0.20] },
+        { no: 6,  name: 'FRAGMENTED',        stress: 'M', slots: 15, kDist: [[1, 15]],           diff: [0.30, 0.45, 0.25] },
+        { no: 7,  name: 'DISTORTED',         stress: 'M', slots: 19, kDist: [[1, 19]],           diff: [0.25, 0.45, 0.30] },
+        { no: 8,  name: 'COLLAPSE',          stress: 'X', slots: 20, kDist: [[1, 13], [2, 7]],   diff: [0.20, 0.40, 0.40] },
+        { no: 9,  name: 'HELL',              stress: 'X', slots: 20, kDist: [[2, 20]],           diff: [0.15, 0.35, 0.50] },
+        { no: 10, name: 'ABYSS',             stress: 'X', slots: 20, kDist: [[2, 13], [3, 7]],   diff: [0.10, 0.30, 0.60] },
     ],
 
     // 1ステージあたりの出題数

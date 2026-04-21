@@ -64,17 +64,17 @@ REGISTRY: List[Gimmick] = [
     Gimmick('B09', '画面縮小',               'both',   6, 6, conflicts=['B03', 'B05']),
     Gimmick('B10', '問題文ランダム出力',     'both',   6, 5, conflicts=['B02', 'B07', 'B15', 'B17']),
     Gimmick('W01', '文字盤見えない',         'input',  6, 7),
-    Gimmick('W02', '文字盤あべこべ',         'input',  6, 7),
+    Gimmick('W02', '文字盤あべこべ',         'input',  6, 7, conflicts=['W17']),
     Gimmick('W03', '解答欄見えない',         'input',  6, 6),
     Gimmick('W07', '入力1文字消失',          'input',  6, 7),
     Gimmick('C02', 'ダミー選択肢',           'choice', 6, 7),
     # Stage 7 (Batch 4)
-    Gimmick('B01', '反転タップ',             'both',   7, 8, conflicts=['B03', 'B05']),
-    Gimmick('B13', 'フォント極小',           'both',   7, 7),
+    Gimmick('B01', '反転タップ',             'both',   7, 8, conflicts=['B03', 'B05', 'W19']),
+    Gimmick('B13', 'フォント極小',           'both',   7, 7, conflicts=['B17', 'W14']),
     Gimmick('B17', '問題文めちゃくちゃ',     'both',   7, 7, conflicts=['B02', 'B07', 'B08', 'B10', 'B15']),
     Gimmick('W05', 'カーソル暴走',           'input',  7, 7, conflicts=['W07', 'W10']),
     Gimmick('W10', '入力遅延',               'input',  7, 7, conflicts=['W05', 'W07']),
-    Gimmick('W14', 'キー巨大化',             'input',  7, 7),
+    Gimmick('W14', 'キー巨大化',             'input',  7, 7, conflicts=['W17']),
     Gimmick('W17', 'カナひら勝手切替',       'input',  7, 7),
     Gimmick('W19', 'フリック方向反転',       'input',  7, 7),
     # Stage 8 (Batch 5)
@@ -103,21 +103,26 @@ class StageConfig:
     name: str
     stress: str
     slots: int
-    K: tuple      # (min, max)
+    k_dist: list  # [(k, count), ...]  count合計 = slots
     diff: tuple   # (L1 ratio, L2, L3)
 
 
+# K方針 (2025 rev2):
+#   Stage 1-7 : 全スロット K=1
+#   Stage 8   : K=1×13 + K=2×7   (約1/3で2重)
+#   Stage 9   : K=2×20           (全問2重)
+#   Stage 10  : K=2×13 + K=3×7   (約1/3で3重)
 STAGES: List[StageConfig] = [
-    StageConfig(1,  'TUTORIAL ZONE',  'E', 4,  (1, 1), (0.80, 0.20, 0.00)),
-    StageConfig(2,  'WARMUP',         'E', 5,  (1, 1), (0.70, 0.25, 0.05)),
-    StageConfig(3,  'GENTLE GLITCH',  'E', 7,  (1, 2), (0.60, 0.30, 0.10)),
-    StageConfig(4,  'SOFT CHAOS',     'E', 10, (2, 2), (0.50, 0.35, 0.15)),
-    StageConfig(5,  'NOISE FLOOR',    'E', 12, (2, 3), (0.40, 0.40, 0.20)),
-    StageConfig(6,  'FRAGMENTED',     'M', 15, (3, 3), (0.30, 0.45, 0.25)),
-    StageConfig(7,  'DISTORTED',      'M', 19, (3, 4), (0.25, 0.45, 0.30)),
-    StageConfig(8,  'COLLAPSE',       'X', 20, (4, 5), (0.20, 0.40, 0.40)),
-    StageConfig(9,  'HELL',           'X', 20, (4, 5), (0.15, 0.35, 0.50)),
-    StageConfig(10, 'ABYSS',          'X', 20, (4, 5), (0.10, 0.30, 0.60)),
+    StageConfig(1,  'TUTORIAL ZONE',  'E', 4,  [(1, 4)],            (0.80, 0.20, 0.00)),
+    StageConfig(2,  'WARMUP',         'E', 5,  [(1, 5)],            (0.70, 0.25, 0.05)),
+    StageConfig(3,  'GENTLE GLITCH',  'E', 7,  [(1, 7)],            (0.60, 0.30, 0.10)),
+    StageConfig(4,  'SOFT CHAOS',     'E', 10, [(1, 10)],           (0.50, 0.35, 0.15)),
+    StageConfig(5,  'NOISE FLOOR',    'E', 12, [(1, 12)],           (0.40, 0.40, 0.20)),
+    StageConfig(6,  'FRAGMENTED',     'M', 15, [(1, 15)],           (0.30, 0.45, 0.25)),
+    StageConfig(7,  'DISTORTED',      'M', 19, [(1, 19)],           (0.25, 0.45, 0.30)),
+    StageConfig(8,  'COLLAPSE',       'X', 20, [(1, 13), (2, 7)],   (0.20, 0.40, 0.40)),
+    StageConfig(9,  'HELL',           'X', 20, [(2, 20)],           (0.15, 0.35, 0.50)),
+    StageConfig(10, 'ABYSS',          'X', 20, [(2, 13), (3, 7)],   (0.10, 0.30, 0.60)),
 ]
 
 STAGE10_POOL_IDS = [
@@ -164,8 +169,9 @@ def build_conflict_map(registry: List[Gimmick]) -> dict:
 
 
 def pick_gimmicks(stage: StageConfig, q_mode: str, registry: List[Gimmick],
-                  rng: random.Random, conflict_map: dict = None) -> List[Gimmick]:
-    count = rng.randint(*stage.K)
+                  rng: random.Random, count: int,
+                  conflict_map: dict = None) -> List[Gimmick]:
+    """stage/mode のプールから count 個、conflict 回避しつつ抽選。取れなければ少なめで返す。"""
     if count <= 0:
         return []
     pool = pool_for_stage(stage.no, registry)
@@ -198,6 +204,19 @@ def pick_gimmick_slots(stage: StageConfig, total: int, rng: random.Random) -> Li
     return sorted(indices[:slots])
 
 
+def generate_k_assignment(stage: StageConfig, slots: List[int], rng: random.Random) -> dict:
+    """各 slot index に K 値を割当。kDist を展開して shuffle。"""
+    k_list: List[int] = []
+    for k, count in stage.k_dist:
+        k_list.extend([k] * count)
+    # slots 数に合わせてパディング/切詰め (通常は一致する)
+    while len(k_list) < len(slots):
+        k_list.append(1)
+    k_list = k_list[:len(slots)]
+    rng.shuffle(k_list)
+    return {slot_idx: k_list[i] for i, slot_idx in enumerate(slots)}
+
+
 # ============================================================
 # 3. レポート
 # ============================================================
@@ -216,8 +235,9 @@ def print_stages_report(registry: List[Gimmick]) -> None:
         input_pool = filter_by_mode(pool, 'input')
         choice_impl = [g for g in choice_pool if g.implemented]
         input_impl = [g for g in input_pool if g.implemented]
+        k_summary = ' + '.join(f'K{k}×{c}' for k, c in st.k_dist)
         print()
-        print(f'[Stage {st.no:2d}] {st.name:<15} stress={st.stress}  slots={st.slots}  K={list(st.K)}  diff={list(st.diff)}')
+        print(f'[Stage {st.no:2d}] {st.name:<15} stress={st.stress}  slots={st.slots}  kDist=[{k_summary}]  diff={list(st.diff)}')
         print(f'  Pool total: {len(pool):3d}  (implemented: {len(impl)})')
         print(f'    choice-applicable: {len(choice_pool):3d} (impl {len(choice_impl)})')
         print(f'    input-applicable:  {len(input_pool):3d} (impl {len(input_impl)})')
@@ -236,66 +256,81 @@ def simulate(registry: List[Gimmick], n_runs: int = 10000, seed: int = 42) -> No
     print('=' * 68)
 
     total_issues = 0
+    shortage_total = 0
     cmap = build_conflict_map(registry)
+    # stage のどのKでも抽選するので、kDistの全Kをテスト
     for st in STAGES:
+        ks_to_test = sorted({k for k, _ in st.k_dist})
         for mode in ('choice', 'input'):
-            counter: Counter = Counter()
-            empty = 0
-            conflicts_seen = 0
-            count_hist: Counter = Counter()
-            for _ in range(n_runs):
-                picked = pick_gimmicks(st, mode, registry, rng, cmap)
-                if not picked:
-                    empty += 1
-                count_hist[len(picked)] += 1
-                for g in picked:
-                    counter[g.id] += 1
-                # 双方向 conflict 検証
-                picked_ids = [g.id for g in picked]
-                for i, gid in enumerate(picked_ids):
-                    blocks = cmap.get(gid, set())
-                    for other in picked_ids[i + 1:]:
-                        if other in blocks:
-                            conflicts_seen += 1
-            issues = []
-            if empty > 0 and st.slots > 0:
-                issues.append(f'empty_pick×{empty}')
-            if conflicts_seen > 0:
-                issues.append(f'!!CONFLICT×{conflicts_seen}!!')
-            total_issues += conflicts_seen
-            top = counter.most_common(8)
-            print()
-            print(f'  Stage {st.no:2d} [{mode:6s}] pool={len(filter_by_mode(pool_for_stage(st.no, registry), mode))} '
-                  f'count-hist={dict(sorted(count_hist.items()))}  '
-                  f'issues={issues if issues else "-"}')
-            if top:
-                top_str = '  '.join(f'{k}:{v}' for k, v in top)
-                print(f'     top appearances: {top_str}')
+            for k_target in ks_to_test:
+                counter: Counter = Counter()
+                empty = 0
+                shortage = 0       # 要求Kに満たず返った回数
+                conflicts_seen = 0
+                count_hist: Counter = Counter()
+                for _ in range(n_runs):
+                    picked = pick_gimmicks(st, mode, registry, rng, k_target, cmap)
+                    if not picked:
+                        empty += 1
+                    if len(picked) < k_target:
+                        shortage += 1
+                    count_hist[len(picked)] += 1
+                    for g in picked:
+                        counter[g.id] += 1
+                    # 双方向 conflict 検証
+                    picked_ids = [g.id for g in picked]
+                    for i, gid in enumerate(picked_ids):
+                        blocks = cmap.get(gid, set())
+                        for other in picked_ids[i + 1:]:
+                            if other in blocks:
+                                conflicts_seen += 1
+                issues = []
+                if empty > 0 and st.slots > 0:
+                    issues.append(f'empty×{empty}')
+                if shortage > 0:
+                    issues.append(f'short×{shortage}')
+                if conflicts_seen > 0:
+                    issues.append(f'!!CONFLICT×{conflicts_seen}!!')
+                total_issues += conflicts_seen
+                shortage_total += shortage
+                top = counter.most_common(8)
+                print()
+                pool_size = len(filter_by_mode(pool_for_stage(st.no, registry), mode))
+                print(f'  Stage {st.no:2d} [{mode:6s}] K={k_target} pool={pool_size} '
+                      f'count-hist={dict(sorted(count_hist.items()))}  '
+                      f'issues={issues if issues else "-"}')
+                if top:
+                    top_str = '  '.join(f'{k}:{v}' for k, v in top)
+                    print(f'     top appearances: {top_str}')
 
     print()
     print('-' * 68)
     if total_issues == 0:
-        print(' ✓ No conflict violations detected.')
+        print(f' ✓ No conflict violations detected.  (shortages={shortage_total})')
     else:
-        print(f' ✗ CONFLICT VIOLATIONS: {total_issues}')
+        print(f' ✗ CONFLICT VIOLATIONS: {total_issues}  (shortages={shortage_total})')
     print('-' * 68)
 
 
 def simulate_stage_run(registry: List[Gimmick], stage_no: int, seed: int = None) -> None:
-    """1ステージまるごとシミュレーション: 20問分"""
+    """1ステージまるごとシミュレーション: 20問分 (K割当あり)"""
     st = next(s for s in STAGES if s.no == stage_no)
     rng = random.Random(seed)
     slots = pick_gimmick_slots(st, QUESTIONS_PER_STAGE, rng)
-    print(f'\n[Stage {stage_no}] {st.name}  slots positions: {slots}')
+    kmap = generate_k_assignment(st, slots, rng)
+    k_summary = ' + '.join(f'K{k}×{c}' for k, c in st.k_dist)
+    print(f'\n[Stage {stage_no}] {st.name}  kDist=[{k_summary}]')
+    print(f'  slots positions: {slots}')
     for i in range(QUESTIONS_PER_STAGE):
         if i not in slots:
             print(f'  Q{i + 1:2d}: (clean)')
             continue
+        k = kmap[i]
         # 問題モードは実際には問題から取るが、ここはランダム
         mode = rng.choice(['choice', 'input'])
-        picked = pick_gimmicks(st, mode, registry, rng)
+        picked = pick_gimmicks(st, mode, registry, rng, k)
         ids = ','.join(g.id for g in picked) or '(empty)'
-        print(f'  Q{i + 1:2d}: [{mode:6s}] {ids}')
+        print(f'  Q{i + 1:2d}: [{mode:6s}] K={k} → {ids}')
 
 
 # ============================================================

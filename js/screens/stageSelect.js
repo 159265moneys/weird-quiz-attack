@@ -25,6 +25,10 @@
                 const score = window.Save.getStageScore(s.no);
                 const rank = score?.bestRank || '-';
 
+                // kDist から「K=N(xC)+K=M(xC)」のサマリを作る
+                const kSummary = (s.kDist || [[1, s.slots]])
+                    .map(([k, c]) => `K${k}×${c}`).join('+');
+
                 return `
                     <button class="stage-card ${stressClass(s.stress)} ${locked ? 'is-locked' : ''}"
                             data-stage="${s.no}" ${locked ? 'disabled' : ''}>
@@ -32,7 +36,7 @@
                         <div class="stage-info">
                             <div class="stage-name">${s.name}</div>
                             <div class="stage-meta">
-                                ${stressLabel(s.stress)} / GIMMICKS ${s.K[0]}-${s.K[1]} / ${window.CONFIG.QUESTIONS_PER_STAGE}Q
+                                ${stressLabel(s.stress)} / ${kSummary} / ${window.CONFIG.QUESTIONS_PER_STAGE}Q
                             </div>
                         </div>
                         <div class="stage-rank">${locked ? '🔒' : rank}</div>
@@ -79,9 +83,12 @@
             const picked = window.QuizLoader.pickForStage(all, no, window.CONFIG.QUESTIONS_PER_STAGE);
             window.GameState.session.questions = picked;
             // このステージで何問目にギミックを出すか事前抽選
-            window.GameState.session.gimmickSlots =
-                window.GimmickSelector.pickGimmickSlots(no, picked.length);
-            console.log('[Stage]', no, 'gimmick slots:', window.GameState.session.gimmickSlots);
+            const slots = window.GimmickSelector.pickGimmickSlots(no, picked.length);
+            window.GameState.session.gimmickSlots = slots;
+            // 各 slot に K 値 (同時ギミック数) を割当
+            window.GameState.session.kAssignment =
+                window.GimmickSelector.generateKAssignment(no, slots);
+            console.log('[Stage]', no, 'slots:', slots, 'K:', window.GameState.session.kAssignment);
             window.Router.show('question');
         } catch (e) {
             console.error(e);

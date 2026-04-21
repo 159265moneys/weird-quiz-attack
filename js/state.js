@@ -16,6 +16,7 @@ window.GameState = {
         endAt: 0,
         score: 0,
         gimmickSlots: [],   // ギミック発動問題の index 配列 (0..19)
+        kAssignment: {},    // { slotIdx: K } そのスロットで同時発動するギミック数
         instantDeath: false,// B21 適用中フラグ
         deathEnd: false,    // B21 で強制終了したか (結果画面の演出用)
     },
@@ -32,6 +33,7 @@ window.GameState = {
             endAt: 0,
             score: 0,
             gimmickSlots: [],
+            kAssignment: {},
             instantDeath: false,
             deathEnd: false,
         };

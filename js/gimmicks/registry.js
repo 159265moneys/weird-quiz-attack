@@ -104,22 +104,29 @@
     };
 
     const B16_FAKE_COUNTDOWN = {
-        id: 'B16', name: '高速カウントダウン', supports: 'both', introducedAt: 1, difficulty: 2,
+        id: 'B16', name: '偽カウントダウン', supports: 'both', introducedAt: 1, difficulty: 2,
         apply(ctx) {
             const host = document.createElement('div');
             host.className = 'gk-b16-fake';
             host.innerHTML = `
                 <span class="gk-b16-label">SYS</span>
-                <span class="gk-b16-num">0.000</span>
+                <span class="gk-b16-num">01:00</span>
             `;
             ctx.screen.appendChild(host);
             const numEl = host.querySelector('.gk-b16-num');
-            let n = 500 + Math.random() * 500;
+            const TOTAL_MS = 20000; // 3倍速: 表示60秒 ÷ 3 = 実時間20秒
+            const startAt = Date.now();
             const timer = setInterval(() => {
-                n -= 3 + Math.random() * 9;
-                if (n < 0) n = 500 + Math.random() * 500;
-                numEl.textContent = n.toFixed(3);
-            }, 45);
+                const remainMs = Math.max(0, TOTAL_MS - (Date.now() - startAt));
+                const sec = Math.floor((remainMs / TOTAL_MS) * 60);
+                const mm = Math.floor(sec / 60).toString().padStart(2, '0');
+                const ss = (sec % 60).toString().padStart(2, '0');
+                numEl.textContent = `${mm}:${ss}`;
+                if (remainMs <= 0) {
+                    numEl.textContent = '00:00';
+                    clearInterval(timer);
+                }
+            }, 100);
             return () => {
                 clearInterval(timer);
                 host.remove();
@@ -296,6 +303,64 @@
         },
     };
 
+    const B25_CHAR_OBSTRUCT = {
+        id: 'B25', name: 'キャラ妨害', supports: 'both', introducedAt: 5, difficulty: 5,
+        apply(ctx) {
+            const SPRITES = [
+                'sprite/girl/basic.png',
+                'sprite/girl/happy.png',
+                'sprite/girl/hi.png',
+                'sprite/girl/think.png',
+                'sprite/girl/think_light.png',
+            ];
+            const timers = new Set();
+            let alive = true;
+
+            function schedule(fn, delay) {
+                const t = setTimeout(() => { timers.delete(t); if (alive) fn(); }, delay);
+                timers.add(t);
+            }
+
+            function createChar(side) {
+                const img = document.createElement('img');
+                img.src = SPRITES[Math.floor(Math.random() * SPRITES.length)];
+                img.className = `gk-b25-char gk-b25-${side}`;
+                img.draggable = false;
+                ctx.screen.appendChild(img);
+                return img;
+            }
+
+            function spawnPair() {
+                const left = createChar('left');
+                const right = createChar('right');
+                // 初期(画面外)状態を描画してからトランジション開始
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        if (!alive) return;
+                        left.classList.add('is-in');
+                        right.classList.add('is-in');
+                    });
+                });
+                // 1.5〜2.5秒ホールドして退場
+                schedule(() => {
+                    left.classList.remove('is-in');
+                    right.classList.remove('is-in');
+                    schedule(() => { left.remove(); right.remove(); }, 600);
+                }, 1500 + Math.random() * 1000);
+            }
+
+            schedule(spawnPair, 1200);
+            schedule(spawnPair, 6000 + Math.random() * 3000);
+
+            return () => {
+                alive = false;
+                timers.forEach(clearTimeout);
+                timers.clear();
+                ctx.screen.querySelectorAll('.gk-b25-char').forEach(el => el.remove());
+            };
+        },
+    };
+
     const B07_GLITCH = {
         id: 'B07', name: 'グリッチ', supports: 'both', introducedAt: 2, difficulty: 3,
         conflicts: ['B12', 'B13'],
@@ -392,8 +457,9 @@
 
     const B01_REVERSE_TAP = {
         id: 'B01', name: '反転タップ', supports: 'both', introducedAt: 7, difficulty: 8,
-        // 座標系を捻るギミックとは干渉させない
-        conflicts: ['B03', 'B05'],
+        // 座標系を捻るギミックとは干渉させない。
+        // W19 (フリック方向反転) はポインタ反転と二重反転→相殺して難度弱化。
+        conflicts: ['B03', 'B05', 'W19'],
         apply(ctx) {
             const screen = ctx.screen;
             function mirrorPoint(cx0, cy0, x, y) {
@@ -500,6 +566,9 @@
 
     const B13_TINY = {
         id: 'B13', name: 'フォント極小', supports: 'both', introducedAt: 7, difficulty: 7,
+        // B17: stem inline fontSize=14px が .gk-b17-line の 34px(CSS)を上書き → B17難度弱化
+        // W14: .gk-b13 .kb-key .kb-main{font-size:14px !important} が W14 huge(96px)を上書き
+        conflicts: ['B17', 'W14'],
         apply(ctx) {
             const stem = q(ctx.screen, '.q-stem');
             const prevSize = stem ? stem.style.fontSize : '';
@@ -647,6 +716,8 @@
 
     const W02_KEYS_SHUFFLE = {
         id: 'W02', name: '文字盤あべこべ', supports: 'input', introducedAt: 6, difficulty: 7,
+        // W17 のモード切替は render() を走らせてラベルを元に戻してしまう
+        conflicts: ['W17'],
         apply(ctx) {
             const shuffleLabels = () => {
                 // 現在のキーボードから「文字キー」の main ラベルを抽出
@@ -772,6 +843,8 @@
 
     const W14_KEY_HUGE = {
         id: 'W14', name: 'キー巨大化', supports: 'input', introducedAt: 7, difficulty: 7,
+        // W17 render() で .gk-w14-huge が消滅。B13 との conflict は B13 側で宣言済み。
+        conflicts: ['W17'],
         apply(ctx) {
             let target = null;
             function pick() {
@@ -1193,7 +1266,7 @@
         B02_TYPEWRITER, B04_ZOOM_CHAOS, B08_FADEOUT, B15_REVERSED_TEXT, B20_BLACKOUT,
         B03_REVERSE, B05_MIRROR, B06_COLOR_BREAK, B07_GLITCH,
         B09_SHRINK, B10_SHUFFLE_TEXT,
-        B12_BLUR, B13_TINY, B14_MARGIN_CHAOS,
+        B12_BLUR, B13_TINY, B14_MARGIN_CHAOS, B25_CHAR_OBSTRUCT,
         B01_REVERSE_TAP, B17_NOISE_TEXT,
         C01_SHUFFLE, C02_DUMMY_CHOICE, C03_CHAR_CORRUPT, C04_FAKE_5050,
         W01_KEYS_INVISIBLE, W02_KEYS_SHUFFLE, W03_ANSWER_INVISIBLE, W07_CHAR_DROP,

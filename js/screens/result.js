@@ -47,8 +47,10 @@
                         all, no, window.CONFIG.QUESTIONS_PER_STAGE
                     );
                     window.GameState.session.questions = picked;
-                    window.GameState.session.gimmickSlots =
-                        window.GimmickSelector.pickGimmickSlots(no, picked.length);
+                    const slots = window.GimmickSelector.pickGimmickSlots(no, picked.length);
+                    window.GameState.session.gimmickSlots = slots;
+                    window.GameState.session.kAssignment =
+                        window.GimmickSelector.generateKAssignment(no, slots);
                     window.Router.show('question');
                 })();
             });
