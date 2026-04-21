@@ -206,6 +206,23 @@
     margin-bottom: 48px;
     letter-spacing: 2px;
 }
+.q-stem-compact {
+    min-height: 200px;
+    padding: 32px;
+    font-size: 44px;
+    margin-bottom: 24px;
+}
+
+.question-screen.is-input {
+    padding: 40px 40px 0;
+    justify-content: flex-start;
+}
+.question-screen.is-input #keyboardHost {
+    margin-top: auto;
+    width: calc(100% + 80px);
+    margin-left: -40px;
+    margin-right: -40px;
+}
 
 .q-choices {
     display: grid;
@@ -229,33 +246,7 @@
     box-shadow: 3px 3px 0 var(--line);
 }
 
-.q-input-area {
-    width: 100%;
-    min-height: 200px;
-    padding: 32px;
-    font-size: 72px;
-    background: var(--bg-panel);
-    border: 3px solid var(--accent-cyan);
-    color: var(--accent-cyan);
-    text-align: center;
-    letter-spacing: 4px;
-    margin-bottom: 48px;
-    min-height: 160px;
-}
-
-.q-submit {
-    width: 100%;
-    padding: 32px;
-    font-size: 48px;
-    background: var(--accent-cyan);
-    color: var(--bg-deep);
-    border: 3px solid var(--accent-cyan);
-    box-shadow: 8px 8px 0 var(--accent-cyan-dim);
-    cursor: pointer;
-    font-family: inherit;
-    letter-spacing: 4px;
-    font-weight: bold;
-}
+/* .q-input-area と .q-submit は Phase 3 で削除。input UI は keyboard.css へ移行 */
 
 /* ========== RESULT (Phase 1 placeholder) ========== */
 .result-screen {

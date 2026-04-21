@@ -1,15 +1,13 @@
 /* ============================================================
-   question.js — 出題画面 (Phase 2: タイマー/判定パイプライン)
-   崩壊UIギミックは Phase 5 で追加。
+   question.js — 出題画面 (Phase 3: input モードは内製文字盤を使用)
    ============================================================ */
 
 (function () {
     const Q_TIME_LIMIT_MS = window.Scoring.Q_TIME_LIMIT_MS;
 
-    // セッションごとに使う状態
     let questionStartAt = 0;
     let timerRAF = 0;
-    let resolved = false; // 回答確定済みかどうか (二重入力防止)
+    let resolved = false;
 
     function currentQ() {
         const s = window.GameState.session;
@@ -27,40 +25,38 @@
             const num = s.index + 1;
             const genreLabel = window.CONFIG.GENRE_LABELS[q.genre] || q.genre;
 
-            let interaction = '';
+            let body = '';
             if (q.mode === 'choice') {
-                interaction = `
+                body = `
+                    <div class="q-stem">${escapeHTML(q.question)}</div>
                     <div class="q-choices">
                         ${q.choices.map((c, i) => `
-                            <button class="q-choice" data-idx="${i}">${c}</button>
+                            <button class="q-choice" data-idx="${i}">${escapeHTML(c)}</button>
                         `).join('')}
                     </div>
                 `;
             } else {
-                interaction = `
-                    <div class="q-input-area">___</div>
-                    <div class="text-center text-mute" style="margin-bottom:24px;font-size:28px;">
-                        [ 内製文字盤は Phase 3 で実装 ]
+                const suggested = window.Judge.suggestMode(q);
+                const hint = window.Judge.hintLabel(suggested);
+                body = `
+                    <div class="q-stem q-stem-compact">${escapeHTML(q.question)}</div>
+                    <div class="q-input-hint">${hint}</div>
+                    <div class="q-input-box is-empty" id="qInputBox">
+                        <span class="q-input-text">文字盤で入力</span><span class="q-caret"></span>
                     </div>
-                    <button class="q-submit" data-action="dummy-ok">仮: 正解扱い</button>
-                    <div style="height:16px;"></div>
-                    <button class="q-submit" data-action="dummy-ng" style="background:var(--accent-red);border-color:var(--accent-red);box-shadow:8px 8px 0 var(--accent-red-dim);">仮: 不正解扱い</button>
+                    <div id="keyboardHost"></div>
                 `;
             }
 
             return `
-                <div class="screen question-screen">
+                <div class="screen question-screen ${q.mode === 'input' ? 'is-input' : ''}">
                     <div class="q-header">
                         <span>STAGE ${window.GameState.currentStage} / Q ${num}/${total}</span>
                         <span id="qTimerLabel">100.0s</span>
                         <span>[${genreLabel}] DIFF ${q.difficulty}</span>
                     </div>
-
                     <div class="q-timer-bar"><div class="q-timer-fill" id="qTimerFill"></div></div>
-
-                    <div class="q-stem">${q.question}</div>
-
-                    ${interaction}
+                    ${body}
                 </div>
             `;
         },
@@ -82,34 +78,48 @@
                     });
                 });
             } else {
-                document.querySelector('[data-action="dummy-ok"]')?.addEventListener('click', () => {
-                    resolveAnswer(true, '[DUMMY-OK]', 'user');
-                });
-                document.querySelector('[data-action="dummy-ng"]')?.addEventListener('click', () => {
-                    resolveAnswer(false, '[DUMMY-NG]', 'user');
+                // 入力モード: 内製文字盤をマウント
+                const suggested = window.Judge.suggestMode(q);
+                window.Keyboard.mount('#keyboardHost', {
+                    mode: suggested,
+                    onChange: (value) => updateInputBox(value),
+                    onSubmit: (value) => {
+                        if (resolved) return;
+                        const correct = window.Judge.judge(q, value);
+                        resolveAnswer(correct, value, 'user');
+                    },
+                    maxLength: 20,
                 });
             }
 
-            // デバッグからの強制回答
             window.addEventListener('debug:forceAnswer', onDebugForce);
         },
 
         destroy() {
             stopTimer();
             window.removeEventListener('debug:forceAnswer', onDebugForce);
+            if (window.Keyboard?.unmount) window.Keyboard.unmount();
         },
     };
+
+    function updateInputBox(value) {
+        const box = document.getElementById('qInputBox');
+        if (!box) return;
+        const text = box.querySelector('.q-input-text');
+        if (text) text.textContent = value || '';
+        if (value && value.length > 0) box.classList.remove('is-empty');
+        else {
+            box.classList.add('is-empty');
+            if (text) text.textContent = '文字盤で入力';
+        }
+    }
 
     function onDebugForce(ev) {
         const kind = ev.detail;
         if (resolved) return;
-        if (kind === 'win') {
-            resolveAnswer(true, '[DEBUG-WIN]', 'debug');
-        } else if (kind === 'lose') {
-            resolveAnswer(false, '[DEBUG-LOSE]', 'debug');
-        } else if (kind === 'skip') {
-            resolveAnswer(false, '[DEBUG-SKIP]', 'debug');
-        }
+        if (kind === 'win') resolveAnswer(true, '[DEBUG-WIN]', 'debug');
+        else if (kind === 'lose') resolveAnswer(false, '[DEBUG-LOSE]', 'debug');
+        else if (kind === 'skip') resolveAnswer(false, '[DEBUG-SKIP]', 'debug');
     }
 
     function startTimer() {
@@ -169,7 +179,7 @@
 
         showFeedback(correct, reason === 'timeout');
 
-        const delay = reason === 'timeout' ? 650 : 400;
+        const delay = reason === 'timeout' ? 650 : 420;
         setTimeout(() => {
             if (s.index + 1 >= s.questions.length) {
                 s.endAt = Date.now();
@@ -192,8 +202,12 @@
         setTimeout(() => el.remove(), 600);
     }
 
-    // デバッグからも使えるよう外に出す
-    window.QuestionScreen = { resolveAnswer: (c, input, reason) => resolveAnswer(c, input, reason || 'debug') };
+    function escapeHTML(s) {
+        return String(s ?? '').replace(/[&<>"']/g, (c) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+    }
 
+    window.QuestionScreen = { resolveAnswer: (c, input, reason) => resolveAnswer(c, input, reason || 'debug') };
     window.Screens.question = Screen;
 })();
