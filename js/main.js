@@ -24,6 +24,7 @@
             lastTap = now;
         }, { passive: false });
 
+        window.Debug?.init();
         window.Router.show('title');
     }
 

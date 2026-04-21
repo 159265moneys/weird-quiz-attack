@@ -36,6 +36,10 @@
                 try { screen.init(params); }
                 catch (e) { console.error('init error:', e); }
             }
+
+            if (window.Debug?.refresh) {
+                try { window.Debug.refresh(); } catch (e) { /* noop */ }
+            }
         },
 
         reload() {

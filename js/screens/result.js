@@ -1,40 +1,30 @@
 /* ============================================================
-   result.js — リザルト画面 (Phase 1 プレースホルダー)
-   シェア機能や詳細演出は Phase 6。
+   result.js — リザルト画面 (Phase 2: 新スコア/ランクを使用)
    ============================================================ */
 
 (function () {
-    function computeRank(correctRatio) {
-        if (correctRatio >= 0.95) return 'S';
-        if (correctRatio >= 0.85) return 'A';
-        if (correctRatio >= 0.70) return 'B';
-        if (correctRatio >= 0.50) return 'C';
-        if (correctRatio >= 0.30) return 'D';
-        if (correctRatio > 0.00) return 'E';
-        return 'F';
-    }
-
     const Screen = {
         render() {
+            const result = window.Scoring.compute(window.GameState.session);
             const s = window.GameState.session;
-            const total = s.questions.length || 1;
-            const correct = s.answers.filter(a => a.correct).length;
-            const ratio = correct / total;
-            const rank = computeRank(ratio);
-            const timeSec = Math.max(0, Math.round((s.endAt - s.startAt) / 1000));
 
-            // セーブ
-            if (window.GameState.currentStage) {
-                window.Save.recordStageClear(window.GameState.currentStage, s.score, rank);
+            // セーブ (初回表示時のみ)
+            if (window.GameState.currentStage && !s._saved) {
+                window.Save.recordStageClear(window.GameState.currentStage, result.score, result.rank);
+                s._saved = true;
             }
+
+            // タイムアウト回数
+            const timeouts = s.answers.filter(a => a.reason === 'timeout').length;
 
             return `
                 <div class="screen result-screen">
-                    <div class="result-rank">${rank}</div>
-                    <div class="result-score">${s.score.toLocaleString()}</div>
+                    <div class="result-rank rank-${result.rank}">${result.rank}</div>
+                    <div class="result-score">${result.score.toLocaleString()}</div>
                     <div class="result-detail">
-                        正解 ${correct} / ${total}<br>
-                        TIME ${timeSec}s<br>
+                        正解 ${result.correct} / ${result.total} (${Math.round(result.accuracy * 100)}%)<br>
+                        TOTAL ${result.totalTimeSec.toFixed(1)}s / AVG ${result.avgTimeSec.toFixed(1)}s<br>
+                        ${timeouts > 0 ? `<span class="text-red">TIMEOUT × ${timeouts}</span><br>` : ''}
                         STAGE ${window.GameState.currentStage}
                     </div>
                     <div class="result-actions">
@@ -49,7 +39,6 @@
         init() {
             document.querySelector('[data-action="retry"]')?.addEventListener('click', () => {
                 const no = window.GameState.currentStage;
-                // 再抽選
                 (async () => {
                     const all = await window.QuizLoader.loadAll();
                     window.GameState.resetSession();

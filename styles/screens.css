@@ -296,3 +296,111 @@
     width: 100%;
     align-items: center;
 }
+
+.result-rank.rank-SS { color: var(--accent-warn); text-shadow: 12px 12px 0 var(--accent-red), -6px -6px 0 var(--accent-cyan); }
+.result-rank.rank-S  { color: var(--accent-cyan); }
+.result-rank.rank-A  { color: var(--text); }
+.result-rank.rank-B  { color: var(--text-dim); text-shadow: 8px 8px 0 var(--line-dim); }
+.result-rank.rank-C  { color: var(--text-mute); text-shadow: 8px 8px 0 var(--line-dim); }
+.result-rank.rank-D  { color: var(--accent-red); text-shadow: 8px 8px 0 var(--accent-red-dim); }
+
+/* ---------- 回答フィードバック ◯×  ---------- */
+.q-feedback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 640px;
+    font-weight: bold;
+    z-index: 1500;
+    pointer-events: none;
+    white-space: pre;
+    text-align: center;
+    line-height: 1;
+    animation: qfbFlash 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.q-feedback.ok { color: var(--accent-cyan); text-shadow: 0 0 40px var(--accent-cyan); }
+.q-feedback.ng { color: var(--accent-red); text-shadow: 0 0 40px var(--accent-red); }
+.q-feedback.is-timeout { font-size: 280px; letter-spacing: 16px; }
+@keyframes qfbFlash {
+    0%   { opacity: 0; transform: scale(0.4); }
+    20%  { opacity: 1; transform: scale(1.15); }
+    70%  { opacity: 1; transform: scale(1.05); }
+    100% { opacity: 0; transform: scale(1.0); }
+}
+
+/* ---------- デバッグオーバーレイ ---------- */
+/* body直下に配置 (#stageのscaleの外側) */
+.debug-overlay {
+    position: fixed;
+    top: 8px;
+    right: 8px;
+    width: 280px;
+    max-height: calc(100vh - 16px);
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.92);
+    border: 2px solid #ff00ff;
+    color: #fff;
+    font-family: 'Courier New', 'Hiragino Kaku Gothic ProN', monospace;
+    font-size: 12px;
+    z-index: 99999;
+    padding: 8px;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+    user-select: none;
+}
+.debug-overlay .dbg-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ff00ff;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #ff00ff;
+    letter-spacing: 2px;
+}
+.debug-overlay .dbg-head button {
+    background: transparent;
+    border: 1px solid #ff00ff;
+    color: #ff00ff;
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+}
+.debug-overlay .dbg-info {
+    background: #111;
+    padding: 6px 8px;
+    border: 1px solid #444;
+    margin-bottom: 8px;
+    line-height: 1.5;
+    font-size: 11px;
+    word-break: break-all;
+}
+.debug-overlay .dbg-section {
+    color: #ff00ff;
+    font-size: 10px;
+    margin: 6px 0 4px;
+    letter-spacing: 2px;
+}
+.debug-overlay .dbg-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-bottom: 6px;
+}
+.debug-overlay .dbg-actions button {
+    padding: 6px 4px;
+    background: #222;
+    border: 1px solid #555;
+    color: #fff;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 11px;
+}
+.debug-overlay .dbg-actions button:hover { background: #333; }
+.debug-overlay .dbg-actions button:active { background: #555; }
+.debug-overlay .dbg-actions button.ok { border-color: #00e5ff; color: #00e5ff; }
+.debug-overlay .dbg-actions button.ng { border-color: #ff3040; color: #ff3040; }
+.debug-overlay .dbg-actions button:first-child:last-child { grid-column: 1 / -1; }

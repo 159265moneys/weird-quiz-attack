@@ -109,3 +109,25 @@ python3 -m http.server 8000
 Save.reset();
 location.reload();
 ```
+
+---
+
+## デバッグモード
+
+### 有効化
+
+- **PC**: `Shift + D` でトグル
+- **URL**: `?debug=1` もしくは `#debug` を付けて開く
+- **モバイル**: タイトル画面フッターの `v0.1.0-alpha` を **5連タップ**
+
+有効状態は `localStorage` に保存されるので、一度ONにしたら再読込でも維持されます。
+
+### 機能
+
+画面右上に紫枠のパネルが出現。内容:
+
+- 現在のscreen / stage / 問題IDなどの状態表示
+- **強制正解 (W)** / **強制不正解 (L)** / **SKIP (S)** — Q画面で効くキーも割当済
+- **全ステージ解放** — unlockedStageを10に
+- **セーブ削除** — 進捗一掃
+- 画面ジャンプ (title / stageSelect / result(ダミー))
