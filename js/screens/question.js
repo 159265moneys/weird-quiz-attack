@@ -25,38 +25,47 @@
             const num = s.index + 1;
             const genreLabel = window.CONFIG.GENRE_LABELS[q.genre] || q.genre;
 
-            let body = '';
+            let answerZone = '';
             if (q.mode === 'choice') {
-                body = `
-                    <div class="q-stem">${escapeHTML(q.question)}</div>
-                    <div class="q-choices">
-                        ${q.choices.map((c, i) => `
-                            <button class="q-choice" data-idx="${i}">${escapeHTML(c)}</button>
-                        `).join('')}
+                answerZone = `
+                    <div class="q-zone-answer is-choice">
+                        <div class="q-choices">
+                            ${q.choices.map((c, i) => `
+                                <button class="q-choice" data-idx="${i}">${escapeHTML(c)}</button>
+                            `).join('')}
+                        </div>
                     </div>
                 `;
             } else {
                 const suggested = window.Judge.suggestMode(q);
                 const hint = window.Judge.hintLabel(suggested);
-                body = `
-                    <div class="q-stem q-stem-compact">${escapeHTML(q.question)}</div>
-                    <div class="q-input-hint">${hint}</div>
-                    <div class="q-input-box is-empty" id="qInputBox">
-                        <span class="q-input-text">文字盤で入力</span><span class="q-caret"></span>
+                answerZone = `
+                    <div class="q-zone-answer is-input">
+                        <div class="q-input-hint">${hint}</div>
+                        <div class="q-input-box is-empty" id="qInputBox">
+                            <span class="q-input-text">文字盤で入力</span><span class="q-caret"></span>
+                        </div>
+                        <div id="keyboardHost"></div>
                     </div>
-                    <div id="keyboardHost"></div>
                 `;
             }
 
             return `
-                <div class="screen question-screen ${q.mode === 'input' ? 'is-input' : ''}">
-                    <div class="q-header">
-                        <span>STAGE ${window.GameState.currentStage} / Q ${num}/${total}</span>
-                        <span id="qTimerLabel">100.0s</span>
-                        <span>[${genreLabel}] DIFF ${q.difficulty}</span>
+                <div class="screen question-screen">
+                    <div class="q-zone-header">
+                        <div class="q-header">
+                            <span>STAGE ${window.GameState.currentStage} / Q ${num}/${total}</span>
+                            <span id="qTimerLabel">100.0s</span>
+                            <span>[${genreLabel}] DIFF ${q.difficulty}</span>
+                        </div>
+                        <div class="q-timer-bar"><div class="q-timer-fill" id="qTimerFill"></div></div>
                     </div>
-                    <div class="q-timer-bar"><div class="q-timer-fill" id="qTimerFill"></div></div>
-                    ${body}
+
+                    <div class="q-zone-question">
+                        <div class="q-stem">${escapeHTML(q.question)}</div>
+                    </div>
+
+                    ${answerZone}
                 </div>
             `;
         },
