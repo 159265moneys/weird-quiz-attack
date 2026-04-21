@@ -28,9 +28,9 @@
      Stage6: B09, B10, W01, W02, W03, W07, C02  ← Phase 5b-Batch3b (+ W01/W03=5a)
      Stage7: B01, B13, B17, W05, W10, W14, W17, W19  ← Phase 5b-Batch4 (+ B13=5a)
      Stage8: C03, C04, W04, W06, W09, W15, W16  ← Phase 5b-Batch5 (+ C04=5a)
+     Stage9: B21, W08, W18, W20                 ← Phase 5b-Batch6 (最終バッチ)
 
-   未実装 (Phase 5b-Batch6〜):
-     Stage9: B21, W08, W18, W20
+   未実装: なし (MVP ギミック全数 = 35 / Phase 5b 完了)
    ============================================================ */
 
 (function () {
@@ -1049,6 +1049,144 @@
         },
     };
 
+    // ============================================================
+    // Phase 5b Batch 6 — Stage 9 最終バッチ (B21/W08/W18/W20)
+    // 全て最高難度帯。Stage 10 の理不尽プールにも組み込まれる。
+    // ============================================================
+
+    // --- B21: 即死 ---
+    // 不正解で強制ゲームオーバー (残問スキップ → result 画面)。
+    // ヘッダ右上に "わずかに気付ける" 赤点を表示 (2〜3周目で気付くバランス)。
+    // 実際の "即死" 処理は question.js 側で session.instantDeath フラグを拾って行う。
+    const B21_INSTANT_DEATH = {
+        id: 'B21', name: '即死', supports: 'both', introducedAt: 9, difficulty: 10,
+        apply(ctx) {
+            const session = window.GameState?.session;
+            if (session) session.instantDeath = true;
+
+            // バレないマーク: ヘッダ右側にひっそり赤い点を光らせる
+            const header = q(ctx.screen, '.q-zone-header');
+            let mark = null;
+            if (header) {
+                mark = document.createElement('div');
+                mark.className = 'gk-b21-mark';
+                header.appendChild(mark);
+            }
+            return () => {
+                if (session) session.instantDeath = false;
+                if (mark && mark.parentNode) mark.parentNode.removeChild(mark);
+            };
+        },
+    };
+
+    // --- W08: 文字盤あべこべv2 (キー配置を1文字打つごとに再配置) ---
+    // W02 は "ラベルだけ" シャッフルだったが、v2 は DOM 位置そのものを入れ替える。
+    // タップしたキーは "そのキーの文字" が入るので、onChange 直後に再配置するとワープ。
+    const W08_KEYS_RESHUFFLE = {
+        id: 'W08', name: '文字盤あべこべv2', supports: 'input', introducedAt: 9, difficulty: 9,
+        conflicts: ['W02', 'W15', 'W16', 'W17', 'W18'],
+        apply(ctx) {
+            const grid = q(ctx.screen, '.kb-grid');
+            if (!grid) return () => {};
+
+            // W15 と同じシンプル実装。DOM ノードを placeholder 経由で入れ替え。
+            function swapNodes(a, b) {
+                if (a === b) return;
+                if (!a.parentNode || !b.parentNode) return;
+                const tmp = document.createComment('');
+                a.parentNode.insertBefore(tmp, a);
+                b.parentNode.insertBefore(a, b);
+                tmp.parentNode.insertBefore(b, tmp);
+                tmp.remove();
+            }
+
+            function shuffleAll() {
+                const keys = qa(grid, '.kb-key:not(.kb-fn):not(.kb-empty)');
+                if (keys.length < 2) return;
+                // Fisher-Yates を DOM swap で実装
+                for (let i = keys.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    if (i !== j) swapNodes(keys[i], keys[j]);
+                }
+            }
+
+            // 初期配置からシャッフルしておく
+            shuffleAll();
+
+            // onChange をラップして、入力のたびに再配置
+            const kb = window.Keyboard;
+            const orig = kb?.getOnChange ? kb.getOnChange() : null;
+            if (kb?.setOnChange) {
+                kb.setOnChange((val) => {
+                    if (orig) orig(val);
+                    // 次フレームで再配置 (pointerup の後処理より後)
+                    requestAnimationFrame(shuffleAll);
+                });
+            }
+
+            return () => {
+                if (kb?.setOnChange && orig) kb.setOnChange(orig);
+                // DOM の並び順はそのまま (次問題で再マウントされるので OK)
+            };
+        },
+    };
+
+    // --- W18: キー消失 (一度押したキーが0.5秒後に消える) ---
+    // 押したキーを 0.5s 後に visibility:hidden + pointer-events:none。
+    // 打鍵履歴が長くなるほど使えるキーが減って詰み寸前になる鬼畜系。
+    // fn キー (OK/BS/モード切替) は対象外 — さすがに OK まで消したら詰むため。
+    const W18_KEY_VANISH = {
+        id: 'W18', name: 'キー消失', supports: 'input', introducedAt: 9, difficulty: 9,
+        conflicts: ['W02', 'W08', 'W15', 'W16', 'W17'],
+        apply(ctx) {
+            const grid = q(ctx.screen, '.kb-grid');
+            if (!grid) return () => {};
+            const timers = [];
+            const vanished = new Set();
+
+            function onUp(e) {
+                const keyEl = e.target.closest('.kb-key');
+                if (!keyEl) return;
+                if (keyEl.classList.contains('kb-fn') || keyEl.classList.contains('kb-empty')) return;
+                if (vanished.has(keyEl)) return;
+                const t = setTimeout(() => {
+                    keyEl.classList.add('gk-w18-gone');
+                    vanished.add(keyEl);
+                }, 500);
+                timers.push(t);
+            }
+            grid.addEventListener('pointerup', onUp, true);
+
+            return () => {
+                grid.removeEventListener('pointerup', onUp, true);
+                timers.forEach(clearTimeout);
+                vanished.forEach(k => {
+                    if (k && k.isConnected) k.classList.remove('gk-w18-gone');
+                });
+            };
+        },
+    };
+
+    // --- W20: フリック方向シャッフル ---
+    // flickTransform フックで、上下左右を毎回ランダムに remap。中央タップ(c)は素通り。
+    // W19 (反転) と同じフックを使うので conflict。
+    const W20_FLICK_SHUFFLE = {
+        id: 'W20', name: 'フリック方向シャッフル', supports: 'input', introducedAt: 9, difficulty: 10,
+        conflicts: ['W19'],
+        apply(ctx) {
+            const kb = window.Keyboard;
+            if (!kb?.setFlickTransform) return () => {};
+            const DIRS = ['u', 'd', 'l', 'r'];
+            kb.setFlickTransform((dir) => {
+                if (dir === 'c' || !dir) return dir;
+                return DIRS[Math.floor(Math.random() * DIRS.length)];
+            });
+            return () => {
+                kb.setFlickTransform(null);
+            };
+        },
+    };
+
     // ---------- Export ----------
     const map = {
         B11_BLASTER, B16_FAKE_COUNTDOWN, B18_FAKE_ERROR,
@@ -1061,6 +1199,7 @@
         W01_KEYS_INVISIBLE, W02_KEYS_SHUFFLE, W03_ANSWER_INVISIBLE, W07_CHAR_DROP,
         W05_CURSOR_WILD, W10_INPUT_DELAY, W14_KEY_HUGE, W17_MODE_AUTO_SWAP, W19_FLICK_REVERSE,
         W04_INPUT_SHIFT, W06_REVERSE_TEXT, W09_GHOST_INPUT, W15_KEY_WARP, W16_KEYS_MERGE,
+        B21_INSTANT_DEATH, W08_KEYS_RESHUFFLE, W18_KEY_VANISH, W20_FLICK_SHUFFLE,
     };
     const all = Object.values(map).filter(g => g && g.id);
     window.GimmickRegistry = Object.assign({ all }, map);

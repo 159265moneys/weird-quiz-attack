@@ -215,6 +215,9 @@
             gimmicks: window.Gimmicks?.listLastApplied() || [],
         });
 
+        // B21 即死: ギミック dispose 前にフラグを拾う (dispose で false に戻るため)
+        const isInstantDeath = !!s.instantDeath;
+
         // ◯×フラッシュ前にギミックを解除して見た目をリセット
         window.Gimmicks?.dispose();
 
@@ -223,6 +226,26 @@
         showFeedback(correct, reason === 'timeout', q, fbDuration);
 
         setTimeout(() => {
+            // --- B21 即死: 不正解だったら残問をスキップして結果画面へ ---
+            if (!correct && isInstantDeath) {
+                while (s.index + 1 < s.questions.length) {
+                    s.index += 1;
+                    const qSkip = s.questions[s.index];
+                    s.answers.push({
+                        id: qSkip.id,
+                        correct: false,
+                        userInput: '[INSTANT-DEATH]',
+                        timeMs: 0,
+                        reason: 'instant-death',
+                        gimmicks: [],
+                    });
+                }
+                s.endAt = Date.now();
+                s.deathEnd = true;   // 結果画面で演出用に参照可
+                window.Router.show('result');
+                return;
+            }
+
             if (s.index + 1 >= s.questions.length) {
                 s.endAt = Date.now();
                 window.Router.show('result');

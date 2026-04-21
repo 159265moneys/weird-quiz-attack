@@ -16,6 +16,8 @@ window.GameState = {
         endAt: 0,
         score: 0,
         gimmickSlots: [],   // ギミック発動問題の index 配列 (0..19)
+        instantDeath: false,// B21 適用中フラグ
+        deathEnd: false,    // B21 で強制終了したか (結果画面の演出用)
     },
 
     // 画面遷移パラメータの一時置き場
@@ -30,6 +32,8 @@ window.GameState = {
             endAt: 0,
             score: 0,
             gimmickSlots: [],
+            instantDeath: false,
+            deathEnd: false,
         };
     },
 };

@@ -1,7 +1,7 @@
 ====================================================================
  Stage × Gimmick Pool Report
- Implemented gimmicks: 37
- Registry total:       37
+ Implemented gimmicks: 41
+ Registry total:       41
 ====================================================================
 
 [Stage  1] TUTORIAL ZONE   stress=E  slots=4  K=[1, 1]  diff=[0.8, 0.2, 0.0]
@@ -142,9 +142,9 @@
     [✓] W16 キー同士くっつく             sup=input  st8 diff=8
 
 [Stage  9] HELL            stress=X  slots=20  K=[4, 5]  diff=[0.15, 0.35, 0.5]
-  Pool total:   7  (implemented: 7)
-    choice-applicable:   2 (impl 2)
-    input-applicable:    5 (impl 5)
+  Pool total:  11  (implemented: 11)
+    choice-applicable:   3 (impl 3)
+    input-applicable:    9 (impl 9)
   Members:
     [✓] C03 選択肢文字変化              sup=choice st8 diff=8
     [✓] C04 嘘50:50               sup=choice st8 diff=6
@@ -153,11 +153,15 @@
     [✓] W09 ゴースト入力               sup=input  st8 diff=8
     [✓] W15 キーワープ                sup=input  st8 diff=8
     [✓] W16 キー同士くっつく             sup=input  st8 diff=8
+    [✓] B21 即死                   sup=both   st9 diff=10
+    [✓] W08 文字盤あべこべv2            sup=input  st9 diff=9
+    [✓] W18 キー消失                 sup=input  st9 diff=9
+    [✓] W20 フリック方向シャッフル          sup=input  st9 diff=10
 
 [Stage 10] ABYSS           stress=X  slots=20  K=[4, 5]  diff=[0.1, 0.3, 0.6]
-  Pool total:  12  (implemented: 12)
-    choice-applicable:   5 (impl 5)
-    input-applicable:   10 (impl 10)
+  Pool total:  16  (implemented: 16)
+    choice-applicable:   6 (impl 6)
+    input-applicable:   14 (impl 14)
   Members:
     [✓] C02 ダミー選択肢               sup=choice st6 diff=7
     [✓] W01 文字盤見えない              sup=input  st6 diff=7
@@ -171,3 +175,7 @@
     [✓] W09 ゴースト入力               sup=input  st8 diff=8
     [✓] W15 キーワープ                sup=input  st8 diff=8
     [✓] W16 キー同士くっつく             sup=input  st8 diff=8
+    [✓] B21 即死                   sup=both   st9 diff=10
+    [✓] W08 文字盤あべこべv2            sup=input  st9 diff=9
+    [✓] W18 キー消失                 sup=input  st9 diff=9
+    [✓] W20 フリック方向シャッフル          sup=input  st9 diff=10

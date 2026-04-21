@@ -366,3 +366,40 @@
 /* W06 文字順逆転: 表示反転のみ (onChange ラップ) */
 /* W09 ゴースト入力: setValue で末尾にゴミ追加 */
 /* W15 キーワープ: kb-grid 内の DOM 位置を swap */
+
+/* ============================================================
+   Phase 5b Batch6 — Stage 9 最終バッチ (B21/W08/W18/W20)
+   ============================================================ */
+
+/* ---------- B21 即死: 「バレないマーク」 ----------
+   ヘッダ右上にうっすら赤い点。色は薄めで、呼吸するようにパルス。
+   一周目では気付きにくく、2〜3周目で「あ、これ出てる時ヤバいやつか」と気付かせる粒度。 */
+.gk-b21-mark {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 48, 48, 0.55);
+    box-shadow: 0 0 6px rgba(255, 48, 48, 0.35);
+    animation: gkB21Pulse 1.6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 10;
+}
+@keyframes gkB21Pulse {
+    0%, 100% { opacity: 0.35; transform: scale(1); }
+    50%      { opacity: 0.85; transform: scale(1.15); }
+}
+
+/* ---------- W18 キー消失: 押した0.5s後にひっそり消える ----------
+   visibility と pointer-events を切って、見た目はスッと影だけ残すフェード。 */
+.kb-key.gk-w18-gone {
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+/* W08 文字盤あべこべv2: DOM swap のみ、CSS 不要 */
+/* W20 フリック方向シャッフル: setFlickTransform のみ、CSS 不要 */

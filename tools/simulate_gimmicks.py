@@ -85,16 +85,16 @@ REGISTRY: List[Gimmick] = [
     Gimmick('W09', 'ゴースト入力',           'input',  8, 8, conflicts=['W04', 'W05', 'W06', 'W07', 'W10']),
     Gimmick('W15', 'キーワープ',             'input',  8, 8, conflicts=['W02', 'W08', 'W16', 'W17']),
     Gimmick('W16', 'キー同士くっつく',       'input',  8, 8, conflicts=['W02', 'W08', 'W15', 'W17']),
+    # Stage 9 (Batch 6 — 最終)
+    Gimmick('B21', '即死',                   'both',   9, 10),
+    Gimmick('W08', '文字盤あべこべv2',       'input',  9, 9,  conflicts=['W02', 'W15', 'W16', 'W17', 'W18']),
+    Gimmick('W18', 'キー消失',               'input',  9, 9,  conflicts=['W02', 'W08', 'W15', 'W16', 'W17']),
+    Gimmick('W20', 'フリック方向シャッフル', 'input',  9, 10, conflicts=['W19']),
 ]
 
-# --- 未実装ギミック (参考情報用、シミュレータで "実装後の姿" を見たい時に有効化) ---
-PENDING: List[Gimmick] = [
-    # Stage 9
-    Gimmick('B21', '即死',                   'both',   9, 10, implemented=False),
-    Gimmick('W08', '文字盤あべこべv2',       'input',  9, 9, implemented=False),
-    Gimmick('W18', 'キー消失',               'input',  9, 9, implemented=False),
-    Gimmick('W20', 'フリック方向シャッフル', 'input',  9, 10, implemented=False),
-]
+# --- 未実装ギミック ---
+# MVP ギミックは全て実装済み (Phase 5b 完了)。将来追加分があればここに積む。
+PENDING: List[Gimmick] = []
 
 
 @dataclass
