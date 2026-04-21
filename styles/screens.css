@@ -445,6 +445,31 @@
 .result-rank.rank-C  { color: var(--text-dim); text-shadow: 8px 8px 0 var(--line-dim); }
 .result-rank.rank-D  { color: var(--accent-red); text-shadow: 8px 8px 0 var(--accent-red-dim); }
 
+/* ---------- シェア トースト ---------- */
+.share-toast {
+    position: absolute;
+    left: 50%;
+    bottom: 60px;
+    transform: translateX(-50%) translateY(30px);
+    background: var(--box-bg-deep);
+    color: var(--accent-cyan);
+    border: 2px solid var(--accent-cyan);
+    box-shadow: 5px 5px 0 var(--accent-cyan-dim);
+    padding: 24px 48px;
+    font-size: 34px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    white-space: nowrap;
+    z-index: 40;
+}
+.share-toast.is-show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
 /* ---------- 回答フィードバック ◯× + 不正解時の正解表示 ---------- */
 .q-feedback {
     position: absolute;
