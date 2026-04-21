@@ -121,6 +121,7 @@
             }
 
             window.addEventListener('debug:forceAnswer', onDebugForce);
+            window.addEventListener('gimmick:forceFail', onGimmickForceFail);
 
             // --- 崩壊UIギミック適用 ---
             // DOMが整い、キーボードもmountされた後に適用する必要があるため
@@ -134,6 +135,7 @@
         destroy() {
             stopTimer();
             window.removeEventListener('debug:forceAnswer', onDebugForce);
+            window.removeEventListener('gimmick:forceFail', onGimmickForceFail);
             window.Gimmicks?.dispose();
             if (window.Keyboard?.unmount) window.Keyboard.unmount();
         },
@@ -157,6 +159,13 @@
         if (kind === 'win') resolveAnswer(true, '[DEBUG-WIN]', 'debug');
         else if (kind === 'lose') resolveAnswer(false, '[DEBUG-LOSE]', 'debug');
         else if (kind === 'skip') resolveAnswer(false, '[DEBUG-SKIP]', 'debug');
+    }
+
+    // G1 ランダム即死からの強制不正解 (reason を 'gimmick-death' に区別)
+    function onGimmickForceFail(ev) {
+        if (resolved) return;
+        const reason = (ev.detail && ev.detail.reason) || 'gimmick-death';
+        resolveAnswer(false, '', reason);
     }
 
     function startTimer() {

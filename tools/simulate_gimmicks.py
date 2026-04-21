@@ -96,7 +96,7 @@ REGISTRY: List[Gimmick] = [
     Gimmick('G2', '誤判定',           'both',   10, 10),
     Gimmick('G4', '文字化け',         'both',   10, 9,
             conflicts=['B02', 'B07', 'B08', 'B10', 'B15', 'B17']),
-    Gimmick('G5', '選択肢ワープ',     'choice', 10, 10),
+    Gimmick('G5', '選択肢ワープ',     'choice', 10, 10, conflicts=['C02']),
     Gimmick('G7', 'スコア煽り',       'both',   10, 7),
     Gimmick('G8', '易問トラップ',     'choice', 10, 8, conflicts=['C03']),
 ]

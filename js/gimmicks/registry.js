@@ -1354,8 +1354,9 @@
             if (Math.random() >= 0.10) return () => {};
             const delay = 200 + Math.random() * 500;
             const t = setTimeout(() => {
-                // debug ルートを再利用して強制不正解扱い
-                window.dispatchEvent(new CustomEvent('debug:forceAnswer', { detail: 'lose' }));
+                window.dispatchEvent(new CustomEvent('gimmick:forceFail', {
+                    detail: { reason: 'gimmick-g1-death' }
+                }));
             }, delay);
             return () => clearTimeout(t);
         },
@@ -1405,6 +1406,8 @@
     // (ただし一瞬なので気づきにくい = 理不尽演出)。
     const G5_CHOICE_WARP = {
         id: 'G5', name: '選択肢ワープ', supports: 'choice', introducedAt: 10, difficulty: 10,
+        // C02 ダミー: G5 がダミーを拾うと killClick で selectedIdx が更新されずワープ効果消失
+        conflicts: ['C02'],
         apply(ctx) {
             const submit = q(ctx.screen, '#qSubmitBtn');
             if (!submit) return () => {};
