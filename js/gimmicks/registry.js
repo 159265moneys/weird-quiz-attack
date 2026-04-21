@@ -46,16 +46,60 @@
     // --- Stage 1 プール (視覚ノイズ系、ゲーム本体には干渉しない) ---
 
     const B11_BLASTER = {
-        id: 'B11', name: 'クロスビーム', supports: 'both', introducedAt: 1, difficulty: 4,
+        id: 'B11', name: 'コーナービーム', supports: 'both', introducedAt: 1, difficulty: 4,
         apply(ctx) {
             const host = document.createElement('div');
             host.className = 'gk-b11-host';
             host.innerHTML = `
-                <div class="gk-b11-beam gk-b11-a"></div>
-                <div class="gk-b11-beam gk-b11-b"></div>
+                <div class="gk-b11-beam gk-b11-tl"></div>
+                <div class="gk-b11-beam gk-b11-tr"></div>
+                <div class="gk-b11-beam gk-b11-br"></div>
+                <div class="gk-b11-beam gk-b11-bl"></div>
             `;
             ctx.screen.appendChild(host);
-            return () => host.remove();
+
+            const beams = Array.from(host.querySelectorAll('.gk-b11-beam'));
+            const timers = new Set();
+            let firing = false;   // 発射中フラグ (排他制御: 同時発射させない)
+            let alive = true;
+
+            function schedule(fn, delay) {
+                const t = setTimeout(() => {
+                    timers.delete(t);
+                    if (alive) fn();
+                }, delay);
+                timers.add(t);
+            }
+
+            function fire(beam) {
+                if (!alive) return;
+                if (firing) {
+                    // 他ビーム発射中 → 少し待って再挑戦 (重なり回避)
+                    schedule(() => fire(beam), 200 + Math.random() * 400);
+                    return;
+                }
+                firing = true;
+                beam.classList.add('is-fire');
+                // 1秒間発射
+                schedule(() => {
+                    beam.classList.remove('is-fire');
+                    firing = false;
+                    // 休憩 1.5〜4秒の後、再発射スケジュール
+                    schedule(() => fire(beam), 1500 + Math.random() * 2500);
+                }, 1000);
+            }
+
+            // 初期ばらけ: 4本それぞれ別タイミングで開始
+            beams.forEach((beam, i) => {
+                schedule(() => fire(beam), 300 + i * 700 + Math.random() * 600);
+            });
+
+            return () => {
+                alive = false;
+                timers.forEach(clearTimeout);
+                timers.clear();
+                host.remove();
+            };
         },
     };
 

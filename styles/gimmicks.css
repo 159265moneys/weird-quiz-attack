@@ -40,9 +40,10 @@
    Phase 5b Batch1 — Stage 1 視覚ノイズ系 (B11/B16/B18/B19)
    ============================================================ */
 
-/* ---------- B11 クロスビーム: 4隅から青＋中白の極太レーザー ----------
-   Undertale Sansのガスターキャノン風。
-   画面対角方向にX字で青色ビームが走る。1秒間フル発射 → 3秒休み のループ。 */
+/* ---------- B11 コーナービーム: 4隅から独立ランダム発射 ----------
+   各ビームはJSで個別にスケジュール制御。排他フラグで同時発射を防ぐ。
+   1本1秒発射 → 1.5〜4秒休み をビームごとに独立実行。
+   長辺方向のグラデで「青 → 中心白 → 青」を表現。 */
 .gk-b11-host {
     position: absolute;
     inset: 0;
@@ -52,12 +53,10 @@
 }
 .gk-b11-beam {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 2600px;
+    width: 2400px;              /* 画面対角 (≈2200px) より十分長く */
     height: 140px;
-    margin-top: -70px;
-    margin-left: -1300px;
+    margin-top: -70px;           /* 縦中央を基準点 (corner) に合わせる */
+    transform-origin: 0 50%;     /* 左端中央を回転軸 = 各corner */
     background: linear-gradient(to bottom,
         transparent 0%,
         rgba(40, 130, 255, 0.08) 8%,
@@ -77,19 +76,17 @@
         0 0 200px rgba(160, 225, 255, 0.25);
     mix-blend-mode: screen;
     opacity: 0;
-    animation: gkB11Fire 4s ease-in-out infinite;
+    transition: opacity 0.12s ease-out;
+    will-change: opacity;
 }
-/* アスペクト比 1080:1920 → 対角線 ≈ 60.6° 傾き。両対角にかぶせてX字 */
-.gk-b11-a { transform: rotate(60deg); }
-.gk-b11-b { transform: rotate(-60deg); }
+.gk-b11-beam.is-fire { opacity: 1; }
 
-@keyframes gkB11Fire {
-    0%   { opacity: 0; }
-    3%   { opacity: 1; }     /* 素早くフェードイン (≈120ms) */
-    22%  { opacity: 1; }     /* 約0.88秒 full bright */
-    25%  { opacity: 0; }     /* フェードアウト (≈120ms) */
-    100% { opacity: 0; }     /* 3秒休み */
-}
+/* 1080:1920 のスクリーン対角線 ≈ 60.6° (atan(1920/1080))
+   各cornerから対角cornerに向かう方向に回転 */
+.gk-b11-tl { top: 0;    left: 0;    transform: rotate(60.6deg); }
+.gk-b11-tr { top: 0;    left: 100%; transform: rotate(119.4deg); }
+.gk-b11-br { top: 100%; left: 100%; transform: rotate(240.6deg); }
+.gk-b11-bl { top: 100%; left: 0;    transform: rotate(299.4deg); }
 
 /* ---------- B16 偽カウントダウン: 特大で焦らす ---------- */
 .gk-b16-fake {

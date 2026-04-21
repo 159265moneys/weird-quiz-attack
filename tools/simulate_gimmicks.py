@@ -41,7 +41,7 @@ class Gimmick:
 # --- MVP 実装済み 18 ギミック (registry.js と同期) ---
 REGISTRY: List[Gimmick] = [
     # Stage 1 (Batch 1)
-    Gimmick('B11', 'クロスビーム',           'both', 1, 4),
+    Gimmick('B11', 'コーナービーム',         'both', 1, 4),
     Gimmick('B16', '高速カウントダウン',     'both', 1, 2),
     Gimmick('B18', '偽エラー表示',           'both', 1, 2),
     # Stage 2

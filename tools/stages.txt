@@ -9,7 +9,7 @@
     choice-applicable:   3 (impl 3)
     input-applicable:    3 (impl 3)
   Members:
-    [✓] B11 クロスビーム               sup=both   st1 diff=4
+    [✓] B11 コーナービーム              sup=both   st1 diff=4
     [✓] B16 高速カウントダウン            sup=both   st1 diff=2
     [✓] B18 偽エラー表示               sup=both   st1 diff=2
 
@@ -18,7 +18,7 @@
     choice-applicable:   5 (impl 5)
     input-applicable:    5 (impl 5)
   Members:
-    [✓] B11 クロスビーム               sup=both   st1 diff=4
+    [✓] B11 コーナービーム              sup=both   st1 diff=4
     [✓] B16 高速カウントダウン            sup=both   st1 diff=2
     [✓] B18 偽エラー表示               sup=both   st1 diff=2
     [✓] B03 問題文逆さ                sup=both   st2 diff=3
@@ -103,7 +103,7 @@
     choice-applicable:  23 (impl 17)
     input-applicable:   33 (impl 17)
   Members:
-    [✓] B11 クロスビーム               sup=both   st1 diff=4
+    [✓] B11 コーナービーム              sup=both   st1 diff=4
     [✓] B16 高速カウントダウン            sup=both   st1 diff=2
     [✓] B18 偽エラー表示               sup=both   st1 diff=2
     [✓] B03 問題文逆さ                sup=both   st2 diff=3
