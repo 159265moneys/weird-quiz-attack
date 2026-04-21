@@ -4,8 +4,13 @@
 
 (function () {
     function updateScale() {
-        const sx = window.innerWidth / 1080;
-        const sy = window.innerHeight / 1920;
+        // visualViewport を優先 (iOS のアドレスバー変動に追従)
+        const vv = window.visualViewport;
+        const w = (vv && vv.width)  || window.innerWidth;
+        const h = (vv && vv.height) || window.innerHeight;
+        // 左右/上下に 1px も余らせないため、丸め誤差で見切れるのを避ける
+        const sx = w / 1080;
+        const sy = h / 1920;
         const scale = Math.min(sx, sy);
         document.documentElement.style.setProperty('--scale', scale);
     }
@@ -14,6 +19,13 @@
     updateScale();
     window.addEventListener('resize', updateScale);
     window.addEventListener('orientationchange', updateScale);
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', updateScale);
+        window.visualViewport.addEventListener('scroll', updateScale);
+    }
+    // iOSでレイアウト確定が遅れるケースに備えて次ティックでも再計算
+    setTimeout(updateScale, 0);
+    setTimeout(updateScale, 300);
 
     function boot() {
         window.Save.load();

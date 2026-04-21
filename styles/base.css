@@ -64,6 +64,7 @@ html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    overscroll-behavior: none;
     background: #000;
     color: var(--text);
     font-family: 'Courier New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', monospace;
@@ -72,10 +73,17 @@ html, body {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
-    touch-action: manipulation;
-    position: relative;
+    touch-action: none;        /* iOSラバーバンド抑制 */
     margin: 0;
     padding: 0;
+}
+/* iOS Safari のアドレスバー伸縮に強い固定 */
+body {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 /* --- 仮想ステージ (1080x1920 論理ピクセル) ---
