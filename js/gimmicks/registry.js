@@ -26,11 +26,10 @@
      Stage4: B04, B15, B20, C01             ← Phase 5b-Batch2 (+ C01=5a)
      Stage5: B05, B06, B12, B14             ← Phase 5b-Batch3a (+ B05/B12=5a)
      Stage6: B09, B10, W01, W02, W03, W07, C02  ← Phase 5b-Batch3b (+ W01/W03=5a)
-     Stage7: B13                            ← Phase 5a
+     Stage7: B01, B13, B17, W05, W10, W14, W17, W19  ← Phase 5b-Batch4 (+ B13=5a)
      Stage8: C04                            ← Phase 5a
 
-   未実装 (Phase 5b-Batch4〜):
-     Stage7: B01, B17, W05, W10, W14, W17, W19
+   未実装 (Phase 5b-Batch5〜):
      Stage8: C03, W04, W06, W09, W15, W16
      Stage9: B21, W08, W18, W20
    ============================================================ */
@@ -387,6 +386,116 @@
         },
     };
 
+    // --- Stage 7 プール ---
+
+    const B01_REVERSE_TAP = {
+        id: 'B01', name: '反転タップ', supports: 'both', introducedAt: 7, difficulty: 8,
+        // 座標系を捻るギミックとは干渉させない
+        conflicts: ['B03', 'B05'],
+        apply(ctx) {
+            const screen = ctx.screen;
+            function mirrorPoint(cx0, cy0, x, y) {
+                return { x: 2 * cx0 - x, y: 2 * cy0 - y };
+            }
+            function center() {
+                const rect = screen.getBoundingClientRect();
+                return { cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 };
+            }
+            function redirectPointer(e) {
+                if (e.__gkB01) return;
+                // keyboard が拾わない場所のイベントは無視 (パフォーマンス)
+                // pointermove/up は「発射」中のドラッグのみ反転されるべきだが、
+                // ブラウザは問答無用で window に流すので全部反転させる。
+                const { cx, cy } = center();
+                const { x, y } = mirrorPoint(cx, cy, e.clientX, e.clientY);
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                const target = document.elementFromPoint(x, y) || screen;
+                const ne = new PointerEvent(e.type, {
+                    bubbles: true, cancelable: true,
+                    clientX: x, clientY: y,
+                    pointerId: e.pointerId,
+                    pointerType: e.pointerType || 'touch',
+                    button: e.button, buttons: e.buttons,
+                    isPrimary: e.isPrimary,
+                });
+                ne.__gkB01 = true;
+                target.dispatchEvent(ne);
+            }
+            function redirectClick(e) {
+                if (e.__gkB01) return;
+                const { cx, cy } = center();
+                const { x, y } = mirrorPoint(cx, cy, e.clientX, e.clientY);
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                const target = document.elementFromPoint(x, y) || screen;
+                const ne = new MouseEvent('click', {
+                    bubbles: true, cancelable: true,
+                    clientX: x, clientY: y,
+                    button: e.button, buttons: e.buttons,
+                });
+                ne.__gkB01 = true;
+                target.dispatchEvent(ne);
+            }
+            // pointerdown/click は screen 上で、pointermove/up/cancel は
+            // keyboard.js が window に付けているので window レベルで横取りする。
+            screen.addEventListener('pointerdown', redirectPointer, true);
+            screen.addEventListener('click', redirectClick, true);
+            window.addEventListener('pointermove', redirectPointer, true);
+            window.addEventListener('pointerup', redirectPointer, true);
+            window.addEventListener('pointercancel', redirectPointer, true);
+            return () => {
+                screen.removeEventListener('pointerdown', redirectPointer, true);
+                screen.removeEventListener('click', redirectClick, true);
+                window.removeEventListener('pointermove', redirectPointer, true);
+                window.removeEventListener('pointerup', redirectPointer, true);
+                window.removeEventListener('pointercancel', redirectPointer, true);
+            };
+        },
+    };
+
+    const B17_NOISE_TEXT = {
+        id: 'B17', name: '問題文めちゃくちゃ', supports: 'both', introducedAt: 7, difficulty: 7,
+        // stem を書き換える/フェードさせる系と全部衝突
+        conflicts: ['B02', 'B07', 'B08', 'B10', 'B15'],
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            const originalHTML = stem.innerHTML;
+            const originalText = stem.textContent;
+            const prevClasses = stem.className;
+
+            const CHARS = 'あかさたなはまやらわいきしちにひみりうくすつぬふむゆるえけせてねへめれおこそとのほもよろをがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽアカサタナハマヤラワ日本国語数字漢記号線点';
+            function randLine(minLen, maxLen) {
+                const len = minLen + Math.floor(Math.random() * (maxLen - minLen + 1));
+                let s = '';
+                for (let i = 0; i < len; i++) s += CHARS[Math.floor(Math.random() * CHARS.length)];
+                return s;
+            }
+            function esc(s) {
+                return String(s).replace(/[&<>"']/g, c => ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+                }[c]));
+            }
+            const LINES = 14;
+            const realLineIdx = 1 + Math.floor(Math.random() * (LINES - 2)); // 両端は避ける
+            const out = [];
+            for (let i = 0; i < LINES; i++) {
+                if (i === realLineIdx) {
+                    out.push(`<span class="gk-b17-line gk-b17-real">${esc(originalText)}</span>`);
+                } else {
+                    out.push(`<span class="gk-b17-line">${esc(randLine(6, 22))}</span>`);
+                }
+            }
+            stem.classList.add('gk-b17-noise');
+            stem.innerHTML = out.join('');
+            return () => {
+                stem.className = prevClasses;
+                stem.innerHTML = originalHTML;
+            };
+        },
+    };
+
     const B13_TINY = {
         id: 'B13', name: 'フォント極小', supports: 'both', introducedAt: 7, difficulty: 7,
         apply(ctx) {
@@ -555,6 +664,135 @@
         },
     };
 
+    // --- Stage 7 プール (文字盤フック系) ---
+
+    // キーボード onChange を安全にラップするためのヘルパー
+    // - W05/W10 など 1 問中に1個しか使わない前提 (conflicts で制御)
+    function wrapOnChange(mutator) {
+        const kb = window.Keyboard;
+        if (!kb || !kb.getOnChange) return () => {};
+        const orig = kb.getOnChange();
+        kb.setOnChange(mutator(orig));
+        return () => {
+            // unmount済なら setOnChange は no-op
+            try { kb.setOnChange(orig); } catch (e) { /* ignore */ }
+        };
+    }
+
+    const W05_CURSOR_WILD = {
+        id: 'W05', name: 'カーソル暴走', supports: 'input', introducedAt: 7, difficulty: 7,
+        // 同じく buffer を捻るギミックとは干渉
+        conflicts: ['W07', 'W10'],
+        apply(ctx) {
+            let prev = window.Keyboard?.getValue() || '';
+            let bypass = false;
+            const unwrap = wrapOnChange((orig) => (val) => {
+                if (bypass) { bypass = false; prev = val; if (orig) orig(val); return; }
+                // 末尾に1文字だけ追加された場合 → ランダムな位置に挿入し直す
+                if (val.length === prev.length + 1 && val.startsWith(prev)) {
+                    const ch = val[val.length - 1];
+                    const base = prev;
+                    if (base.length === 0) {
+                        // 最初の1文字はそのまま
+                        prev = val; if (orig) orig(val); return;
+                    }
+                    let pos = Math.floor(Math.random() * (base.length + 1));
+                    // 本当の末尾は避ける(必ず「ズレた」感を出す)
+                    if (pos === base.length) pos = Math.max(0, base.length - 1);
+                    const mutated = base.slice(0, pos) + ch + base.slice(pos);
+                    bypass = true;
+                    window.Keyboard.setValue(mutated);
+                    return;
+                }
+                prev = val;
+                if (orig) orig(val);
+            });
+            return unwrap;
+        },
+    };
+
+    const W10_INPUT_DELAY = {
+        id: 'W10', name: '入力遅延', supports: 'input', introducedAt: 7, difficulty: 7,
+        conflicts: ['W05', 'W07'],
+        apply(ctx) {
+            const DELAY = 2000;
+            const timers = new Set();
+            const unwrap = wrapOnChange((orig) => (val) => {
+                const t = setTimeout(() => {
+                    timers.delete(t);
+                    if (orig) orig(val);
+                }, DELAY);
+                timers.add(t);
+            });
+            return () => {
+                timers.forEach(clearTimeout);
+                timers.clear();
+                unwrap();
+            };
+        },
+    };
+
+    const W14_KEY_HUGE = {
+        id: 'W14', name: 'キー巨大化', supports: 'input', introducedAt: 7, difficulty: 7,
+        apply(ctx) {
+            let target = null;
+            function pick() {
+                // OK/BS は避ける (操作不能事故防止)
+                const candidates = qa(ctx.screen, '.kb-key:not(.kb-empty):not(.kb-fn-ok):not(.kb-fn-bs)');
+                if (candidates.length === 0) return null;
+                return candidates[Math.floor(Math.random() * candidates.length)];
+            }
+            function apply() {
+                if (target) target.classList.remove('gk-w14-huge');
+                target = pick();
+                if (target) target.classList.add('gk-w14-huge');
+            }
+            apply();
+            // 問題中に1回だけ差し替え (10秒後) — 永続的に同じキーだと慣れてしまう
+            const swap = setTimeout(apply, 10000);
+            return () => {
+                clearTimeout(swap);
+                if (target) target.classList.remove('gk-w14-huge');
+            };
+        },
+    };
+
+    const W17_MODE_AUTO_SWAP = {
+        id: 'W17', name: 'カナひら勝手切替', supports: 'input', introducedAt: 7, difficulty: 7,
+        apply(ctx) {
+            const kb = window.Keyboard;
+            if (!kb || !kb.setMode) return () => {};
+            const originalMode = kb.getMode();
+            // ひらがな⇔カタカナのみ切り替える (alpha/number は問題性質と噛み合わないので除外)
+            let cur = originalMode === 'katakana' ? 'katakana' : 'hiragana';
+            function flip() {
+                cur = cur === 'hiragana' ? 'katakana' : 'hiragana';
+                try { kb.setMode(cur); } catch (e) { /* ignore */ }
+            }
+            const interval = setInterval(flip, 3500 + Math.random() * 1500);
+            return () => {
+                clearInterval(interval);
+                try { kb.setMode(originalMode); } catch (e) { /* ignore */ }
+            };
+        },
+    };
+
+    const W19_FLICK_REVERSE = {
+        id: 'W19', name: 'フリック方向反転', supports: 'input', introducedAt: 7, difficulty: 7,
+        apply(ctx) {
+            const kb = window.Keyboard;
+            if (!kb || !kb.setFlickTransform) return () => {};
+            kb.setFlickTransform((dir) => {
+                if (dir === 'u') return 'd';
+                if (dir === 'd') return 'u';
+                if (dir === 'l') return 'r';
+                if (dir === 'r') return 'l';
+                return dir;
+            });
+            return () => kb.setFlickTransform(null);
+        },
+    };
+
     // ---------- Export ----------
     const map = {
         B11_BLASTER, B16_FAKE_COUNTDOWN, B18_FAKE_ERROR,
@@ -562,8 +800,10 @@
         B03_REVERSE, B05_MIRROR, B06_COLOR_BREAK, B07_GLITCH,
         B09_SHRINK, B10_SHUFFLE_TEXT,
         B12_BLUR, B13_TINY, B14_MARGIN_CHAOS,
+        B01_REVERSE_TAP, B17_NOISE_TEXT,
         C01_SHUFFLE, C02_DUMMY_CHOICE, C04_FAKE_5050,
         W01_KEYS_INVISIBLE, W02_KEYS_SHUFFLE, W03_ANSWER_INVISIBLE, W07_CHAR_DROP,
+        W05_CURSOR_WILD, W10_INPUT_DELAY, W14_KEY_HUGE, W17_MODE_AUTO_SWAP, W19_FLICK_REVERSE,
     };
     const all = Object.values(map).filter(g => g && g.id);
     window.GimmickRegistry = Object.assign({ all }, map);

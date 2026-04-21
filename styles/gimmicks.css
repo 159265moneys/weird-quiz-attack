@@ -255,3 +255,60 @@
     85%  { transform: translate(80px, 40px); }
     100% { transform: translate(0, 0); }
 }
+
+/* ============================================================
+   Phase 5b Batch4 — Stage 7 (B01/B17/W05/W10/W14/W17/W19)
+   ============================================================ */
+
+/* ---------- B17 問題文めちゃくちゃ: ノイズの中から本物を探す ----------
+   14 行のランダム文字で埋め、1 行だけ本物の問題文。
+   本物行もノイズ行と同じ体裁にして見分けを難しくする。 */
+.q-stem.gk-b17-noise {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 20px;
+    font-size: 34px;
+    line-height: 1.15;
+    letter-spacing: 0;
+    text-align: left;
+    overflow: hidden;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.gk-b17-line {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    font-family: 'Courier New', monospace;
+}
+/* 本物行も見た目は全く同じにする (=見分けがつかない) */
+.gk-b17-line.gk-b17-real {
+    /* 色や太字を変えない。完全に溶け込ませる。 */
+}
+
+/* ---------- W14 キー巨大化: 1 キーだけ画面の半分級に ----------
+   scale で膨らませ z-index で前面に。隣接キーを物理的に覆い隠す。
+   transform-origin は中心のままなので、周囲に均等に広がる。 */
+.kb-key.gk-w14-huge {
+    transform: scale(2.4);
+    z-index: 20;
+    position: relative;
+    background: #fff;
+    border-color: var(--accent-cyan, #3ed);
+    box-shadow: 0 0 0 4px var(--accent-cyan, #3ed),
+                0 0 60px rgba(62, 221, 221, 0.4);
+}
+.kb-key.gk-w14-huge .kb-main {
+    font-size: 96px;
+}
+.kb-key.gk-w14-huge .kb-sub {
+    font-size: 32px;
+}
+
+/* W05 カーソル暴走: Keyboard.setValue 経由で buffer を入れ替えるのでCSS不要 */
+/* W10 入力遅延: onChange ラップのみでCSS不要 */
+/* W17 カナひら勝手切替: Keyboard.setMode() 呼び出しのみ */
+/* W19 フリック方向反転: setFlickTransform() のみ */
+/* B01 反転タップ: pointerevent redirect のみ */

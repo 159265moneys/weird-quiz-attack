@@ -27,6 +27,9 @@
     // ドラッグ/フリック中の状態
     let dragging = null; // { x, y, keyEl, key, direction }
 
+    // ギミック用フック: フリック方向変換 (fn(dir)=>dir'). null で無効。
+    let flickTransform = null;
+
     // ---------------------------------------------------------
     // Public API
     // ---------------------------------------------------------
@@ -55,6 +58,7 @@
             host = null;
             opts = null;
             buffer = '';
+            flickTransform = null;   // ギミック状態のリセット
         },
 
         getValue() { return buffer; },
@@ -62,6 +66,13 @@
         clear() { buffer = ''; emitChange(); renderBufferOnly(); },
         setMode(m) { mode = m; render(); },
         getMode() { return mode; },
+
+        // --- ギミック用フック (Phase 5b Batch4〜) ---
+        getOnChange() { return opts?.onChange; },
+        setOnChange(fn) { if (opts) opts.onChange = fn || (() => {}); },
+        getOnSubmit() { return opts?.onSubmit; },
+        setOnSubmit(fn) { if (opts) opts.onSubmit = fn || (() => {}); },
+        setFlickTransform(fn) { flickTransform = typeof fn === 'function' ? fn : null; },
     };
 
     // ---------------------------------------------------------
@@ -229,6 +240,10 @@
     // ---------------------------------------------------------
     function handleKey(key, dir) {
         if (key.fn) return handleFn(key.fn);
+        // ギミックによるフリック方向変換 (W19: 上下左右反転など)
+        if (flickTransform) {
+            try { dir = flickTransform(dir) || dir; } catch (e) { /* ignore */ }
+        }
         // 文字キー
         let char = (dir === 'c') ? (key.c || '')
             : (dir === 'u' ? (key.u || '')
