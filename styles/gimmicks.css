@@ -137,7 +137,7 @@
     border: 2px solid var(--accent-red, #ff3030);
     color: #fff;
     padding: 22px 34px;
-    border-radius: 0;
+    border-radius: 6px;
     text-align: center;
     font-family: 'Courier New', monospace;
     opacity: 0;
@@ -173,22 +173,6 @@
     to { transform: rotate(360deg); }
 }
 
-
-/* ---------- B11 ホワイトフラッシュ (registry.js 実装に対応) ----------
-   registry.js は gk-b11-flash div を作り .is-on で点滅させる。
-   上の gk-b11-host/beam は旧ビーム版の残骸で現在未使用。 */
-.gk-b11-flash {
-    position: absolute;
-    inset: 0;
-    z-index: 80;
-    pointer-events: none;
-    background: #ffffff;
-    opacity: 0;
-    transition: opacity 0.08s ease-out;
-}
-.gk-b11-flash.is-on {
-    opacity: 1;
-}
 
 /* ============================================================
    Phase 5b Batch2 — Stage 3-4 (B02/B04/B08/B15/B20)
