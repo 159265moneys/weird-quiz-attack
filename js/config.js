@@ -6,22 +6,22 @@ window.CONFIG = Object.freeze({
     APP_NAME: '変なクイズ',
     VERSION: '0.1.0-alpha',
 
-    // --- ステージ定義 (設計書v1.0 §9) ---
+    // --- ステージ定義 (クソゲー仕様書v1.0 §3-1) ---
     // name: 仮名 / stress: E=楽しい, M=軽ストレス, X=超ストレス
-    // slots: ステージ20問のうち何問ギミックが発動するか (ステージ開始時に0..19からランダム抽選)
+    // slots: ステージ20問のうち何問ギミックが発動するか (仕様書の「崩壊UI数」)
     // K: 1問あたりの同時ギミック数 [min, max] (該当問題にだけ適用)
     // diff: 出題難易度ratio [L1, L2, L3]
     STAGES: [
-        { no: 1,  name: 'TUTORIAL ZONE',     stress: 'E', slots: 2,  K: [1, 1], diff: [0.80, 0.20, 0.00] },
-        { no: 2,  name: 'WARMUP',            stress: 'E', slots: 4,  K: [1, 1], diff: [0.70, 0.25, 0.05] },
-        { no: 3,  name: 'GENTLE GLITCH',     stress: 'E', slots: 6,  K: [1, 2], diff: [0.60, 0.30, 0.10] },
-        { no: 4,  name: 'SOFT CHAOS',        stress: 'E', slots: 8,  K: [1, 2], diff: [0.50, 0.35, 0.15] },
-        { no: 5,  name: 'NOISE FLOOR',       stress: 'E', slots: 10, K: [2, 2], diff: [0.40, 0.40, 0.20] },
-        { no: 6,  name: 'FRAGMENTED',        stress: 'M', slots: 13, K: [2, 3], diff: [0.30, 0.45, 0.25] },
-        { no: 7,  name: 'DISTORTED',         stress: 'M', slots: 16, K: [2, 3], diff: [0.25, 0.45, 0.30] },
+        { no: 1,  name: 'TUTORIAL ZONE',     stress: 'E', slots: 4,  K: [1, 1], diff: [0.80, 0.20, 0.00] },
+        { no: 2,  name: 'WARMUP',            stress: 'E', slots: 5,  K: [1, 1], diff: [0.70, 0.25, 0.05] },
+        { no: 3,  name: 'GENTLE GLITCH',     stress: 'E', slots: 7,  K: [1, 2], diff: [0.60, 0.30, 0.10] },
+        { no: 4,  name: 'SOFT CHAOS',        stress: 'E', slots: 10, K: [1, 2], diff: [0.50, 0.35, 0.15] },
+        { no: 5,  name: 'NOISE FLOOR',       stress: 'E', slots: 12, K: [2, 2], diff: [0.40, 0.40, 0.20] },
+        { no: 6,  name: 'FRAGMENTED',        stress: 'M', slots: 15, K: [2, 3], diff: [0.30, 0.45, 0.25] },
+        { no: 7,  name: 'DISTORTED',         stress: 'M', slots: 19, K: [2, 3], diff: [0.25, 0.45, 0.30] },
         { no: 8,  name: 'COLLAPSE',          stress: 'X', slots: 20, K: [3, 4], diff: [0.20, 0.40, 0.40] },
-        { no: 9,  name: 'HELL',              stress: 'X', slots: 20, K: [3, 5], diff: [0.15, 0.35, 0.50] },
-        { no: 10, name: 'ABYSS',             stress: 'X', slots: 20, K: [4, 6], diff: [0.10, 0.30, 0.60] },
+        { no: 9,  name: 'HELL',              stress: 'X', slots: 20, K: [3, 5], diff: [0.15, 0.35, 0.50] }, // パラメータMAX・動的切替はPhase6
+        { no: 10, name: 'ABYSS',             stress: 'X', slots: 20, K: [4, 6], diff: [0.10, 0.30, 0.60] }, // 理不尽ギミックはPhase6
     ],
 
     // 1ステージあたりの出題数
