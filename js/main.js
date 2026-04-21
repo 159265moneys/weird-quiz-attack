@@ -41,6 +41,7 @@
 
         window.Debug?.init();
         window.FloatingTextFX?.mount();
+        window.VhsFX?.mount();
         window.ButterflyFX?.mount();
         window.Router.show('title');
     }

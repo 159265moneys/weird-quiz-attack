@@ -48,6 +48,9 @@
             if (window.FloatingTextFX?.onScreenChange) {
                 try { window.FloatingTextFX.onScreenChange(name); } catch (e) { /* noop */ }
             }
+            if (window.VhsFX?.onScreenChange) {
+                try { window.VhsFX.onScreenChange(name); } catch (e) { /* noop */ }
+            }
         },
 
         reload() {
