@@ -6,17 +6,31 @@
        id: 'B03',                              // ギミック一覧.md の ID
        name: '問題文逆さ',
        supports: 'both' | 'choice' | 'input',  // 対応する回答モード
-       minStage: 2,                            // 解放ステージ (以上で登場) 設計書§9-3のプール準拠
+       introducedAt: 2,                        // 初登場ステージ (設計書§9-3ステージ別プール)
+       difficulty: 3,                          // 体感難度 1-10 (スタッフ付け)
        conflicts: ['C01', ...],                // 同時適用NGなID
        apply(ctx) => cleanupFn                 // ctx: { q, screen, zones }
      }
 
-   Phase 5a で採用する 9 ギミック (設計書§9-3のプールから抜粋):
-     B03 問題文逆さ (2+)   / B05 ミラー (5+)      / B07 グリッチ (2+)
-     B12 ぼかし (6+)       / B13 フォント極小 (7+) / C01 選択肢シャッフル (4+)
-     C04 嘘50:50 (8+)      / W01 文字盤見えない (6+) / W03 解答欄見えない (8+)
+   ステージ別プール抽選ルール (selector.js で実装):
+     Stage 1  : introducedAt === 1
+     Stage 2-7: introducedAt ∈ {n-1, n}  (当該 + 1個下まで)
+     Stage 8  : introducedAt ∈ {1..8}    (全部)
+     Stage 9  : introducedAt ∈ {8, 9}    (8追加分 + 9追加分のみ)
+     Stage 10 : CONFIG.STAGE10_POOL 直指定 (最高難度のみ, 重複OK)
 
-   ※ Stage 1 プールの B08/B16/B18 は Phase 5b で追加予定 (現MVPではStage1にギミック無し)
+   Phase 5a 実装済み 9 ギミック:
+     B03(2) B05(5) B07(2) B12(5) B13(7) C01(4) C04(8) W01(6) W03(6)
+
+   未実装 (Phase 5b〜):
+     Stage1: B19, B16, B18, B11
+     Stage3: B02, B08
+     Stage4: B04, B15, B20
+     Stage5: B06, B14
+     Stage6: B09, B10, W02, W07, C02
+     Stage7: B01, B17, W05, W10, W14, W17, W19
+     Stage8: C03, W04, W06, W09, W15, W16
+     Stage9: B21, W08, W18, W20
    ============================================================ */
 
 (function () {
@@ -27,7 +41,7 @@
     // ========== B (Both) ==========
 
     const B03_REVERSE = {
-        id: 'B03', name: '問題文逆さ', supports: 'both', minStage: 2,
+        id: 'B03', name: '問題文逆さ', supports: 'both', introducedAt: 2, difficulty: 3,
         apply(ctx) {
             const el = ctx.zones.question;
             if (!el) return () => {};
@@ -38,7 +52,7 @@
     };
 
     const B05_MIRROR = {
-        id: 'B05', name: 'ミラー', supports: 'both', minStage: 5,
+        id: 'B05', name: 'ミラー', supports: 'both', introducedAt: 5, difficulty: 5,
         conflicts: ['B03'],
         apply(ctx) {
             const el = ctx.screen;
@@ -49,7 +63,7 @@
     };
 
     const B07_GLITCH = {
-        id: 'B07', name: 'グリッチ', supports: 'both', minStage: 2,
+        id: 'B07', name: 'グリッチ', supports: 'both', introducedAt: 2, difficulty: 3,
         conflicts: ['B12', 'B13'],
         apply(ctx) {
             const stem = q(ctx.screen, '.q-stem');
@@ -86,7 +100,7 @@
     };
 
     const B12_BLUR = {
-        id: 'B12', name: 'ぼかし', supports: 'both', minStage: 6,
+        id: 'B12', name: 'ぼかし', supports: 'both', introducedAt: 5, difficulty: 5,
         apply(ctx) {
             const stem = q(ctx.screen, '.q-stem');
             if (!stem) return () => {};
@@ -97,7 +111,7 @@
     };
 
     const B13_TINY = {
-        id: 'B13', name: 'フォント極小', supports: 'both', minStage: 7,
+        id: 'B13', name: 'フォント極小', supports: 'both', introducedAt: 7, difficulty: 7,
         apply(ctx) {
             const stem = q(ctx.screen, '.q-stem');
             const prevSize = stem ? stem.style.fontSize : '';
@@ -122,7 +136,7 @@
     // ========== C (Choice only) ==========
 
     const C01_SHUFFLE = {
-        id: 'C01', name: '選択肢シャッフル', supports: 'choice', minStage: 4,
+        id: 'C01', name: '選択肢シャッフル', supports: 'choice', introducedAt: 4, difficulty: 5,
         conflicts: ['C04'],
         apply(ctx) {
             const grid = q(ctx.screen, '.q-choices');
@@ -140,7 +154,7 @@
     };
 
     const C04_FAKE_5050 = {
-        id: 'C04', name: '嘘50:50', supports: 'choice', minStage: 8,
+        id: 'C04', name: '嘘50:50', supports: 'choice', introducedAt: 8, difficulty: 6,
         conflicts: ['C01'],
         apply(ctx) {
             const btns = qa(ctx.screen, '.q-choice');
@@ -167,7 +181,7 @@
     // ========== W (Input/Write only) ==========
 
     const W01_KEYS_INVISIBLE = {
-        id: 'W01', name: '文字盤見えない', supports: 'input', minStage: 6,
+        id: 'W01', name: '文字盤見えない', supports: 'input', introducedAt: 6, difficulty: 7,
         apply(ctx) {
             ctx.screen.classList.add('gk-w01');
             return () => ctx.screen.classList.remove('gk-w01');
@@ -175,7 +189,7 @@
     };
 
     const W03_ANSWER_INVISIBLE = {
-        id: 'W03', name: '解答欄見えない', supports: 'input', minStage: 8,
+        id: 'W03', name: '解答欄見えない', supports: 'input', introducedAt: 6, difficulty: 6,
         apply(ctx) {
             ctx.screen.classList.add('gk-w03');
             return () => ctx.screen.classList.remove('gk-w03');

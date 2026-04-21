@@ -21,9 +21,36 @@
         return gimmicks.filter(g => g.supports === 'both' || g.supports === qMode);
     }
 
-    // 設計書§9-3 のプール解放ルール: そのステージ以上で出現可
-    function filterByStage(gimmicks, stageNo) {
-        return gimmicks.filter(g => (g.minStage ?? 1) <= stageNo);
+    // ステージ別プール (設計書§9-3 準拠)
+    //   Stage 1   : introducedAt === 1
+    //   Stage 2-7 : introducedAt ∈ {n-1, n}  (当該 + 1個下まで)
+    //   Stage 8   : 全部 (introducedAt ≤ 8)
+    //   Stage 9   : introducedAt ∈ {8, 9}    (8追加分 + 9追加分のみ)
+    //   Stage 10  : CONFIG.STAGE10_POOL 直指定 (最高難度のみ)
+    function poolForStage(gimmicks, stageNo) {
+        if (stageNo === 10) {
+            const ids = new Set(window.CONFIG.STAGE10_POOL || []);
+            return gimmicks.filter(g => ids.has(g.id));
+        }
+        if (stageNo === 9) {
+            return gimmicks.filter(g => {
+                const at = g.introducedAt ?? 1;
+                return at === 8 || at === 9;
+            });
+        }
+        if (stageNo === 8) {
+            return gimmicks.filter(g => (g.introducedAt ?? 1) <= 8);
+        }
+        if (stageNo === 1) {
+            return gimmicks.filter(g => (g.introducedAt ?? 1) === 1);
+        }
+        // Stage 2-7: 当該 + 1個下
+        const low = stageNo - 1;
+        const high = stageNo;
+        return gimmicks.filter(g => {
+            const at = g.introducedAt ?? 1;
+            return at >= low && at <= high;
+        });
     }
 
     // ステージ開始時に呼び出す: 全問中 slots 個をランダム選抜して
@@ -50,8 +77,8 @@
         const count = pickCount(stageConfig);
         if (count <= 0) return [];
 
-        // ①ステージ解放 ②回答モード の二段フィルタ
-        const stageOK = filterByStage(window.GimmickRegistry.all, stageNo);
+        // ①ステージ別プール ②回答モード の二段フィルタ
+        const stageOK = poolForStage(window.GimmickRegistry.all, stageNo);
         const pool = filterByMode(stageOK, q.mode);
         if (pool.length === 0) {
             console.warn(`[Gimmick] no compatible gimmick for stage=${stageNo} mode=${q.mode}`);
@@ -76,5 +103,5 @@
         return picked;
     }
 
-    window.GimmickSelector = { pickGimmicks, pickGimmickSlots };
+    window.GimmickSelector = { pickGimmicks, pickGimmickSlots, poolForStage };
 })();
