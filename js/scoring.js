@@ -19,7 +19,7 @@
    ============================================================ */
 
 (function () {
-    const Q_TIME_LIMIT_MS = 100 * 1000; // 1問あたり100秒
+    const Q_TIME_LIMIT_MS = 60 * 1000; // 1問あたり60秒
     const BASE_POINT = 1000;
     const TIME_BONUS_MAX = 1000;
     // TODO(Phase 6+): ステージごとの SS閾値 (CONFIG.STAGES[n].ssAvgSec) に置き換え

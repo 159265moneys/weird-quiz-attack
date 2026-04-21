@@ -40,57 +40,55 @@
    Phase 5b Batch1 — Stage 1 視覚ノイズ系 (B11/B16/B18/B19)
    ============================================================ */
 
-/* ---------- B11 光沢: 画面全体を流れる白い光沢 ---------- */
-.gk-b11-shine {
+/* ---------- B11 ホワイトフラッシュ: 画面全体が一瞬まっ白 ----------
+   is-on の間は真っ白で背後が見えない。点滅で焦らす演出。 */
+.gk-b11-flash {
     position: absolute;
     inset: 0;
+    background: #fff;
+    z-index: 80;
     pointer-events: none;
-    z-index: 50;
-    background: linear-gradient(115deg,
-        transparent 0%,
-        transparent 38%,
-        rgba(255, 255, 255, 0.55) 50%,
-        transparent 62%,
-        transparent 100%);
-    background-size: 280% 280%;
-    mix-blend-mode: screen;
-    animation: gkB11Sweep 3.2s linear infinite;
+    opacity: 0;
+    transition: opacity 0.06s linear;
 }
-@keyframes gkB11Sweep {
-    0%   { background-position: 180% 180%; }
-    100% { background-position: -80% -80%; }
+.gk-b11-flash.is-on {
+    opacity: 1;
 }
 
-/* ---------- B16 偽カウントダウン: 焦らすだけの無意味タイマー ---------- */
+/* ---------- B16 偽カウントダウン: 特大で焦らす ---------- */
 .gk-b16-fake {
     position: absolute;
-    top: 220px; /* 問題ゾーンの右上あたり */
-    right: 80px;
+    top: 260px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 40;
     pointer-events: none;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    gap: 4px;
+    align-items: center;
+    gap: 6px;
     color: var(--accent-red, #ff3030);
     font-family: 'Courier New', monospace;
-    text-shadow: 0 0 10px rgba(255, 48, 48, 0.55);
-    animation: gkB16Pulse 0.35s infinite alternate;
+    text-shadow: 0 0 18px rgba(255, 48, 48, 0.7);
+    animation: gkB16Pulse 0.32s infinite alternate;
 }
 .gk-b16-label {
-    font-size: 14px;
-    letter-spacing: 0.15em;
-    opacity: 0.75;
+    font-size: 28px;
+    letter-spacing: 0.22em;
+    opacity: 0.85;
+    font-weight: bold;
 }
 .gk-b16-num {
-    font-size: 30px;
-    font-weight: bold;
-    min-width: 180px;
-    text-align: right;
+    font-size: 96px;
+    line-height: 1;
+    font-weight: 900;
+    min-width: 420px;
+    text-align: center;
     font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
 }
 @keyframes gkB16Pulse {
-    from { opacity: 0.95; }
+    from { opacity: 1; }
     to   { opacity: 0.55; }
 }
 
@@ -142,7 +140,6 @@
     to { transform: rotate(360deg); }
 }
 
-/* B19 進捗バー嘘: DOMテキストを直接書き換えるのでCSS不要 */
 
 /* ============================================================
    Phase 5b Batch2 — Stage 3-4 (B02/B04/B08/B15/B20)

@@ -1,28 +1,26 @@
 ====================================================================
  Stage × Gimmick Pool Report
- Implemented gimmicks: 18
- Registry total:       42
+ Implemented gimmicks: 17
+ Registry total:       41
 ====================================================================
 
 [Stage  1] TUTORIAL ZONE   stress=E  slots=4  K=[1, 1]  diff=[0.8, 0.2, 0.0]
-  Pool total:   4  (implemented: 4)
-    choice-applicable:   4 (impl 4)
-    input-applicable:    4 (impl 4)
+  Pool total:   3  (implemented: 3)
+    choice-applicable:   3 (impl 3)
+    input-applicable:    3 (impl 3)
   Members:
-    [✓] B11 光沢                   sup=both   st1 diff=3
+    [✓] B11 ホワイトフラッシュ            sup=both   st1 diff=4
     [✓] B16 高速カウントダウン            sup=both   st1 diff=2
     [✓] B18 偽エラー表示               sup=both   st1 diff=2
-    [✓] B19 進捗バー嘘                sup=both   st1 diff=1
 
 [Stage  2] WARMUP          stress=E  slots=5  K=[1, 1]  diff=[0.7, 0.25, 0.05]
-  Pool total:   6  (implemented: 6)
-    choice-applicable:   6 (impl 6)
-    input-applicable:    6 (impl 6)
+  Pool total:   5  (implemented: 5)
+    choice-applicable:   5 (impl 5)
+    input-applicable:    5 (impl 5)
   Members:
-    [✓] B11 光沢                   sup=both   st1 diff=3
+    [✓] B11 ホワイトフラッシュ            sup=both   st1 diff=4
     [✓] B16 高速カウントダウン            sup=both   st1 diff=2
     [✓] B18 偽エラー表示               sup=both   st1 diff=2
-    [✓] B19 進捗バー嘘                sup=both   st1 diff=1
     [✓] B03 問題文逆さ                sup=both   st2 diff=3
     [✓] B07 グリッチ                 sup=both   st2 diff=3
 
@@ -101,14 +99,13 @@
     [ ] W19 フリック方向反転             sup=input  st7 diff=7
 
 [Stage  8] COLLAPSE        stress=X  slots=20  K=[4, 5]  diff=[0.2, 0.4, 0.4]
-  Pool total:  38  (implemented: 18)
-    choice-applicable:  24 (impl 16)
-    input-applicable:   34 (impl 16)
+  Pool total:  37  (implemented: 17)
+    choice-applicable:  23 (impl 15)
+    input-applicable:   33 (impl 15)
   Members:
-    [✓] B11 光沢                   sup=both   st1 diff=3
+    [✓] B11 ホワイトフラッシュ            sup=both   st1 diff=4
     [✓] B16 高速カウントダウン            sup=both   st1 diff=2
     [✓] B18 偽エラー表示               sup=both   st1 diff=2
-    [✓] B19 進捗バー嘘                sup=both   st1 diff=1
     [✓] B03 問題文逆さ                sup=both   st2 diff=3
     [✓] B07 グリッチ                 sup=both   st2 diff=3
     [✓] B02 問題文1文字ずつ             sup=both   st3 diff=4

@@ -20,7 +20,7 @@
      Stage 10 : CONFIG.STAGE10_POOL 直指定 (最高難度のみ, 重複OK)
 
    実装済み:
-     Stage1: B11, B16, B18, B19             ← Phase 5b-Batch1
+     Stage1: B11, B16, B18                  ← Phase 5b-Batch1 (B19は廃止)
      Stage2: B03, B07                       ← Phase 5a
      Stage3: B02, B08                       ← Phase 5b-Batch2
      Stage4: B04, B15, B20, C01             ← Phase 5b-Batch2 (+ C01=5a)
@@ -47,12 +47,26 @@
     // --- Stage 1 プール (視覚ノイズ系、ゲーム本体には干渉しない) ---
 
     const B11_SHINE = {
-        id: 'B11', name: '光沢', supports: 'both', introducedAt: 1, difficulty: 3,
+        id: 'B11', name: 'ホワイトフラッシュ', supports: 'both', introducedAt: 1, difficulty: 4,
         apply(ctx) {
             const host = document.createElement('div');
-            host.className = 'gk-b11-shine';
+            host.className = 'gk-b11-flash';
             ctx.screen.appendChild(host);
-            return () => host.remove();
+            // ランダム間隔で瞬間的に真っ白、短時間 "何も見えない" 状態を作る
+            let showTimer = 0, hideTimer = 0;
+            const flash = () => {
+                host.classList.add('is-on');
+                hideTimer = setTimeout(() => {
+                    host.classList.remove('is-on');
+                    showTimer = setTimeout(flash, 2200 + Math.random() * 2400);
+                }, 280 + Math.random() * 220);
+            };
+            showTimer = setTimeout(flash, 1200 + Math.random() * 1500);
+            return () => {
+                clearTimeout(showTimer);
+                clearTimeout(hideTimer);
+                host.remove();
+            };
         },
     };
 
@@ -104,30 +118,6 @@
                 clearTimeout(showTimer);
                 clearTimeout(hideTimer);
                 host.remove();
-            };
-        },
-    };
-
-    const B19_FAKE_PROGRESS = {
-        id: 'B19', name: '進捗バー嘘', supports: 'both', introducedAt: 1, difficulty: 1,
-        apply(ctx) {
-            const header = q(ctx.screen, '.q-header');
-            if (!header) return () => {};
-            // 「STAGE X / Q N/M」を含む span を取得
-            const span = qa(header, 'span').find(el => /Q\s*\d+\s*\/\s*\d+/.test(el.textContent));
-            if (!span) return () => {};
-            const original = span.textContent;
-            const total = 20;
-            const tick = () => {
-                if (!span.isConnected) return;
-                const fakeN = Math.floor(Math.random() * total) + 1;
-                span.textContent = original.replace(/Q\s*\d+\s*\/\s*\d+/, `Q ${fakeN}/${total}`);
-            };
-            const timer = setInterval(tick, 1200);
-            tick();
-            return () => {
-                clearInterval(timer);
-                if (span.isConnected) span.textContent = original;
             };
         },
     };
@@ -391,7 +381,7 @@
 
     // ---------- Export ----------
     const map = {
-        B11_SHINE, B16_FAKE_COUNTDOWN, B18_FAKE_ERROR, B19_FAKE_PROGRESS,
+        B11_SHINE, B16_FAKE_COUNTDOWN, B18_FAKE_ERROR,
         B02_TYPEWRITER, B04_ZOOM_CHAOS, B08_FADEOUT, B15_REVERSED_TEXT, B20_BLACKOUT,
         B03_REVERSE, B05_MIRROR, B07_GLITCH, B12_BLUR, B13_TINY,
         C01_SHUFFLE, C04_FAKE_5050,
