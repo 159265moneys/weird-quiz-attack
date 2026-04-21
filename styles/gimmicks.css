@@ -159,52 +159,92 @@
     to   { opacity: 0.55; }
 }
 
-/* ---------- B18 偽エラー: 通信エラー風のクルクルが時々出る ---------- */
-.gk-b18-fake {
+/* ---------- B18 偽エラー: スマホの「インターネット未接続」に寄せる ---------- */
+/* 暗転オーバーレイ (UI 全体を鈍らせる) */
+.gk-b18-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 90;
+    opacity: 0;
+    transition: opacity 0.22s ease;
+    pointer-events: none;
+}
+.gk-b18-backdrop.is-on { opacity: 1; }
+
+/* iOS 風アラートカード */
+.gk-b18-alert {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.85);
-    z-index: 60;
-    pointer-events: none;
-    background: rgba(0, 0, 0, 0.88);
-    border: 2px solid var(--accent-red, #ff3030);
-    color: #fff;
-    padding: 22px 34px;
-    border-radius: 6px;
-    text-align: center;
-    font-family: 'Courier New', monospace;
+    transform: translate(-50%, -50%) scale(1.06);
+    width: 520px;
+    max-width: 90%;
+    z-index: 91;
+    background: rgba(245, 245, 247, 0.96);
+    border-radius: 28px;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+    color: #000;
+    box-shadow:
+        0 24px 64px rgba(0, 0, 0, 0.55),
+        0 2px 8px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     opacity: 0;
-    transition: opacity 0.18s ease, transform 0.18s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    box-shadow: 0 0 30px rgba(255, 48, 48, 0.35);
+    transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
 }
-.gk-b18-fake.is-on {
+.gk-b18-alert.is-on {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
 }
-.gk-b18-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(255, 255, 255, 0.18);
-    border-top-color: var(--accent-red, #ff3030);
-    border-radius: 50%;
-    animation: gkB18Spin 0.85s linear infinite;
+
+.gk-b18-alert-body {
+    padding: 36px 28px 24px;
+    text-align: center;
 }
-.gk-b18-text {
-    font-size: 18px;
-    letter-spacing: 0.12em;
-    line-height: 1.4;
+.gk-b18-alert-title {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+    line-height: 1.3;
 }
-.gk-b18-text small {
-    font-size: 13px;
-    opacity: 0.7;
+.gk-b18-alert-msg {
+    font-size: 22px;
+    line-height: 1.45;
+    color: #000;
+    opacity: 0.82;
+    letter-spacing: -0.005em;
 }
-@keyframes gkB18Spin {
-    to { transform: rotate(360deg); }
+
+.gk-b18-alert-actions {
+    display: flex;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+.gk-b18-alert-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 22px 12px;
+    font-size: 26px;
+    font-weight: 400;
+    color: #007aff; /* iOS system blue */
+    font-family: inherit;
+    letter-spacing: -0.005em;
+}
+.gk-b18-alert-btn.is-primary {
+    font-weight: 600;
+}
+.gk-b18-alert-btn + .gk-b18-alert-btn {
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
+.gk-b18-alert-btn[disabled] {
+    /* disabled でも色は変えない (本物っぽく見せる) */
+    cursor: default;
 }
 
 
@@ -216,10 +256,17 @@
 .q-stem.gk-b04-zoom {
     animation: gkB04Zoom 1.6s ease-in-out infinite;
     transform-origin: center center;
+    /* 画面外まで飛び出してOK (親の overflow が効いても transform は切れない) */
+    will-change: transform;
 }
+/* 親ゾーンのクリップ解除。問題ゾーンから大きくはみ出す演出 */
+.q-zone-question:has(.q-stem.gk-b04-zoom) { overflow: visible; }
+.q-zone-question:has(.q-stem.gk-b04-zoom) ~ *,
+.q-zone-question:has(.q-stem.gk-b04-zoom) { z-index: 5; }
+
 @keyframes gkB04Zoom {
-    0%, 100% { transform: scale(0.55); }
-    50%      { transform: scale(1.4); }
+    0%, 100% { transform: scale(0.35); }
+    50%      { transform: scale(3.2); }
 }
 
 /* ---------- B20 暗転: 突然画面が真っ暗になる ---------- */
@@ -292,7 +339,8 @@
    translate で動かすのでレイアウトは崩さない。
    will-change で合成層に載せて描画を軽くする。 */
 .q-stem.gk-b14 {
-    animation: gkB14Dance 3.2s ease-in-out infinite;
+    /* 3.2s → 1.06s (3倍速) */
+    animation: gkB14Dance 1.06s ease-in-out infinite;
     will-change: transform;
 }
 @keyframes gkB14Dance {

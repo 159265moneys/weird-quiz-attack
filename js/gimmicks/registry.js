@@ -134,30 +134,49 @@
         },
     };
 
+    // 本物のスマホの「インターネット接続エラー」ダイアログに寄せる。
+    // 問題中ずっと表示しっぱなし。背景は暗転、ダイアログは pointer-events:none で
+    // 見た目上ブロックされてるように見えるが実際は操作可能 (フェイク)。
     const B18_FAKE_ERROR = {
         id: 'B18', name: '偽エラー表示', supports: 'both', introducedAt: 1, difficulty: 2,
         apply(ctx) {
-            const host = document.createElement('div');
-            host.className = 'gk-b18-fake';
-            host.innerHTML = `
-                <div class="gk-b18-spinner"></div>
-                <div class="gk-b18-text">通信エラー<br><small>再試行中…</small></div>
+            // 1. 暗転オーバーレイ (UI を鈍らせる)
+            const backdrop = document.createElement('div');
+            backdrop.className = 'gk-b18-backdrop';
+
+            // 2. iOS 風アラート (白カード + 丸角 + 影)
+            const alert = document.createElement('div');
+            alert.className = 'gk-b18-alert';
+            alert.innerHTML = `
+                <div class="gk-b18-alert-body">
+                    <div class="gk-b18-alert-title">インターネット未接続</div>
+                    <div class="gk-b18-alert-msg">
+                        ネットワークに接続できませんでした。<br>
+                        接続状況をご確認の上、もう一度<br>お試しください。
+                    </div>
+                </div>
+                <div class="gk-b18-alert-actions">
+                    <button class="gk-b18-alert-btn" disabled>キャンセル</button>
+                    <button class="gk-b18-alert-btn is-primary" disabled>再試行</button>
+                </div>
             `;
-            ctx.screen.appendChild(host);
-            let showTimer = 0, hideTimer = 0;
-            const show = () => {
-                host.classList.add('is-on');
-                hideTimer = setTimeout(hide, 1400 + Math.random() * 600);
-            };
-            const hide = () => {
-                host.classList.remove('is-on');
-                showTimer = setTimeout(show, 2500 + Math.random() * 2000);
-            };
-            showTimer = setTimeout(show, 800);
+
+            ctx.screen.appendChild(backdrop);
+            ctx.screen.appendChild(alert);
+
+            // pointer-events:none にして見た目だけ閉塞感を出す (タップは通る)
+            backdrop.style.pointerEvents = 'none';
+            alert.style.pointerEvents = 'none';
+
+            // 出現アニメ (iOS っぽく中央でふわっと)
+            requestAnimationFrame(() => {
+                backdrop.classList.add('is-on');
+                alert.classList.add('is-on');
+            });
+
             return () => {
-                clearTimeout(showTimer);
-                clearTimeout(hideTimer);
-                host.remove();
+                backdrop.remove();
+                alert.remove();
             };
         },
     };
@@ -462,7 +481,8 @@
             const stem = q(ctx.screen, '.q-stem');
             if (!stem) return () => {};
             const prev = stem.style.filter;
-            stem.style.filter = `${prev ? prev + ' ' : ''}blur(3px)`;
+            // 3px → 12px (+ 3段階)
+            stem.style.filter = `${prev ? prev + ' ' : ''}blur(12px)`;
             return () => { stem.style.filter = prev; };
         },
     };

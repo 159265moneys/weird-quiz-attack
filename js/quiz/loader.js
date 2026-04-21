@@ -32,6 +32,19 @@
         return a;
     }
 
+    // 選択肢問題の choices を毎回シャッフル + answer index を追随。
+    // 「丸暗記で位置だけ覚える」対策。元の q は変更せず浅いコピーを返す。
+    function shuffleChoices(q) {
+        if (q.mode !== 'choice' || !Array.isArray(q.choices) || q.choices.length < 2) {
+            return q;
+        }
+        const n = q.choices.length;
+        const perm = shuffle([...Array(n).keys()]);          // ex: [2,0,3,1]
+        const newChoices = perm.map(i => q.choices[i]);
+        const newAnswer  = perm.indexOf(q.answer);
+        return { ...q, choices: newChoices, answer: newAnswer };
+    }
+
     function pickForStage(all, stageNo, count) {
         const stageCfg = window.CONFIG.STAGES.find(s => s.no === stageNo);
         const diff = stageCfg?.diff || [1 / 3, 1 / 3, 1 / 3];
@@ -67,7 +80,8 @@
         }
 
         // 出題順もシャッフル (難度順で並ばないように)
-        return shuffle(picked);
+        // 加えて各 choice 問題の選択肢位置もシャッフル (丸暗記対策)
+        return shuffle(picked).map(shuffleChoices);
     }
 
     window.QuizLoader = {
