@@ -70,8 +70,32 @@
                     startStage(no);
                 });
             });
+
+            // 初回のみナビゲーターで簡易チュートリアル
+            if (!window.Save.getFlag('tutorialDone')) {
+                runTutorial();
+            }
         },
     };
+
+    function runTutorial() {
+        if (!window.Navigator) return;
+        const lines = [
+            'ようこそ、変なクイズへ。',
+            'ルールはシンプル。クイズに答えてステージをクリアする。',
+            '…のはずが、進むほど UI が壊れていく。',
+            '文字が崩れ、ボタンが動き、キーボードが入れ替わる。',
+            '慌てないで。冷静に読めば、たいてい答えは見えるはず。',
+            'じゃあ、始めよう。',
+        ];
+        const poses = ['hi', 'basic', 'think', 'think_light', 'basic', 'happy'];
+        window.Navigator.speak(lines, {
+            poses,
+            onDone: () => {
+                window.Save.setFlag('tutorialDone', true);
+            },
+        });
+    }
 
     async function startStage(no) {
         window.GameState.currentStage = no;

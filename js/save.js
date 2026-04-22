@@ -21,6 +21,9 @@
             scores: {
                 // 'stage-1': { best: 12000, bestRank: 'B', plays: 4 }
             },
+            flags: {
+                tutorialDone: false,
+            },
             settings: {
                 soundVolume: 0.8,
                 vibration: true,
@@ -102,6 +105,19 @@
 
         getStageScore(no) {
             return this.data?.scores?.[`stage-${no}`] || null;
+        },
+
+        getFlag(key) {
+            if (!this.data) return false;
+            // 既存セーブデータに flags が無い可能性に対応
+            if (!this.data.flags) this.data.flags = {};
+            return !!this.data.flags[key];
+        },
+        setFlag(key, value) {
+            if (!this.data) return;
+            if (!this.data.flags) this.data.flags = {};
+            this.data.flags[key] = !!value;
+            this.persist();
         },
     };
 
