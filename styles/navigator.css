@@ -1,0 +1,146 @@
+/* ============================================================
+   styles/navigator.css — ナビゲーター (girl キャラ + 吹き出し)
+   ------------------------------------------------------------
+   画面下 2/5 くらいに girl スプライト、右上に吹き出しを置く。
+   タップされると次の台詞へ。モノクロ + シアンアクセントで統一。
+   ============================================================ */
+
+.nav-overlay {
+    position: absolute;
+    inset: 0;
+    display: none;
+    z-index: 1500;
+    pointer-events: none;
+    font-family: inherit;
+}
+.nav-overlay.is-open {
+    display: block;
+    pointer-events: auto;
+}
+
+/* 背景: 上側をうっすら暗くして集中させる。下半分は素通し */
+.nav-backdrop {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.55) 0%,
+            rgba(0, 0, 0, 0.55) 55%,
+            rgba(0, 0, 0, 0.2) 80%,
+            rgba(0, 0, 0, 0) 100%
+        );
+    animation: navBackdropIn 0.35s ease both;
+}
+@keyframes navBackdropIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* 画面下にキャラ。左側に配置 */
+.nav-figure {
+    position: absolute;
+    left: 40px;
+    bottom: 60px;
+    width: 560px;
+    height: 720px;
+    pointer-events: none;
+    transform-origin: 50% 90%;
+}
+.nav-girl {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    filter: drop-shadow(8px 8px 0 rgba(0, 0, 0, 0.4));
+}
+.nav-figure.is-pop {
+    animation: navFigurePop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes navFigurePop {
+    0%   { transform: translateY(40px) scale(0.94); }
+    100% { transform: translateY(0)    scale(1);    }
+}
+
+/* 吹き出し: 右上寄せ、ダブル枠 + シアン影 */
+.nav-bubble {
+    position: absolute;
+    right: 60px;
+    top: 220px;
+    left: 480px;
+    min-height: 260px;
+    padding: 40px 48px 56px;
+    background: var(--box-bg, #151519);
+    border: 4px solid var(--line, #ffffff);
+    box-shadow:
+        10px 10px 0 var(--accent-cyan, #00e5ff),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    color: var(--text-on-dark, #ffffff);
+    font-size: 36px;
+    line-height: 1.7;
+    letter-spacing: 2px;
+    overflow-wrap: anywhere;
+}
+.nav-bubble.is-pop {
+    animation: navBubblePop 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes navBubblePop {
+    0%   { transform: translate(-12px, 8px) scale(0.9); opacity: 0; }
+    60%  { transform: translate(2px, -2px) scale(1.02); opacity: 1; }
+    100% { transform: translate(0, 0) scale(1); }
+}
+
+/* 吹き出しの左下に三角ポインタ (girl 側を指す) */
+.nav-bubble::before,
+.nav-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -32px;
+    left: 60px;
+    width: 0;
+    height: 0;
+    border-left: 24px solid transparent;
+    border-right: 24px solid transparent;
+    border-top: 32px solid var(--line, #ffffff);
+}
+.nav-bubble::after {
+    bottom: -24px;
+    left: 64px;
+    border-left-width: 20px;
+    border-right-width: 20px;
+    border-top: 28px solid var(--box-bg, #151519);
+}
+
+.nav-bubble-text {
+    white-space: pre-wrap;
+}
+
+.nav-bubble-next {
+    position: absolute;
+    right: 24px;
+    bottom: 14px;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--accent-cyan, #00e5ff);
+    animation: navNextBlink 1.2s ease-in-out infinite;
+}
+@keyframes navNextBlink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+}
+
+/* --- サイズ可変: 吹き出しが小さい画面でも破綻しないように --- */
+@media (max-height: 640px) {
+    .nav-figure {
+        width: 420px;
+        height: 540px;
+        bottom: 40px;
+    }
+    .nav-bubble {
+        top: 140px;
+        left: 380px;
+        font-size: 30px;
+        padding: 28px 32px 40px;
+    }
+}
