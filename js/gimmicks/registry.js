@@ -38,6 +38,52 @@
     function q(scope, sel) { return scope && scope.querySelector(sel); }
     function qa(scope, sel) { return scope ? Array.from(scope.querySelectorAll(sel)) : []; }
 
+    // HTML エスケープ (innerHTML 経由で textContent を設定する時に使う)
+    function esc(s) {
+        return String(s).replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+    }
+
+    // stem.textContent/innerHTML を書き換える系ギミック同士の相互排他リスト。
+    // 後勝ちで前の効果が消えるので、同時適用するとどちらか片方しか見えない。
+    const STEM_TEXT_CONFLICTS = [
+        'B02', 'B07', 'B10', 'B15', 'B17',          // 既存
+        'B23', 'B24', 'B26', 'B27', 'B28', 'B29', 'B30',  // 2026-04 追加
+    ];
+    function stemConflictsExcept(selfId) {
+        return STEM_TEXT_CONFLICTS.filter(id => id !== selfId);
+    }
+
+    // rows × cols のグリッドを、外側から内側に向かって螺旋順に巡る [row,col] の配列を返す。
+    // ccw=true なら反時計回り (下→右→上→左)、false なら時計回り (右→下→左→上)。
+    function spiralPath(rows, cols, ccw) {
+        const path = [];
+        let top = 0, bottom = rows - 1, left = 0, right = cols - 1;
+        while (top <= bottom && left <= right) {
+            if (!ccw) {
+                for (let c = left; c <= right; c++) path.push([top, c]); top++;
+                for (let r = top; r <= bottom; r++) path.push([r, right]); right--;
+                if (top <= bottom) {
+                    for (let c = right; c >= left; c--) path.push([bottom, c]); bottom--;
+                }
+                if (left <= right) {
+                    for (let r = bottom; r >= top; r--) path.push([r, left]); left++;
+                }
+            } else {
+                for (let r = top; r <= bottom; r++) path.push([r, left]); left++;
+                for (let c = left; c <= right; c++) path.push([bottom, c]); bottom--;
+                if (left <= right) {
+                    for (let r = bottom; r >= top; r--) path.push([r, right]); right--;
+                }
+                if (top <= bottom) {
+                    for (let c = right; c >= left; c--) path.push([top, c]); top++;
+                }
+            }
+        }
+        return path;
+    }
+
     // ========== B (Both) ==========
 
     // --- Stage 1 プール (視覚ノイズ系、ゲーム本体には干渉しない) ---
@@ -486,6 +532,264 @@
                 ctx.screen.querySelectorAll('.gk-b25-char').forEach(el => el.remove());
             };
 
+        },
+    };
+
+    // ============================================================
+    // 2026-04 追加 — 問題文系ギミック 9 個 (B22-B31)
+    // 旧 9 個 (B14/W05/W10/W15/W16/W17/W19/G2/G8) の置換として追加。
+    // 全て「問題文の見た目を崩す」バリエーション。画面全体や回答エリアには
+    // 手を出さない (バグ増やさない方針)。
+    // ============================================================
+
+    // --- B22 問題文二重見え ---
+    // text-shadow で左右に色ズレした影を付けて「文字が二重にブレて見える」状態。
+    // 静止演出なので酔わない。読めるがピントが合わず疲れる。
+    const B22_DOUBLE_VISION = {
+        id: 'B22', name: '問題文二重見え', supports: 'both', introducedAt: 5, difficulty: 5,
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            stem.classList.add('gk-b22-double');
+            return () => stem.classList.remove('gk-b22-double');
+        },
+    };
+
+    // --- B23 問題文黒塗り ---
+    // 連続する 2〜5 文字を 2〜4 箇所、黒帯で隠す。機密文書風。
+    // 隠された部分は推測で補わないと解けない問題もあり得る。
+    const B23_REDACTION = {
+        id: 'B23', name: '問題文黒塗り', supports: 'both', introducedAt: 6, difficulty: 7,
+        conflicts: stemConflictsExcept('B23'),
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            const originalHTML = stem.innerHTML;
+            const chars = Array.from(stem.textContent);
+            const n = chars.length;
+            if (n < 4) return () => {};
+
+            // 2〜4 個の連続セグメント (各 2〜5 文字) を塗り潰し
+            const covered = new Array(n).fill(false);
+            const segCount = 2 + Math.floor(Math.random() * 3);
+            for (let s = 0; s < segCount; s++) {
+                const segLen = 2 + Math.floor(Math.random() * 4);
+                const maxStart = Math.max(0, n - segLen);
+                const start = Math.floor(Math.random() * (maxStart + 1));
+                for (let i = start; i < Math.min(n, start + segLen); i++) covered[i] = true;
+            }
+
+            let html = '';
+            let i = 0;
+            while (i < n) {
+                if (covered[i]) {
+                    let j = i;
+                    while (j < n && covered[j]) j++;
+                    html += `<span class="gk-b23-redact">${esc(chars.slice(i, j).join(''))}</span>`;
+                    i = j;
+                } else {
+                    let j = i;
+                    while (j < n && !covered[j]) j++;
+                    html += esc(chars.slice(i, j).join(''));
+                    i = j;
+                }
+            }
+            stem.innerHTML = html;
+            return () => {
+                stem.innerHTML = originalHTML;
+            };
+        },
+    };
+
+    // --- B24 問題文スクロール (ニュースティッカー) ---
+    // 問題文を 1 行化して横スクロール。制限時間内に流し読むしかない。
+    const B24_SCROLL = {
+        id: 'B24', name: '問題文スクロール', supports: 'both', introducedAt: 7, difficulty: 7,
+        conflicts: stemConflictsExcept('B24'),
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            const originalHTML = stem.innerHTML;
+            const text = stem.textContent;
+            stem.classList.add('gk-b24-scroll');
+            // 2 つ続けて並べ、半分流れたらループが繋がって見える (seamless loop)
+            stem.innerHTML =
+                `<span class="gk-b24-track">` +
+                `<span class="gk-b24-seg">${esc(text)}</span>` +
+                `<span class="gk-b24-seg">${esc(text)}</span>` +
+                `</span>`;
+            return () => {
+                stem.classList.remove('gk-b24-scroll');
+                stem.innerHTML = originalHTML;
+            };
+        },
+    };
+
+    // --- B26 問題文カラーバラ ---
+    // 各文字をランダムな色に。読めるが目がチカチカする視覚疲労系。
+    const B26_COLOR_RANDOM = {
+        id: 'B26', name: '問題文カラーバラ', supports: 'both', introducedAt: 4, difficulty: 4,
+        conflicts: stemConflictsExcept('B26'),
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            const originalHTML = stem.innerHTML;
+            const original = stem.textContent;
+            const PALETTE = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#c780ff', '#ff9f43', '#7ef9ff'];
+            const html = Array.from(original).map(ch => {
+                if (/\s/.test(ch)) return ch;
+                const c = PALETTE[Math.floor(Math.random() * PALETTE.length)];
+                return `<span style="color:${c}">${esc(ch)}</span>`;
+            }).join('');
+            stem.classList.add('gk-b26-color');
+            stem.innerHTML = html;
+            return () => {
+                stem.classList.remove('gk-b26-color');
+                stem.innerHTML = originalHTML;
+            };
+        },
+    };
+
+    // --- B27 問題文1文字欠落 ---
+    // ランダムな 1 文字だけ見えなくする (空白置換)。永久欠落で戻らない。
+    // 「何の文字が抜けたか」を推測させるタイプ。短文ほど厳しい。
+    const B27_CHAR_DROP = {
+        id: 'B27', name: '問題文1文字欠落', supports: 'both', introducedAt: 5, difficulty: 5,
+        conflicts: stemConflictsExcept('B27'),
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            const original = stem.textContent;
+            const chars = Array.from(original);
+            const candidates = [];
+            for (let i = 0; i < chars.length; i++) {
+                if (!/\s/.test(chars[i])) candidates.push(i);
+            }
+            if (candidates.length === 0) return () => {};
+            const dropIdx = candidates[Math.floor(Math.random() * candidates.length)];
+            chars[dropIdx] = '\u3000';  // 全角空白で欠けた幅をキープ
+            stem.textContent = chars.join('');
+            return () => {
+                if (stem.isConnected) stem.textContent = original;
+            };
+        },
+    };
+
+    // --- B28 問題文サイズ崩壊 ---
+    // 各文字のフォントサイズがランダム (小は読める範囲〜大は結構でかい)。
+    // 行高にもバラつきが出るが、問題文エリア内に収まるよう最大サイズを抑える。
+    const B28_SIZE_CHAOS = {
+        id: 'B28', name: '問題文サイズ崩壊', supports: 'both', introducedAt: 6, difficulty: 6,
+        conflicts: stemConflictsExcept('B28'),
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            const originalHTML = stem.innerHTML;
+            const original = stem.textContent;
+            // 読める範囲の最小 24px 〜 クソでかの最大 64px
+            const SIZES = [24, 28, 32, 38, 46, 52, 58, 64];
+            const html = Array.from(original).map(ch => {
+                if (/\s/.test(ch)) return ch;
+                const s = SIZES[Math.floor(Math.random() * SIZES.length)];
+                return `<span style="font-size:${s}px;line-height:1;vertical-align:middle">${esc(ch)}</span>`;
+            }).join('');
+            stem.classList.add('gk-b28-size');
+            stem.innerHTML = html;
+            return () => {
+                stem.classList.remove('gk-b28-size');
+                stem.innerHTML = originalHTML;
+            };
+        },
+    };
+
+    // --- B29 問題文バウンド ---
+    // 問題文の各文字が 1 文字 0.5 秒ペースで「上から落ちてきて」ランダム位置に
+    // 跳ねて着地する。跳ねた後は固定 (連続アニメで酔わない)。
+    // 読むには全部落ちてくるまで待つ必要があり、時間のプレッシャーが増す。
+    const B29_BOUNCE = {
+        id: 'B29', name: '問題文バウンド', supports: 'both', introducedAt: 8, difficulty: 9,
+        conflicts: stemConflictsExcept('B29'),
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            const originalHTML = stem.innerHTML;
+            const prevClasses = stem.className;
+            const chars = Array.from(stem.textContent);
+
+            stem.classList.add('gk-b29-bounce');
+            stem.innerHTML = '';
+            let vi = 0;
+            chars.forEach((ch) => {
+                if (/\s/.test(ch)) return;
+                const span = document.createElement('span');
+                span.textContent = ch;
+                span.className = 'gk-b29-char';
+                // ランダム着地位置 (stem 領域内、中央基準なので translate(-50%) 前提で x は 3-92%)
+                const x = 5 + Math.random() * 90;
+                const y = 8 + Math.random() * 80;
+                span.style.left = `${x}%`;
+                span.style.top = `${y}%`;
+                span.style.animationDelay = `${vi * 0.5}s`;
+                stem.appendChild(span);
+                vi++;
+            });
+            return () => {
+                stem.className = prevClasses;
+                stem.innerHTML = originalHTML;
+            };
+        },
+    };
+
+    // --- B30 問題文渦巻き ---
+    // 問題文を外側→内側の螺旋順にグリッドへ流し込む静止配置。
+    // 向き (CW/CCW) はランダム。1 文字ずつ格子セルに並べるので読むには脳内で
+    // 渦巻きを追う必要がある。
+    const B30_SPIRAL = {
+        id: 'B30', name: '問題文渦巻き', supports: 'both', introducedAt: 8, difficulty: 8,
+        conflicts: stemConflictsExcept('B30'),
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            const originalHTML = stem.innerHTML;
+            const chars = Array.from(stem.textContent);
+            const n = chars.length;
+            if (n < 4) return () => {};
+
+            // 概ね正方形〜やや横長のグリッドにする (日本語縦書きだと縦長のが読みやすいが
+            // 現状は横書きの UI なので横長寄り)
+            const cols = Math.max(3, Math.ceil(Math.sqrt(n * 1.15)));
+            const rows = Math.ceil(n / cols);
+            const ccw = Math.random() < 0.5;
+            const path = spiralPath(rows, cols, ccw);
+            const grid = Array.from({ length: rows }, () => Array(cols).fill(' '));
+            for (let i = 0; i < n && i < path.length; i++) {
+                const [r, c] = path[i];
+                grid[r][c] = chars[i];
+            }
+            const html = grid.flat().map(ch =>
+                `<span class="gk-b30-cell">${esc(ch)}</span>`
+            ).join('');
+            stem.classList.add('gk-b30-spiral');
+            stem.style.setProperty('--b30-cols', String(cols));
+            stem.innerHTML = html;
+            return () => {
+                stem.classList.remove('gk-b30-spiral');
+                stem.style.removeProperty('--b30-cols');
+                stem.innerHTML = originalHTML;
+            };
+        },
+    };
+
+    // --- B31 問題文超薄 ---
+    // 問題文の opacity を 0.12 程度まで下げて「ほぼ透明」に。
+    // 頑張って目を凝らせば読める、というレベル。
+    const B31_FAINT = {
+        id: 'B31', name: '問題文超薄', supports: 'both', introducedAt: 4, difficulty: 5,
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            stem.classList.add('gk-b31-faint');
+            return () => stem.classList.remove('gk-b31-faint');
         },
     };
 
@@ -1369,7 +1673,7 @@
     // 文字数はほぼ元と同じ。空白は保持 (単語区切りを残すと推測しやすい = 難易度調整)。
     const G4_GARBLED_TEXT = {
         id: 'G4', name: '文字化け問題', supports: 'both', introducedAt: 10, difficulty: 9,
-        conflicts: ['B02', 'B07', 'B08', 'B10', 'B15', 'B17'], // stem.textContent を触る他
+        conflicts: stemConflictsExcept('G4'), // stem.textContent を触る他
         apply(ctx) {
             if (Math.random() >= 0.5) return () => {};
             const stem = q(ctx.screen, '.q-stem');
@@ -1488,6 +1792,9 @@
         B03_REVERSE, B05_MIRROR, B06_COLOR_BREAK, B07_GLITCH,
         B09_SHRINK, B10_SHUFFLE_TEXT,
         B12_BLUR, B13_TINY, B25_CHAR_OBSTRUCT,
+        B22_DOUBLE_VISION, B23_REDACTION, B24_SCROLL,
+        B26_COLOR_RANDOM, B27_CHAR_DROP, B28_SIZE_CHAOS,
+        B29_BOUNCE, B30_SPIRAL, B31_FAINT,
         B01_REVERSE_TAP, B17_NOISE_TEXT,
         C01_SHUFFLE, C02_DUMMY_CHOICE, C03_CHAR_CORRUPT, C04_FAKE_5050,
         W01_KEYS_INVISIBLE, W02_KEYS_SHUFFLE, W03_ANSWER_INVISIBLE, W07_CHAR_DROP,

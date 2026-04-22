@@ -578,3 +578,122 @@
 
 /* W08 文字盤あべこべv2: DOM swap のみ、CSS 不要 */
 /* W20 フリック方向シャッフル: setFlickTransform のみ、CSS 不要 */
+
+/* ============================================================
+   2026-04 追加: 問題文系ギミック B22-B31
+   ============================================================ */
+
+/* ---------- B22 問題文二重見え ----------
+   RGB split 風の text-shadow で文字がブレて二重に見える。静止演出。 */
+.q-stem.gk-b22-double {
+    text-shadow:
+        8px 0 rgba(255, 60, 90, 0.85),
+        -8px 0 rgba(60, 180, 255, 0.85);
+}
+
+/* ---------- B23 問題文黒塗り ----------
+   連続文字を機密文書風に黒帯で塗り潰す。文字色も黒にして中身を隠す。
+   clickable 要素ではないので pointer-events は触らない。 */
+.q-stem .gk-b23-redact {
+    background: #000;
+    color: #000;
+    border-radius: 3px;
+    padding: 0 2px;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* ---------- B24 問題文スクロール ----------
+   1行化して横ティッカーで流す。track に2回同じ内容を並べて
+   -50% まで流してループ(seamless loop)。 */
+.q-stem.gk-b24-scroll {
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+.q-stem.gk-b24-scroll .gk-b24-track {
+    display: inline-block;
+    white-space: nowrap;
+    animation: gkB24Marquee 12s linear infinite;
+    will-change: transform;
+}
+.q-stem.gk-b24-scroll .gk-b24-seg {
+    display: inline-block;
+    padding-right: 3em;
+}
+@keyframes gkB24Marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+/* ---------- B26 問題文カラーバラ ----------
+   文字毎の color は style= でインライン指定されるのでここでは装飾のみ。 */
+.q-stem.gk-b26-color {
+    /* 若干の文字間を空けて見やすく */
+    letter-spacing: 0.02em;
+}
+
+/* ---------- B28 問題文サイズ崩壊 ----------
+   インライン font-size で各文字サイズ設定済み。エリア内に収める調整。 */
+.q-stem.gk-b28-size {
+    line-height: 1.1;
+    word-break: break-all;
+}
+
+/* ---------- B29 問題文バウンド ----------
+   各文字を絶対配置して上から落下→着地バウンド→静止。
+   animation-delay を JS 側で i*0.5s に設定。 */
+.q-stem.gk-b29-bounce {
+    position: relative;
+    min-height: 220px;
+    overflow: hidden;
+}
+.q-stem.gk-b29-bounce .gk-b29-char {
+    position: absolute;
+    font-size: 34px;
+    font-weight: 700;
+    opacity: 0;
+    transform: translate(-50%, -200%);
+    animation: gkB29Land 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    will-change: transform, opacity;
+}
+@keyframes gkB29Land {
+    0%   { opacity: 0; transform: translate(-50%, -200%); }
+    30%  { opacity: 1; transform: translate(-50%, -40%); }
+    50%  { transform: translate(-50%, 15%); }
+    65%  { transform: translate(-50%, -12%); }
+    80%  { transform: translate(-50%, 5%); }
+    92%  { transform: translate(-50%, -2%); }
+    100% { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ---------- B30 問題文渦巻き ----------
+   CSS grid で格子状に配置。列数は --b30-cols で JS から制御。
+   各セルを flex 中央寄せにして文字位置をきっちり揃える。
+   q-stem 既定 56px だとグリッドが画面に収まらないので本ギミック時は 38px に縮める。 */
+.q-stem.gk-b30-spiral {
+    display: grid;
+    grid-template-columns: repeat(var(--b30-cols, 5), 1.3em);
+    justify-content: center;
+    align-content: center;
+    gap: 0.08em;
+    font-size: 38px;
+    line-height: 1;
+    letter-spacing: 0;
+    padding: 0.4em 0;
+}
+.q-stem.gk-b30-spiral .gk-b30-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.3em;
+    height: 1.3em;
+    text-align: center;
+}
+
+/* ---------- B31 問題文超薄 ----------
+   opacity を極薄にして「ほぼ透明」に。目を凝らして読む必要あり。 */
+.q-stem.gk-b31-faint {
+    opacity: 0.14;
+}
