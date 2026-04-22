@@ -864,7 +864,9 @@
 .result-actions {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    /* transform は animation 側で translateX(-50%) を含めて指定する。
+       ここで先に書くと animation の keyframes (translate のみ指定) に
+       上書きされて中央寄せが外れ、ボタンが右にズレるバグになる。 */
     bottom: 960px;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -874,7 +876,11 @@
     justify-items: center;
     align-items: center;
     z-index: 1600;
-    animation: resultPctIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both 0.75s;
+    animation: resultActionsIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both 0.75s;
+}
+@keyframes resultActionsIn {
+    0%   { opacity: 0; transform: translateX(-50%) translateY(18px); }
+    100% { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 .result-actions .btn {
     width: 100%;
