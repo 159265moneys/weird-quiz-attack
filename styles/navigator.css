@@ -53,14 +53,20 @@
     transform-origin: 50% 100%;
 }
 
-/* --- mode-result: 下 2/3 だけを見せて画面下部にキャラ+吹き出しを
-   まとめる。上部にはボタン/情報の領域が確保される。 --- */
+/* --- mode-result: キャラを小さめ (1.5x) にして画面下部に配置。
+   上部はリザルトのボタン/スコア領域、下部にキャラ+吹き出しが並ぶ構成。
+   以前は bottom:-800 で figure を画面外に押し出していたため、
+   object-position:bottom で下寄せされたキャラ本体がごっそり画面外に
+   消える不具合があった。スケールを落として bottom 付近に正しく置く。 */
 .nav-overlay.mode-result .nav-figure {
-    bottom: -800px;   /* 下辺を 800px 切り落として head + shoulder のみ見せる */
+    width: 840px;         /* 1.5x 相当 (tutorial は 2x) */
+    height: 1080px;
+    margin-left: -420px;
+    bottom: -40px;        /* 下辺をほんの少しだけはみ出す */
 }
 .nav-overlay.mode-result .nav-bubble {
     top: auto;
-    bottom: 700px;    /* キャラ頭上 (y ≈ 1020-1220 辺り) */
+    bottom: 700px;        /* キャラ頭上 (y ≈ 1020-1220 辺り) */
     min-height: 180px;
     padding: 32px 44px 56px;
     font-size: 38px;

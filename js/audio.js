@@ -87,6 +87,10 @@
         cancelFade(el);                // 以前のフェードを解除して正常音量で再生
         el.loop = false;
         el.volume = clampVol(opts.volume);
+        // abortAll が画面遷移時にこの SE を強制停止するか判定する印。
+        // true なら次画面の頭に被って完走させる (正解/不正解音など)。
+        if (opts.persist) el.dataset.persistOnTransition = '1';
+        else delete el.dataset.persistOnTransition;
         try { el.currentTime = 0; } catch (_) {}
         const playPromise = el.play();
         if (playPromise && playPromise.catch) playPromise.catch(() => {});
@@ -129,17 +133,21 @@
     // ループ系はフェード不要 (長尺の残響が問題になりにくく、即断の方が切替感が出る)。
     function abortAll(fadeMs = 200) {
         // active (ループ/排他): ループは即停止、exclusive単発はフェード
+        // persistOnTransition が立っている要素は完走させる (active からだけ外す)
         for (const el of active.values()) {
+            if (el.dataset.persistOnTransition === '1') continue;
             if (el.loop) {
                 try { el.pause(); } catch (_) {}
             } else {
                 fadeStop(el, fadeMs);
             }
         }
+        // active からは persist 要素も外す (次画面で同じ key の再生を妨げないように)
         active.clear();
-        // 単発プール側: 再生中のやつだけフェードアウト
+        // 単発プール側: 再生中のやつだけフェードアウト (persist は飛ばす)
         for (const list of pool.values()) {
             for (const { el } of list) {
+                if (el.dataset.persistOnTransition === '1') continue;
                 if (!el.paused && !el.ended) {
                     fadeStop(el, fadeMs);
                 }
@@ -203,28 +211,32 @@
     // ------------------------------------------------------------
     const SE_SPEC = {
         // --- system ---
-        correct:       { path: 'se/system/correct.mp3',     volume: 0.7 },
-        wrong:         { path: 'se/system/wrong.mp3',       volume: 0.9 },
+        // 正解/不正解は画面遷移で中断させない (persistOnTransition: true)。
+        // 次の問題の頭に被っても良いので、最後まで聞かせたい。
+        correct:       { path: 'se/system/correct.mp3',     volume: 0.7, persistOnTransition: true },
+        wrong:         { path: 'se/system/wrong.mp3',       volume: 0.9, persistOnTransition: true },
         timeout:       { path: 'se/system/timeout.mp3',     volume: 0.8, exclusive: true },
-        select:        { path: 'se/system/select.mp3',      volume: 0.6 },
-        confirm:       { path: 'se/system/confirm.mp3',     volume: 0.8 },
-        cancel:        { path: 'se/system/cancel.mp3',      volume: 0.7 },
-        keyTap:        { path: 'se/system/key_tap.mp3',     volume: 0.45 },
-        keyBs:         { path: 'se/system/key_bs.mp3',      volume: 0.55 },
-        // key_ok.mp3 は 4.68s と長すぎて画面遷移でほぼ切れるので、
-        // confirm.mp3 (2.93s) に置換。こちらの方が遷移と自然になじむ。
-        keyOk:         { path: 'se/system/confirm.mp3',     volume: 0.85, exclusive: true },
+        // 渋滞回避のため、選択/確定/キャンセル/メニュー/naviPop などの小物音は
+        // volume と clipMs を絞って "ピ" 程度の地味さに抑える。
+        select:        { path: 'se/system/select.mp3',      volume: 0.18, clipMs: 80 },
+        confirm:       { path: 'se/system/confirm.mp3',     volume: 0.25, clipMs: 100 },
+        cancel:        { path: 'se/system/cancel.mp3',      volume: 0.22, clipMs: 100 },
+        // 入力音 (key_tap / key_bs / key_ok) は打鍵ごとに鳴って喧しいので全面削除
+        keyTap:        null,
+        keyBs:         null,
+        keyOk:         null,
         gameOver:      { path: 'se/system/game_over.mp3',   volume: 0.9 },
-        menuCursor:    { path: 'se/system/menu_cursor.mp3', volume: 0.5 },
-        scoreCount:    { path: 'se/system/score_count.mp3', volume: 0.35 },
+        menuCursor:    { path: 'se/system/menu_cursor.mp3', volume: 0.18, clipMs: 80 },
+        scoreCount:    { path: 'se/system/score_count.mp3', volume: 0.22, clipMs: 60 },
         timeWarn:      { path: 'se/system/time_warn.mp3',   volume: 0.8 },
-        naviPop:       { path: 'se/system/navi_pop.mp3',    volume: 0.5 },
+        // コメント吹き出しの出現音も "ピ" 程度
+        naviPop:       { path: 'se/system/navi_pop.mp3',    volume: 0.2, clipMs: 80 },
 
         // --- 差し替え系 ---
         // タイトル tap-to-start: 元は和太鼓 → PC電源断カッ (b20_out)
         tapStart:      { path: 'se/gimmick/b20_out.mp3',    volume: 0.85 },
-        // ステージ開始: 元は男衆掛け声 → PC起動フェードイン (b20_in の頭1.5s)
-        stageStart:    { path: 'se/gimmick/b20_in.mp3',     volume: 0.7, clipMs: 1500 },
+        // 出題音 (ステージ開始のヒュイーン) は渋滞の原因なので削除
+        stageStart:    null,
         // ランク発表: 元はジャジャーン → b17_glitch (ノイズ) の単打 (b20_out 重ねは発火側で)
         rankReveal:    { path: 'se/gimmick/b17_glitch.mp3', volume: 0.9 },
         rankRevealSnap:{ path: 'se/gimmick/b20_out.mp3',    volume: 0.7 },
@@ -261,8 +273,13 @@
         const spec = SE_SPEC[name];
         if (!spec) return null;           // 無音マッピング
         if (spec.loop) return playLoop(spec.path, spec.volume);
-        if (spec.exclusive) return playExclusive(spec.path, { volume: spec.volume, clipMs: spec.clipMs });
-        return play(spec.path, { volume: spec.volume, clipMs: spec.clipMs });
+        const opts = {
+            volume: spec.volume,
+            clipMs: spec.clipMs,
+            persist: !!spec.persistOnTransition,
+        };
+        if (spec.exclusive) return playExclusive(spec.path, opts);
+        return play(spec.path, opts);
     }
 
     function stopNamed(name) {
