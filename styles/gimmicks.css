@@ -140,16 +140,16 @@
     animation: gkB16Pulse 0.32s infinite alternate;
 }
 .gk-b16-label {
-    font-size: 28px;
-    letter-spacing: 0.22em;
+    font-size: 38px;
+    letter-spacing: 0.24em;
     opacity: 0.85;
     font-weight: bold;
 }
 .gk-b16-num {
-    font-size: 180px;
+    font-size: 260px;
     line-height: 1;
     font-weight: 900;
-    min-width: 420px;
+    min-width: 620px;
     text-align: center;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.02em;

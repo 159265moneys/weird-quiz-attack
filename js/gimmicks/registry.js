@@ -113,22 +113,24 @@
             host.className = 'gk-b16-fake';
             host.innerHTML = `
                 <span class="gk-b16-label">SYS</span>
-                <span class="gk-b16-num">01:00</span>
+                <span class="gk-b16-num">00:30</span>
             `;
             ctx.screen.appendChild(host);
             const numEl = host.querySelector('.gk-b16-num');
-            const TOTAL_MS = 20000; // 3倍速: 表示60秒 ÷ 3 = 実時間20秒
+            // 表示 30 秒を 3x 倍速で走らせる → 実時間 10 秒で 00:00 到達。
+            // 問題1問の制限時間 (概ね 10〜12 秒) にだいたい噛み合うので
+            // 「タイマーと同時に切れそう」 なギリギリの緊張感が出る。
+            const TOTAL_MS = 10000;
+            const DISPLAY_MAX = 30;
             const startAt = Date.now();
             let alarmed = false;
 
             // tick 音はループ SE を 3x 倍速で流し続ける (audio.js 側で設定済)。
-            // 以前は毎秒 3 回叩いて途切れ感が強かったが、単一ループに変えたことで
-            // 途切れないスピード感のある「ザーッ」とした時計音になる。
             window.SE?.fire('gB16Tick');
 
             const timer = setInterval(() => {
                 const remainMs = Math.max(0, TOTAL_MS - (Date.now() - startAt));
-                const sec = Math.floor((remainMs / TOTAL_MS) * 60);
+                const sec = Math.floor((remainMs / TOTAL_MS) * DISPLAY_MAX);
                 const mm = Math.floor(sec / 60).toString().padStart(2, '0');
                 const ss = (sec % 60).toString().padStart(2, '0');
                 numEl.textContent = `${mm}:${ss}`;
