@@ -26,6 +26,12 @@
                 catch (e) { console.error('destroy error:', e); }
             }
 
+            // 画面遷移時に長尺 SE / ループ SE を全停止
+            // (timeout 6s / key_ok 4.7s / glitch_loop 等の残留防止)
+            if (window.SE?.abortAll) {
+                try { window.SE.abortAll(); } catch (_) {}
+            }
+
             const app = document.getElementById('app');
             app.innerHTML = screen.render(params) || '';
 
