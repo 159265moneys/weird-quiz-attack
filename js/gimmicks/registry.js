@@ -26,7 +26,7 @@
      Stage4: B04, B15, B20, C01             ← Phase 5b-Batch2 (+ C01=5a)
      Stage5: B05, B06, B12, B14             ← Phase 5b-Batch3a (+ B05/B12=5a)
      Stage6: B09, B10, W01, W02, W03, W07, C02  ← Phase 5b-Batch3b (+ W01/W03=5a)
-     Stage7: B01, B13, B17, W05, W10, W14, W17, W19  ← Phase 5b-Batch4 (+ B13=5a)
+     Stage7: B01, B13, B17, W05, W10, W17, W19  ← Phase 5b-Batch4 (+ B13=5a) ※W14不採用
      Stage8: C03, C04, W04, W06, W09, W15, W16  ← Phase 5b-Batch5 (+ C04=5a)
      Stage9: B21, W08, W18, W20                 ← Phase 5b-Batch6 (最終バッチ)
 
