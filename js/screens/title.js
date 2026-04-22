@@ -39,9 +39,9 @@
 
                     <div class="title-tap" id="titleTap">
                         <div class="title-tap-text">
-                            <span class="tl-tap-lead">TAP TO STAR</span><span class="tl-tap-last">T<img class="title-butterfly" id="titleBfly"
+                            <span class="tl-tap-first">T<img class="title-butterfly" id="titleBfly"
                                          src="sprite/butterfly.png" alt=""
-                                         onerror="this.style.display='none'"></span>
+                                         onerror="this.style.display='none'"></span><span class="tl-tap-rest">AP TO START</span>
                         </div>
                     </div>
 

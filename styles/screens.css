@@ -137,12 +137,12 @@
     display: inline-flex;
     align-items: baseline;
 }
-.tl-tap-lead,
-.tl-tap-last {
+.tl-tap-first,
+.tl-tap-rest {
     display: inline-block;
 }
-.tl-tap-last {
-    position: relative;                 /* 蝶をこの T 上に留める */
+.tl-tap-first {
+    position: relative;                 /* 蝶を TAP の T 上に留める基準点 */
 }
 
 @keyframes tapBlink {

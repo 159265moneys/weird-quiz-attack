@@ -83,15 +83,17 @@
     100% { transform: translateY(0)    scale(1);    }
 }
 
-/* 吹き出し (共通 = デフォルト = tutorial): キャラの PNG 真上に余白すこし空けて設置 */
-/* .nav-figure は bottom:-80 / height:1440 なので PNG 上辺 ≒ y=560。
-   吹き出しは bottom=1400 (=1920-520) 付近に底辺を置いて PNG 上端 +40px 余白。 */
+/* 吹き出し (共通 = デフォルト = tutorial): キャラの頭の真上に配置。
+   girl.png は PNG 上部に透過余白が多く、object-position:bottom で下寄せ
+   しているため、実際の頭頂は PNG コンテナ上辺 (y≒560) ではなく y≒1060
+   付近。コンテナ上辺基準で配置すると吹き出しがキャラからかけ離れるので、
+   頭頂から 40px 上 (y≒1020) に吹き出し底辺が来るよう bottom:900 とする。 */
 .nav-bubble {
     position: absolute;
     left: 140px;
     right: 140px;
     top: auto;
-    bottom: 1400px;
+    bottom: 900px;
     min-height: 140px;
     padding: 28px 40px 52px;
     background: var(--box-bg, #151519);
