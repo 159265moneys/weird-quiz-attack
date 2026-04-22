@@ -253,14 +253,30 @@ body {
     box-shadow: 2px 2px 0 var(--line);
 }
 
-/* スクロール可能領域 */
+/* スクロール可能領域
+   ----------------------------------------------------------------
+   iOS で「領域ごと画面が上下にずれる」問題の対策:
+   - flex: 1 1 0 + min-height: 0  → 親フレックス内で確実に高さ確定
+   - overscroll-behavior: contain  → 到達端で親にスクロール伝播しない
+   - contain: layout paint size    → #stage 側の transform:scale に
+                                      タッチ座標が漏れて誤スクロールされるのを遮断
+   - overflow: hidden auto         → x 方向は完全に固定、y のみスクロール
+   ---------------------------------------------------------------- */
 .scroll-area {
     width: 100%;
-    flex: 1;
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-x: hidden;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     /* body の touch-action:none を上書き。これがないとタッチスクロール完全不能 */
     touch-action: pan-y;
+    /* スタッキングコンテキストを閉じて #stage 側の transform/pointer と
+       独立させる。iOS Safari で外枠が引っ張られる挙動を抑止。 */
+    contain: layout paint;
+    isolation: isolate;
+    /* 画面外に抜けた要素がスクロール中にちらつかないよう明示的に clip */
+    clip-path: inset(0);
 }
 .scroll-area::-webkit-scrollbar { width: 8px; }
 .scroll-area::-webkit-scrollbar-track { background: var(--bg-panel); }
