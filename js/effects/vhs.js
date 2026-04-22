@@ -107,8 +107,8 @@
     function update() {
         vhsGlitchTime++;
 
-        // 2% の確率で新規グリッチ発動 (= 50フレームに1回程度)
-        if (!vhsGlitchActive && Math.random() < 0.02) {
+        // 1% の確率で新規グリッチ発動 (= ~100フレームに1回、旧値2%から半減)
+        if (!vhsGlitchActive && Math.random() < 0.01) {
             vhsGlitchActive = true;
             vhsGlitchIntensity = 0.6 + Math.random() * 0.4;   // 0.6 - 1.0
             vhsGlitchFrames = 3 + Math.floor(Math.random() * 6); // 3-8f

@@ -130,9 +130,10 @@
             }
 
             // 演出が一段落した頃にナビゲーターがランクに対してコメント
+            // (スコアカウントアップ完了 0.6+0.9=1.5s 直後に出す)
             setTimeout(() => {
                 speakResultComment(result, !!s.deathEnd);
-            }, 1800);
+            }, 1500);
 
             // シェアボタン
             document.querySelector('[data-action="share"]')?.addEventListener('click', async (e) => {

@@ -140,27 +140,31 @@
     transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-/* 蝶 (画面遷移役): 通常時は非表示 → タップで下から舞い上がる */
+/* 蝶 (画面遷移役): 小さいまま、ふらふらと画面外へ消える。
+   タイトル崩壊 (tlCharShatter 1.2s) と時間を揃える。 */
 .title-butterfly {
     position: absolute;
     left: 50%;
-    bottom: -200px;
-    width: 360px;
+    bottom: 460px; /* ロゴ下付近、画面中央やや下 */
+    width: 160px;
     height: auto;
     opacity: 0;
     pointer-events: none;
-    filter: drop-shadow(0 0 20px var(--accent-cyan));
-    transform: translateX(-50%) rotate(0deg);
+    filter: drop-shadow(0 0 10px var(--accent-cyan));
+    transform: translate(-50%, 0) rotate(0deg);
     will-change: transform, opacity;
 }
 .title-butterfly.is-flying {
-    animation: titleBflyFly 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: titleBflyFly 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+/* 同じ小ささのまま、フラフラ蛇行しながら画面外(上)へ */
 @keyframes titleBflyFly {
-    0%   { transform: translateX(-50%) translateY(0)      rotate(0deg)  scale(0.4); opacity: 0; }
-    15%  { opacity: 1; }
-    45%  { transform: translateX(-30%) translateY(-900px) rotate(-18deg) scale(1.0); }
-    100% { transform: translateX(40%)  translateY(-2100px) rotate(28deg) scale(1.6); opacity: 0; }
+    0%   { transform: translate(-50%,   0)     rotate(0deg);  opacity: 0; }
+    15%  { transform: translate(-50%,  -20px)  rotate(-6deg); opacity: 1; }
+    35%  { transform: translate(calc(-50% - 70px),  -280px)  rotate(10deg); opacity: 1; }
+    55%  { transform: translate(calc(-50% + 60px),  -620px)  rotate(-8deg); opacity: 1; }
+    75%  { transform: translate(calc(-50% - 50px), -1080px)  rotate(6deg);  opacity: 0.85; }
+    100% { transform: translate(calc(-50% + 80px), -1700px)  rotate(-12deg); opacity: 0; }
 }
 
 .title-footer {

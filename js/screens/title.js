@@ -87,10 +87,10 @@
                 // 蝶を飛ばす: 下から湧いて中央→上空へ
                 if (bfly) bfly.classList.add('is-flying');
 
-                // 1.5 秒後に stageSelect へ
+                // ロゴ崩壊 + 蝶フライアウトに合わせて 1.2 秒後に遷移
                 setTimeout(() => {
                     window.Router.show('stageSelect');
-                }, 1500);
+                }, 1200);
             };
 
             // 全面タップで発火 (ボタンより広い当たり判定)

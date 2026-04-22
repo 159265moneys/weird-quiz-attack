@@ -27,6 +27,8 @@
 
     let overlay = null;
     let state = null; // { lines, poses, idx, onDone }
+    let showAt = 0;
+    const MIN_SHOW_MS = 450; // この時間内のタップは無視 (誤操作で即閉じ回避)
 
     function mountShell() {
         if (overlay) return overlay;
@@ -83,10 +85,12 @@
         const isLast = idx >= state.lines.length - 1;
         nextEl.textContent = isLast ? 'OK ▶' : 'TAP ▶';
         overlay.classList.toggle('is-last', isLast);
+        showAt = Date.now();
     }
 
     function next() {
         if (!state) return;
+        if (Date.now() - showAt < MIN_SHOW_MS) return; // 誤タップ無視
         state.idx++;
         if (state.idx >= state.lines.length) {
             close();
