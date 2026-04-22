@@ -34,6 +34,13 @@
                 try { window.SE.abortAll(); } catch (_) {}
             }
 
+            // Navigator (girl キャラ + 吹き出し) を強制 close。
+            // result 画面で persist:true で出した吹き出しは自動では閉じないので、
+            // 画面切替のタイミングで必ずリセットする (永続バグ防止)。
+            if (window.Navigator?.close) {
+                try { window.Navigator.close(); } catch (_) {}
+            }
+
             const app = document.getElementById('app');
             app.innerHTML = screen.render(params) || '';
 

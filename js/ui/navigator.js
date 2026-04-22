@@ -118,7 +118,16 @@
     }
 
     function close() {
-        if (overlay) overlay.classList.remove('is-open');
+        if (overlay) {
+            overlay.classList.remove('is-open');
+            overlay.classList.remove('is-persist');
+            overlay.classList.remove('is-last');
+            // persist モードでも強制的に閉じられるよう表示状態を完全リセット
+            const bubble = overlay.querySelector('.nav-bubble');
+            const figure = overlay.querySelector('.nav-figure');
+            if (bubble) bubble.classList.remove('is-pop');
+            if (figure) figure.classList.remove('is-pop');
+        }
         document.body.classList.remove('nav-lock');
         const done = state?.onDone;
         state = null;

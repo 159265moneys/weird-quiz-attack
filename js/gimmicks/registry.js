@@ -580,8 +580,14 @@
     // B01 反転タップ: 旧実装は PointerEvent を座標反転して再 dispatch していたが、
     // iOS Safari で preventDefault + synthetic pointerdown が submit ボタンも
     // 効かなくする致命バグに繋がった (全タップがフリーズ)。
-    // 新実装: 選択肢の data-idx を反転マッピング (0↔N-1, 1↔N-2, ...) に書き換える。
-    // 見た目は変わらないが、タップして登録される選択肢のインデックスが逆順になる。
+    // さらに「data-idx だけ反転」実装は、見た目上は普通に選択肢がハイライトされるのに
+    // 選択だけ裏返る → 「正解タップしたのに不正解、しかもバツ後の正解が自分の選択と一致」
+    // という "バグにしか見えない" 状態になっていた。
+    //
+    // 新実装: capture 段階でタップを「物理的に反対側の選択肢の click」に振り替える。
+    //   - タップしたボタンではなく、反対側のボタンの is-selected がハイライトされる
+    //   - selectedIdx も反対側のボタンの data-idx (=q.choices の正規 index) になる
+    //   - ユーザー視点: 「上を押したのに下が光った。あ、反転タップか」とすぐ分かる
     // 選択肢問題専用 (入力モードでは効果なし)。
     const B01_REVERSE_TAP = {
         id: 'B01', name: '反転タップ', supports: 'choice', introducedAt: 7, difficulty: 8,
@@ -590,20 +596,30 @@
         apply(ctx) {
             const btns = qa(ctx.screen, '.q-choice:not(.gk-c02-dummy)');
             if (btns.length < 2) return () => {};
-            const originals = btns.map(b => b.getAttribute('data-idx'));
             const n = btns.length;
-            btns.forEach((b, i) => {
-                const reversedIdx = String(n - 1 - i);
-                // 実際の選択肢 index は data-idx-real に控える (B01 解除時に戻す)
-                b.dataset.idxReal = originals[i] ?? String(i);
-                b.setAttribute('data-idx', reversedIdx);
-            });
+            const grid = q(ctx.screen, '.q-choices') || ctx.screen;
+            let forwarding = false;
+
+            function onCapture(e) {
+                if (forwarding) return;
+                const btn = e.target.closest('.q-choice');
+                if (!btn || !grid.contains(btn)) return;
+                const i = btns.indexOf(btn);
+                if (i < 0) return;
+                const target = btns[n - 1 - i];
+                if (!target || target === btn) return;
+                // 元イベントは捨てて反対側のボタンを改めて click
+                e.stopImmediatePropagation();
+                e.preventDefault();
+                forwarding = true;
+                try { target.click(); } finally { forwarding = false; }
+            }
+
+            grid.addEventListener('click', onCapture, true);
+            ctx.screen.classList.add('gk-b01-reverse');
             return () => {
-                btns.forEach((b, i) => {
-                    if (originals[i] != null) b.setAttribute('data-idx', originals[i]);
-                    else b.removeAttribute('data-idx');
-                    delete b.dataset.idxReal;
-                });
+                grid.removeEventListener('click', onCapture, true);
+                ctx.screen.classList.remove('gk-b01-reverse');
             };
         },
     };
@@ -998,7 +1014,12 @@
 
     // --- Stage 8 プール (Input) ---
 
-    // あいうえお 行内で「1個前の音」へ戻すマップ。行頭は不動。
+    // あいうえお 行内で「1個前の音」へ戻すマップ (循環)。
+    // 以前は行頭を不動にしていたが、そのせいで各行末文字 (お,こ,そ,と,の,ほ,も,よ,ろ,ん)
+    // が完全に到達不能になり、答えにそれらを含む問題が物理的に解けなかった。
+    // 循環 (行末 → 行頭 → ...) にすることで全文字に到達可能を保証する。
+    //   例) あいうえお: あ→お, い→あ, う→い, え→う, お→え
+    //   プレイヤーは「狙いの文字より1個後ろの音」をタップすれば目的文字を出せる。
     // カタカナの場合は hiraToKata/kataToHira でラップして使う。
     const W04_SHIFT_MAP = (() => {
         const rows = [
@@ -1009,8 +1030,10 @@
         const m = {};
         rows.forEach(r => {
             const arr = Array.from(r);
-            for (let i = 0; i < arr.length; i++) {
-                m[arr[i]] = i === 0 ? arr[0] : arr[i - 1];
+            const n = arr.length;
+            for (let i = 0; i < n; i++) {
+                // i=0 (行頭) は行末へ (循環)
+                m[arr[i]] = arr[(i - 1 + n) % n];
             }
         });
         return m;
@@ -1029,8 +1052,10 @@
 
     const W04_INPUT_SHIFT = {
         id: 'W04', name: '入力ズレ', supports: 'input', introducedAt: 8, difficulty: 9,
-        // buffer を捻る系全般と排他
-        conflicts: ['W05', 'W06', 'W07', 'W09', 'W10'],
+        // buffer を捻る系 + フリック方向を弄る系 と排他。
+        // W19/W20 が重なると「1段ずれ × ランダム方向」 = プレイヤーが1文字に
+        // 2重の変換を暗算しないといけなくなり、実質解けないので外す。
+        conflicts: ['W05', 'W06', 'W07', 'W09', 'W10', 'W19', 'W20'],
         apply(ctx) {
             const kb = window.Keyboard;
             if (!kb) return () => {};

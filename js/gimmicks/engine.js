@@ -53,9 +53,16 @@
         }
 
         // B18 特別枠: session.b18Slot に当たった問題では B18 を強制追加 (通常枠とは別経路)
+        // ただしキーボード物理シャッフル系 (キー位置を動かす/消す) が picked に入ってる場合、
+        // B18 ポップで画面下半分が隠れると「ずれた/消えたキーを探す」手段も絶たれて
+        // 物理的に解けなくなる。その場合は picked から物理シャッフル系を先に外して
+        // B18 を通す (問題文/選択肢を隠す系との同居は許容、プレイヤー側で「見えにくい」
+        // だけなので B18 と共存しても無理ゲーにはならない)。
         if (session?.b18Slot === idx) {
             const b18 = window.GimmickRegistry?.B18_FAKE_ERROR;
             if (b18 && !picked.some(g => g.id === 'B18')) {
+                const B18_HARD_CONFLICTS = new Set(['W02', 'W08', 'W15', 'W16', 'W18']);
+                picked = picked.filter(g => !B18_HARD_CONFLICTS.has(g.id));
                 picked = picked.concat([b18]);
             }
         }
