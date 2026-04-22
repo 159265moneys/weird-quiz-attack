@@ -5,24 +5,24 @@
      正答ベース: 1000点 (不正解なら 0点)
      時間ボーナス: max(0, 残り時間) / 制限時間 * 1000 点
      → 1問最大 2000 点 / 20問で最大 40,000 点
-   ランク (6段階): D < C < B < A < S < SS
-     SS: [暫定] 全問正解 AND 1問平均 <= 15秒
-     S : 正答率 >= 0.95
-     A : 正答率 >= 0.85
-     B : 正答率 >= 0.70
-     C : 正答率 >= 0.50
-     D : それ未満
+   ランク (8段階, 仕様書 8-2 準拠):
+     SS: 全問正解 AND 平均 <= 15秒   上位 0.01% (神)
+     S : 正答率 >= 0.95              上位 1%
+     A : 正答率 >= 0.85              上位 3%
+     B : 正答率 >= 0.70              上位 10%
+     C : 正答率 >= 0.50              下位 30%
+     D : 正答率 >= 0.30              下位 60%
+     E : 正答率 >= 0.10              下位 90%
+     F : それ未満 / 即死(B21)終了     下位 99%+
 
-   TODO(Phase 6+): SS判定はステージごとに閾値を厳格化する。
-     例: Stage 1 なら平均8秒以内、Stage 10 なら全問正解+速度+ノーペナルティ等。
-     現状は全ステージ共通の暫定ルール。
+   B21 で即死終了したセッションは session.deathEnd = true。
+   deathEnd が立っている場合、正答率に関係なく強制 F。
    ============================================================ */
 
 (function () {
     const Q_TIME_LIMIT_MS = 60 * 1000; // 1問あたり60秒
     const BASE_POINT = 1000;
     const TIME_BONUS_MAX = 1000;
-    // TODO(Phase 6+): ステージごとの SS閾値 (CONFIG.STAGES[n].ssAvgSec) に置き換え
     const SS_AVG_TIME_SEC = 15;
 
     function computeQuestionScore(answer) {
@@ -51,7 +51,10 @@
         const totalTimeSec = totalTimeMs / 1000;
 
         let rank;
-        if (accuracy >= 1.0 && avgTimeSec <= SS_AVG_TIME_SEC && total > 0) {
+        if (session.deathEnd) {
+            // B21 即死終了は強制 F。演出・ネタ枠。
+            rank = 'F';
+        } else if (accuracy >= 1.0 && avgTimeSec <= SS_AVG_TIME_SEC && total > 0) {
             rank = 'SS';
         } else if (accuracy >= 0.95) {
             rank = 'S';
@@ -61,8 +64,12 @@
             rank = 'B';
         } else if (accuracy >= 0.50) {
             rank = 'C';
-        } else {
+        } else if (accuracy >= 0.30) {
             rank = 'D';
+        } else if (accuracy >= 0.10) {
+            rank = 'E';
+        } else {
+            rank = 'F';
         }
 
         return { score, correct, total, accuracy, avgTimeSec, totalTimeSec, rank };
