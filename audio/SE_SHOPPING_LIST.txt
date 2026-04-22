@@ -1,87 +1,127 @@
 ================================================================
   変なクイズ — SE 調達リスト
-  【ステータス】2026-04-22 一次調達完了。以下すべて効果音ラボから
-  取得・リネーム・配置済み。差し替えは任意。
+  【ステータス】2026-04-22 37本 配置完了 (Tier1+Tier2含む)。
+  以下すべて効果音ラボ から取得・リネーム・配置済み。
+  差し替えは任意。
 ================================================================
 
-【主要フリー素材サイト】
-  A: 効果音ラボ     https://soundeffect-lab.info/  ★今回すべてここ
-  B: 魔王魂         https://maoudamashii.onjuku.com/
-  C: On-Jin          https://on-jin.com/
-  D: Freesound.org  https://freesound.org/   (要アカウント、CC0多数)
-  E: DOVA-SYNDROME  https://dova-s.jp/SE/     (SE コーナー)
-
-★ 効果音ラボ 利用規約 (2026-04 時点)
+【利用規約 - 効果音ラボ (2026-04 時点)】
   - 利用料無料 / 商用OK / クレジット不要
   - 改変OK / 二次配布（単体での配布）のみNG
   - アプリ組み込み配布は OK
   → 本プロジェクト用途としては問題なし
 
 ================================================================
-  se/system/  —— クイズ進行の基本SE  [13/13 DONE]
+  se/system/  —— 画面遷移 / UX / 基本クイズSE  [19本]
 ================================================================
 
 ファイル名            元ファイル URL                                             元素材の説明
 -----------------------------------------------------------------------------------------
+-- クイズ基本 (13本) --
 correct.mp3          anime/mp3/correct1.mp3                                   クイズ正解1 ピンポンピンポンピンポン
 wrong.mp3            anime/mp3/incorrect1.mp3                                 クイズ不正解1 ブブー
 timeout.mp3          anime/mp3/electronic-countdown1.mp3                      カウントダウン電子音 プッ、プッ、プッ、ピー
-select.mp3           button/mp3/cursor1.mp3                                   カーソル移動1 ピッ (軽めのクリック)
-confirm.mp3          button/mp3/decision4.mp3                                 決定ボタンを押す4 やや重めの決定音
+select.mp3           button/mp3/cursor1.mp3                                   カーソル移動1 ピッ
+confirm.mp3          button/mp3/decision4.mp3                                 決定ボタンを押す4
 cancel.mp3           button/mp3/cancel1.mp3                                   キャンセルボタンを押す1 ヒッ
-key_tap.mp3          button/mp3/decision13.mp3                                決定ボタンを押す13 軽いキータップ向け
-key_bs.mp3           button/mp3/cancel2.mp3                                   キャンセルボタンを押す2 削除向け
-key_ok.mp3           button/mp3/decision17.mp3                                決定ボタンを押す17 デジタルチック (キーOK専用)
+key_tap.mp3          button/mp3/decision13.mp3                                決定ボタンを押す13 (軽いキータップ)
+key_bs.mp3           button/mp3/cancel2.mp3                                   キャンセルボタンを押す2 (削除向け)
+key_ok.mp3           button/mp3/decision17.mp3                                決定ボタンを押す17 デジタルチック
 stage_start.mp3      anime/mp3/mens-hajimei1.mp3                              男衆「始めいッ！」ゲームスタート
 stage_clear.mp3      anime/mp3/levelup1.mp3                                   レベルアップ テッテレー
 game_over.mp3        anime/mp3/curse-melody1.mp3                              呪いの旋律 デデデーン
 menu_cursor.mp3      button/mp3/cursor3.mp3                                   カーソル移動3 メニュー遷移向け
 
+-- UX演出 (6本) 追加Tier1 --
+tap_start.mp3        anime/mp3/doon1.mp3                                      ドーン 和太鼓一斉 → title タップで遷移
+rank_reveal.mp3      anime/mp3/jajean1.mp3                                    ジャジャーン → result ランク発表
+score_count.mp3      button/mp3/decision22.mp3                                ピコッ → result スコアカウントアップ tick
+time_warn.mp3        anime/mp3/quiz-timer-x2-1.mp3                            制限時間タイマー倍速 → question 残り時間警告
+navi_pop.mp3         anime/mp3/touch1.mp3                                     ちょこっと触る ポインチョ → ナビゲーター吹き出し
+share_ok.mp3         anime/mp3/kira1.mp3                                      キラッ1 鉄琴 → シェア成功
+
 ベースURL: https://soundeffect-lab.info/sound/
 
 ================================================================
-  se/gimmick/  —— ギミック専用SE  [11/11 DONE]
+  se/gimmick/  —— ギミック専用SE  [18本]
 ================================================================
 
 ファイル名            元ファイル URL                                             元素材の説明
 -----------------------------------------------------------------------------------------
+-- 既存ギミック (11本) --
 b11_charge.mp3       battle/mp3/beam-gun-charge1.mp3                          ビーム砲チャージ エネルギー充填120%
-b11_fire.mp3         battle/mp3/beamgun1.mp3                                  ビーム砲1 エネルギーがほとばしる
-b16_tick.mp3         button/mp3/beep5.mp3                                     ビープ音5 短め (毎秒更新用)
-b16_alarm.mp3        anime/mp3/emergency-alert1.mp3                           警報が鳴る 00:00到達警告
-b18_notify.mp3       button/mp3/decision40.mp3                                決定ボタンを押す40 ピロン (iOS通知風)
-b20_out.mp3          machine/mp3/pc-off1.mp3                                  パソコンの電源を切る カッ
-b20_in.mp3           machine/mp3/pc-on1.mp3                                   パソコンの電源を入れる フィーン
-b25_pop.mp3          button/mp3/decision26.mp3                                決定ボタンを押す26 ポップなイメージ
-b17_glitch.mp3       anime/mp3/horror-text1.mp3                               ホラー文字表示音 (文字化け用)
-b21_death.mp3        anime/mp3/horror-title1.mp3                              ホラータイトル表示音 恐怖をあおる
-glitch_loop.mp3      machine/mp3/mike-noise1.mp3                              マイクのホワイトノイズ シャー
+b11_fire.mp3         battle/mp3/beamgun1.mp3                                  ビーム砲1 (コーナービーム発射)
+b16_tick.mp3         button/mp3/beep5.mp3                                     ビープ音5 (毎秒更新)
+b16_alarm.mp3        anime/mp3/emergency-alert1.mp3                           警報 (00:00到達)
+b17_glitch.mp3       anime/mp3/horror-text1.mp3                               ホラー文字表示 (B17 問題文めちゃくちゃ)
+b18_notify.mp3       button/mp3/decision40.mp3                                ピロン (B18 偽エラー表示 iOS風)
+b20_in.mp3           machine/mp3/pc-on1.mp3                                   PC電源 ON (B20 暗転復帰)
+b20_out.mp3          machine/mp3/pc-off1.mp3                                  PC電源 OFF (B20 暗転)
+b21_death.mp3        anime/mp3/horror-title1.mp3                              ホラータイトル (B21 即死)
+b25_pop.mp3          button/mp3/decision26.mp3                                ポップ (B25 キャラ妨害)
+glitch_loop.mp3      machine/mp3/mike-noise1.mp3                              ホワイトノイズ (汎用グリッチ)
+
+-- 追加Tier1 (6本) --
+b04_zoom.mp3         anime/mp3/sceneswitch2.mp3                               シーン切り替え2 ブオッ → B04 ズーム暴走
+b05_mirror.mp3       anime/mp3/shakin3.mp3                                    シャキーン3 爽快感 → B05 ミラー反転
+c01_shuffle.mp3      anime/mp3/koto-glissando1.mp3                            琴の滑奏 しゃらららん → C01 選択肢シャッフル
+c04_fake50.mp3       anime/mp3/kira2.mp3                                      キラッ2 一瞬光る → C04 嘘50:50 reveal
+w15_warp.mp3         anime/mp3/flee1.mp3                                      ピューンと逃げる → W15 キーワープ / G5流用
+g2_betray.mp3        anime/mp3/shock3.mp3                                     ピアノでガガーン → G2 誤判定 裏切りsting
+
+-- 追加Tier2 (1本) --
+w18_vanish.mp3       anime/mp3/tin1.mp3                                       チーン1 がっかり → W18 キー消失
 
 ベースURL: https://soundeffect-lab.info/sound/
+
+================================================================
+  流用先 (音は追加せずに既存ファイルを使い回せるギミック)
+================================================================
+
+  B02 問題文1文字ずつ  → key_tap.mp3 (タイプライター風)
+  B07 グリッチ         → b17_glitch.mp3 / glitch_loop.mp3
+  C02 ダミー選択肢     → b25_pop.mp3
+  C03 選択肢文字変化   → b17_glitch.mp3
+  G1 ランダム即死      → b21_death.mp3
+  G4 文字化け          → b17_glitch.mp3
+  G5 選択肢ワープ      → w15_warp.mp3
+
+================================================================
+  SE不要 (静的な視覚効果のみで音響付加しても邪魔になる)
+================================================================
+
+  B03 問題文逆さ / B06 色覚破壊 / B08 フェードアウト /
+  B09 画面縮小 / B10 問題文ランダム出力 / B12 ぼかし /
+  B13 フォント極小 / B14 余白暴走 / B15 問題文逆順表示 /
+  W01 文字盤見えない / W02 文字盤あべこべ / W03 解答欄見えない /
+  W04 入力ズレ / W05 カーソル暴走 / W06 文字順逆転 /
+  W07 入力1文字消失 / W08 文字盤あべこべv2 / W09 ゴースト入力 /
+  W10 入力遅延 / W14 キー巨大化 / W16 キー同士くっつく /
+  W17 カナひら勝手切替 / W19 フリック方向反転 /
+  W20 フリック方向シャッフル / G7 スコア煽り / G8 易問トラップ
 
 ================================================================
   差し替え候補 (よりリッチにしたい場合)
 ================================================================
 
 b11_charge.mp3 / b11_fire.mp3
-  → Freesound.org で "laser charge up" / "laser beam fire" (CC0) を探すと
-     よりSF寄りの迫力あるサウンドに差し替え可能。
-     現状の beam-gun-charge1.mp3 / beamgun1.mp3 は80年代寄りで
-     チープさが逆に "変なクイズ" 世界観にハマるのでそのままでもOK。
+  → Freesound.org "laser charge up" / "laser beam fire" (CC0) で
+    よりSF寄りに差し替え可能。
 
 b18_notify.mp3
-  → decision40 は "ピロン" でiOS通知に十分近い。
-     完璧にiOS純正に寄せたい場合は Freesound "ios notification soft" (CC0)。
-     ※ Apple純正音そのものは著作権ありNG。
+  → Freesound "ios notification soft" (CC0) で純iOS風に寄せられる。
+    ※ Apple純正音そのものは著作権ありNG。
 
-b21_death.mp3
-  → 現状 horror-title1.mp3 で充分重い。さらに重くしたい場合は
-     Freesound "horror sting" "dark sting death" (CC0)。
+b21_death.mp3 / g2_betray.mp3
+  → Freesound "horror sting" / "dark sting" (CC0) でさらに重厚に。
 
 glitch_loop.mp3
-  → ホワイトノイズのみ。VHSっぽさを強めたい場合は
-     Freesound "vhs tape noise loop" "crt glitch ambient" (CC0) で
-     差し替え可。effects/vhs.js の描画と合わせやすい。
+  → Freesound "vhs tape noise loop" "crt glitch ambient" (CC0) で
+    effects/vhs.js のビジュアルと合わせやすくなる。
+
+rank_reveal.mp3
+  → Suno.ai で ranks ごとに個別BGM化も将来検討可能
+    (S専用ファンファーレ / E専用哀愁メロなど)。
 
 ================================================================
   BGM (audio/bgm/)
