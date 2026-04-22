@@ -87,13 +87,13 @@
                 // TAP TO START を即フェード
                 if (tap) tap.classList.add('is-gone');
 
-                // 蝶を飛ばす: 下から湧いて中央→上空へ
+                // 蝶を右方向へ羽ばたかせて画面外へ
                 if (bfly) bfly.classList.add('is-flying');
 
-                // ロゴ崩壊 + 蝶フライアウトに合わせて 1.2 秒後に遷移
+                // ロゴ崩壊 (1.2s) + 蝶フライアウト (1.6s) の長い方に合わせて遷移
                 setTimeout(() => {
                     window.Router.show('stageSelect');
-                }, 1200);
+                }, 1600);
             };
 
             // 全面タップで発火 (ボタンより広い当たり判定)
