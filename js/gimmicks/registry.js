@@ -567,27 +567,32 @@
         },
     };
 
+    // --- B10 問題文均質化 (2026-04 仕様変更) ---
+    // 旧実装「950ms ごとに全文字シャッフル」は見た目が騒がしいだけで
+    // 問題文がほぼ常に読めない状態になり、ただのランダムノイズと区別が付かなかった。
+    // 新実装: 2 秒ごとに 1 文字だけ、問題文内の他のどこかの文字で "上書き" する。
+    //   問題文が 10 文字なら約 18 秒で全部同じ文字に収束 = 意味が徐々に消えていく。
+    //   序盤は読める → 中盤怪しい → 終盤意味不明、というじわじわ崩壊演出。
     const B10_SHUFFLE_TEXT = {
-        id: 'B10', name: '問題文ランダム出力', supports: 'both', introducedAt: 6, difficulty: 5,
+        id: 'B10', name: '問題文均質化', supports: 'both', introducedAt: 6, difficulty: 5,
         conflicts: ['B02', 'B07', 'B15', 'B17'],  // stem.textContent を触る他とぶつかる
         apply(ctx) {
             const stem = q(ctx.screen, '.q-stem');
             if (!stem) return () => {};
             const original = stem.textContent;
             const chars = Array.from(original);
+            if (chars.length < 2) return () => {};
 
-            const shuffled = () => {
-                const a = chars.slice();
-                for (let i = a.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [a[i], a[j]] = [a[j], a[i]];
-                }
-                return a.join('');
-            };
-            stem.textContent = shuffled();
             const timer = setInterval(() => {
-                if (stem.isConnected) stem.textContent = shuffled();
-            }, 950);
+                if (!stem.isConnected) return;
+                const n = chars.length;
+                const dst = Math.floor(Math.random() * n);
+                let src = Math.floor(Math.random() * n);
+                if (src === dst) src = (src + 1) % n;  // 自己コピー回避
+                chars[dst] = chars[src];
+                stem.textContent = chars.join('');
+            }, 2000);
+
             return () => {
                 clearInterval(timer);
                 if (stem.isConnected) stem.textContent = original;
@@ -884,39 +889,22 @@
 
     // --- Stage 8 プール (Choice) ---
 
+    // --- C03 選択肢真っ黒 (2026-04 仕様変更) ---
+    // 旧実装「選択肢文字が1秒ごとにランダム破壊される」は 4 択全体が常時グリッチで
+    // 読む気が失せるだけだった。
+    // 新実装: 4 つのうち 1 つだけを完全に真っ黒 (背景・枠・文字全て #000) にする。
+    //   - ボタン自体は生きているので、見えないボタンもタップ可能 (=正解かもしれない)。
+    //   - 「どれか消える」→ 残り 3 つで消去法を頑張るか、黒を賭けで選ぶか。
+    //   - C02 のダミー選択肢は避ける (見えない選択肢が 2 つあると破綻)。
     const C03_CHAR_CORRUPT = {
-        id: 'C03', name: '選択肢文字変化', supports: 'choice', introducedAt: 8, difficulty: 8,
+        id: 'C03', name: '選択肢真っ黒', supports: 'choice', introducedAt: 8, difficulty: 8,
         apply(ctx) {
-            const btns = qa(ctx.screen, '.q-choice');
+            const btns = qa(ctx.screen, '.q-choice:not(.gk-c02-dummy)');
             if (btns.length === 0) return () => {};
-            // 本物/ダミー問わず全ての選択肢を対象にする (C02 との併用時も整合)
-            const states = btns.map(btn => ({
-                btn,
-                original: btn.textContent,
-                chars: Array.from(btn.textContent),
-            }));
-            const NOISE = '█▓▒░◊#&@?*%ΛΣΞ☆♪♀♂々〆ヾミЯЮЖ';
-            const noiseCh = () => NOISE[Math.floor(Math.random() * NOISE.length)];
-
-            // 1秒ごとにランダムな選択肢のランダムな位置を1文字ずつ壊す
-            let ticks = 0;
-            const timer = setInterval(() => {
-                const alive = states.filter(s => s.btn.isConnected);
-                if (alive.length === 0) return;
-                const s = alive[Math.floor(Math.random() * alive.length)];
-                if (s.chars.length === 0) return;
-                const pos = Math.floor(Math.random() * s.chars.length);
-                s.chars[pos] = noiseCh();
-                s.btn.textContent = s.chars.join('');
-                // 2ティックに1回グリッチ音 (鳴らしすぎ防止)
-                if (ticks++ % 2 === 0) window.SE?.fire('gB17Glitch');
-            }, 1000);
-
+            const target = btns[Math.floor(Math.random() * btns.length)];
+            target.classList.add('gk-c03-blackout');
             return () => {
-                clearInterval(timer);
-                states.forEach(s => {
-                    if (s.btn.isConnected) s.btn.textContent = s.original;
-                });
+                if (target.isConnected) target.classList.remove('gk-c03-blackout');
             };
         },
     };
@@ -978,55 +966,53 @@
         },
     };
 
-    // --- W07: 入力1文字消失 (表示から落とすだけ) ---
-    // 【重要】buffer は触らない。droppedIdx に入れた index を "表示上" 抜いて渡す。
-    // プレイヤーは「売ったはずの文字が消えた」と錯覚するが、
-    // 実際には buffer には残っており、OK を押せば判定は通る。
+    // --- W07 入力ガチ全消し (2026-04 仕様変更) ---
+    // 旧実装「1.6〜2.4 秒ごとに表示だけ1文字ランダム消し」は気づかれず効果薄だった。
+    // 新実装: 3 文字入力した瞬間に 1 問 1 回だけ発動し、末尾から 1 文字ずつ
+    // 200ms 間隔で "ガチ" に (buffer ごと) 消えていく演出。
+    // プレイヤーは全部打ち直す羽目になる、"入力リセット" 系ギミック。
     const W07_CHAR_DROP = {
-        id: 'W07', name: '入力1文字消失', supports: 'input', introducedAt: 6, difficulty: 7,
+        id: 'W07', name: '入力ガチ全消し', supports: 'input', introducedAt: 6, difficulty: 7,
         conflicts: ['W04', 'W09'],
         apply(ctx) {
-            const droppedIdx = new Set();
-            let currentBuffer = '';
-            let origHandler = null;
+            const kb = window.Keyboard;
+            if (!kb || !kb.setValue || !kb.getOnChange) return () => {};
+            let fired = false;
+            const timers = new Set();
 
-            function refresh() {
-                const arr = Array.from(currentBuffer);
-                const out = arr.filter((_, i) => !droppedIdx.has(i));
-                if (origHandler) origHandler(out.join(''));
-            }
-
-            const unwrap = wrapOnChange((orig) => {
-                origHandler = orig;
-                return (val) => {
-                    currentBuffer = val;
-                    // 範囲外になった index は除去 (backspace で buffer が縮んだ場合)
-                    for (const i of [...droppedIdx]) {
-                        if (i >= val.length) droppedIdx.delete(i);
-                    }
-                    refresh();
-                };
+            const orig = kb.getOnChange();
+            kb.setOnChange((val) => {
+                // 3 文字到達で初回だけトリガー。発動後は普通の onChange として流す。
+                if (!fired && val.length >= 3) {
+                    fired = true;
+                    triggerErase(val);
+                }
+                if (orig) orig(val);
             });
 
-            const schedule = () => {
-                return setTimeout(() => {
-                    const available = [];
-                    for (let i = 0; i < currentBuffer.length; i++) {
-                        if (!droppedIdx.has(i)) available.push(i);
+            function triggerErase(val) {
+                // 打った直後に即消し始めると「指の入力を食った?」と誤解されるので
+                // 400ms 待って「一拍間を置いてから」1 文字ずつ落としていく
+                const chars = Array.from(val);
+                const kickoff = setTimeout(step, 400);
+                timers.add(kickoff);
+
+                function step() {
+                    chars.pop();
+                    try { kb.setValue(chars.join('')); } catch (e) { /* ignore */ }
+                    // 視覚上のちらつきを抑える短い SE (glitch) を各文字消失時に薄く鳴らす
+                    window.SE?.fire('gB17Glitch');
+                    if (chars.length > 0) {
+                        const t = setTimeout(step, 200);
+                        timers.add(t);
                     }
-                    if (available.length > 0) {
-                        const pick = available[Math.floor(Math.random() * available.length)];
-                        droppedIdx.add(pick);
-                        refresh();
-                    }
-                    timer = schedule();
-                }, 1600 + Math.random() * 800);
-            };
-            let timer = schedule();
+                }
+            }
 
             return () => {
-                clearTimeout(timer);
-                unwrap();
+                timers.forEach(clearTimeout);
+                timers.clear();
+                try { kb.setOnChange(orig); } catch (e) { /* ignore */ }
             };
         },
     };

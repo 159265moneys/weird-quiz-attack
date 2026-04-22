@@ -414,7 +414,28 @@
    Phase 5b Batch5 — Stage 8 (C03/W04/W06/W09)
    ============================================================ */
 
-/* C03 選択肢文字変化: textContent 差し替えのみでCSS不要 */
+/* ---------- C03 選択肢真っ黒 (2026-04 仕様変更) ----------
+   1つの選択肢を完全ブラックアウト。タップ自体は可能 (pointer-events 触らない)。
+   B01 反転タップとの共存のため、.gk-b01-reverse 配下のスタイルも
+   :not(.is-selected) / .is-selected ともに黒で上書き。
+   選択中だけ cyan の細い枠を内側に出して「黒いボタンを押した」ことだけは分かるように。 */
+.q-choice.gk-c03-blackout,
+.gk-b01-reverse .q-choices:has(.is-selected) .q-choice.gk-c03-blackout,
+.gk-b01-reverse .q-choices:has(.is-selected) .q-choice.gk-c03-blackout.is-selected {
+    background: #000;
+    color: transparent;
+    border-color: #000;
+    box-shadow: none;
+}
+.q-choice.gk-c03-blackout.is-selected {
+    box-shadow: inset 0 0 0 3px var(--accent-cyan);
+}
+/* 黒い選択肢には蝶バッジも出さない (存在が完全に隠れる) */
+.q-choice.gk-c03-blackout::before,
+.gk-b01-reverse .q-choices:has(.is-selected) .q-choice.gk-c03-blackout::before {
+    display: none !important;
+}
+
 /* W04 入力ズレ: setValue 経由で buffer を置換 */
 /* W06 文字順逆転: 表示反転のみ (onChange ラップ) */
 /* W09 ゴースト入力: setValue で末尾にゴミ追加 */
