@@ -187,8 +187,10 @@
                     window.GameState.session.gimmickSlots = slots;
                     window.GameState.session.kAssignment =
                         window.GimmickSelector.generateKAssignment(no, slots);
-                    window.GameState.session.b18Slot =
-                        Math.floor(Math.random() * picked.length);
+                    const b18Prob = window.CONFIG.B18_STAGE_PROB ?? 1.0;
+                    window.GameState.session.b18Slot = Math.random() < b18Prob
+                        ? Math.floor(Math.random() * picked.length)
+                        : -1;
                     window.Router.show('question');
                 })();
             });
@@ -277,7 +279,13 @@
         };
 
         const dlg = deathEnd ? deathLines : (DIALOGS[rank] || DIALOGS.C);
-        window.Navigator.speak(dlg.lines, { poses: dlg.poses });
+        // 結果画面は「タップ文字送り」せず、全部 1 吹き出しで一気に表示。
+        // mode:'result' で下寄せ & 小さめ構成に切り替え。
+        window.Navigator.speak(dlg.lines, {
+            poses: dlg.poses,
+            mode: 'result',
+            oneShot: true,
+        });
     }
 
     // ---------- 上位ランク専用: 蝶バースト ----------

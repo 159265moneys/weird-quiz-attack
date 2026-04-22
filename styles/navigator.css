@@ -41,16 +41,30 @@
     to   { opacity: 1; }
 }
 
-/* 画面下にキャラ (2.5倍サイズ)。下辺ピッタリ (-80px で若干食い込み) */
+/* --- デフォルト (mode-tutorial): 2倍サイズでほぼ画面下フラッシュ --- */
 .nav-figure {
     position: absolute;
     left: 50%;
     bottom: -80px;
-    width: 1400px;   /* 560 * 2.5 */
-    height: 1800px;  /* 720 * 2.5 */
-    margin-left: -700px;
+    width: 1120px;   /* 560 * 2 */
+    height: 1440px;  /* 720 * 2 */
+    margin-left: -560px;
     pointer-events: none;
     transform-origin: 50% 100%;
+}
+
+/* --- mode-result: 下 2/3 だけを見せて画面下部にキャラ+吹き出しを
+   まとめる。上部にはボタン/情報の領域が確保される。 --- */
+.nav-overlay.mode-result .nav-figure {
+    bottom: -800px;   /* 下辺を 800px 切り落として head + shoulder のみ見せる */
+}
+.nav-overlay.mode-result .nav-bubble {
+    top: auto;
+    bottom: 700px;    /* キャラ頭上 (y ≈ 1020-1220 辺り) */
+    min-height: 180px;
+    padding: 32px 44px 56px;
+    font-size: 38px;
+    line-height: 1.55;
 }
 .nav-girl {
     width: 100%;

@@ -83,7 +83,8 @@
 
         textEl.textContent = line;
         const isLast = idx >= state.lines.length - 1;
-        nextEl.textContent = isLast ? 'OK ▶' : 'TAP ▶';
+        // oneShot: 吹き出しタップで閉じる (最終行と同じ)
+        nextEl.textContent = state.oneShot ? 'CLOSE ▶' : (isLast ? 'OK ▶' : 'TAP ▶');
         overlay.classList.toggle('is-last', isLast);
         showAt = Date.now();
     }
@@ -118,14 +119,29 @@
     function speak(lines, opts = {}) {
         if (!lines || !lines.length) return;
         mountShell();
+
+        // oneShot: タップ文字送りせず 1 吹き出しに全行を結合表示
+        const displayLines = opts.oneShot
+            ? [lines.join('\n')]
+            : lines.slice();
+
         state = {
-            lines: lines.slice(),
+            lines: displayLines,
             poses: opts.poses || null,
             idx: 0,
             onDone: opts.onDone || null,
+            mode: opts.mode || 'tutorial',
+            oneShot: !!opts.oneShot,
         };
+        applyMode(state.mode);
         open();
         show(0);
+    }
+
+    function applyMode(mode) {
+        if (!overlay) return;
+        overlay.classList.remove('mode-tutorial', 'mode-result');
+        overlay.classList.add(`mode-${mode}`);
     }
 
     function isOpen() {

@@ -156,10 +156,12 @@
             // 各 slot に K 値 (同時ギミック数) を割当
             window.GameState.session.kAssignment =
                 window.GimmickSelector.generateKAssignment(no, slots);
-            // B18 (偽エラー表示): 全ステージで 1 問だけ必ず発生する「特別枠」。
+            // B18 (偽エラー表示): 確率 (CONFIG.B18_STAGE_PROB) で 1 問だけ発生する特別枠。
             // 通常のギミックスロットに依存せず重ねて発動する。
-            window.GameState.session.b18Slot =
-                Math.floor(Math.random() * picked.length);
+            const b18Prob = window.CONFIG.B18_STAGE_PROB ?? 1.0;
+            window.GameState.session.b18Slot = Math.random() < b18Prob
+                ? Math.floor(Math.random() * picked.length)
+                : -1;
             console.log('[Stage]', no, 'slots:', slots,
                 'K:', window.GameState.session.kAssignment,
                 'b18Slot:', window.GameState.session.b18Slot);
