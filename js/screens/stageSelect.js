@@ -20,26 +20,63 @@
         render() {
             const stages = window.CONFIG.STAGES;
 
+            // 全体進捗 (解放ステージ / クリア数)
+            const progress = window.Save.data?.progress || {};
+            const unlocked = progress.unlockedStage || 1;
+            const clearedCount = (progress.clearedStages || []).length;
+
             const list = stages.map((s) => {
                 const locked = !window.Save.isStageUnlocked(s.no);
                 const score = window.Save.getStageScore(s.no);
-                const rank = score?.bestRank || '-';
+                const rank = score?.bestRank || null;
+                const best = score?.best || 0;
+                const plays = score?.plays || 0;
 
                 // kDist から「K=N(xC)+K=M(xC)」のサマリを作る
                 const kSummary = (s.kDist || [[1, s.slots]])
                     .map(([k, c]) => `K${k}×${c}`).join('+');
 
+                // ランクバッジ: 未クリア / ロック / クリア済みで分岐
+                let rankBadge;
+                if (locked) {
+                    rankBadge = `
+                        <div class="stage-rank-badge is-locked">
+                            <div class="rank-icon">🔒</div>
+                            <div class="rank-sub">LOCKED</div>
+                        </div>`;
+                } else if (rank) {
+                    rankBadge = `
+                        <div class="stage-rank-badge rank-${rank}">
+                            <div class="rank-text">${rank}</div>
+                            <div class="rank-sub">BEST</div>
+                        </div>`;
+                } else {
+                    rankBadge = `
+                        <div class="stage-rank-badge is-pending">
+                            <div class="rank-text">?</div>
+                            <div class="rank-sub">NEW</div>
+                        </div>`;
+                }
+
+                const statLine = locked ? '' : `
+                    <div class="stage-stats">
+                        <span class="stat">BEST ${best.toLocaleString()}</span>
+                        <span class="stat">PLAY ${plays}</span>
+                    </div>`;
+
                 return `
                     <button class="stage-card ${stressClass(s.stress)} ${locked ? 'is-locked' : ''}"
                             data-stage="${s.no}" ${locked ? 'disabled' : ''}>
-                        <div class="stage-no">${String(s.no).padStart(2, '0')}</div>
+                        <div class="stage-no-col">
+                            <div class="stage-no">${String(s.no).padStart(2, '0')}</div>
+                            <div class="stage-stress">${stressLabel(s.stress)}</div>
+                        </div>
                         <div class="stage-info">
                             <div class="stage-name">${s.name}</div>
-                            <div class="stage-meta">
-                                ${stressLabel(s.stress)} / ${kSummary} / ${window.CONFIG.QUESTIONS_PER_STAGE}Q
-                            </div>
+                            <div class="stage-meta">${kSummary} / ${window.CONFIG.QUESTIONS_PER_STAGE}Q</div>
+                            ${statLine}
                         </div>
-                        <div class="stage-rank">${locked ? '🔒' : rank}</div>
+                        ${rankBadge}
                     </button>
                 `;
             }).join('');
@@ -51,6 +88,13 @@
                         <div class="text-mute" style="font-size:24px;letter-spacing:3px;">v${window.CONFIG.VERSION}</div>
                     </div>
                     <div class="stage-title">STAGE SELECT</div>
+                    <div class="stage-progress">
+                        <span class="sp-label">UNLOCKED</span>
+                        <span class="sp-value">${unlocked}/10</span>
+                        <span class="sp-sep">·</span>
+                        <span class="sp-label">CLEARED</span>
+                        <span class="sp-value">${clearedCount}/10</span>
+                    </div>
                     <div class="scroll-area">
                         <div class="stage-list">${list}</div>
                     </div>
