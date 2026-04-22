@@ -63,6 +63,8 @@
             let transitioning = false;
             const onTap = (ev) => {
                 if (transitioning) return;
+                // フッター (5 タップでデバッグ起動) ではスタートさせない
+                if (ev.target && ev.target.closest && ev.target.closest('.title-footer')) return;
                 transitioning = true;
                 screen.classList.add('is-leaving');
 
