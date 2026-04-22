@@ -264,17 +264,17 @@
             const host = document.createElement('div');
             host.className = 'gk-b20-blackout';
             ctx.screen.appendChild(host);
+            // 開始 1 秒で発動 → 3 秒真っ暗 → 5〜8 秒休み → 再び 3 秒…
             let showTimer = 0, hideTimer = 0;
             const show = () => {
                 host.classList.add('is-on');
-                hideTimer = setTimeout(hide, 2600 + Math.random() * 800);
+                hideTimer = setTimeout(hide, 3000);
             };
             const hide = () => {
                 host.classList.remove('is-on');
-                showTimer = setTimeout(show, 6000 + Math.random() * 4000);
+                showTimer = setTimeout(show, 5000 + Math.random() * 3000);
             };
-            // 最初は少し遅らせて発動 (問題が見える時間を確保)
-            showTimer = setTimeout(show, 4000 + Math.random() * 3000);
+            showTimer = setTimeout(show, 1000);
             return () => {
                 clearTimeout(showTimer);
                 clearTimeout(hideTimer);
@@ -327,17 +327,16 @@
         id: 'B25', name: 'キャラ妨害', supports: 'both', introducedAt: 5, difficulty: 5,
         apply(ctx) {
             const SPRITES = [
-                'sprite/girl/basic.png',
-                'sprite/girl/happy.png',
-                'sprite/girl/hi.png',
-                'sprite/girl/think.png',
-                'sprite/girl/think_light.png',
+                'sprite/girl/basic.png', 'sprite/girl/happy.png',
+                'sprite/girl/hi.png', 'sprite/girl/think.png', 'sprite/girl/think_light.png',
             ];
-            const CHAR_H = 560;  // 表示上の高さ (px, 仮想座標)
-            const CHAR_W = 280;  // 幅の概算 (auto のため目安)
-            const PEEK   = 200;  // 覗き込む量 (px)
-            const OFF    = PEEK + 60; // 退場時に追加で押し出すオフセット
+            const CHAR_H   = 560;   // 画像高さ (px, 仮想座標)
+            const CHAR_W   = 280;   // 画像幅 (CSSで width:280px 固定と一致)
+            const PEEK     = 200;   // 頭が覗き込む量 (px)
+            const PAD      = 60;    // 退場時の追加オフセット
             const SCREEN_W = 1080;
+            const CX0 = CHAR_W / 2; // 140
+            const CY0 = CHAR_H / 2; // 280
 
             const timers = new Set();
             let alive = true;
@@ -347,7 +346,6 @@
                 timers.add(t);
             }
 
-            // 問題/回答エリア境界の仮想Y座標を取得
             function getBoundaryY() {
                 const zone = ctx.screen.querySelector('.q-zone-answer');
                 if (!zone) return 1050;
@@ -357,71 +355,72 @@
                 return scale > 0 ? (zr.top - sr.top) / scale : 1050;
             }
 
+            // 8方向テーブル。Rは rotate の角度(deg)。
+            // headDir = (sin(R), -cos(R)) がPNG上辺(頭)の向く画面方向。
+            // PNG下辺(足)は常に壁に向き、隙間ゼロで貼り付く。
+            // bx/by は境界上の基点。全位置決めは transform のみ (left/top=0固定)。
+            function getDirs(boundaryY) {
+                const SW = SCREEN_W;
+                return [
+                    { R:    0, bx: () => CX0 + Math.random()*(SW-CHAR_W),             by: () => boundaryY },       // 下
+                    { R:   45, bx: () => Math.random()*SW*0.3,                         by: () => boundaryY },       // 下-左
+                    { R:   90, bx: () => 0,  by: () => CX0 + Math.random()*Math.max(0, boundaryY-CHAR_W) },       // 左
+                    { R:  135, bx: () => 0,  by: () => Math.random()*boundaryY*0.3 },                              // 上-左
+                    { R:  180, bx: () => CX0 + Math.random()*(SW-CHAR_W),             by: () => 0 },               // 上
+                    { R: -135, bx: () => SW, by: () => Math.random()*boundaryY*0.3 },                              // 上-右
+                    { R:  -90, bx: () => SW, by: () => CX0 + Math.random()*Math.max(0, boundaryY-CHAR_W) },       // 右
+                    { R:  -45, bx: () => SW*0.7 + Math.random()*SW*0.3,               by: () => boundaryY },       // 下-右
+                ];
+            }
+
             function spawnChar() {
                 if (!alive) return;
                 const boundaryY = getBoundaryY();
+                const dirs = getDirs(boundaryY);
+                const { R, bx: bxFn, by: byFn } = dirs[Math.floor(Math.random() * dirs.length)];
+                const bx = bxFn(), by = byFn();
+
                 const img = document.createElement('img');
                 img.src = SPRITES[Math.floor(Math.random() * SPRITES.length)];
                 img.draggable = false;
                 img.className = 'gk-b25-char';
+                img.style.left = '0';
+                img.style.top  = '0';
 
-                // 4辺からランダム選択: 0=左 1=右 2=上 3=下(境界)
-                const edge = Math.floor(Math.random() * 4);
-                let hiddenT, visibleT;
+                const rad = R * Math.PI / 180;
+                const hdx = Math.sin(rad);   // 頭方向 x
+                const hdy = -Math.cos(rad);  // 頭方向 y
 
-                switch (edge) {
-                    case 0: { // 左端: 正向き、PEEK分だけ画面内に覗く
-                        const y = Math.random() * Math.max(0, boundaryY - CHAR_H);
-                        img.style.left = `${-(CHAR_W - PEEK)}px`;
-                        img.style.top  = `${y}px`;
-                        hiddenT  = `translateX(-${OFF}px)`;
-                        visibleT = 'translateX(0)';
-                        break;
-                    }
-                    case 1: { // 右端: 左右反転、PEEK分覗く
-                        const y = Math.random() * Math.max(0, boundaryY - CHAR_H);
-                        img.style.right = `${-(CHAR_W - PEEK)}px`;
-                        img.style.top   = `${y}px`;
-                        // scaleX(-1) 後は translateX(-) が視覚的に右方向
-                        hiddenT  = `scaleX(-1) translateX(-${OFF}px)`;
-                        visibleT = 'scaleX(-1)';
-                        break;
-                    }
-                    case 2: { // 上端: 底部(胴体)が見える — 下からではなく上からぬっと出る
-                        const x = CHAR_W * 0.2 + Math.random() * (SCREEN_W - CHAR_W * 1.4);
-                        img.style.left = `${x}px`;
-                        img.style.top  = `${-(CHAR_H - PEEK)}px`;
-                        hiddenT  = `translateY(-${OFF}px)`;
-                        visibleT = 'translateY(0)';
-                        break;
-                    }
-                    case 3: { // 下端: 問題/回答境界から頭が覗く
-                        const x = CHAR_W * 0.2 + Math.random() * (SCREEN_W - CHAR_W * 1.4);
-                        img.style.left = `${x}px`;
-                        img.style.top  = `${boundaryY - PEEK}px`;
-                        hiddenT  = `translateY(${OFF}px)`;
-                        visibleT = 'translateY(0)';
-                        break;
-                    }
-                }
+                // visible: 頭が境界からPEEK内側 (PEEK_OFS = PEEK - CY0 = -80)
+                const PEEK_OFS = PEEK - CY0;
+                const vcx = bx + hdx * PEEK_OFS;
+                const vcy = by + hdy * PEEK_OFS;
+
+                // hidden: 頭まで壁の外に退場 (HIDE_OFS = CY0 + PAD = 340)
+                const HIDE_OFS = CY0 + PAD;
+                const hcx = bx - hdx * HIDE_OFS;
+                const hcy = by - hdy * HIDE_OFS;
+
+                const vtx = Math.round(vcx - CX0), vty = Math.round(vcy - CY0);
+                const htx = Math.round(hcx - CX0), hty = Math.round(hcy - CY0);
+
+                const visibleT = `translate(${vtx}px,${vty}px) rotate(${R}deg)`;
+                const hiddenT  = `translate(${htx}px,${hty}px) rotate(${R}deg)`;
 
                 img.style.transform = hiddenT;
                 ctx.screen.appendChild(img);
 
-                // 初期状態を描画してからトランジション開始
                 requestAnimationFrame(() => requestAnimationFrame(() => {
                     if (!alive) { img.remove(); return; }
                     img.style.transform = visibleT;
                 }));
 
-                // ホールド → 退場
                 schedule(() => {
                     img.style.transform = hiddenT;
                     schedule(() => img.remove(), 450);
                 }, 800 + Math.random() * 700);
             }
 
-            // モグラ叩きループ: 一定間隔で次のキャラを生成
             function loop() {
                 spawnChar();
                 schedule(loop, 600 + Math.random() * 800);
@@ -533,69 +532,33 @@
 
     // --- Stage 7 プール ---
 
+    // B01 反転タップ: 旧実装は PointerEvent を座標反転して再 dispatch していたが、
+    // iOS Safari で preventDefault + synthetic pointerdown が submit ボタンも
+    // 効かなくする致命バグに繋がった (全タップがフリーズ)。
+    // 新実装: 選択肢の data-idx を反転マッピング (0↔N-1, 1↔N-2, ...) に書き換える。
+    // 見た目は変わらないが、タップして登録される選択肢のインデックスが逆順になる。
+    // 選択肢問題専用 (入力モードでは効果なし)。
     const B01_REVERSE_TAP = {
-        id: 'B01', name: '反転タップ', supports: 'both', introducedAt: 7, difficulty: 8,
-        // 座標系を捻るギミックとは干渉させない。
-        // W19 (フリック方向反転) はポインタ反転と二重反転→相殺して難度弱化。
-        conflicts: ['B03', 'B05', 'W19'],
+        id: 'B01', name: '反転タップ', supports: 'choice', introducedAt: 7, difficulty: 8,
+        // C01 はシャッフル済みなので B01 を重ねると「実質ランダム」になり演出が薄い
+        conflicts: ['C01'],
         apply(ctx) {
-            const screen = ctx.screen;
-            function mirrorPoint(cx0, cy0, x, y) {
-                return { x: 2 * cx0 - x, y: 2 * cy0 - y };
-            }
-            function center() {
-                const rect = screen.getBoundingClientRect();
-                return { cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 };
-            }
-            function redirectPointer(e) {
-                if (e.__gkB01) return;
-                // keyboard が拾わない場所のイベントは無視 (パフォーマンス)
-                // pointermove/up は「発射」中のドラッグのみ反転されるべきだが、
-                // ブラウザは問答無用で window に流すので全部反転させる。
-                const { cx, cy } = center();
-                const { x, y } = mirrorPoint(cx, cy, e.clientX, e.clientY);
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                const target = document.elementFromPoint(x, y) || screen;
-                const ne = new PointerEvent(e.type, {
-                    bubbles: true, cancelable: true,
-                    clientX: x, clientY: y,
-                    pointerId: e.pointerId,
-                    pointerType: e.pointerType || 'touch',
-                    button: e.button, buttons: e.buttons,
-                    isPrimary: e.isPrimary,
-                });
-                ne.__gkB01 = true;
-                target.dispatchEvent(ne);
-            }
-            function redirectClick(e) {
-                if (e.__gkB01) return;
-                const { cx, cy } = center();
-                const { x, y } = mirrorPoint(cx, cy, e.clientX, e.clientY);
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                const target = document.elementFromPoint(x, y) || screen;
-                const ne = new MouseEvent('click', {
-                    bubbles: true, cancelable: true,
-                    clientX: x, clientY: y,
-                    button: e.button, buttons: e.buttons,
-                });
-                ne.__gkB01 = true;
-                target.dispatchEvent(ne);
-            }
-            // pointerdown/click は screen 上で、pointermove/up/cancel は
-            // keyboard.js が window に付けているので window レベルで横取りする。
-            screen.addEventListener('pointerdown', redirectPointer, true);
-            screen.addEventListener('click', redirectClick, true);
-            window.addEventListener('pointermove', redirectPointer, true);
-            window.addEventListener('pointerup', redirectPointer, true);
-            window.addEventListener('pointercancel', redirectPointer, true);
+            const btns = qa(ctx.screen, '.q-choice:not(.gk-c02-dummy)');
+            if (btns.length < 2) return () => {};
+            const originals = btns.map(b => b.getAttribute('data-idx'));
+            const n = btns.length;
+            btns.forEach((b, i) => {
+                const reversedIdx = String(n - 1 - i);
+                // 実際の選択肢 index は data-idx-real に控える (B01 解除時に戻す)
+                b.dataset.idxReal = originals[i] ?? String(i);
+                b.setAttribute('data-idx', reversedIdx);
+            });
             return () => {
-                screen.removeEventListener('pointerdown', redirectPointer, true);
-                screen.removeEventListener('click', redirectClick, true);
-                window.removeEventListener('pointermove', redirectPointer, true);
-                window.removeEventListener('pointerup', redirectPointer, true);
-                window.removeEventListener('pointercancel', redirectPointer, true);
+                btns.forEach((b, i) => {
+                    if (originals[i] != null) b.setAttribute('data-idx', originals[i]);
+                    else b.removeAttribute('data-idx');
+                    delete b.dataset.idxReal;
+                });
             };
         },
     };
@@ -688,36 +651,29 @@
         },
     };
 
+    // C02 ダミー選択肢:
+    // 旧実装は選択肢を1つ追加して 5 個にしていたが、2x2 グリッドに 5 個だと
+    // 5個目が小さく露骨に浮くので「既存の1個のラベルを、別の1個のラベルで上書き」
+    // して「同じ文字のボタンが 2 つ存在する」状態を作る方式に変更。
+    // 見た目上 4 個のまま、ただし 2 つが同じラベル → どちらを押すかで結果が変わる。
     const C02_DUMMY_CHOICE = {
         id: 'C02', name: 'ダミー選択肢', supports: 'choice', introducedAt: 6, difficulty: 7,
         apply(ctx) {
-            const grid = q(ctx.screen, '.q-choices');
-            if (!grid) return () => {};
-            const existing = qa(grid, '.q-choice');
-            if (existing.length === 0) return () => {};
-
-            // 既存のランダム1つを複製 → 同じラベルのダミーを1個追加
-            // cloneNode は addEventListener を引き継がない → 叩いても無反応
-            const sample = existing[Math.floor(Math.random() * existing.length)];
-            const dummy = sample.cloneNode(true);
-            dummy.classList.add('gk-c02-dummy');
-            dummy.removeAttribute('data-idx');  // 誤って拾われないように
-            // 念のため capture 段で click も殺す
-            const killClick = (e) => {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                dummy.classList.add('gk-c02-deny');
-                setTimeout(() => dummy.classList.remove('gk-c02-deny'), 180);
+            const btns = qa(ctx.screen, '.q-choice');
+            if (btns.length < 2) return () => {};
+            // ラベルをコピーする "元" と "置換先" を別々に引く
+            const srcIdx = Math.floor(Math.random() * btns.length);
+            let dstIdx;
+            do { dstIdx = Math.floor(Math.random() * btns.length); } while (dstIdx === srcIdx);
+            const dst = btns[dstIdx];
+            const src = btns[srcIdx];
+            const originalText = dst.textContent;
+            dst.textContent = src.textContent;
+            dst.classList.add('gk-c02-dummy');
+            return () => {
+                dst.textContent = originalText;
+                dst.classList.remove('gk-c02-dummy');
             };
-            dummy.addEventListener('click', killClick, { capture: true });
-            dummy.addEventListener('pointerdown', killClick, { capture: true });
-
-            // 挿入位置もランダム
-            const insertAt = Math.floor(Math.random() * (existing.length + 1));
-            if (insertAt >= existing.length) grid.appendChild(dummy);
-            else grid.insertBefore(dummy, existing[insertAt]);
-
-            return () => dummy.remove();
         },
     };
 
@@ -727,19 +683,18 @@
         apply(ctx) {
             const btns = qa(ctx.screen, '.q-choice');
             if (btns.length < 4) return () => {};
-            // 正解含めランダムに2つをグレーアウト (騙し要素)
+            // 見た目だけのギミック: タップは有効のままにしておく (騙し要素)
+            // pointer-events を残すと「あれ、消えてるのに押せるぞ…？」という錯乱が生まれる
             const pool = btns.map((_, i) => i).sort(() => Math.random() - 0.5);
             const picked = pool.slice(0, 2);
             picked.forEach(i => {
                 btns[i].style.opacity = '0.22';
-                btns[i].style.pointerEvents = 'none';
                 btns[i].style.filter = 'grayscale(1)';
             });
             return () => {
                 picked.forEach(i => {
                     if (!btns[i]) return;
                     btns[i].style.opacity = '';
-                    btns[i].style.pointerEvents = '';
                     btns[i].style.filter = '';
                 });
             };

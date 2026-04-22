@@ -297,7 +297,9 @@
 .gk-b25-char {
     position: absolute;
     height: 560px;
-    width: auto;
+    width: 280px;
+    left: 0;
+    top: 0;
     pointer-events: none;
     z-index: 55;
     will-change: transform;
@@ -319,16 +321,9 @@
     100% { filter: hue-rotate(360deg) saturate(1.8) contrast(1.15); }
 }
 
-/* ---------- C02 ダミー選択肢: 叩いても反応しない選択肢 ----------
-   見た目は本物と区別つかない。拒否時だけ一瞬フラッシュでフィードバック。 */
-.q-choice.gk-c02-dummy.gk-c02-deny {
-    animation: gkC02Deny 0.18s ease-out;
-}
-@keyframes gkC02Deny {
-    0%   { filter: none; }
-    50%  { filter: brightness(1.4); }
-    100% { filter: none; }
-}
+/* ---------- C02 ダミー選択肢: 見た目は本物と区別つかないラベル置換 ----------
+   既存 4択のうち 1つのラベルを他の1つのラベルに差し替える方式。見た目上は
+   通常の選択肢と完全に同じ (マーカー不要)。クラスは state 管理のみ。 */
 
 /* B09 画面縮小: インラインtransformで scale(0.6) を適用 */
 /* B10 問題文ランダム出力: textContent を差し替えるのでCSS不要 */

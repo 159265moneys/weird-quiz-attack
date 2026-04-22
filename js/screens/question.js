@@ -124,12 +124,9 @@
             window.addEventListener('gimmick:forceFail', onGimmickForceFail);
 
             // --- 崩壊UIギミック適用 ---
-            // DOMが整い、キーボードもmountされた後に適用する必要があるため
-            // 次ティックに回す (Keyboard.mount 内で innerHTML 差し替えが走るため)
-            setTimeout(() => {
-                if (resolved) return;
-                window.Gimmicks?.applyForQuestion(window.GameState.currentStage, q);
-            }, 0);
+            // 問題文が「ギミック出る前に一瞬見える」状態を防ぐため、DOM 差し替え直後に
+            // 同期的に適用する。この時点で Keyboard.mount も完了済みなので安全。
+            window.Gimmicks?.applyForQuestion(window.GameState.currentStage, q);
         },
 
         destroy() {
