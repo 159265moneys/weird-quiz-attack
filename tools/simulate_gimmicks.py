@@ -78,7 +78,7 @@ REGISTRY: List[Gimmick] = [
     Gimmick('C04', '嘘50:50',                'choice', 8, 6, conflicts=['C01']),
     Gimmick('W04', '入力ズレ',               'input',  8, 9, conflicts=['W06', 'W07', 'W09', 'W20']),
     Gimmick('W06', '文字順逆転',             'input',  8, 8, conflicts=['W04', 'W07', 'W09']),
-    Gimmick('W09', 'ゴースト入力',           'input',  8, 8, conflicts=['W04', 'W06', 'W07']),
+    Gimmick('W09', 'ダブル入力',             'input',  8, 8, conflicts=['W04', 'W06', 'W07']),
     # Stage 9 (Batch 6 — 最終)
     Gimmick('B21', '即死',                   'both',   9, 10),
     Gimmick('W08', '文字盤あべこべv2',       'input',  9, 9,  conflicts=['W02', 'W18']),

@@ -1427,65 +1427,50 @@
         },
     };
 
-    // --- W09: ゴースト入力 (表示にだけノイズ文字を挿入) ---
-    // 【重要】buffer は触らない。ghosts 配列に {pos, ch} を溜めて、
-    // onChange の表示文字列にだけ挿入する。OK 時は buffer (= 売った順) で判定。
-    // プレイヤーは「勝手に変な文字が混ざる」と感じるが、自分の入力を信じて
-    // OK すれば正解になる。
+    // --- W09 ダブル入力 (2026-04 仕様変更) ---
+    // 旧実装「ゴースト表示」は表示と buffer がズレる overlay 方式で、
+    // プレイヤーが「ゴーストを消そうとしたら自分の打った文字が消える」と誤解して
+    // 混乱するだけだった。置換。
+    //
+    // 新実装: 1 タップで「打った文字 + ランダム1文字」= 2文字が buffer に入る。
+    //   - 全て実体入力 (buffer) なので BS で1文字ずつ消せる = フェア
+    //   - プレイヤーは毎タップ後に「BS で余計な1字を削る」運用を強いられる
+    //   - 入力ボックスに "⚠ DOUBLE INPUT" 警告バッジで気づかせる
     const W09_GHOST_INPUT = {
-        id: 'W09', name: 'ゴースト入力', supports: 'input', introducedAt: 8, difficulty: 8,
+        id: 'W09', name: 'ダブル入力', supports: 'input', introducedAt: 8, difficulty: 8,
         conflicts: ['W04', 'W06', 'W07'],
         apply(ctx) {
+            const kb = window.Keyboard;
+            if (!kb?.setValue || !kb?.getOnChange) return () => {};
             const NOISE = 'がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゃゅょっゞゟヰヱヶ';
             const noiseCh = () => NOISE[Math.floor(Math.random() * NOISE.length)];
+            const box = q(ctx.screen, '.q-input-box');
+            if (box) box.classList.add('gk-w09-double');
 
-            // ghosts[k] = { pos, ch } — pos は buffer 配列内での挿入位置 (0..buffer.length)
-            let ghosts = [];
-            let currentBuffer = '';
-            let origHandler = null;
+            let lastLength = kb.getValue ? kb.getValue().length : 0;
+            let suppressNext = false;
 
-            function buildDisplay() {
-                const arr = Array.from(currentBuffer);
-                // pos 降順で挿入して index ずれを回避
-                const sorted = ghosts.slice().sort((a, b) => b.pos - a.pos);
-                const out = arr.slice();
-                for (const g of sorted) {
-                    const p = Math.min(Math.max(g.pos, 0), out.length);
-                    out.splice(p, 0, g.ch);
+            const unwrap = wrapOnChange((orig) => (val) => {
+                if (suppressNext) {
+                    // setValue による再 emit。記録だけ更新して素通し。
+                    suppressNext = false;
+                    lastLength = val.length;
+                    if (orig) orig(val);
+                    return;
                 }
-                return out.join('');
-            }
-            function refresh() {
-                if (origHandler) origHandler(buildDisplay());
-            }
-
-            const unwrap = wrapOnChange((orig) => {
-                origHandler = orig;
-                return (val) => {
-                    currentBuffer = val;
-                    // buffer が縮んだ場合 ghost の pos が範囲外になるので繋ぎ止める
-                    ghosts.forEach(g => {
-                        if (g.pos > val.length) g.pos = val.length;
-                    });
-                    refresh();
-                };
+                if (val.length === lastLength + 1) {
+                    // 1 文字増えた = 実タップ。ランダム1字を連結して 2 文字化。
+                    suppressNext = true;
+                    try { kb.setValue(val + noiseCh()); } catch (e) { /* ignore */ }
+                    return;
+                }
+                // BS (縮み) / clear / その他はそのまま流す
+                lastLength = val.length;
+                if (orig) orig(val);
             });
 
-            // 4〜6 秒に1回、ゴーストを1個足す (表示が 20 字超えないよう制限)
-            const schedule = () => {
-                return setTimeout(() => {
-                    if (currentBuffer.length + ghosts.length < 20) {
-                        const pos = Math.floor(Math.random() * (currentBuffer.length + 1));
-                        ghosts.push({ pos, ch: noiseCh() });
-                        refresh();
-                    }
-                    timer = schedule();
-                }, 4000 + Math.random() * 2000);
-            };
-            let timer = schedule();
-
             return () => {
-                clearTimeout(timer);
+                if (box && box.isConnected) box.classList.remove('gk-w09-double');
                 unwrap();
             };
         },

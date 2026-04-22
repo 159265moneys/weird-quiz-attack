@@ -653,6 +653,31 @@
     100% { transform: translate(0, 0); }
 }
 
+/* ---------- W09 ダブル入力 (2026-04 仕様変更) ----------
+   入力ボックスに "⚠ DOUBLE INPUT" バッジ。
+   打つたびに1字余計に入るので BS で毎回削る運用が必要、と即分かる表示。 */
+.q-input-box.gk-w09-double {
+    position: relative;
+}
+.q-input-box.gk-w09-double::before {
+    content: '⚠ DOUBLE INPUT';
+    position: absolute;
+    top: -14px;
+    right: -6px;
+    padding: 3px 9px;
+    background: #ff2e4a;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    border-radius: 4px;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+    transform: rotate(-3deg);
+    pointer-events: none;
+    z-index: 5;
+    animation: gkW04BadgeFlash 1.2s ease-in-out infinite;
+}
+
 /* ============================================================
    2026-04 追加: 問題文系ギミック B22-B31
    ============================================================ */
