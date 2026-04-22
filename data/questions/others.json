@@ -791,7 +791,7 @@
     "subgenre": "音楽",
     "difficulty": 2,
     "mode": "input",
-    "question": "音楽で「piano(p)」は「静かに」の意味。「pp」はpより○い。○は？(ひらがなで)",
+    "question": "音楽で「piano(p)」は「静かに」の意味。「pp」はpより◯い。◯は？(ひらがなで)",
     "answer_text": "しずか",
     "answer_variants": [
       "よわ"
@@ -815,7 +815,7 @@
     "subgenre": "家庭",
     "difficulty": 2,
     "mode": "input",
-    "question": "玉ねぎを切ると目が○○なる。○○は？(ひらがなで)",
+    "question": "玉ねぎを切ると目が◯◯なる。◯◯は？(ひらがなで)",
     "answer_text": "しみる",
     "answer_variants": [
       "いたく",
@@ -1144,7 +1144,7 @@
     "subgenre": "音楽",
     "difficulty": 4,
     "mode": "input",
-    "question": "楽譜でシャープ（♯）は半音○げることを示す。○は？(ひらがなで)",
+    "question": "楽譜でシャープ（♯）は半音◯げることを示す。◯は？(ひらがなで)",
     "answer_text": "あ",
     "answer_variants": [],
     "explanation": "シャープ（♯）は半音上げる記号。"
@@ -1329,7 +1329,7 @@
     "subgenre": "音楽",
     "difficulty": 5,
     "mode": "input",
-    "question": "「♭（フラット）」は半音○げることを示す。○は？(ひらがなで)",
+    "question": "「♭（フラット）」は半音◯げることを示す。◯は？(ひらがなで)",
     "answer_text": "さ",
     "answer_variants": [],
     "explanation": "フラット（♭）は半音下げる記号。"
@@ -2113,12 +2113,12 @@
     "subgenre": "音楽",
     "difficulty": 9,
     "mode": "input",
-    "question": "「音楽之友」とも訳される音楽団体の略称は？(アルファベットで)",
-    "answer_text": "N響",
+    "question": "「N響」は何の略称？(アルファベット3文字で)",
+    "answer_text": "NHK",
     "answer_variants": [
-      "NHK交響楽団"
+      "nhk"
     ],
-    "explanation": "不適切な問題のため差し替え：「NHK交響楽団」の略称は？→N響。"
+    "explanation": "N響=NHK交響楽団。"
   },
   {
     "id": "O143",
@@ -2361,7 +2361,7 @@
     "subgenre": "音楽",
     "difficulty": 4,
     "mode": "input",
-    "question": "「ファミレ」はある曲の冒頭。その曲は「○○○○の歌」。○○○○は？(ひらがなで)",
+    "question": "「ファミレ」はある曲の冒頭。その曲は「◯◯◯◯の歌」。◯◯◯◯は？(ひらがなで)",
     "answer_text": "み",
     "answer_variants": [],
     "explanation": "「ちょうちょう（蝶々）」の歌の冒頭はミミレファミレ…。正確には「ミミレファミレド」。代替：「ドレミの歌」の3番目の音は？"

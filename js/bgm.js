@@ -57,7 +57,6 @@
     let fadingEls   = new Set();   // フェードアウト中の旧 el たち (GC 防止参照)
     let baseVolume  = DEFAULT_VOL;
     let muted       = false;
-    let watchRAF    = 0;
     let pendingName = null;        // unlock 前に play() されたやつを覚えておく
     let pendingOpts = null;
     let unlocked    = false;
@@ -125,6 +124,41 @@
         }
         el.loop = false;
         el.volume = 0;
+        el._loopTriggered = false;
+
+        // ---- ループ検知: timeupdate + ended 二段構え ----
+        // 旧実装は requestAnimationFrame で尻尾を監視していたが、iOS Safari / WKWebView
+        // では user gesture の無い再生中に rAF が throttle (最悪 0Hz) されて尻尾検知を逃し、
+        // loop=false の audio が自然終了 → 無音で固まる問題があった。
+        // Audio 要素の `timeupdate` は再生中 ~4Hz で確実に発火するのでこちらで検知する。
+        // また万一 timeupdate も逃した場合の safety-net として `ended` でも強制ループ。
+        const onTimeUpdate = () => {
+            if (el !== currentEl) return;        // 既に入替済 → 無視
+            if (el._loopTriggered) return;
+            const dur = el.duration;
+            if (!dur || !isFinite(dur) || dur <= 0) return;
+            const remainMs = (dur - el.currentTime) * 1000;
+            if (remainMs > 0 && remainMs <= CROSSFADE_MS) {
+                el._loopTriggered = true;
+                triggerSelfLoop();
+            }
+        };
+        const onEnded = () => {
+            // クロスフェード検知を逃した場合のリカバリ。el が fade out 中で
+            // currentEl でなければ無視 (そっちは意図した終了)。
+            if (el !== currentEl) return;
+            if (!el._loopTriggered) {
+                el._loopTriggered = true;
+                triggerSelfLoop();
+            }
+        };
+        el.addEventListener('timeupdate', onTimeUpdate);
+        el.addEventListener('ended',       onEnded);
+        el._detachLoopListeners = () => {
+            el.removeEventListener('timeupdate', onTimeUpdate);
+            el.removeEventListener('ended',       onEnded);
+        };
+
         const p = el.play();
         if (p && p.catch) {
             p.catch(() => {
@@ -137,23 +171,13 @@
         return el;
     }
 
-    // 現在 el の尻尾監視ループ。残り時間が CROSSFADE_MS を切ったら次ループを被せる。
-    function startWatcher() {
-        if (watchRAF) return;
-        const tick = () => {
-            if (currentEl && !currentEl._loopTriggered) {
-                const dur = currentEl.duration;
-                if (dur && isFinite(dur) && dur > 0) {
-                    const remainMs = (dur - currentEl.currentTime) * 1000;
-                    if (remainMs > 0 && remainMs <= CROSSFADE_MS) {
-                        currentEl._loopTriggered = true;
-                        triggerSelfLoop();
-                    }
-                }
-            }
-            watchRAF = requestAnimationFrame(tick);
-        };
-        watchRAF = requestAnimationFrame(tick);
+    // 旧 el のリスナを外して pause する (retire)。
+    // 注: 呼び出し時点で currentEl から外して fadingEls に移していることが前提。
+    function retireEl(el) {
+        if (!el) return;
+        try { el._detachLoopListeners?.(); } catch (_) {}
+        try { el.pause(); } catch (_) {}
+        fadingEls.delete(el);
     }
 
     // 現在 el の尻尾にクロスフェードでもう 1 本同じファイルを被せる (= ループ)
@@ -164,18 +188,13 @@
 
         const oldEl = currentEl;
 
-        // 旧 el を CROSSFADE_MS かけて 0 へ、終わったら pause & 参照解放
+        // 旧 el を CROSSFADE_MS かけて 0 へ、終わったら pause & 参照解放 & リスナ除去
         fadingEls.add(oldEl);
-        fadeTo(oldEl, 0, CROSSFADE_MS, () => {
-            try { oldEl.pause(); } catch (_) {}
-            fadingEls.delete(oldEl);
-        });
+        fadeTo(oldEl, 0, CROSSFADE_MS, () => retireEl(oldEl));
 
         // 新 el を time=0 で fadeIn しながら再生
         const targetVol = targetVolumeFor(currentName);
-        const newEl = spawnAudio(sp.path, targetVol, CROSSFADE_MS);
-        newEl._loopTriggered = false;
-        currentEl = newEl;
+        currentEl = spawnAudio(sp.path, targetVol, CROSSFADE_MS);
     }
 
     // 旧 BGM を一斉にフェードアウト (別 BGM への切替時)
@@ -184,8 +203,7 @@
             const old = currentEl;
             fadingEls.add(old);
             fadeTo(old, 0, fadeMs, () => {
-                try { old.pause(); } catch (_) {}
-                fadingEls.delete(old);
+                retireEl(old);
                 if (onDone) onDone();
             });
             currentEl = null;
@@ -222,8 +240,6 @@
             fadeOutCurrent(SEQ_FADEOUT_MS, () => {
                 currentName = name;
                 currentEl = spawnAudio(sp.path, targetVol, SEQ_FADEIN_MS);
-                currentEl._loopTriggered = false;
-                startWatcher();
             });
             currentName = name;  // 見かけ上の "今の BGM" は先に切替
             return;
@@ -233,8 +249,6 @@
         fadeOutCurrent(SWITCH_FADE_MS);
         currentName = name;
         currentEl = spawnAudio(sp.path, targetVol, SWITCH_FADE_MS);
-        currentEl._loopTriggered = false;
-        startWatcher();
     }
 
     function stop(fadeMs) {

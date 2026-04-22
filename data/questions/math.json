@@ -162,7 +162,7 @@
     "subgenre": "図形",
     "difficulty": 4,
     "mode": "choice",
-    "question": "平行四辺形の面積は『底辺 × ○○』。○○は？",
+    "question": "平行四辺形の面積は『底辺 × ◯◯』。◯◯は？",
     "choices": [
       "高さ",
       "斜辺",
@@ -502,7 +502,7 @@
     "subgenre": "速さ",
     "difficulty": 4,
     "mode": "choice",
-    "question": "距離 = 速さ × ○○。○○は？",
+    "question": "距離 = 速さ × ◯◯。◯◯は？",
     "choices": [
       "時間",
       "高さ",

@@ -20,7 +20,6 @@ window.GameState = {
         b18Slot: -1,        // B18 偽エラー表示の特別枠: この index で必ず発動
         instantDeath: false,// B21 適用中フラグ
         deathEnd: false,    // B21 で強制終了したか (結果画面の演出用)
-        misjudge: false,    // G2 誤判定 適用中フラグ (正解を不正解にすり替える確率)
         scoreTaunt: false,  // G7 スコア煽り: result 画面で一度 0 を表示
     },
 
@@ -40,7 +39,6 @@ window.GameState = {
             b18Slot: -1,
             instantDeath: false,
             deathEnd: false,
-            misjudge: false,
             scoreTaunt: false,
         };
     },

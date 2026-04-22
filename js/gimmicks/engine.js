@@ -61,7 +61,7 @@
         if (session?.b18Slot === idx) {
             const b18 = window.GimmickRegistry?.B18_FAKE_ERROR;
             if (b18 && !picked.some(g => g.id === 'B18')) {
-                const B18_HARD_CONFLICTS = new Set(['W02', 'W08', 'W15', 'W16', 'W18']);
+                const B18_HARD_CONFLICTS = new Set(['W02', 'W08', 'W18']);
                 picked = picked.filter(g => !B18_HARD_CONFLICTS.has(g.id));
                 picked = picked.concat([b18]);
             }

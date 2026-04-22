@@ -563,7 +563,7 @@
     "subgenre": "物理",
     "difficulty": 4,
     "mode": "input",
-    "question": "「仕事（J）= 力（N）× ○」の○は？(ひらがなで)",
+    "question": "「仕事（J）= 力（N）× ◯」の◯は？(ひらがなで)",
     "answer_text": "きょり",
     "answer_variants": [
       "距離"
@@ -829,7 +829,7 @@
     "subgenre": "化学",
     "difficulty": 7,
     "mode": "input",
-    "question": "「物質の3状態」のうち、体積が変化しにくいのは固体と○体。○は？(ひらがなで)",
+    "question": "「物質の3状態」のうち、体積が変化しにくいのは固体と◯体。◯は？(ひらがなで)",
     "answer_text": "えき",
     "answer_variants": [],
     "explanation": "固体と液体は体積変化が小さい。気体は大きく変化する。"
@@ -904,7 +904,7 @@
     "subgenre": "物理",
     "difficulty": 8,
     "mode": "input",
-    "question": "「圧力（Pa）= 力（N）÷ ○（m²）」。○は？(ひらがなで)",
+    "question": "「圧力（Pa）= 力（N）÷ ◯（m²）」。◯は？(ひらがなで)",
     "answer_text": "めんせき",
     "answer_variants": [
       "面積"
@@ -992,7 +992,7 @@
     "subgenre": "物理",
     "difficulty": 9,
     "mode": "input",
-    "question": "「ニュートンの第2法則」を式で表すと F = ○。○は？",
+    "question": "「ニュートンの第2法則」を式で表すと F = ◯。◯は？",
     "answer_text": "ma",
     "answer_variants": [
       "m×a",

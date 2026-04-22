@@ -81,10 +81,13 @@
         /* 上側 20% : シアン → 透明 */
         rgba(0, 229, 255, 0.25)     95%,
         transparent                100%);
+    /* box-shadow は GPU ラスタライズ負荷が極端に重い。
+       一番外の 360px ブラー層だけ削って負荷 ~40% 削減。見た目的な光芒は
+       80/200 の 2 層で十分確保できる。2 本同時発射 + 他ギミック同居時の
+       WKWebView クラッシュ (OOM) 対策。 */
     box-shadow:
         0 0 80px  rgba(0, 229, 255, 0.95),
-        0 0 200px rgba(0, 229, 255, 0.55),
-        0 0 360px rgba(0, 229, 255, 0.25);
+        0 0 200px rgba(0, 229, 255, 0.55);
     mix-blend-mode: screen;
     will-change: opacity, transform;
 }
@@ -331,27 +334,10 @@
 /* W02 文字盤あべこべ: kb-main の textContent を差し替え */
 /* W07 入力1文字消失: Keyboard.setValue() で buffer 操作 */
 
-/* ---------- B14 余白暴走: 問題文が不規則に上下左右へ踊る ----------
-   translate で動かすのでレイアウトは崩さない。
-   will-change で合成層に載せて描画を軽くする。 */
-.q-stem.gk-b14 {
-    /* 3.2s → 1.06s (3倍速) */
-    animation: gkB14Dance 1.06s ease-in-out infinite;
-    will-change: transform;
-}
-@keyframes gkB14Dance {
-    0%   { transform: translate(0, 0); }
-    12%  { transform: translate(-160px, 20px); }
-    24%  { transform: translate(120px, -30px); }
-    40%  { transform: translate(-80px, 60px); }
-    55%  { transform: translate(180px, 0); }
-    70%  { transform: translate(-200px, -40px); }
-    85%  { transform: translate(80px, 40px); }
-    100% { transform: translate(0, 0); }
-}
+/* B14 余白暴走 は廃止 (2026-04 実機テスト結果に基づく整理) */
 
 /* ============================================================
-   Phase 5b Batch4 — Stage 7 (B01/B17/W05/W10/W17/W19)
+   Phase 5b Batch4 — Stage 7 (B01/B17)
    ============================================================ */
 
 /* ---------- B17 問題文めちゃくちゃ: ノイズの中から本物を探す ----------
@@ -382,27 +368,51 @@
     /* 色や太字を変えない。完全に溶け込ませる。 */
 }
 
-/* W14 キー巨大化 は廃止 (2026-04) */
+/* ---------- B01 反転タップ (2026-04 仕様変更) ----------
+   裏側の選択処理はそのまま。CSS で「is-selected と :not(.is-selected) の見た目」を
+   入れ替えるだけで「タップした方以外の3つがハイライト」される錯覚を作る。
+   :has() で「誰か1人でも選ばれた時だけ反転発動」にして、初期状態で全4個が
+   光る気持ち悪さを回避。 */
+.gk-b01-reverse .q-choices:has(.is-selected) .q-choice:not(.is-selected) {
+    background: var(--accent-cyan-dim);
+    border-color: var(--accent-cyan);
+    box-shadow:
+        6px 6px 0 var(--accent-cyan),
+        inset 0 0 0 2px var(--accent-cyan);
+    color: #fff;
+}
+.gk-b01-reverse .q-choices:has(.is-selected) .q-choice.is-selected {
+    background: transparent;
+    border-color: var(--line);
+    box-shadow: none;
+    color: inherit;
+}
+/* 蝶バッジも反転: 選ばれていない側に付け、選ばれた側からは外す */
+.gk-b01-reverse .q-choices:has(.is-selected) .q-choice:not(.is-selected)::before {
+    content: '';
+    position: absolute;
+    top: -18px;
+    left: -18px;
+    width: 72px;
+    height: 72px;
+    background-image: url('../sprite/butterfly.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+    pointer-events: none;
+    z-index: 20;
+    animation: fxButterflyBadgeFlap 0.32s ease-in-out infinite alternate;
+    transform-origin: center;
+}
+.gk-b01-reverse .q-choices:has(.is-selected) .q-choice.is-selected::before {
+    display: none;
+}
 
-/* W05 カーソル暴走: Keyboard.setValue 経由で buffer を入れ替えるのでCSS不要 */
-/* W10 入力遅延: onChange ラップのみでCSS不要 */
-/* W17 カナひら勝手切替: Keyboard.setMode() 呼び出しのみ */
-/* W19 フリック方向反転: setFlickTransform() のみ */
-/* B01 反転タップ: pointerevent redirect のみ */
+/* W05/W10/W14/W15/W16/W17/W19 は廃止 (2026-04 整理) */
 
 /* ============================================================
-   Phase 5b Batch5 — Stage 8 (C03/W04/W06/W09/W15/W16)
+   Phase 5b Batch5 — Stage 8 (C03/W04/W06/W09)
    ============================================================ */
-
-/* ---------- W16 キー同士くっつく: 同じ字に統一されたキー群 ----------
-   anchor はうっすらハイライト、glued 側はアンカーに同期した見た目。
-   プレイヤーが「どのキーが本体か」を気付けるよう、うっすら視覚差を入れる。 */
-.kb-key.gk-w16-anchor {
-    background: rgba(62, 221, 221, 0.08);
-}
-.kb-key.gk-w16-glued {
-    background: rgba(255, 48, 48, 0.06);
-}
 
 /* C03 選択肢文字変化: textContent 差し替えのみでCSS不要 */
 /* W04 入力ズレ: setValue 経由で buffer を置換 */
@@ -435,14 +445,67 @@
     50%      { opacity: 0.85; transform: scale(1.15); }
 }
 
-/* ---------- B21/G1 即死モード: UI全体を赤化 + 周縁グロー ----------
-   シアン差し色をすべて赤に置換 (CSS変数の継承でタイマー・OKキー・
-   選択肢ハイライト・入力欄・回答ボタンが全部赤に変わる)。
-   ::after で画面周縁を赤い枠+グローで覆い、呼吸するように点滅。 */
+/* ---------- B21/G1 即死モード: UI全体を赤化 + 周縁グロー + 血だれ ----------
+   2026-04 トーンダウン: 「激しいVHSで酔う」クレーム懸念を受けて動きと点滅を抑制。
+   代わりに「画面上端から血がじわじわ垂れる」静かな演出で絶望感を担保。
+
+   - シアン差し色をすべて赤に置換 (CSS変数で全UIパーツが赤化)
+   - ::before で血だれ (20〜24秒でじわじわ下りてくる) ← NEW
+   - ::after で周縁赤グロー (パルスを 0.95s → 2.4s にスローダウン, 振幅も抑制) */
 .question-screen.gk-instant-death {
     --accent-cyan:     var(--accent-red);
     --accent-cyan-dim: var(--accent-red-dim);
+    overflow: hidden;  /* 血だれの clip 境界を画面端で切る */
 }
+
+/* 血だれ:
+   複数本 (5本) の縦ストリークを background-image に積む。各本は
+     width: 14〜28px / 濃度/減衰/目標到達長が全部バラバラ
+   → 「雑に滴った血が少しずつ広がってる」リアル感。
+   アニメは background-size の Y 値をキーフレームで個別に伸ばす形。
+   transform/opacity ではなく "描画サイズ" が増えるだけなので画面は揺れない。
+   mix-blend-mode:multiply で UI を赤黒く染めつつ文字が透けて読めるよう両立。 */
+.question-screen.gk-instant-death::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 498;
+    mix-blend-mode: multiply;
+    background-repeat: no-repeat;
+    background-image:
+        linear-gradient(to bottom, rgba(120, 0, 0, 0.92) 0%, rgba( 85, 0, 0, 0.55) 35%, rgba(50, 0, 0, 0.22) 60%, transparent 85%),
+        linear-gradient(to bottom, rgba(145, 0, 0, 0.88) 0%, rgba(100, 0, 0, 0.50) 30%, transparent 65%),
+        linear-gradient(to bottom, rgba(100, 0, 0, 0.85) 0%, rgba( 70, 0, 0, 0.40) 40%, transparent 75%),
+        linear-gradient(to bottom, rgba(130, 0, 0, 0.85) 0%, rgba( 90, 0, 0, 0.45) 30%, transparent 60%),
+        linear-gradient(to bottom, rgba(110, 0, 0, 0.78) 0%, rgba( 75, 0, 0, 0.35) 35%, transparent 55%);
+    background-position:
+         7%  0%,
+        24%  0%,
+        44%  0%,
+        67%  0%,
+        88%  0%;
+    /* 初期は Y=0% で見えず、keyframes で伸びていく */
+    background-size:
+        18px 0%,
+        28px 0%,
+        14px 0%,
+        22px 0%,
+        16px 0%;
+    /* ease-in でゆっくり始まって後半加速 (上から垂れてくる感) */
+    animation: gkDeathBlood 22s cubic-bezier(0.45, 0, 0.7, 0.55) forwards;
+}
+/* 各本を少しずつ違うタイミングで伸ばす → 不均一な垂れ方 */
+@keyframes gkDeathBlood {
+    0%   { background-size: 18px  0%, 28px  0%, 14px  0%, 22px  0%, 16px  0%; }
+    10%  { background-size: 18px  5%, 28px  1%, 14px  0%, 22px  0%, 16px  0%; }
+    25%  { background-size: 18px 18%, 28px  9%, 14px  6%, 22px  2%, 16px  1%; }
+    45%  { background-size: 18px 34%, 28px 22%, 14px 26%, 22px 13%, 16px 14%; }
+    70%  { background-size: 18px 50%, 28px 32%, 14px 52%, 22px 25%, 16px 30%; }
+    100% { background-size: 18px 62%, 28px 40%, 14px 72%, 22px 35%, 16px 48%; }
+}
+
+/* 周縁グロー: 周期を 0.95s → 2.4s にスローダウン、opacity 振幅も抑制 */
 .question-screen.gk-instant-death::after {
     content: '';
     position: absolute;
@@ -453,46 +516,31 @@
         inset 0 0 240px rgba(255, 48, 48, 0.08);
     pointer-events: none;
     z-index: 500;
-    animation: gkDeathBorder 0.95s ease-in-out infinite alternate;
+    animation: gkDeathBorder 2.4s ease-in-out infinite alternate;
 }
 @keyframes gkDeathBorder {
-    from { opacity: 0.35; }
-    to   { opacity: 1.00; }
+    from { opacity: 0.55; }
+    to   { opacity: 0.92; }
 }
 
-/* ---------- 死モード時の VHS バースト (applyDeathMode が付け外し) ----------
-   title 画面の Canvas VHS と違って question 中は Canvas が停まっているので
-   CSS クラスを直接叩いて同等の "引き裂き + RGB ずれ" を再現する。
-   fx-vhs-tearing  : 横方向の引き裂き (horizontal tear + clip-path スリット)
-   fx-vhs-rgb      : RGB 色収差 (赤/シアンの drop-shadow で二重像) */
-#stage.fx-vhs-tearing {
-    animation: fxVhsTearing 0.28s steps(5, end) forwards;
-}
-@keyframes fxVhsTearing {
-    0%   { transform: translateX(0);     clip-path: inset(0 0 0 0); }
-    20%  { transform: translateX(-14px); clip-path: inset(12% 0 62% 0); }
-    40%  { transform: translateX(10px);  clip-path: inset(38% 0 28% 0); }
-    60%  { transform: translateX(-8px);  clip-path: inset(58% 0 14% 0); }
-    80%  { transform: translateX(6px);   clip-path: inset(74% 0  6% 0); }
-    100% { transform: translateX(0);     clip-path: inset(0 0 0 0); }
-}
+/* ---------- 死モード時の VHS RGB split (applyDeathMode が低頻度で付け外し) ----------
+   tearing (横揺れ) は完全撤廃 → 画面位置は動かさない。
+   RGB split だけを「たまに」「短く」「振幅小さく」差し込むことで
+   「何か壊れてる」違和感を維持しつつ酔いを防ぐ。 */
 #stage.fx-vhs-rgb {
-    filter:
-        drop-shadow(4px 0 0 rgba(255, 51, 64, 0.8))
-        drop-shadow(-4px 0 0 rgba(0, 229, 255, 0.55));
-    animation: fxVhsRgbPulse 0.36s ease-out forwards;
+    animation: fxVhsRgbPulse 0.42s ease-out forwards;
 }
 @keyframes fxVhsRgbPulse {
     0%   { filter: drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent); }
     40%  {
         filter:
-            drop-shadow(5px 0 0 rgba(255, 51, 64, 0.9))
-            drop-shadow(-5px 0 0 rgba(0, 229, 255, 0.7));
+            drop-shadow(2px 0 0 rgba(255, 51, 64, 0.55))
+            drop-shadow(-2px 0 0 rgba(0, 229, 255, 0.35));
     }
     100% {
         filter:
-            drop-shadow(3px 0 0 rgba(255, 51, 64, 0.4))
-            drop-shadow(-3px 0 0 rgba(0, 229, 255, 0.3));
+            drop-shadow(1px 0 0 rgba(255, 51, 64, 0.22))
+            drop-shadow(-1px 0 0 rgba(0, 229, 255, 0.15));
     }
 }
 

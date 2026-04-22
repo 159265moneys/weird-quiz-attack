@@ -1372,14 +1372,12 @@
     "subgenre": "公民",
     "difficulty": 5,
     "mode": "input",
-    "question": "「GDP」は「国内○○生産」の略。○○は？(漢字2文字で)",
-    "answer_text": "総生",
+    "question": "「GDP」は「国内総◯◯」の略。◯◯は？(ひらがなで)",
+    "answer_text": "せいさん",
     "answer_variants": [
-      "そうせい",
-      "総生産",
-      "そうせいさん"
+      "生産"
     ],
-    "explanation": "GDP=Gross Domestic Product=国内総生産（こくないそうせいさん）。"
+    "explanation": "GDP=国内総生産（こくないそうせいさん）。"
   },
   {
     "id": "S094",

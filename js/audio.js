@@ -418,7 +418,7 @@
         // ただし原音は長めなので 2x 倍速で圧縮してスピード感を出す (ピッチも少し上がる)。
         correct:       { path: 'se/system/correct.mp3',     volume: 0.7, persistOnTransition: true, playbackRate: 2.0 },
         wrong:         { path: 'se/system/wrong.mp3',       volume: 0.9, persistOnTransition: true, playbackRate: 2.0 },
-        // timeout / gG2Betray / gB21Death は resolve 後 1500ms 前後で
+        // timeout / gB21Death は resolve 後 1500ms 前後で
         // Router.show() が走るため、persist が無いと abortAll の
         // 200ms フェードで切れてしまう。最後まで鳴らすため persist する。
         timeout:       { path: 'se/system/timeout.mp3',     volume: 0.8, exclusive: true, persistOnTransition: true },
@@ -480,7 +480,6 @@
         gC01Shuffle:   { path: 'se/gimmick/w15_warp.mp3',   volume: 0.5, clipMs: 400 },
         // C04 嘘50:50: キラッ差し替え → 無音 (null)
         gC04Fake50:    null,
-        gG2Betray:     { path: 'se/gimmick/g2_betray.mp3',  volume: 0.9, persistOnTransition: true },
         gGlitchLoop:   { path: 'se/gimmick/glitch_loop.mp3', volume: 0.25, loop: true },
         gW15Warp:      { path: 'se/gimmick/w15_warp.mp3',   volume: 0.7 },
         // W18 キー消失: チーン差し替え → 無音

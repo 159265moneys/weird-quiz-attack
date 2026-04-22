@@ -52,7 +52,7 @@ REGISTRY: List[Gimmick] = [
     Gimmick('B02', '問題文1文字ずつ',        'both', 3, 4, conflicts=['B07', 'B08', 'B17']),
     Gimmick('B08', 'フェードアウト',         'both', 3, 4, conflicts=['B02', 'B12']),
     # Stage 4 (Batch 2)
-    Gimmick('B04', 'ズーム暴走',             'both', 4, 5, conflicts=['B03', 'B05', 'B14']),
+    Gimmick('B04', 'ズーム暴走',             'both', 4, 5, conflicts=['B03', 'B05']),
     Gimmick('B15', '問題文逆順表示',         'both', 4, 6, conflicts=['B02', 'B07', 'B17']),
     Gimmick('B20', '暗転',                   'both', 4, 5),
     Gimmick('C01', '選択肢シャッフル',       'choice', 4, 5, conflicts=['C04']),
@@ -60,13 +60,12 @@ REGISTRY: List[Gimmick] = [
     Gimmick('B05', 'ミラー',                 'both', 5, 5, conflicts=['B03']),
     Gimmick('B06', '色覚破壊',               'both', 5, 6),
     Gimmick('B12', 'ぼかし',                 'both', 5, 5),
-    Gimmick('B14', '余白暴走',               'both', 5, 5),
     Gimmick('B25', 'キャラ妨害',             'both', 5, 5),
     # Stage 6
     Gimmick('B09', '画面縮小',               'both',   6, 6, conflicts=['B03', 'B05']),
     Gimmick('B10', '問題文ランダム出力',     'both',   6, 5, conflicts=['B02', 'B07', 'B15', 'B17']),
     Gimmick('W01', '文字盤見えない',         'input',  6, 7),
-    Gimmick('W02', '文字盤あべこべ',         'input',  6, 7, conflicts=['W08', 'W15', 'W16', 'W17', 'W18']),
+    Gimmick('W02', '文字盤あべこべ',         'input',  6, 7, conflicts=['W08', 'W18']),
     Gimmick('W03', '解答欄見えない',         'input',  6, 6),
     Gimmick('W07', '入力1文字消失',          'input',  6, 7),
     Gimmick('C02', 'ダミー選択肢',           'choice', 6, 7),
@@ -74,31 +73,24 @@ REGISTRY: List[Gimmick] = [
     Gimmick('B01', '反転タップ',             'choice', 7, 8, conflicts=['C01']),
     Gimmick('B13', 'フォント極小',           'both',   7, 7, conflicts=['B17']),
     Gimmick('B17', '問題文めちゃくちゃ',     'both',   7, 7, conflicts=['B02', 'B07', 'B08', 'B10', 'B15']),
-    Gimmick('W05', 'カーソル暴走',           'input',  7, 7, conflicts=['W07', 'W10']),
-    Gimmick('W10', '入力遅延',               'input',  7, 7, conflicts=['W05', 'W07']),
-    Gimmick('W17', 'カナひら勝手切替',       'input',  7, 7),
-    Gimmick('W19', 'フリック方向反転',       'input',  7, 7),
     # Stage 8 (Batch 5)
     Gimmick('C03', '選択肢文字変化',         'choice', 8, 8),
     Gimmick('C04', '嘘50:50',                'choice', 8, 6, conflicts=['C01']),
-    Gimmick('W04', '入力ズレ',               'input',  8, 9, conflicts=['W05', 'W06', 'W07', 'W09', 'W10']),
-    Gimmick('W06', '文字順逆転',             'input',  8, 8, conflicts=['W04', 'W05', 'W09', 'W10']),
-    Gimmick('W09', 'ゴースト入力',           'input',  8, 8, conflicts=['W04', 'W05', 'W06', 'W07', 'W10']),
-    Gimmick('W15', 'キーワープ',             'input',  8, 8, conflicts=['W02', 'W08', 'W16', 'W17']),
-    Gimmick('W16', 'キー同士くっつく',       'input',  8, 8, conflicts=['W02', 'W08', 'W15', 'W17']),
+    Gimmick('W04', '入力ズレ',               'input',  8, 9, conflicts=['W06', 'W07', 'W09', 'W20']),
+    Gimmick('W06', '文字順逆転',             'input',  8, 8, conflicts=['W04', 'W07', 'W09']),
+    Gimmick('W09', 'ゴースト入力',           'input',  8, 8, conflicts=['W04', 'W06', 'W07']),
     # Stage 9 (Batch 6 — 最終)
     Gimmick('B21', '即死',                   'both',   9, 10),
-    Gimmick('W08', '文字盤あべこべv2',       'input',  9, 9,  conflicts=['W02', 'W15', 'W16', 'W17', 'W18']),
-    Gimmick('W18', 'キー消失',               'input',  9, 9,  conflicts=['W02', 'W08', 'W15', 'W16', 'W17']),
-    Gimmick('W20', 'フリック方向シャッフル', 'input',  9, 10, conflicts=['W19']),
-    # Stage 10 専用 (理不尽ギミック G1-G8)
+    Gimmick('W08', '文字盤あべこべv2',       'input',  9, 9,  conflicts=['W02', 'W18']),
+    Gimmick('W18', 'キー消失',               'input',  9, 9,  conflicts=['W02', 'W08']),
+    Gimmick('W20', 'フリック方向シャッフル', 'input',  9, 10, conflicts=[]),
+    # Stage 10 専用 (理不尽ギミック G1/G4/G5/G7)
+    # (2026-04 整理) B14/W05/W10/W15/W16/W17/W19/G2/G8 は廃止
     Gimmick('G1', 'ランダム即死',     'both',   10, 10),
-    Gimmick('G2', '誤判定',           'both',   10, 10),
     Gimmick('G4', '文字化け',         'both',   10, 9,
             conflicts=['B02', 'B07', 'B08', 'B10', 'B15', 'B17']),
     Gimmick('G5', '選択肢ワープ',     'choice', 10, 10, conflicts=['C02']),
     Gimmick('G7', 'スコア煽り',       'both',   10, 7),
-    Gimmick('G8', '易問トラップ',     'choice', 10, 8, conflicts=['C03']),
 ]
 
 # --- 未実装ギミック ---
@@ -135,9 +127,9 @@ STAGES: List[StageConfig] = [
 ]
 
 STAGE10_POOL_IDS = [
-    'G1', 'G2', 'G4', 'G5', 'G7', 'G8',
-    'B21', 'W20', 'W04', 'W08', 'W18', 'C03', 'W05', 'W06', 'W09',
-    'W15', 'W16', 'B01', 'B13', 'B17', 'C02', 'W01',
+    'G1', 'G4', 'G5', 'G7',
+    'B21', 'W20', 'W04', 'W08', 'W18', 'C03', 'W06', 'W09',
+    'B01', 'B13', 'B17', 'C02', 'W01',
 ]
 
 QUESTIONS_PER_STAGE = 20

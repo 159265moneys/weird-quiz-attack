@@ -89,7 +89,7 @@
     "subgenre": "ことわざ",
     "difficulty": 4,
     "mode": "choice",
-    "question": "「猿も木から○○」。○○は？",
+    "question": "「猿も木から◯◯」。◯◯は？",
     "choices": [
       "落ちる",
       "降りる",
@@ -105,7 +105,7 @@
     "subgenre": "ことわざ",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「急がば○○」。○○は？",
+    "question": "「急がば◯◯」。◯◯は？",
     "choices": [
       "走れ",
       "回れ",
@@ -121,7 +121,7 @@
     "subgenre": "四字熟語",
     "difficulty": 6,
     "mode": "choice",
-    "question": "「一石二○」。○に入るのは？",
+    "question": "「一石二◯」。◯に入るのは？",
     "choices": [
       "兎",
       "鳥",
@@ -137,7 +137,7 @@
     "subgenre": "ことわざ",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「○の耳に念仏」。○に入るのは？",
+    "question": "「◯の耳に念仏」。◯に入るのは？",
     "choices": [
       "犬",
       "猫",
@@ -390,7 +390,7 @@
     "subgenre": "ことわざ",
     "difficulty": 4,
     "mode": "choice",
-    "question": "「犬も歩けば○○に当たる」。○○は？",
+    "question": "「犬も歩けば◯◯に当たる」。◯◯は？",
     "choices": [
       "石",
       "棒",
@@ -406,7 +406,7 @@
     "subgenre": "ことわざ",
     "difficulty": 6,
     "mode": "choice",
-    "question": "「人の振り見て○が振り直せ」。○は？",
+    "question": "「人の振り見て◯が振り直せ」。◯は？",
     "choices": [
       "人",
       "我",
@@ -535,7 +535,7 @@
     "subgenre": "ことわざ",
     "difficulty": 6,
     "mode": "choice",
-    "question": "「朱に交われば○○なる」。○○は？",
+    "question": "「朱に交われば◯◯なる」。◯◯は？",
     "choices": [
       "黒く",
       "白く",
@@ -551,7 +551,7 @@
     "subgenre": "ことわざ",
     "difficulty": 6,
     "mode": "choice",
-    "question": "「百聞は一○にしかず」。○は？",
+    "question": "「百聞は一◯にしかず」。◯は？",
     "choices": [
       "聞",
       "見",
@@ -775,7 +775,7 @@
     "subgenre": "ことわざ",
     "difficulty": 2,
     "mode": "choice",
-    "question": "「七転び○○起き」。○○に入るのは？",
+    "question": "「七転び◯◯起き」。◯◯に入るのは？",
     "choices": [
       "七",
       "八",
@@ -791,7 +791,7 @@
     "subgenre": "ことわざ",
     "difficulty": 2,
     "mode": "choice",
-    "question": "「早起きは三文の○○」。○○は？",
+    "question": "「早起きは三文の◯◯」。◯◯は？",
     "choices": [
       "損",
       "得",
@@ -871,7 +871,7 @@
     "subgenre": "ことわざ",
     "difficulty": 2,
     "mode": "choice",
-    "question": "「○を出す」（化けの皮が剥がれる意）。○は？",
+    "question": "「◯を出す」（化けの皮が剥がれる意）。◯は？",
     "choices": [
       "見せ",
       "消し",
@@ -936,7 +936,7 @@
     "subgenre": "ことわざ",
     "difficulty": 3,
     "mode": "choice",
-    "question": "「親の○は子に似る」。○に入るのは？",
+    "question": "「親の◯は子に似る」。◯に入るのは？",
     "choices": [
       "声",
       "心",
@@ -1000,7 +1000,7 @@
     "subgenre": "慣用句",
     "difficulty": 3,
     "mode": "choice",
-    "question": "「耳が○い」（新しい情報に敏感）。○は？",
+    "question": "「耳が◯い」（新しい情報に敏感）。◯は？",
     "choices": [
       "速",
       "鋭",
@@ -1016,7 +1016,7 @@
     "subgenre": "ことわざ",
     "difficulty": 3,
     "mode": "choice",
-    "question": "「柳に○なし」（柔らかいほど折れない）。○は？",
+    "question": "「柳に◯なし」（柔らかいほど折れない）。◯は？",
     "choices": [
       "風",
       "雪",
@@ -1048,7 +1048,7 @@
     "subgenre": "ことわざ",
     "difficulty": 3,
     "mode": "choice",
-    "question": "「塵も積もれば○○になる」。○○は？",
+    "question": "「塵も積もれば◯◯になる」。◯◯は？",
     "choices": [
       "大山",
       "砂山",
@@ -1064,7 +1064,7 @@
     "subgenre": "慣用句",
     "difficulty": 3,
     "mode": "choice",
-    "question": "「頭が○い」（賢い）。○は？",
+    "question": "「頭が◯い」（賢い）。◯は？",
     "choices": [
       "高",
       "良",
@@ -1102,7 +1102,7 @@
     "subgenre": "四字熟語",
     "difficulty": 4,
     "mode": "choice",
-    "question": "「一○百○」（多様な美しさ）。○○は？",
+    "question": "「一◯百◯」（多様な美しさ）。◯◯は？",
     "choices": [
       "繚",
       "繁",
@@ -1118,7 +1118,7 @@
     "subgenre": "ことわざ",
     "difficulty": 4,
     "mode": "choice",
-    "question": "「○を食わば皿まで」。○は？",
+    "question": "「◯を食わば皿まで」。◯は？",
     "choices": [
       "毒",
       "薬",
@@ -1134,7 +1134,7 @@
     "subgenre": "慣用句",
     "difficulty": 4,
     "mode": "choice",
-    "question": "「○に余る」（感謝などの気持ちが大きすぎる）。○は？",
+    "question": "「◯に余る」（感謝などの気持ちが大きすぎる）。◯は？",
     "choices": [
       "余",
       "勝",
@@ -1166,7 +1166,7 @@
     "subgenre": "ことわざ",
     "difficulty": 4,
     "mode": "choice",
-    "question": "「覆水○に返らず」。○は？",
+    "question": "「覆水◯に返らず」。◯は？",
     "choices": [
       "元",
       "盆",
@@ -1182,7 +1182,7 @@
     "subgenre": "四字熟語",
     "difficulty": 4,
     "mode": "choice",
-    "question": "「一石○○」（一つの行動で二つの利益）。○○は？",
+    "question": "「一石◯◯」（一つの行動で二つの利益）。◯◯は？",
     "choices": [
       "二鳥",
       "三鳥",
@@ -1198,7 +1198,7 @@
     "subgenre": "慣用句",
     "difficulty": 4,
     "mode": "choice",
-    "question": "「口が○い」（物事を上手に話す）。○は？",
+    "question": "「口が◯い」（物事を上手に話す）。◯は？",
     "choices": [
       "良",
       "達",
@@ -1230,7 +1230,7 @@
     "subgenre": "ことわざ",
     "difficulty": 4,
     "mode": "choice",
-    "question": "「蛙の子は○○」。○○は？",
+    "question": "「蛙の子は◯◯」。◯◯は？",
     "choices": [
       "親蛙",
       "子蛙",
@@ -1284,7 +1284,7 @@
     "subgenre": "慣用句",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「腹が○つ」（怒る）。○は？",
+    "question": "「腹が◯つ」（怒る）。◯は？",
     "choices": [
       "立",
       "張",
@@ -1300,7 +1300,7 @@
     "subgenre": "四字熟語",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「四字熟語：○○一喜」（一喜一憂の変形）。正しい四字熟語は？",
+    "question": "「四字熟語：◯◯一喜」（一喜一憂の変形）。正しい四字熟語は？",
     "choices": [
       "一悲一喜",
       "一喜一憂",
@@ -1332,7 +1332,7 @@
     "subgenre": "ことわざ",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「類は○を呼ぶ」。○は？",
+    "question": "「類は◯を呼ぶ」。◯は？",
     "choices": [
       "人",
       "友",
@@ -1348,7 +1348,7 @@
     "subgenre": "慣用句",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「鼻が○い」（においに敏感/勘が鋭い）。○は？",
+    "question": "「鼻が◯い」（においに敏感/勘が鋭い）。◯は？",
     "choices": [
       "利",
       "高",
@@ -1364,7 +1364,7 @@
     "subgenre": "四字熟語",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「温故○○」（古いことを学び新しいことを知る）。○○は？",
+    "question": "「温故◯◯」（古いことを学び新しいことを知る）。◯◯は？",
     "choices": [
       "知新",
       "創新",
@@ -1380,7 +1380,7 @@
     "subgenre": "ことわざ",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「泣きっ面に○」。○は？",
+    "question": "「泣きっ面に◯」。◯は？",
     "choices": [
       "水",
       "雨",
@@ -1412,15 +1412,15 @@
     "subgenre": "慣用句",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「顔が○広い」（交友関係が広い）の正しい表現は？",
+    "question": "「◯が広い」＝知り合いが多いこと。◯は？",
     "choices": [
-      "広く",
-      "顔が広い",
-      "顔が大きい",
-      "面が広い"
+      "顔",
+      "目",
+      "腹",
+      "手"
     ],
-    "answer": 1,
-    "explanation": "「顔が広い」=交友関係が広い。"
+    "answer": 0,
+    "explanation": "「顔が広い」＝知り合いが多い。"
   },
   {
     "id": "J100",
@@ -1428,7 +1428,7 @@
     "subgenre": "四字熟語",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「自業○○」（自分の行為の報い）。○○は？",
+    "question": "「自業◯◯」（自分の行為の報い）。◯◯は？",
     "choices": [
       "自得",
       "他得",
@@ -1482,7 +1482,7 @@
     "subgenre": "四字熟語",
     "difficulty": 6,
     "mode": "choice",
-    "question": "「以心○○」（言葉なしに気持ちが通じ合う）。○○は？",
+    "question": "「以心◯◯」（言葉なしに気持ちが通じ合う）。◯◯は？",
     "choices": [
       "伝心",
       "通心",
@@ -1498,7 +1498,7 @@
     "subgenre": "ことわざ",
     "difficulty": 6,
     "mode": "choice",
-    "question": "「石の上にも○○年」。○○は？",
+    "question": "「石の上にも◯◯年」。◯◯は？",
     "choices": [
       "三",
       "五",
@@ -1514,7 +1514,7 @@
     "subgenre": "慣用句",
     "difficulty": 6,
     "mode": "choice",
-    "question": "「目から○が落ちる」（急に理解できる）。○は？",
+    "question": "「目から◯が落ちる」（急に理解できる）。◯は？",
     "choices": [
       "水",
       "雨",
@@ -1546,7 +1546,7 @@
     "subgenre": "四字熟語",
     "difficulty": 6,
     "mode": "choice",
-    "question": "「七転八○」（何度も失敗してもあきらめない）。○は？",
+    "question": "「七転八◯」（何度も失敗してもあきらめない）。◯は？",
     "choices": [
       "起",
       "倒",
@@ -1562,7 +1562,7 @@
     "subgenre": "ことわざ",
     "difficulty": 6,
     "mode": "choice",
-    "question": "「論より○○」（実際に行動する方が大事）。○○は？",
+    "question": "「論より◯◯」（実際に行動する方が大事）。◯◯は？",
     "choices": [
       "考え",
       "証拠",
@@ -1578,7 +1578,7 @@
     "subgenre": "慣用句",
     "difficulty": 6,
     "mode": "choice",
-    "question": "「棚から○○餅」（思いがけない幸運）。○○は？",
+    "question": "「棚から◯◯餅」（思いがけない幸運）。◯◯は？",
     "choices": [
       "白い",
       "牡丹",
@@ -1632,7 +1632,7 @@
     "subgenre": "四字熟語",
     "difficulty": 7,
     "mode": "choice",
-    "question": "「難攻不○」（攻めるのが難しい）。○は？",
+    "question": "「難攻不◯」（攻めるのが難しい）。◯は？",
     "choices": [
       "落",
       "退",
@@ -1648,7 +1648,7 @@
     "subgenre": "ことわざ",
     "difficulty": 7,
     "mode": "choice",
-    "question": "「馬の耳に○○」（忠告しても効かない）。○○は？",
+    "question": "「馬の耳に◯◯」（忠告しても効かない）。◯◯は？",
     "choices": [
       "砂糖",
       "念仏",
@@ -1664,7 +1664,7 @@
     "subgenre": "慣用句",
     "difficulty": 7,
     "mode": "choice",
-    "question": "「口を○む」（余計なことを言わない）。○は？",
+    "question": "「口を◯む」（余計なことを言わない）。◯は？",
     "choices": [
       "塞",
       "閉",
@@ -1680,7 +1680,7 @@
     "subgenre": "四字熟語",
     "difficulty": 7,
     "mode": "choice",
-    "question": "「大言○語」（実力以上に大げさに話す）。○は？",
+    "question": "「大言◯語」（実力以上に大げさに話す）。◯は？",
     "choices": [
       "壮",
       "荘",
@@ -1712,7 +1712,7 @@
     "subgenre": "ことわざ",
     "difficulty": 7,
     "mode": "choice",
-    "question": "「二兎を追う者は○○をも得ず」。○○は？",
+    "question": "「二兎を追う者は◯◯をも得ず」。◯◯は？",
     "choices": [
       "一兎",
       "二兎",
@@ -1728,7 +1728,7 @@
     "subgenre": "四字熟語",
     "difficulty": 7,
     "mode": "choice",
-    "question": "「付和○○」（主体性なく他人の意見に従う）。○○は？",
+    "question": "「付和◯◯」（主体性なく他人の意見に従う）。◯◯は？",
     "choices": [
       "同調",
       "雷同",
@@ -1782,7 +1782,7 @@
     "subgenre": "四字熟語",
     "difficulty": 8,
     "mode": "choice",
-    "question": "「巧言○○」（うまいことばかり言う人は誠実さに欠ける）。○○は？",
+    "question": "「巧言◯◯」（うまいことばかり言う人は誠実さに欠ける）。◯◯は？",
     "choices": [
       "令色",
       "美色",
@@ -1798,7 +1798,7 @@
     "subgenre": "ことわざ",
     "difficulty": 8,
     "mode": "choice",
-    "question": "「虎穴に入らずんば○○を得ず」。○○は？",
+    "question": "「虎穴に入らずんば◯◯を得ず」。◯◯は？",
     "choices": [
       "虎子",
       "虎族",
@@ -1814,7 +1814,7 @@
     "subgenre": "慣用句",
     "difficulty": 8,
     "mode": "choice",
-    "question": "「○○の功を奏する」（効果が現れる）。○○は？",
+    "question": "「◯◯の功を奏する」（効果が現れる）。◯◯は？",
     "choices": [
       "奇跡",
       "成功",
@@ -1822,7 +1822,7 @@
       "努力"
     ],
     "answer": 1,
-    "explanation": "「功を奏する」=効果・成果が現れる。「成功の功を奏する」は誤り。正確：「○が功を奏する」=策・努力が功を奏する。"
+    "explanation": "「功を奏する」=効果・成果が現れる。「成功の功を奏する」は誤り。正確：「◯が功を奏する」=策・努力が功を奏する。"
   },
   {
     "id": "J127",
@@ -1830,7 +1830,7 @@
     "subgenre": "四字熟語",
     "difficulty": 8,
     "mode": "choice",
-    "question": "「唯我独○」（自分だけが優れていると思う）。○は？",
+    "question": "「唯我独◯」（自分だけが優れていると思う）。◯は？",
     "choices": [
       "尊",
       "大",
@@ -1889,7 +1889,7 @@
     "subgenre": "四字熟語",
     "difficulty": 9,
     "mode": "choice",
-    "question": "「電光石○」（非常に素早いこと）。○は？",
+    "question": "「電光石◯」（非常に素早いこと）。◯は？",
     "choices": [
       "光",
       "快",
@@ -1905,7 +1905,7 @@
     "subgenre": "ことわざ",
     "difficulty": 9,
     "mode": "choice",
-    "question": "「○○の一声」（権力者の一言で物事が決まる）。○○は？",
+    "question": "「◯◯の一声」（権力者の一言で物事が決まる）。◯◯は？",
     "choices": [
       "先生",
       "鶴",
@@ -1937,7 +1937,7 @@
     "subgenre": "四字熟語",
     "difficulty": 9,
     "mode": "choice",
-    "question": "「呉越○○」（仲の悪い者が同じ場所にいること）。○○は？",
+    "question": "「呉越◯◯」（仲の悪い者が同じ場所にいること）。◯◯は？",
     "choices": [
       "同舟",
       "同路",
@@ -2012,7 +2012,7 @@
     "subgenre": "四字熟語",
     "difficulty": 10,
     "mode": "choice",
-    "question": "「○○玉条」（絶対に守るべき規則）。○○は？",
+    "question": "「◯◯玉条」（絶対に守るべき規則）。◯◯は？",
     "choices": [
       "金科",
       "鉄則",
@@ -2028,7 +2028,7 @@
     "subgenre": "ことわざ",
     "difficulty": 10,
     "mode": "choice",
-    "question": "「○を以て○を制す」（同種のもので対抗する）。○は？",
+    "question": "「◯を以て◯を制す」（同種のもので対抗する）。◯は？",
     "choices": [
       "毒",
       "敵",
@@ -2087,7 +2087,7 @@
     "subgenre": "ことわざ",
     "difficulty": 3,
     "mode": "choice",
-    "question": "「百聞は○見にしかず」。○は？",
+    "question": "「百聞は◯見にしかず」。◯は？",
     "choices": [
       "一",
       "二",
@@ -2119,7 +2119,7 @@
     "subgenre": "慣用句",
     "difficulty": 4,
     "mode": "choice",
-    "question": "「手を○く」（関わりを絶つ）。○は？",
+    "question": "「手を◯く」（関わりを絶つ）。◯は？",
     "choices": [
       "洗",
       "拭",
@@ -2135,7 +2135,7 @@
     "subgenre": "四字熟語",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「五里○○」（方向や見通しが全くつかない）。○○は？",
+    "question": "「五里◯◯」（方向や見通しが全くつかない）。◯◯は？",
     "choices": [
       "霧中",
       "無中",
@@ -2167,7 +2167,7 @@
     "subgenre": "ことわざ",
     "difficulty": 6,
     "mode": "choice",
-    "question": "「○を知る者は○に近し」（自分の無知を知ることが知恵の始まり）。共通の○は？",
+    "question": "「◯を知る者は◯に近し」（自分の無知を知ることが知恵の始まり）。共通の◯は？",
     "choices": [
       "無知",
       "知",
@@ -2183,7 +2183,7 @@
     "subgenre": "四字熟語",
     "difficulty": 6,
     "mode": "choice",
-    "question": "「○心不乱」（他のことを考えず一つのことに集中）。○は？",
+    "question": "「◯心不乱」（他のことを考えず一つのことに集中）。◯は？",
     "choices": [
       "一",
       "無",
@@ -2215,7 +2215,7 @@
     "subgenre": "四字熟語",
     "difficulty": 7,
     "mode": "choice",
-    "question": "「切磋○○」（互いに励まし磨き合う）。○○は？",
+    "question": "「切磋◯◯」（互いに励まし磨き合う）。◯◯は？",
     "choices": [
       "琢磨",
       "磨励",
@@ -2311,7 +2311,7 @@
     "subgenre": "四字熟語",
     "difficulty": 10,
     "mode": "choice",
-    "question": "「泰然○○」（落ち着き払って動じない）。○○は？",
+    "question": "「泰然◯◯」（落ち着き払って動じない）。◯◯は？",
     "choices": [
       "自若",
       "自得",
@@ -2343,7 +2343,7 @@
     "subgenre": "ことわざ",
     "difficulty": 10,
     "mode": "choice",
-    "question": "「人事を尽くして○○を待つ」。○○は？",
+    "question": "「人事を尽くして◯◯を待つ」。◯◯は？",
     "choices": [
       "天命",
       "神意",
@@ -2381,7 +2381,7 @@
     "subgenre": "四字熟語",
     "difficulty": 6,
     "mode": "input",
-    "question": "「危機○○」（きわめて危険な状態）。○○の読みは？",
+    "question": "「危機◯◯」（きわめて危険な状態）。◯◯の読みは？",
     "answer_text": "いっぱつ",
     "answer_variants": [],
     "explanation": "危機一髪（ききいっぱつ）。一髪＝いっぱつ。"
@@ -2425,10 +2425,10 @@
     "subgenre": "古典",
     "difficulty": 10,
     "mode": "input",
-    "question": "「源氏物語」の作者名を漢字で書くと？",
-    "answer_text": "紫式部",
+    "question": "「源氏物語」の作者は？(ひらがなで)",
+    "answer_text": "むらさきしきぶ",
     "answer_variants": [
-      "むらさきしきぶ"
+      "紫式部"
     ],
     "explanation": "源氏物語の作者は紫式部。"
   },
@@ -2465,7 +2465,7 @@
     "subgenre": "ことわざ",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「失敗は○○のもと」。○○は？",
+    "question": "「失敗は◯◯のもと」。◯◯は？",
     "choices": [
       "学習",
       "反省",
@@ -2497,7 +2497,7 @@
     "subgenre": "四字熟語",
     "difficulty": 7,
     "mode": "choice",
-    "question": "「竜頭○○」（最初は勢いよく最後は振るわない）。○○は？",
+    "question": "「竜頭◯◯」（最初は勢いよく最後は振るわない）。◯◯は？",
     "choices": [
       "蛇尾",
       "鼠尾",
@@ -2609,7 +2609,7 @@
     "subgenre": "ことわざ",
     "difficulty": 4,
     "mode": "choice",
-    "question": "「井の中の○○、大海を知らず」。○○は？",
+    "question": "「井の中の◯◯、大海を知らず」。◯◯は？",
     "choices": [
       "魚",
       "蛙",
@@ -2625,7 +2625,7 @@
     "subgenre": "四字熟語",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「試行○○」（いろいろ試して最善策を探す）。○○は？",
+    "question": "「試行◯◯」（いろいろ試して最善策を探す）。◯◯は？",
     "choices": [
       "錯誤",
       "誤作",
@@ -2657,7 +2657,7 @@
     "subgenre": "古典",
     "difficulty": 7,
     "mode": "choice",
-    "question": "「奥の細道」の冒頭「月日は○○にして…」。○○は？",
+    "question": "「奥の細道」の冒頭「月日は◯◯にして…」。◯◯は？",
     "choices": [
       "万古",
       "百代",
@@ -2689,7 +2689,7 @@
     "subgenre": "四字熟語",
     "difficulty": 9,
     "mode": "choice",
-    "question": "「荒唐○○」（根拠なく出たらめなこと）。○○は？",
+    "question": "「荒唐◯◯」（根拠なく出たらめなこと）。◯◯は？",
     "choices": [
       "無稽",
       "無根",
@@ -2732,7 +2732,7 @@
     "subgenre": "ことわざ",
     "difficulty": 3,
     "mode": "input",
-    "question": "「七転び○○起き」。○○を数字で答えると？",
+    "question": "「七転び◯◯起き」。◯◯を数字で答えると？",
     "answer_text": "8",
     "answer_variants": [
       "八"
@@ -2756,9 +2756,11 @@
     "subgenre": "四字熟語",
     "difficulty": 6,
     "mode": "input",
-    "question": "「○中模索」の○を漢字で書くと？",
-    "answer_text": "暗",
-    "answer_variants": [],
+    "question": "「◯中模索」の◯は？(ひらがなで)",
+    "answer_text": "あん",
+    "answer_variants": [
+      "暗"
+    ],
     "explanation": "暗中模索（あんちゅうもさく）。暗闇の中で手探りすること。"
   },
   {
@@ -2778,7 +2780,7 @@
     "subgenre": "古典",
     "difficulty": 8,
     "mode": "input",
-    "question": "「枕草子」の書き出しは「春は○○○○」。○○○○を答えると？",
+    "question": "「枕草子」の書き出しは「春は◯◯◯◯」。◯◯◯◯を答えると？",
     "answer_text": "あけぼの",
     "answer_variants": [],
     "explanation": "「春はあけぼの」が枕草子の書き出し。"
@@ -2822,9 +2824,11 @@
     "subgenre": "ことわざ",
     "difficulty": 5,
     "mode": "input",
-    "question": "「百聞は○見にしかず」の○に入る漢字は？",
-    "answer_text": "一",
-    "answer_variants": [],
+    "question": "「百聞は◯見にしかず」の◯は？(ひらがなで)",
+    "answer_text": "いち",
+    "answer_variants": [
+      "一"
+    ],
     "explanation": "百聞は一見にしかず。"
   },
   {
@@ -2833,7 +2837,7 @@
     "subgenre": "四字熟語",
     "difficulty": 7,
     "mode": "input",
-    "question": "「品行○○」（行いが正しく立派なこと）。○○の読みは？",
+    "question": "「品行◯◯」（行いが正しく立派なこと）。◯◯の読みは？",
     "answer_text": "ほうせい",
     "answer_variants": [],
     "explanation": "品行方正（ひんこうほうせい）。方正=ほうせい。"
@@ -2855,10 +2859,10 @@
     "subgenre": "古典",
     "difficulty": 9,
     "mode": "input",
-    "question": "「吾輩は猫である」の作者の苗字は？(漢字で)",
-    "answer_text": "夏目",
+    "question": "「吾輩は猫である」の作者の苗字は？(ひらがなで)",
+    "answer_text": "なつめ",
     "answer_variants": [
-      "なつめ"
+      "夏目"
     ],
     "explanation": "夏目漱石（なつめそうせき）の作品。"
   },
@@ -2879,10 +2883,10 @@
     "subgenre": "ことわざ",
     "difficulty": 6,
     "mode": "input",
-    "question": "「急がば○○れ」。○○に入る漢字1文字は？",
-    "answer_text": "回",
+    "question": "「急がば◯◯れ」。◯◯は？(ひらがなで)",
+    "answer_text": "まわ",
     "answer_variants": [
-      "まわ"
+      "回"
     ],
     "explanation": "「急がば回れ」。急ぐときこそ安全な道を選べ。"
   }

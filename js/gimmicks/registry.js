@@ -73,14 +73,29 @@
             }
 
             // 2026-04 調整: 発射間隔 1.5x (休憩 1800〜3500ms → 1200〜2333ms)。
-            // 排他発射 (firing フラグ) を廃止 → 複数ビームが被って撃ってよい。
+            // 排他発射の厳格ルールは廃止しつつ、同時発射数を 2 本まで cap する。
+            // 理由: .gk-b11-core は box-shadow 3 重 + mix-blend-mode + will-change の
+            //      GPU 重量級レイヤー。4 本全部が同時に is-fire になると WKWebView の
+            //      GPU メモリ枠を超えて iOS がプロセスを kill する
+            //      (= 実機で「ビーム連射中に落ちてタイトルに戻る」 症状の原因)。
+            //      2 本までなら「被ってもOK」の仕様も満たしつつ安全。
+            const MAX_CONCURRENT = 2;
+            let concurrentFires = 0;
+
             function fire(beam) {
                 if (!alive) return;
+                // 既に 2 本撃ってる場合は少し待って再挑戦 (重なり自体は許容)
+                if (concurrentFires >= MAX_CONCURRENT) {
+                    schedule(() => fire(beam), 200 + Math.random() * 400);
+                    return;
+                }
+                concurrentFires++;
                 window.SE?.fire('gB11Charge');
                 beam.classList.add('is-fire');
                 schedule(() => window.SE?.fire('gB11Fire'), 600);
                 schedule(() => {
                     beam.classList.remove('is-fire');
+                    concurrentFires = Math.max(0, concurrentFires - 1);
                     schedule(() => fire(beam), 1200 + Math.random() * 1133);
                 }, FIRE_DURATION);
             }
@@ -247,8 +262,7 @@
 
     const B04_ZOOM_CHAOS = {
         id: 'B04', name: 'ズーム暴走', supports: 'both', introducedAt: 4, difficulty: 5,
-        // B14 も .q-stem に animation を当てるため、後勝ちで B04 の scale が完全に消える
-        conflicts: ['B03', 'B05', 'B14'],
+        conflicts: ['B03', 'B05'],
         apply(ctx) {
             const stem = q(ctx.screen, '.q-stem');
             if (!stem) return () => {};
@@ -353,16 +367,6 @@
         apply(ctx) {
             ctx.screen.classList.add('gk-b06');
             return () => ctx.screen.classList.remove('gk-b06');
-        },
-    };
-
-    const B14_MARGIN_CHAOS = {
-        id: 'B14', name: '余白暴走', supports: 'both', introducedAt: 5, difficulty: 5,
-        apply(ctx) {
-            const stem = q(ctx.screen, '.q-stem');
-            if (!stem) return () => {};
-            stem.classList.add('gk-b14');
-            return () => stem.classList.remove('gk-b14');
         },
     };
 
@@ -593,48 +597,22 @@
 
     // --- Stage 7 プール ---
 
-    // B01 反転タップ: 旧実装は PointerEvent を座標反転して再 dispatch していたが、
-    // iOS Safari で preventDefault + synthetic pointerdown が submit ボタンも
-    // 効かなくする致命バグに繋がった (全タップがフリーズ)。
-    // さらに「data-idx だけ反転」実装は、見た目上は普通に選択肢がハイライトされるのに
-    // 選択だけ裏返る → 「正解タップしたのに不正解、しかもバツ後の正解が自分の選択と一致」
-    // という "バグにしか見えない" 状態になっていた。
+    // --- B01 反転タップ (2026-04 仕様変更) ---
+    // 裏側の選択処理には一切触らず、「見た目だけ」反転させる純粋CSSギミック。
+    // プレイヤーがタップした選択肢には is-selected が普通に付くが、
+    // .gk-b01-reverse クラス配下では CSS で is-selected ↔ :not(.is-selected) の
+    // 視覚スタイルが入れ替わる。
     //
-    // 新実装: capture 段階でタップを「物理的に反対側の選択肢の click」に振り替える。
-    //   - タップしたボタンではなく、反対側のボタンの is-selected がハイライトされる
-    //   - selectedIdx も反対側のボタンの data-idx (=q.choices の正規 index) になる
-    //   - ユーザー視点: 「上を押したのに下が光った。あ、反転タップか」とすぐ分かる
-    // 選択肢問題専用 (入力モードでは効果なし)。
+    // 結果: タップした選択肢だけが通常見た目、他3つが「選択されてる風」に光る。
+    //       プレイヤー視点「俺が押したのになぜか他が光ってる」= 反転タップ認知。
+    //       判定は普通に「タップした方」で処理される (理不尽ではなくフェア)。
     const B01_REVERSE_TAP = {
         id: 'B01', name: '反転タップ', supports: 'choice', introducedAt: 7, difficulty: 8,
-        // C01 はシャッフル済みなので B01 を重ねると「実質ランダム」になり演出が薄い
+        // C01 はシャッフル済みで反転の意味が薄くなる
         conflicts: ['C01'],
         apply(ctx) {
-            const btns = qa(ctx.screen, '.q-choice:not(.gk-c02-dummy)');
-            if (btns.length < 2) return () => {};
-            const n = btns.length;
-            const grid = q(ctx.screen, '.q-choices') || ctx.screen;
-            let forwarding = false;
-
-            function onCapture(e) {
-                if (forwarding) return;
-                const btn = e.target.closest('.q-choice');
-                if (!btn || !grid.contains(btn)) return;
-                const i = btns.indexOf(btn);
-                if (i < 0) return;
-                const target = btns[n - 1 - i];
-                if (!target || target === btn) return;
-                // 元イベントは捨てて反対側のボタンを改めて click
-                e.stopImmediatePropagation();
-                e.preventDefault();
-                forwarding = true;
-                try { target.click(); } finally { forwarding = false; }
-            }
-
-            grid.addEventListener('click', onCapture, true);
             ctx.screen.classList.add('gk-b01-reverse');
             return () => {
-                grid.removeEventListener('click', onCapture, true);
                 ctx.screen.classList.remove('gk-b01-reverse');
             };
         },
@@ -741,31 +719,144 @@
     };
 
     // C02 ダミー選択肢:
-    // 旧実装は選択肢を1つ追加して 5 個にしていたが、2x2 グリッドに 5 個だと
-    // 5個目が小さく露骨に浮くので「既存の1個のラベルを、別の1個のラベルで上書き」
-    // して「同じ文字のボタンが 2 つ存在する」状態を作る方式に変更。
-    // 見た目上 4 個のまま、ただし 2 つが同じラベル → どちらを押すかで結果が変わる。
+    // 旧実装は「src の textContent をそっくり dst にコピー」だったので、
+    // 2 つの選択肢が "1 文字も違わない完全一致" になっていた
+    // → どちらが正解か見分ける手段が文字通りゼロ、完全に運ゲー (ユーザー指摘バグ)。
+    //
+    // 新実装: src のラベルを "微改変" して dst に貼る。
+    //   改変候補を複数試し、[改変後] が [src原本] と異なり かつ [他選択肢のいずれとも異なる]
+    //   ものを採用。短文/改変不能な場合は末尾に記号を 1 つ足す safe fallback。
+    //   「似てるけどよく見れば違う」ダミーを生成することで、よく読んだ者が正解できる
+    //   「焦り系」ギミックに戻る。
     const C02_DUMMY_CHOICE = {
         id: 'C02', name: 'ダミー選択肢', supports: 'choice', introducedAt: 6, difficulty: 7,
         apply(ctx) {
             const btns = qa(ctx.screen, '.q-choice');
             if (btns.length < 2) return () => {};
-            // ラベルをコピーする "元" と "置換先" を別々に引く
             const srcIdx = Math.floor(Math.random() * btns.length);
             let dstIdx;
             do { dstIdx = Math.floor(Math.random() * btns.length); } while (dstIdx === srcIdx);
             const dst = btns[dstIdx];
             const src = btns[srcIdx];
             const originalText = dst.textContent;
-            dst.textContent = src.textContent;
+
+            // 他の選択肢 (src と dst 以外) のテキスト集合。生成したダミーが
+            // これらと衝突する場合はもう一度別戦略で作り直す。
+            const otherTexts = new Set(
+                btns.filter((b, i) => i !== srcIdx && i !== dstIdx)
+                    .map(b => b.textContent)
+            );
+
+            const dummyText = makeSimilarDummy(src.textContent, otherTexts);
+            dst.textContent = dummyText;
             dst.classList.add('gk-c02-dummy');
-            window.SE?.fire('gB25Pop');  // AUDIO_INDEX 流用: C02 → b25_pop → 本プロジェクトでは b18_notify
+            window.SE?.fire('gB25Pop');
             return () => {
                 dst.textContent = originalText;
                 dst.classList.remove('gk-c02-dummy');
             };
         },
     };
+
+    // ---- C02 ダミー文字生成ヘルパ ----
+    // 似てるけど違う」を安定して作るための複数戦略。
+    // どの戦略も「元と異なる かつ 他選択肢と被らない」ものだけ採用する。
+    const DAKUTEN_PAIRS = (() => {
+        const m = {
+            'か':'が','き':'ぎ','く':'ぐ','け':'げ','こ':'ご',
+            'さ':'ざ','し':'じ','す':'ず','せ':'ぜ','そ':'ぞ',
+            'た':'だ','ち':'ぢ','つ':'づ','て':'で','と':'ど',
+            'は':'ば','ひ':'び','ふ':'ぶ','へ':'べ','ほ':'ぼ',
+            'カ':'ガ','キ':'ギ','ク':'グ','ケ':'ゲ','コ':'ゴ',
+            'サ':'ザ','シ':'ジ','ス':'ズ','セ':'ゼ','ソ':'ゾ',
+            'タ':'ダ','チ':'ヂ','ツ':'ヅ','テ':'デ','ト':'ド',
+            'ハ':'バ','ヒ':'ビ','フ':'ブ','ヘ':'ベ','ホ':'ボ',
+        };
+        Object.keys(m).slice().forEach(k => { m[m[k]] = k; });
+        return m;
+    })();
+    const SMALL_PAIRS = (() => {
+        const m = {
+            'や':'ゃ','ゆ':'ゅ','よ':'ょ','つ':'っ',
+            'あ':'ぁ','い':'ぃ','う':'ぅ','え':'ぇ','お':'ぉ',
+            'ヤ':'ャ','ユ':'ュ','ヨ':'ョ','ツ':'ッ',
+            'ア':'ァ','イ':'ィ','ウ':'ゥ','エ':'ェ','オ':'ォ',
+        };
+        Object.keys(m).slice().forEach(k => { m[m[k]] = k; });
+        return m;
+    })();
+
+    function makeSimilarDummy(src, excludeSet) {
+        const tried = [];
+        const strategies = [
+            strategyToggleDakuten,
+            strategyToggleSmall,
+            strategySwapAdjacent,
+            strategyReplaceChar,
+            strategyAppendMark,
+        ];
+        // 戦略をランダム順に試す
+        strategies.sort(() => Math.random() - 0.5);
+        for (const strat of strategies) {
+            const out = strat(src);
+            if (!out || out === src) continue;
+            if (excludeSet.has(out)) continue;
+            return out;
+        }
+        // どうしても作れないとき (超短い/記号だけ等) のフォールバック
+        const marks = ['…', '。', ' ', '　'];
+        for (const mk of marks) {
+            const out = src + mk;
+            if (out !== src && !excludeSet.has(out)) return out;
+        }
+        return src + '?';  // 最終手段: どうあがいても src とは別のはず
+    }
+
+    // [1] 濁点/半濁点を 1 箇所トグル
+    function strategyToggleDakuten(s) {
+        const positions = [];
+        for (let i = 0; i < s.length; i++) {
+            if (DAKUTEN_PAIRS[s[i]]) positions.push(i);
+        }
+        if (!positions.length) return null;
+        const p = positions[Math.floor(Math.random() * positions.length)];
+        return s.slice(0, p) + DAKUTEN_PAIRS[s[p]] + s.slice(p + 1);
+    }
+    // [2] 小書きをトグル (や↔ゃ 等)
+    function strategyToggleSmall(s) {
+        const positions = [];
+        for (let i = 0; i < s.length; i++) {
+            if (SMALL_PAIRS[s[i]]) positions.push(i);
+        }
+        if (!positions.length) return null;
+        const p = positions[Math.floor(Math.random() * positions.length)];
+        return s.slice(0, p) + SMALL_PAIRS[s[p]] + s.slice(p + 1);
+    }
+    // [3] 隣接 2 文字の入れ替え
+    function strategySwapAdjacent(s) {
+        if (s.length < 2) return null;
+        const p = Math.floor(Math.random() * (s.length - 1));
+        return s.slice(0, p) + s[p + 1] + s[p] + s.slice(p + 2);
+    }
+    // [4] 1 文字を似た別文字に置換 (ー ↔ 一, O ↔ 0 等の視覚類似)
+    function strategyReplaceChar(s) {
+        const HOMO = {
+            'ー':'一', '一':'ー', 'O':'0', '0':'O', 'l':'1', '1':'l',
+            'い':'り', 'り':'い', 'こ':'二', '二':'こ', 'ロ':'口', '口':'ロ',
+        };
+        const positions = [];
+        for (let i = 0; i < s.length; i++) {
+            if (HOMO[s[i]]) positions.push(i);
+        }
+        if (!positions.length) return null;
+        const p = positions[Math.floor(Math.random() * positions.length)];
+        return s.slice(0, p) + HOMO[s[p]] + s.slice(p + 1);
+    }
+    // [5] 末尾に微小な記号を付加
+    function strategyAppendMark(s) {
+        const marks = ['。', '、', '…', '!', '?'];
+        return s + marks[Math.floor(Math.random() * marks.length)];
+    }
 
     const C04_FAKE_5050 = {
         id: 'C04', name: '嘘50:50', supports: 'choice', introducedAt: 8, difficulty: 6,
@@ -848,7 +939,7 @@
     // 英/日モード切替 (Keyboard の再 render) 後も postRender フックで再適用。
     const W02_KEYS_SHUFFLE = {
         id: 'W02', name: '文字盤あべこべ', supports: 'input', introducedAt: 6, difficulty: 7,
-        conflicts: ['W08', 'W15', 'W16', 'W17', 'W18'],
+        conflicts: ['W08', 'W18'],
         apply(ctx) {
             const shuffleAll = () => {
                 const keys = qa(ctx.screen, '.kb-key:not(.kb-fn):not(.kb-empty)');
@@ -893,7 +984,7 @@
     // 実際には buffer には残っており、OK を押せば判定は通る。
     const W07_CHAR_DROP = {
         id: 'W07', name: '入力1文字消失', supports: 'input', introducedAt: 6, difficulty: 7,
-        conflicts: ['W04', 'W05', 'W09', 'W10'],
+        conflicts: ['W04', 'W09'],
         apply(ctx) {
             const droppedIdx = new Set();
             let currentBuffer = '';
@@ -963,112 +1054,9 @@
         };
     }
 
-    // --- W05: カーソル暴走 (表示だけスクランブル) ---
-    // 【重要】buffer (= ユーザが実際に売った文字列) は絶対に触らない。
-    //   onSubmit は keyboard 本体が buffer をそのまま渡すので、
-    //   判定は常に「売った順」で行われる。
-    //   本ギミックは onChange に流す "表示用文字列" だけを
-    //   displayOrder (buffer index の並べ替え) で作って差し替える。
-    // → プレイヤーは見た目上順番が狂うが、自分の入力を信じて OK すれば正解する。
-    const W05_CURSOR_WILD = {
-        id: 'W05', name: 'カーソル暴走', supports: 'input', introducedAt: 7, difficulty: 7,
-        // onChange ラップ + 演出の重複回避 (表示系ギミックが 1 問に 1 個まで)
-        conflicts: ['W04', 'W06', 'W07', 'W09', 'W10'],
-        apply(ctx) {
-            // displayOrder[表示位置] = buffer の index
-            let displayOrder = [];
-            let lastLen = 0;
-            const unwrap = wrapOnChange((orig) => (val) => {
-                const n = val.length;
-                // 縮んだ (backspace など): 範囲外の index を除去
-                if (n < lastLen) {
-                    displayOrder = displayOrder.filter(i => i < n);
-                }
-                // 伸びた: 新しく付いた index をランダム位置に差し込む
-                while (displayOrder.length < n) {
-                    const newIdx = displayOrder.length;
-                    if (displayOrder.length < 2) {
-                        // 最初の 1, 2 文字はそのまま (入力直後の期待を裏切りすぎない)
-                        displayOrder.push(newIdx);
-                    } else {
-                        // 末尾以外にランダム差し込み → 必ず「ズレた」見た目を作る
-                        const pos = Math.floor(Math.random() * displayOrder.length);
-                        displayOrder.splice(pos, 0, newIdx);
-                    }
-                }
-                lastLen = n;
-                const display = displayOrder.map(i => val[i]).join('');
-                if (orig) orig(display);
-            });
-            return unwrap;
-        },
-    };
-
-    // W10: 入力遅延 (onChange を 2 秒遅らせるだけ。buffer は即時更新されており、
-    //      onSubmit は同期的に buffer を返すので OK 判定は売った順で即通る)。
-    const W10_INPUT_DELAY = {
-        id: 'W10', name: '入力遅延', supports: 'input', introducedAt: 7, difficulty: 7,
-        // onChange ラップ重複回避 + 表示変形系と重ねると遅延中の表示がますます解読不能
-        conflicts: ['W04', 'W05', 'W06', 'W07', 'W09'],
-        apply(ctx) {
-            const DELAY = 2000;
-            const timers = new Set();
-            const unwrap = wrapOnChange((orig) => (val) => {
-                const t = setTimeout(() => {
-                    timers.delete(t);
-                    if (orig) orig(val);
-                }, DELAY);
-                timers.add(t);
-            });
-            return () => {
-                timers.forEach(clearTimeout);
-                timers.clear();
-                unwrap();
-            };
-        },
-    };
-
-    // W14_KEY_HUGE は削除 (2026-04 実機テスト結果: ぐにゃっと歪むだけで
-    // ユーザからは「謎の青縁白中の四角形が出る」としか認識されず、狙い通りの
-    // 「1キーだけ巨大化して邪魔」演出にならなかったため廃止)
-
-    const W17_MODE_AUTO_SWAP = {
-        id: 'W17', name: 'カナひら勝手切替', supports: 'input', introducedAt: 7, difficulty: 7,
-        apply(ctx) {
-            const kb = window.Keyboard;
-            if (!kb || !kb.setMode) return () => {};
-            const originalMode = kb.getMode();
-            // ひらがな⇔カタカナのみ切り替える (alpha/number は問題性質と噛み合わないので除外)
-            let cur = originalMode === 'katakana' ? 'katakana' : 'hiragana';
-            function flip() {
-                cur = cur === 'hiragana' ? 'katakana' : 'hiragana';
-                try { kb.setMode(cur); } catch (e) { /* ignore */ }
-            }
-            const interval = setInterval(flip, 3500 + Math.random() * 1500);
-            return () => {
-                clearInterval(interval);
-                try { kb.setMode(originalMode); } catch (e) { /* ignore */ }
-            };
-        },
-    };
-
-    const W19_FLICK_REVERSE = {
-        id: 'W19', name: 'フリック方向反転', supports: 'input', introducedAt: 7, difficulty: 7,
-        apply(ctx) {
-            const kb = window.Keyboard;
-            if (!kb || !kb.setFlickTransform) return () => {};
-            kb.setFlickTransform((dir) => {
-                if (dir === 'u') return 'd';
-                if (dir === 'd') return 'u';
-                if (dir === 'l') return 'r';
-                if (dir === 'r') return 'l';
-                return dir;
-            });
-            return () => kb.setFlickTransform(null);
-        },
-    };
-
     // --- Stage 8 プール (Input) ---
+    // (2026-04 整理) W05/W10/W14/W17/W19 は実機テストで
+    // 「気づかれない」「狙いと違う」等の理由で廃止。
 
     // あいうえお 行内で「1個前の音」へ戻すマップ (循環)。
     // 以前は行頭を不動にしていたが、そのせいで各行末文字 (お,こ,そ,と,の,ほ,も,よ,ろ,ん)
@@ -1114,7 +1102,7 @@
         id: 'W04', name: '入力ズレ', supports: 'input', introducedAt: 8, difficulty: 9,
         // onChange ラップの重複回避 + フリック方向弄り系とは別軸なので併用不可
         // (フリックで既に狂ってる文字がさらに見た目上ずれると解法が成立しない)
-        conflicts: ['W05', 'W06', 'W07', 'W09', 'W10', 'W19', 'W20'],
+        conflicts: ['W06', 'W07', 'W09', 'W20'],
         apply(ctx) {
             const unwrap = wrapOnChange((orig) => (val) => {
                 const shifted = Array.from(val).map(ch => w04ShiftChar(ch)).join('');
@@ -1130,7 +1118,7 @@
     // 他の表示変形系 (W04/W05/W07/W09/W10) とは重ねると意味不明なので排他。
     const W06_REVERSE_TEXT = {
         id: 'W06', name: '文字順逆転', supports: 'input', introducedAt: 8, difficulty: 8,
-        conflicts: ['W04', 'W05', 'W07', 'W09', 'W10'],
+        conflicts: ['W04', 'W07', 'W09'],
         apply(ctx) {
             const unwrap = wrapOnChange((orig) => (val) => {
                 const reversed = Array.from(val).reverse().join('');
@@ -1147,7 +1135,7 @@
     // OK すれば正解になる。
     const W09_GHOST_INPUT = {
         id: 'W09', name: 'ゴースト入力', supports: 'input', introducedAt: 8, difficulty: 8,
-        conflicts: ['W04', 'W05', 'W06', 'W07', 'W10'],
+        conflicts: ['W04', 'W06', 'W07'],
         apply(ctx) {
             const NOISE = 'がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゃゅょっゞゟヰヱヶ';
             const noiseCh = () => NOISE[Math.floor(Math.random() * NOISE.length)];
@@ -1204,144 +1192,19 @@
         },
     };
 
-    const W15_KEY_WARP = {
-        id: 'W15', name: 'キーワープ', supports: 'input', introducedAt: 8, difficulty: 8,
-        // 文字盤の DOM を直接いじるので、再描画系/別DOM操作系と排他
-        conflicts: ['W02', 'W08', 'W16', 'W17'],
-        apply(ctx) {
-            const grid = q(ctx.screen, '.kb-grid');
-            if (!grid) return () => {};
-
-            // スワップ対象は文字キーのみ (fn キーを動かすと OK/BS が行方不明になる)
-            function candidates() {
-                return qa(grid, '.kb-key:not(.kb-empty):not(.kb-fn)');
-            }
-
-            function swapNodes(a, b) {
-                if (a === b) return;
-                const pa = a.parentNode;
-                const pb = b.parentNode;
-                if (!pa || !pb) return;
-                const na = a.nextSibling;
-                const nb = b.nextSibling;
-                pb.insertBefore(a, nb);
-                pa.insertBefore(b, na);
-            }
-
-            function onUp(e) {
-                const keyEl = e.target.closest('.kb-key');
-                if (!keyEl || keyEl.classList.contains('kb-fn') || keyEl.classList.contains('kb-empty')) return;
-                // 実際に文字が入力される (ドラッグなしのタップ) かは判定が難しいので、
-                // キーを触ったら必ずワープさせる。
-                const pool = candidates().filter(k => k !== keyEl);
-                if (pool.length === 0) return;
-                const partner = pool[Math.floor(Math.random() * pool.length)];
-                // ワープは次フレームで (今の pointerup の後処理が済むまで待つ)
-                requestAnimationFrame(() => {
-                    swapNodes(keyEl, partner);
-                    window.SE?.fire('gW15Warp');
-                });
-            }
-            grid.addEventListener('pointerup', onUp, true);
-            return () => {
-                grid.removeEventListener('pointerup', onUp, true);
-            };
-        },
-    };
-
-    const W16_KEYS_MERGE = {
-        id: 'W16', name: 'キー同士くっつく', supports: 'input', introducedAt: 8, difficulty: 8,
-        conflicts: ['W02', 'W08', 'W15', 'W17'],
-        apply(ctx) {
-            const grid = q(ctx.screen, '.kb-grid');
-            if (!grid) return () => {};
-            const keys = qa(grid, '.kb-key:not(.kb-empty):not(.kb-fn)');
-            if (keys.length < 6) return () => {};
-
-            // 答えに使う文字を出せるキーは glue 禁止 (攻略不能防止)
-            const answerChars = new Set(
-                Array.from((ctx.q?.answer_text || '') + (ctx.q?.answer_variants || []).join(''))
-            );
-            const L = window.KeyboardLayouts;
-            if (L) {
-                // カタカナ/ひらがな両方カバー (judge.js が正規化するため)
-                Array.from(answerChars).forEach(ch => {
-                    if (/[\u3041-\u3096]/.test(ch)) answerChars.add(L.hiraToKata(ch));
-                    else if (/[\u30A1-\u30F6]/.test(ch)) answerChars.add(L.kataToHira(ch));
-                });
-            }
-            function keyCoversAnswer(keyEl) {
-                if (answerChars.size === 0) return false;
-                const raw = keyEl.getAttribute('data-key');
-                if (!raw) return false;
-                try {
-                    const def = JSON.parse(raw.replace(/&#39;/g, "'"));
-                    return ['c', 'u', 'd', 'l', 'r'].some(dir => def[dir] && answerChars.has(def[dir]));
-                } catch { return false; }
-            }
-
-            // 元の data-key と main テキストを退避
-            const snapshot = keys.map(k => ({
-                el: k,
-                dataKey: k.getAttribute('data-key'),
-                mainHTML: (k.querySelector('.kb-main') || {}).textContent || '',
-            }));
-
-            // 3 グループ、各 2〜3 個をランダムに選んで「くっつける」
-            // 答えに必要なキーは pool から除外
-            const pool = keys.filter(k => !keyCoversAnswer(k));
-            // Fisher-Yates shuffle
-            for (let i = pool.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [pool[i], pool[j]] = [pool[j], pool[i]];
-            }
-            const modifiedEls = [];
-            let idx = 0;
-            for (let g = 0; g < 3 && idx < pool.length; g++) {
-                const size = 2 + Math.floor(Math.random() * 2); // 2 or 3
-                const group = pool.slice(idx, idx + size);
-                idx += size;
-                if (group.length < 2) break;
-                const anchor = group[0];
-                const anchorData = anchor.getAttribute('data-key');
-                const anchorMain = (anchor.querySelector('.kb-main') || {}).textContent || '';
-                group.slice(1).forEach(k => {
-                    k.setAttribute('data-key', anchorData);
-                    const main = k.querySelector('.kb-main');
-                    if (main) main.textContent = anchorMain;
-                    // サブ文字 (フリック方向) もアンカーに合わせるより空にする方が整合性高い
-                    qa(k, '.kb-sub').forEach(s => { s.textContent = ''; });
-                    k.classList.add('gk-w16-glued');
-                    modifiedEls.push(k);
-                });
-                // アンカー自身にも見た目のしるしを付けて「どれが本体か」分かるようにする
-                anchor.classList.add('gk-w16-anchor');
-                modifiedEls.push(anchor);
-            }
-
-            return () => {
-                snapshot.forEach(s => {
-                    if (!s.el.isConnected) return;
-                    if (s.dataKey !== null) s.el.setAttribute('data-key', s.dataKey);
-                    const main = s.el.querySelector('.kb-main');
-                    if (main) main.textContent = s.mainHTML;
-                    s.el.classList.remove('gk-w16-glued', 'gk-w16-anchor');
-                });
-            };
-        },
-    };
-
     // ============================================================
     // Phase 5b Batch 6 — Stage 9 最終バッチ (B21/W08/W18/W20)
     // 全て最高難度帯。Stage 10 の理不尽プールにも組み込まれる。
     // ============================================================
 
     // --- 即死モード共通演出 (B21/G1 から呼ぶ) ---
-    // 1. .gk-instant-death クラスを画面に付与 → CSS変数でシアン→赤に一括変換
-    //    (タイマーバー・OKキー・選択肢枠・回答ボタン・入力欄が全部赤になる)
-    //    + ::after で画面周縁を赤グローで囲む (呼吸する点滅)
-    // 2. fx-vhs-tearing / fx-vhs-rgb を高頻度で繰り返し発火
-    //    (VHSキャンバスは question 画面中は停止しているため CSS クラス直叩き)
+    // 2026-04 トーンダウン改修: 激しいVHSで酔うクレーム懸念があったため、
+    // 動きと点滅を大幅に抑えつつ「絶望感」は血のじわじわ演出で別方向から維持。
+    //
+    // 1. .gk-instant-death クラスで全UI赤化 + 周縁赤グロー (CSSで低頻度パルス)
+    // 2. ::before でスクリーン上端から血が滴り落ちる静か演出 (20〜24秒でじわじわ)
+    // 3. VHS tearing (横揺れ) は撤廃。RGB split だけを低頻度 (5〜8秒に1回) で薄く
+    //    一瞬差し込んで "壊れてる" 違和感だけ残す。
     function applyDeathMode(screen) {
         screen.classList.add('gk-instant-death');
         const stage = document.getElementById('stage');
@@ -1350,22 +1213,17 @@
 
         function fireVhs() {
             if (dead || !stage) return;
-            // CSSアニメは同クラスが既にあると再起動しないので一旦外す
-            stage.classList.remove('fx-vhs-tearing', 'fx-vhs-rgb');
+            stage.classList.remove('fx-vhs-rgb');
             requestAnimationFrame(() => {
                 if (dead) return;
-                stage.classList.add('fx-vhs-tearing');
-                setTimeout(() => { if (stage) stage.classList.remove('fx-vhs-tearing'); }, 280);
-                setTimeout(() => {
-                    if (dead || !stage) return;
-                    stage.classList.add('fx-vhs-rgb');
-                    setTimeout(() => { if (stage) stage.classList.remove('fx-vhs-rgb'); }, 360);
-                }, 130);
+                stage.classList.add('fx-vhs-rgb');
+                setTimeout(() => { if (stage) stage.classList.remove('fx-vhs-rgb'); }, 420);
             });
-            nextTimer = setTimeout(fireVhs, 900 + Math.random() * 1100);
+            // 発火間隔を 0.9〜2.0s → 5.0〜8.0s に大幅間引き
+            nextTimer = setTimeout(fireVhs, 5000 + Math.random() * 3000);
         }
-
-        nextTimer = setTimeout(fireVhs, 300 + Math.random() * 400);
+        // 初回も遅らせる (問題を認識する余白を確保)
+        nextTimer = setTimeout(fireVhs, 1200 + Math.random() * 800);
 
         return () => {
             dead = true;
@@ -1397,7 +1255,7 @@
     // タップしたキーは "そのキーの文字" が入るので、onChange 直後に再配置するとワープ。
     const W08_KEYS_RESHUFFLE = {
         id: 'W08', name: '文字盤あべこべv2', supports: 'input', introducedAt: 9, difficulty: 9,
-        conflicts: ['W02', 'W15', 'W16', 'W17', 'W18'],
+        conflicts: ['W02', 'W18'],
         apply(ctx) {
             function swapNodes(a, b) {
                 if (a === b) return;
@@ -1446,7 +1304,7 @@
     // fn キー (OK/BS/モード切替) は対象外 — さすがに OK まで消したら詰むため。
     const W18_KEY_VANISH = {
         id: 'W18', name: 'キー消失', supports: 'input', introducedAt: 9, difficulty: 9,
-        conflicts: ['W02', 'W08', 'W15', 'W16', 'W17'],
+        conflicts: ['W02', 'W08'],
         apply(ctx) {
             const grid = q(ctx.screen, '.kb-grid');
             if (!grid) return () => {};
@@ -1481,7 +1339,7 @@
     // W19 (反転) と同じフックを使うので conflict。
     const W20_FLICK_SHUFFLE = {
         id: 'W20', name: 'フリック方向シャッフル', supports: 'input', introducedAt: 9, difficulty: 10,
-        conflicts: ['W19'],
+        conflicts: [],
         apply(ctx) {
             const kb = window.Keyboard;
             if (!kb?.setFlickTransform) return () => {};
@@ -1519,20 +1377,6 @@
         },
     };
 
-    // --- G2: 誤判定 ---
-    // 正解しても 15% の確率で不正解として処理させる。
-    // session フラグを立て、question.js resolveAnswer 側で拾う。
-    const G2_MISJUDGE = {
-        id: 'G2', name: '誤判定', supports: 'both', introducedAt: 10, difficulty: 10,
-        apply(ctx) {
-            const s = window.GameState?.session;
-            if (s) s.misjudge = true;
-            return () => {
-                if (s) s.misjudge = false;
-            };
-        },
-    };
-
     // --- G4: 文字化け ---
     // 50% の確率で発動。発動時、問題文を Unicode 記号・ギリシャ文字・ラテン拡張等に
     // 置換して「読めないけど何となく推測するゲー」にする。
@@ -1545,57 +1389,92 @@
             const stem = q(ctx.screen, '.q-stem');
             if (!stem) return () => {};
             const original = stem.textContent;
-            // 文字化けに使う文字群 (ASCII art 風 + 記号)
             const GARBLE = '▓▒░█▌▐▄▀■□●○◆◇★☆※§¶†‡◘◙♪♫∴∵∞≒≠±∫∮∑∏√';
-            const out = Array.from(original).map(ch => {
+
+            const makeGarbled = () => Array.from(original).map(ch => {
                 if (/\s/.test(ch)) return ch;
                 return GARBLE[Math.floor(Math.random() * GARBLE.length)];
             }).join('');
-            stem.textContent = out;
-            window.SE?.fire('gB17Glitch');  // AUDIO_INDEX: G4 → b17_glitch 流用
-            return () => { stem.textContent = original; };
+
+            // 化けた状態(長め) ↔ 原文(短い "読める窓") を交互に。
+            // - 化け期間: 900〜1300ms (長く, 全文字入れ替え → B07より強い難度)
+            // - 読める窓: 150〜230ms (一瞬だけ覗ける)
+            // 70%くらいが化け状態なので体感「ほぼずっと文字化け」、
+            // でも秒1ペースで原文が一瞬見える = 推測ゲーとして成立
+            let timer = 0;
+            let phase = 'garble';
+            let sfxCooldown = 0;
+
+            const step = () => {
+                if (!stem.isConnected) return;
+                if (phase === 'garble') {
+                    stem.textContent = makeGarbled();
+                    if (--sfxCooldown <= 0) {
+                        window.SE?.fire('gB17Glitch');
+                        sfxCooldown = 2;
+                    }
+                    phase = 'peek';
+                    timer = setTimeout(step, 900 + Math.random() * 400);
+                } else {
+                    stem.textContent = original;
+                    phase = 'garble';
+                    timer = setTimeout(step, 150 + Math.random() * 80);
+                }
+            };
+            // 初期: 化けた状態でスタート
+            stem.textContent = makeGarbled();
+            window.SE?.fire('gB17Glitch');
+            sfxCooldown = 2;
+            phase = 'peek';
+            timer = setTimeout(step, 900 + Math.random() * 400);
+
+            return () => {
+                clearTimeout(timer);
+                if (stem.isConnected) stem.textContent = original;
+            };
         },
     };
 
-    // --- G5: 選択肢ワープ ---
-    // 選択中の回答が、送信の瞬間 (回答ボタン押下直前) に別の位置に入れ替わる。
-    // 具体: 回答ボタン click を capture で横取り → 選択状態を他の選択肢に移動 → 通常処理へ流す。
-    // 入れ替え後の is-selected はそのまま残すので、本人が選んだはずの答えが変わったと分かる
-    // (ただし一瞬なので気づきにくい = 理不尽演出)。
+    // --- G5: 選択肢ワープ (2026-04 仕様変更) ---
+    // 最初の選択肢タップから 350ms 後に、選択が時計回りの隣に「勝手にワープ」する。
+    // ただし 1問1回だけ発動 (2回目以降の選択肢変更はワープしない)。
+    // プレイヤーが気づいて元の選択肢を押し直せば、普通に正解できる仕様。
+    // 「タップしたのに他の選択肢が光ってる、あれ?」→ 気づいて戻せるフェアさ。
     const G5_CHOICE_WARP = {
         id: 'G5', name: '選択肢ワープ', supports: 'choice', introducedAt: 10, difficulty: 10,
-        // C02 ダミー: G5 がダミーを拾うと killClick で selectedIdx が更新されずワープ効果消失
+        // C02 ダミー: ダミー選択肢を拾うと click 再送で selectedIdx が不整合になる
         conflicts: ['C02'],
         apply(ctx) {
-            const submit = q(ctx.screen, '#qSubmitBtn');
-            if (!submit) return () => {};
-            function interceptor(ev) {
-                const choices = qa(ctx.screen, '.q-choice');
-                if (choices.length < 2) return;
-                const cur = qa(ctx.screen, '.q-choice.is-selected')[0];
-                if (!cur) return;
+            const choices = qa(ctx.screen, '.q-choice');
+            if (choices.length < 2) return () => {};
+            const grid = q(ctx.screen, '.q-choices') || ctx.screen;
+            let warped = false;      // 1問1回限定フラグ
+            let warpTimer = 0;
+
+            function onPick(e) {
+                if (warped) return;
+                const btn = e.target.closest('.q-choice');
+                if (!btn) return;
+                const cur = choices.indexOf(btn);
+                if (cur < 0) return;
                 // 2×2グリッドの時計回り: 0→1→3→2→0
-                // DOM順は 左上(0) 右上(1) 左下(2) 右下(3)
-                // 時計回りの次: 0→1, 1→3, 3→2, 2→0
-                const CW = [1, 3, 0, 2]; // index i の時計回り次index
-                const curIdx = Array.from(choices).indexOf(cur);
-                const nextIdx = CW[curIdx] ?? ((curIdx + 1) % choices.length);
+                const CW = [1, 3, 0, 2];
+                const nextIdx = CW[cur] ?? ((cur + 1) % choices.length);
                 const next = choices[nextIdx];
-                if (!next) return;
-                cur.classList.remove('is-selected');
-                next.classList.add('is-selected');
-                next.click();
-                window.SE?.fire('gW15Warp');  // AUDIO_INDEX: G5 → w15_warp 流用
-                ev.stopPropagation();
-                ev.preventDefault();
-                setTimeout(() => {
-                    submit.removeEventListener('click', interceptor, true);
-                    submit.click();
-                }, 80);
+                if (!next || next === btn) return;
+                warped = true;
+                // 通常のタップ処理(選択反映)が済んだ後にワープ
+                warpTimer = setTimeout(() => {
+                    if (!next.isConnected) return;
+                    next.click();
+                    window.SE?.fire('gW15Warp');  // AUDIO_INDEX: G5 → w15_warp 流用
+                }, 350);
             }
-            submit.addEventListener('click', interceptor, true);
+
+            grid.addEventListener('click', onPick);
             return () => {
-                submit.removeEventListener('click', interceptor, true);
+                clearTimeout(warpTimer);
+                grid.removeEventListener('click', onPick);
             };
         },
     };
@@ -1616,56 +1495,19 @@
         },
     };
 
-    // --- G8: 易問トラップ ---
-    // シンプルな問題 (1+1=? 等) に紛らわしい漢字の選択肢を割り当てる。
-    // Stage 10 で実装済み choice 問題にこれを "上書き" するのは危険なので、
-    // 現在は B17 (問題文めちゃくちゃ) と同等の視覚トラップに留めて placeholder 実装とする。
-    // 本格実装には専用問題 JSON が必要 (今後の拡張)。
-    const G8_EASY_TRAP = {
-        id: 'G8', name: '易問トラップ', supports: 'choice', introducedAt: 10, difficulty: 8,
-        conflicts: ['C03'], // 選択肢文字化けとかぶる
-        apply(ctx) {
-            // 選択肢を視覚的に紛らわしい漢字で「覆う」。 underlying data-idx は維持するので
-            // 回答判定は壊れない (見た目のみ狂う)。
-            const choices = qa(ctx.screen, '.q-choice');
-            if (choices.length < 2) return () => {};
-            // 似た形の漢字4字セットから1セットを使う
-            const SETS = [
-                ['田', '由', '甲', '申'],
-                ['午', '牛', '半', '牟'],
-                ['木', '本', '末', '未'],
-                ['土', '士', '王', '玉'],
-                ['日', '目', '白', '百'],
-                ['人', '入', '八', '个'],
-            ];
-            const set = SETS[Math.floor(Math.random() * SETS.length)];
-            const saved = [];
-            choices.forEach((c, i) => {
-                saved.push(c.textContent);
-                c.textContent = set[i % set.length];
-            });
-            return () => {
-                choices.forEach((c, i) => {
-                    if (saved[i] !== undefined) c.textContent = saved[i];
-                });
-            };
-        },
-    };
-
     // ---------- Export ----------
     const map = {
         B11_BLASTER, B16_FAKE_COUNTDOWN, B18_FAKE_ERROR,
         B02_TYPEWRITER, B04_ZOOM_CHAOS, B08_FADEOUT, B15_REVERSED_TEXT, B20_BLACKOUT,
         B03_REVERSE, B05_MIRROR, B06_COLOR_BREAK, B07_GLITCH,
         B09_SHRINK, B10_SHUFFLE_TEXT,
-        B12_BLUR, B13_TINY, B14_MARGIN_CHAOS, B25_CHAR_OBSTRUCT,
+        B12_BLUR, B13_TINY, B25_CHAR_OBSTRUCT,
         B01_REVERSE_TAP, B17_NOISE_TEXT,
         C01_SHUFFLE, C02_DUMMY_CHOICE, C03_CHAR_CORRUPT, C04_FAKE_5050,
         W01_KEYS_INVISIBLE, W02_KEYS_SHUFFLE, W03_ANSWER_INVISIBLE, W07_CHAR_DROP,
-        W05_CURSOR_WILD, W10_INPUT_DELAY, W17_MODE_AUTO_SWAP, W19_FLICK_REVERSE,
-        W04_INPUT_SHIFT, W06_REVERSE_TEXT, W09_GHOST_INPUT, W15_KEY_WARP, W16_KEYS_MERGE,
+        W04_INPUT_SHIFT, W06_REVERSE_TEXT, W09_GHOST_INPUT,
         B21_INSTANT_DEATH, W08_KEYS_RESHUFFLE, W18_KEY_VANISH, W20_FLICK_SHUFFLE,
-        G1_RANDOM_DEATH, G2_MISJUDGE, G4_GARBLED_TEXT, G5_CHOICE_WARP, G7_SCORE_TAUNT, G8_EASY_TRAP,
+        G1_RANDOM_DEATH, G4_GARBLED_TEXT, G5_CHOICE_WARP, G7_SCORE_TAUNT,
     };
     const all = Object.values(map).filter(g => g && g.id);
     window.GimmickRegistry = Object.assign({ all }, map);

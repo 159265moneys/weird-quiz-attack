@@ -50,7 +50,6 @@
 
         // --- gimmick (強めの演出系は少しだけ振動で "効かせる") ---
         gB21Death:     [200, 80, 200],
-        gG2Betray:     [60, 40, 60],
         gB04Zoom:      12,
         gB05Mirror:    10,
         gB11Fire:      22,
