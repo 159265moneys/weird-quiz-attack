@@ -108,6 +108,16 @@
     z-index: 1;
     pointer-events: none;
 }
+/* 英字キーで "ABC" 等の複数文字ラベルを表示する際のサイズ */
+.kb-key.kb-main-group {
+    font-size: 40px;
+    letter-spacing: 2px;
+    font-weight: 500;
+}
+/* フリック系のサブ文字ヒントは複数文字ラベル時には非表示 (iPhone 風) */
+.kb-key.kb-main-group .kb-sub {
+    display: none;
+}
 
 /* ---------------- 機能キー ---------------- */
 /* iPhone 純正で機能キー (改行、⌫、ABC 等) は文字キーより一段暗い #4d4d52。 */

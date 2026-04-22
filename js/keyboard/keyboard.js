@@ -105,7 +105,23 @@
         if (key.fn === 'caps') return alphaCaps ? 'A' : 'a';
         if (key.fn) return key.label || '';
         if (mode === 'katakana' && key.c) return L.hiraToKata(key.c);
-        if (mode === 'alpha' && alphaCaps && key.c && /[a-z]/.test(key.c)) return key.c.toUpperCase();
+        if (mode === 'alpha') {
+            // iPhone 風ラベル: 1キーに割り当てられた全文字を並べて表示する
+            // (a/b/c → "ABC", @/#/// → "@#/&_" 等)
+            // 手動上書きがあれば優先 (key.display)
+            if (key.display) return key.display;
+            if (key.c) {
+                // 英字キーは常に大文字で表示 (iPhone の ABC 表示に合わせる)
+                const isLetter = /[a-z]/i.test(key.c);
+                const chars = [key.c, key.l, key.u, key.r, key.d].filter(Boolean);
+                if (isLetter) {
+                    // アルファベット順でソートして表示
+                    return chars.slice().sort().join('').toUpperCase();
+                }
+                // 記号キー: c → l → u → r → d 順で並べる
+                return chars.join('');
+            }
+        }
         return key.c || '';
     }
 
@@ -155,6 +171,8 @@
         const cls = ['kb-key'];
         if (key.fn) cls.push('kb-fn', 'kb-fn-' + key.fn);
         const display = keyDisplayChar(key);
+        // 複数文字ラベル (iPhone風 "ABC" 等) は font を小さめに
+        if (!key.fn && display.length >= 2) cls.push('kb-main-group');
         // サブ文字 (フリック方向の表示)
         let subs = '';
         if (!key.fn) {
@@ -286,20 +304,21 @@
 
     function handleFn(fn) {
         switch (fn) {
-            case 'bs': backspace(); return;
-            case 'space': type(' '); return;
-            case 'ok': if (opts?.onSubmit) opts.onSubmit(buffer); return;
-            case 'dakuten': dakutenCycle(); return;
-            case 'caps': alphaCaps = !alphaCaps; render(); return;
-            case 'mode-hira': mode = 'hiragana'; render(); return;
-            case 'mode-alpha': mode = 'alpha'; render(); return;
-            case 'mode-num': mode = 'number'; render(); return;
+            case 'bs': window.SE?.fire('keyBs'); backspace(); return;
+            case 'space': type(' '); return;  // type() 側で keyTap 発火
+            case 'ok': window.SE?.fire('keyOk'); if (opts?.onSubmit) opts.onSubmit(buffer); return;
+            case 'dakuten': window.SE?.fire('keyTap'); dakutenCycle(); return;
+            case 'caps': window.SE?.fire('menuCursor'); alphaCaps = !alphaCaps; render(); return;
+            case 'mode-hira': window.SE?.fire('menuCursor'); mode = 'hiragana'; render(); return;
+            case 'mode-alpha': window.SE?.fire('menuCursor'); mode = 'alpha'; render(); return;
+            case 'mode-num': window.SE?.fire('menuCursor'); mode = 'number'; render(); return;
         }
     }
 
     function type(ch) {
         if (buffer.length >= (opts?.maxLength ?? 24)) return;
         buffer += ch;
+        window.SE?.fire('keyTap');
         emitChange();
     }
 
