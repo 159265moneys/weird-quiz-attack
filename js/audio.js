@@ -23,7 +23,10 @@
 
 (function () {
     const BASE = 'audio/';
-    const MAX_POOL_PER_KEY = 6;           // 同SE同時再生上限
+    // 同SE同時再生上限。短尺のタップ音/スコアtick等は連打されると
+    // 6 では足りず、プール満杯で oldest を強制上書き = "前に鳴ったやつが
+    // 途中で消される" という現象が起きるため余裕を持って 16 にする。
+    const MAX_POOL_PER_KEY = 16;
 
     // path -> [{el, expiresAt}] のプール (単発用 / 終了を待たず再利用)
     const pool = new Map();
@@ -32,6 +35,8 @@
     // ミュート状態 (後でオプション画面とか繋げる)
     let muted = false;
     let unlocked = false;
+    // マスター音量 (設定画面から変更される)。spec.volume に掛け合わせて適用。
+    let masterVolume = 1.0;
 
     // 初回タップでモバイルの autoplay 制限を解除
     function unlockOnce() {
@@ -43,6 +48,31 @@
             a.muted = true;
             a.play().catch(() => {/* noop */});
         } catch (_) { /* noop */ }
+        // 念のためアンロック直後にも preloadAll (スクリプト読込直後の fetch が
+        // まだ届いてなかったり キャッシュ弾きされた場合のリトライ) を走らせる。
+        try { preloadAll(); } catch (_) {}
+    }
+
+    // 指定 path の Audio を 1 本だけ pool に先置きしてデコードをキックする
+    function preload(path) {
+        let list = pool.get(path);
+        if (!list) { list = []; pool.set(path, list); }
+        if (list.length > 0) return;
+        const el = new Audio(BASE + path);
+        el.preload = 'auto';
+        try { el.load(); } catch (_) {}
+        list.push({ el });
+    }
+
+    function preloadAll() {
+        const seen = new Set();
+        for (const name in SE_SPEC) {
+            const spec = SE_SPEC[name];
+            if (!spec || !spec.path) continue;
+            if (seen.has(spec.path)) continue;
+            seen.add(spec.path);
+            preload(spec.path);
+        }
     }
 
     function installUnlockGuard() {
@@ -60,7 +90,7 @@
     function acquire(path) {
         let list = pool.get(path);
         if (!list) { list = []; pool.set(path, list); }
-        // 終了しているインスタンスがあれば再利用
+        // 終了/一時停止のインスタンスがあれば再利用 (再生中のものは触らない)
         for (const entry of list) {
             if (entry.el.ended || entry.el.paused) return entry.el;
         }
@@ -70,35 +100,63 @@
             list.push({ el });
             return el;
         }
-        // 上限到達時は最古を横取り
-        const oldest = list[0];
-        try { oldest.el.pause(); } catch (_) {}
-        oldest.el.currentTime = 0;
-        return oldest.el;
+        // 上限到達 = 全て再生中。やむを得ず最もゴールに近い (currentTime が
+        // duration に近い) 1 本を選んで再利用する。list[0] 固定だと、
+        // 冒頭から鳴り始めた SE が一番早く犠牲になるので。
+        let victim = list[0].el;
+        let bestRatio = 0;
+        for (const { el } of list) {
+            const dur = el.duration || 1;
+            const r = (el.currentTime || 0) / dur;
+            if (r > bestRatio) { bestRatio = r; victim = el; }
+        }
+        try { victim.pause(); } catch (_) {}
+        victim.currentTime = 0;
+        return victim;
     }
 
     function play(path, opts = {}) {
         if (muted) return null;
-        const key = opts.key || path;
-        const prev = active.get(key);
-        if (prev) { try { prev.pause(); } catch (_) {} active.delete(key); }
+
+        // "排他" は opts.key を明示的に渡した時 (= playExclusive/playLoop 経由)
+        // に限定する。非排他の通常 play() が、前に鳴ったループや exclusive
+        // SE を勝手に止めてしまう事故を防ぐ。
+        // (以前は const key = opts.key || path で active を常に参照していたため、
+        //  たまたま同じ path を使う非排他 SE が先行 SE を蹴っていた)
+        if (opts.key) {
+            const prev = active.get(opts.key);
+            if (prev) { try { prev.pause(); } catch (_) {} active.delete(opts.key); }
+        }
 
         const el = acquire(path);
-        cancelFade(el);                // 以前のフェードを解除して正常音量で再生
+        // 以前のこの el に仕掛けた fade / clip タイマーを全部解除してから再生する。
+        // これをやらないと、"前回の play で予約された setTimeout(fadeStop) が
+        // 再利用された新しい再生を途中で殺す" 事故が起きる。
+        // (同 path を連打した時に「2回目の音がプツッと切れる」症状の根本原因)
+        cancelFade(el);
+        cancelClip(el);
         el.loop = false;
-        el.volume = clampVol(opts.volume);
+        // spec.volume * masterVolume をかけて適用 (設定画面のスライダと連動)
+        const baseVol = opts.volume == null ? 1.0 : Number(opts.volume);
+        el.volume = clampVol(baseVol * masterVolume);
         // abortAll が画面遷移時にこの SE を強制停止するか判定する印。
         // true なら次画面の頭に被って完走させる (正解/不正解音など)。
         if (opts.persist) el.dataset.persistOnTransition = '1';
         else delete el.dataset.persistOnTransition;
-        try { el.currentTime = 0; } catch (_) {}
+        // 先頭無音スキップ (opts.startOffsetMs 指定時、その位置から再生開始)。
+        // SE 素材の頭に 50-200ms の無音マージンがあるとユーザー体感で "SE が遅れる" と
+        // 感じるので、該当 SE だけこっちで補正する。
+        const offsetSec = (opts.startOffsetMs || 0) / 1000;
+        try { el.currentTime = offsetSec; } catch (_) {}
         const playPromise = el.play();
         if (playPromise && playPromise.catch) playPromise.catch(() => {});
 
-        if (opts.key) active.set(key, el);
+        if (opts.key) active.set(opts.key, el);
 
         if (opts.clipMs) {
-            setTimeout(() => {
+            // 新しい clipTimer を保持 (次回 play/abortAll 時にキャンセルできるよう)
+            el._clipTimer = setTimeout(() => {
+                el._clipTimer = null;
                 try { fadeStop(el, 180); } catch (_) {}
             }, opts.clipMs);
         }
@@ -114,7 +172,7 @@
         stop(path); // 同ループ多重起動防止
         const el = new Audio(BASE + path);
         el.loop = true;
-        el.volume = clampVol(volume);
+        el.volume = clampVol(volume * masterVolume);
         el.preload = 'auto';
         const p = el.play();
         if (p && p.catch) p.catch(() => {});
@@ -131,11 +189,15 @@
 
     // 画面遷移時の一斉停止。ブツ切れ回避のため短いフェードアウトをかけてから止める。
     // ループ系はフェード不要 (長尺の残響が問題になりにくく、即断の方が切替感が出る)。
-    function abortAll(fadeMs = 200) {
+    //   force = true: persistOnTransition も含めて完全停止 (ミュート時用)
+    function abortAll(fadeMs = 200, force = false) {
         // active (ループ/排他): ループは即停止、exclusive単発はフェード
         // persistOnTransition が立っている要素は完走させる (active からだけ外す)
         for (const el of active.values()) {
-            if (el.dataset.persistOnTransition === '1') continue;
+            if (!force && el.dataset.persistOnTransition === '1') continue;
+            // 停止時に stale な clip/fade timer が残ると、後で reuse された時に
+            // 新しい再生を殺す原因になる。abortAll 時点で明示的にクリア。
+            cancelClip(el);
             if (el.loop) {
                 try { el.pause(); } catch (_) {}
             } else {
@@ -147,7 +209,8 @@
         // 単発プール側: 再生中のやつだけフェードアウト (persist は飛ばす)
         for (const list of pool.values()) {
             for (const { el } of list) {
-                if (el.dataset.persistOnTransition === '1') continue;
+                if (!force && el.dataset.persistOnTransition === '1') continue;
+                cancelClip(el);
                 if (!el.paused && !el.ended) {
                     fadeStop(el, fadeMs);
                 }
@@ -155,7 +218,8 @@
         }
     }
 
-    function mute(flag) { muted = !!flag; if (muted) abortAll(); }
+    // ミュートは persist 音も含め完全停止 (ユーザー操作を尊重)。
+    function mute(flag) { muted = !!flag; if (muted) abortAll(200, true); }
     function isMuted() { return muted; }
 
     function clampVol(v) {
@@ -167,8 +231,9 @@
     // 再生直後に fade が被って鳴らなくなるのを防ぐため、各要素に _fadeTimer を貯めて
     // 新規 play() 時にキャンセルする (play 側で cancelFade() を呼ぶ)。
     function fadeStop(el, durationMs = 200) {
-        if (el.paused) return;
+        // 先に stale timer をクリア (paused で早期 return しても timer が残らないよう)
         cancelFade(el);
+        if (el.paused) return;
         const startVol = el.volume;
         const steps = 10;
         const dt = Math.max(10, Math.floor(durationMs / steps));
@@ -187,6 +252,16 @@
         if (el && el._fadeTimer) {
             clearInterval(el._fadeTimer);
             el._fadeTimer = null;
+        }
+    }
+
+    // clipMs 用の stale な停止タイマーを解除。
+    // play() が pool から古い el を再利用するとき、前回の setTimeout(fadeStop)
+    // が残っていると新しい再生を途中で殺すので必ず呼ぶ。
+    function cancelClip(el) {
+        if (el && el._clipTimer) {
+            clearTimeout(el._clipTimer);
+            el._clipTimer = null;
         }
     }
 
@@ -277,10 +352,17 @@
             volume: spec.volume,
             clipMs: spec.clipMs,
             persist: !!spec.persistOnTransition,
+            // SE 素材の頭に無音があるやつはここで個別に skip させる
+            startOffsetMs: spec.startOffsetMs,
         };
         if (spec.exclusive) return playExclusive(spec.path, opts);
         return play(spec.path, opts);
     }
+
+    function setMasterVolume(v) {
+        masterVolume = clampVol(v);
+    }
+    function getMasterVolume() { return masterVolume; }
 
     function stopNamed(name) {
         const spec = SE_SPEC[name];
@@ -288,8 +370,15 @@
         stop(spec.path);
     }
 
+    // スクリプト読込直後に全 SE の fetch & decode を開始。
+    // `new Audio()` 自体は user-activation を要求しないので autoplay block の
+    // 影響を受けない。これにより「初回 SE が 0.x 秒遅れる (decode 待ち)」症状を解消。
+    try { preloadAll(); } catch (_) {}
+
     window.SE = {
         // 低レベル (path 指定)
+        setMasterVolume,
+        getMasterVolume,
         play,
         playExclusive,
         playLoop,

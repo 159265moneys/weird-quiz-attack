@@ -1,0 +1,288 @@
+/* ============================================================
+   settings.css — 設定パネル (音量/ミュート)
+   ============================================================ */
+
+/* ---- 右上トリガーボタン (歯車) ---- */
+.settings-trigger {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    width: 90px;
+    height: 90px;
+    border-radius: 20px;
+    border: 2px solid rgba(255,255,255,0.22);
+    background: rgba(0,0,0,0.58);
+    color: #d8e6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 90;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 6px 28px rgba(0,0,0,0.45);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.settings-trigger svg {
+    width: 52px;
+    height: 52px;
+    display: block;
+    filter: drop-shadow(0 0 6px rgba(0,255,240,0.35));
+}
+
+/* close ボタンの ✕ も SVG 化 */
+.settings-close svg.icon-x {
+    width: 36px;
+    height: 36px;
+    display: block;
+}
+
+.settings-trigger:hover,
+.settings-trigger:active {
+    transform: scale(0.94) rotate(18deg);
+    border-color: var(--accent-cyan, #00fff0);
+    box-shadow: 0 6px 28px rgba(0,255,240,0.28);
+}
+
+/* ---- モーダル オーバーレイ ---- */
+.settings-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.72);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9000;
+    padding: 60px 40px;
+}
+.settings-overlay.is-open {
+    display: flex;
+    animation: settingsFadeIn 0.2s ease both;
+}
+
+@keyframes settingsFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ---- パネル本体 ---- */
+.settings-panel {
+    width: 820px;
+    max-width: 94%;
+    background: linear-gradient(180deg, #0c1018 0%, #0a0c14 100%);
+    border: 2px solid rgba(0,255,240,0.42);
+    border-radius: 32px;
+    padding: 54px 58px 46px;
+    color: #e6f1ff;
+    box-shadow:
+        0 0 0 3px rgba(0,0,0,0.4),
+        0 0 60px rgba(0,255,240,0.22),
+        inset 0 0 40px rgba(0,255,240,0.06);
+    position: relative;
+    animation: settingsPopIn 0.25s cubic-bezier(0.2, 1.2, 0.3, 1) both;
+}
+
+@keyframes settingsPopIn {
+    from { transform: translateY(24px) scale(0.96); opacity: 0; }
+    to   { transform: translateY(0)    scale(1);    opacity: 1; }
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 42px;
+}
+
+.settings-title {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 46px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--accent-cyan, #00fff0);
+    text-shadow: 0 0 14px rgba(0,255,240,0.55);
+}
+
+.settings-close {
+    width: 76px;
+    height: 76px;
+    border-radius: 16px;
+    border: 2px solid rgba(255,255,255,0.24);
+    background: rgba(255,255,255,0.04);
+    color: #e6f1ff;
+    font-size: 40px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+.settings-close:hover,
+.settings-close:active {
+    border-color: var(--accent-red, #ff2e5e);
+    color: var(--accent-red, #ff2e5e);
+    transform: scale(0.92);
+}
+
+/* ---- スライダー行 ---- */
+.settings-row {
+    margin-bottom: 36px;
+}
+
+.settings-row-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+}
+
+.settings-label {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: #e6f1ff;
+}
+
+.settings-value {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--accent-cyan, #00fff0);
+    min-width: 80px;
+    text-align: right;
+    text-shadow: 0 0 10px rgba(0,255,240,0.4);
+}
+
+/* ---- スライダー本体 (WebKit / Firefox 対応) ---- */
+.settings-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background: linear-gradient(
+        90deg,
+        var(--accent-cyan, #00fff0) 0%,
+        var(--accent-cyan, #00fff0) var(--pct, 100%),
+        rgba(255,255,255,0.14) var(--pct, 100%),
+        rgba(255,255,255,0.14) 100%
+    );
+    outline: none;
+    cursor: pointer;
+    touch-action: none;  /* スマホでのスクロール衝突防止 */
+}
+
+/* WebKit スライダーサム */
+.settings-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid var(--accent-cyan, #00fff0);
+    box-shadow:
+        0 0 0 2px rgba(0,0,0,0.6),
+        0 0 14px rgba(0,255,240,0.6);
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.settings-slider::-webkit-slider-thumb:active {
+    transform: scale(1.1);
+    box-shadow:
+        0 0 0 2px rgba(0,0,0,0.6),
+        0 0 20px rgba(0,255,240,0.9);
+}
+
+/* Firefox スライダーサム */
+.settings-slider::-moz-range-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid var(--accent-cyan, #00fff0);
+    box-shadow: 0 0 12px rgba(0,255,240,0.6);
+    cursor: pointer;
+}
+
+/* ---- ミュート トグル ---- */
+.settings-row-mute {
+    margin-top: 14px;
+    padding-top: 30px;
+    border-top: 1px dashed rgba(255,255,255,0.12);
+}
+
+.settings-mute {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.settings-mute input[type="checkbox"] {
+    display: none;
+}
+
+.settings-mute-box {
+    width: 96px;
+    height: 52px;
+    border-radius: 26px;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    position: relative;
+    transition: background 0.18s, border-color 0.18s;
+    flex-shrink: 0;
+}
+
+.settings-mute-box::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 6px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    transition: transform 0.2s cubic-bezier(0.2, 1.2, 0.3, 1), background 0.18s;
+}
+
+.settings-mute input:checked + .settings-mute-box {
+    background: rgba(255,46,94,0.35);
+    border-color: var(--accent-red, #ff2e5e);
+}
+
+.settings-mute input:checked + .settings-mute-box::after {
+    transform: translateX(42px);
+    background: var(--accent-red, #ff2e5e);
+}
+
+.settings-mute-label {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: #e6f1ff;
+}
+
+.settings-mute input:checked ~ .settings-mute-label {
+    color: var(--accent-red, #ff2e5e);
+    text-shadow: 0 0 10px rgba(255,46,94,0.55);
+}
+
+/* ---- ヒント行 ---- */
+.settings-hint {
+    margin-top: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    color: rgba(230,241,255,0.5);
+    text-align: center;
+}

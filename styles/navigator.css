@@ -23,6 +23,18 @@
     pointer-events: auto;
 }
 
+/* persist モード: タップで閉じない & クリック貫通させて下のボタンを
+   操作できるようにする (リザルト画面でキャラが永続表示される時に使う)。
+   同時に背景暗転もカット。 */
+.nav-overlay.is-persist .nav-bubble,
+.nav-overlay.is-persist .nav-figure,
+.nav-overlay.is-persist .nav-backdrop {
+    pointer-events: none !important;
+}
+.nav-overlay.is-persist .nav-backdrop {
+    display: none;
+}
+
 /* 背景: 上側をうっすら暗くして集中させる。下半分は素通し */
 .nav-backdrop {
     position: absolute;

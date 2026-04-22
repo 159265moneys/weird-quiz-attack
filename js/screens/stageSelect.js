@@ -102,6 +102,14 @@
         },
 
         init() {
+            // stageSelect は title と BGM 共有 (title&main.mp3)。
+            // 同名 play は idempotent なので、title から遷移してきた場合は継続再生。
+            window.BGM?.play('title');
+
+            // 右上に ⚙ ボタン (設定パネル)
+            const stageSelectRoot = document.querySelector('.stage-select-screen') || document.getElementById('app');
+            window.Settings?.mountTrigger(stageSelectRoot);
+
             document.querySelectorAll('.stage-card').forEach((card) => {
                 card.addEventListener('click', () => {
                     if (card.classList.contains('is-locked')) {

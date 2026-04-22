@@ -25,7 +25,9 @@
                 tutorialDone: false,
             },
             settings: {
-                soundVolume: 0.8,
+                seVolume: 0.8,    // SE マスター音量 (0〜1)
+                bgmVolume: 0.35,  // BGM 音量 (0〜1)
+                muted: false,     // 全体ミュート (SE+BGM)
                 vibration: true,
             },
         };
@@ -117,6 +119,19 @@
             if (!this.data) return;
             if (!this.data.flags) this.data.flags = {};
             this.data.flags[key] = !!value;
+            this.persist();
+        },
+
+        // 設定: default と merge して返す (古いセーブで未定義キーがあっても落ちない)
+        getSettings() {
+            const def = defaultData().settings;
+            if (!this.data) return { ...def };
+            return { ...def, ...(this.data.settings || {}) };
+        },
+        setSetting(key, value) {
+            if (!this.data) return;
+            if (!this.data.settings) this.data.settings = {};
+            this.data.settings[key] = value;
             this.persist();
         },
     };

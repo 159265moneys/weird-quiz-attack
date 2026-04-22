@@ -49,8 +49,9 @@
         `;
         stage.appendChild(overlay);
 
-        // クリックで次の台詞
+        // クリックで次の台詞。persist モード中は反応しない (完全表示しっぱなし)
         overlay.addEventListener('pointerdown', (e) => {
+            if (state?.persist) return;  // タップで閉じない
             e.stopPropagation();
             next();
         });
@@ -85,9 +86,17 @@
 
         textEl.textContent = line;
         const isLast = idx >= state.lines.length - 1;
+        // persist: タップで閉じないので "次へ" ヒントそのものを隠す。
         // oneShot: 吹き出しタップで閉じる (最終行と同じ)
-        nextEl.textContent = state.oneShot ? 'CLOSE ▶' : (isLast ? 'OK ▶' : 'TAP ▶');
+        if (state.persist) {
+            nextEl.textContent = '';
+            nextEl.style.display = 'none';
+        } else {
+            nextEl.style.display = '';
+            nextEl.textContent = state.oneShot ? 'CLOSE ▶' : (isLast ? 'OK ▶' : 'TAP ▶');
+        }
         overlay.classList.toggle('is-last', isLast);
+        overlay.classList.toggle('is-persist', !!state.persist);
         showAt = Date.now();
     }
 
@@ -134,6 +143,9 @@
             onDone: opts.onDone || null,
             mode: opts.mode || 'tutorial',
             oneShot: !!opts.oneShot,
+            // persist: true → タップで閉じない。キャラと吹き出しが画面に残り続ける。
+            // (リザルト画面で「ずっと話しかけてる」体裁を作りたい時に使う)
+            persist: !!opts.persist,
         };
         applyMode(state.mode);
         open();

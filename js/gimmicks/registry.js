@@ -366,11 +366,7 @@
 
             const timers = new Set();
             let alive = true;
-
-            // クリップ用コンテナ: overflow:hidden で境界以下の足を隠す
-            const clipDiv = document.createElement('div');
-            clipDiv.className = 'gk-b25-clip';
-            ctx.screen.appendChild(clipDiv);
+            let spriteIdx = 0;
 
             function schedule(fn, delay) {
                 const t = setTimeout(() => { timers.delete(t); if (alive) fn(); }, delay);
@@ -393,28 +389,24 @@
             function getDirs(boundaryY) {
                 const SW = SCREEN_W;
                 return [
-                    { R:    0, bx: () => CX0 + Math.random()*(SW-CHAR_W),             by: () => boundaryY },       // 下
-                    { R:   45, bx: () => Math.random()*SW*0.3,                         by: () => boundaryY },       // 下-左
                     { R:   90, bx: () => 0,  by: () => CX0 + Math.random()*Math.max(0, boundaryY-CHAR_W) },       // 左
                     { R:  135, bx: () => 0,  by: () => Math.random()*boundaryY*0.3 },                              // 上-左
                     { R:  180, bx: () => CX0 + Math.random()*(SW-CHAR_W),             by: () => 0 },               // 上
                     { R: -135, bx: () => SW, by: () => Math.random()*boundaryY*0.3 },                              // 上-右
                     { R:  -90, bx: () => SW, by: () => CX0 + Math.random()*Math.max(0, boundaryY-CHAR_W) },       // 右
-                    { R:  -45, bx: () => SW*0.7 + Math.random()*SW*0.3,               by: () => boundaryY },       // 下-右
                 ];
             }
 
             function spawnChar() {
                 if (!alive) return;
                 const boundaryY = getBoundaryY();
-                // clipDiv の高さを最新の boundaryY に合わせる (境界以下の足を隠す)
-                clipDiv.style.height = boundaryY + 'px';
                 const dirs = getDirs(boundaryY);
                 const { R, bx: bxFn, by: byFn } = dirs[Math.floor(Math.random() * dirs.length)];
                 const bx = bxFn(), by = byFn();
 
                 const img = document.createElement('img');
-                img.src = SPRITES[Math.floor(Math.random() * SPRITES.length)];
+                img.src = SPRITES[spriteIdx % SPRITES.length];
+                spriteIdx++;
                 img.draggable = false;
                 img.className = 'gk-b25-char';
                 img.style.left = '0';
@@ -471,6 +463,7 @@
                 timers.clear();
                 ctx.screen.querySelectorAll('.gk-b25-char').forEach(el => el.remove());
             };
+
         },
     };
 

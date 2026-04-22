@@ -64,9 +64,7 @@
                     </div>
                     <div class="result-actions">
                         <button class="btn btn-accent-cyan" data-action="share">シェア</button>
-                        <button class="btn" data-action="retry">もう一度</button>
                         <button class="btn" data-action="stageSelect">ステージ選択</button>
-                        <button class="btn" data-action="title">タイトル</button>
                     </div>
                     <div class="share-toast" data-share-toast></div>
                 </div>
@@ -78,6 +76,9 @@
             const result = window.Scoring.compute(s);
             const target = result.score;
             const el = document.getElementById('resultScore');
+
+            // リザルト BGM に切替 (stageN → result のクロスフェード)
+            window.BGM?.play('result');
 
             // --- 開幕: RANK 発表 SE (ノイズバースト + 電源カッ) ---
             // 世界観整合のため"ジャジャーン"は使わず、グリッチで発表。
@@ -194,36 +195,8 @@
                 }
             });
 
-            document.querySelector('[data-action="retry"]')?.addEventListener('click', () => {
-                const no = window.GameState.currentStage;
-                (async () => {
-                    const all = await window.QuizLoader.loadAll();
-                    window.GameState.resetSession();
-                    window.GameState.session.startAt = Date.now();
-                    const picked = window.QuizLoader.pickForStage(
-                        all, no, window.CONFIG.QUESTIONS_PER_STAGE
-                    );
-                    window.GameState.session.questions = picked;
-                    const slots = window.GimmickSelector.pickGimmickSlots(no, picked.length);
-                    window.GameState.session.gimmickSlots = slots;
-                    window.GameState.session.kAssignment =
-                        window.GimmickSelector.generateKAssignment(no, slots);
-                    const b18Prob = window.CONFIG.B18_STAGE_PROB ?? 1.0;
-                    const inputIdxs = picked
-                        .map((q, i) => (q.mode === 'input' ? i : -1))
-                        .filter(i => i >= 0);
-                    window.GameState.session.b18Slot =
-                        (Math.random() < b18Prob && inputIdxs.length > 0)
-                            ? inputIdxs[Math.floor(Math.random() * inputIdxs.length)]
-                            : -1;
-                    window.Router.show('question');
-                })();
-            });
             document.querySelector('[data-action="stageSelect"]')?.addEventListener('click', () => {
                 window.Router.show('stageSelect');
-            });
-            document.querySelector('[data-action="title"]')?.addEventListener('click', () => {
-                window.Router.show('title');
             });
         },
     };
@@ -306,10 +279,12 @@
         const dlg = deathEnd ? deathLines : (DIALOGS[rank] || DIALOGS.C);
         // 結果画面は「タップ文字送り」せず、全部 1 吹き出しで一気に表示。
         // mode:'result' で下寄せ & 小さめ構成に切り替え。
+        // persist:true でタップでは閉じず、ボタン操作を妨げないよう貫通。
         window.Navigator.speak(dlg.lines, {
             poses: dlg.poses,
             mode: 'result',
             oneShot: true,
+            persist: true,
         });
     }
 

@@ -54,6 +54,7 @@
 
             return `
                 <div class="screen question-screen">
+                    <button type="button" class="q-abort-btn" id="qAbortBtn" aria-label="中断">中断</button>
                     <div class="q-zone-header">
                         <div class="q-header">
                             <span>STAGE ${window.GameState.currentStage} / Q ${num}/${total}</span>
@@ -75,6 +76,10 @@
         init() {
             const q = currentQ();
             if (!q) return;
+
+            // ステージに応じた BGM に切替 (同ステージ問題間は idempotent で継続再生)
+            const stageNo = window.GameState?.currentStage;
+            if (stageNo) window.BGM?.play(`stage${stageNo}`);
 
             resolved = false;
             selectedIdx = -1;
@@ -125,6 +130,16 @@
             window.addEventListener('debug:forceAnswer', onDebugForce);
             window.addEventListener('gimmick:forceFail', onGimmickForceFail);
 
+            // 中断ボタン (ギミックの影響を受けないよう最前面)
+            const abortBtn = document.getElementById('qAbortBtn');
+            if (abortBtn) {
+                abortBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (resolved) return;
+                    openAbortConfirm();
+                });
+            }
+
             // --- 崩壊UIギミック適用 ---
             // 問題文が「ギミック出る前に一瞬見える」状態を防ぐため、DOM 差し替え直後に
             // 同期的に適用する。この時点で Keyboard.mount も完了済みなので安全。
@@ -137,6 +152,7 @@
             window.removeEventListener('gimmick:forceFail', onGimmickForceFail);
             window.Gimmicks?.dispose();
             if (window.Keyboard?.unmount) window.Keyboard.unmount();
+            closeAbortConfirm();
         },
     };
 
@@ -322,6 +338,70 @@
 
         app.appendChild(el);
         setTimeout(() => el.remove(), durationMs);
+    }
+
+    // --- 中断確認モーダル (pause ではなく完全中断 → ステージ選択へ戻る) ---
+    // モーダル表示中はタイマーを止める (pause ではなく「決断待ち」なので残時間を
+    // 失わせない)。cancel で再開、confirm ならそのまま離脱。
+    let abortDom = null;
+    let abortPauseAt = 0;
+    function openAbortConfirm() {
+        if (abortDom) return;
+        abortPauseAt = Date.now();
+        stopTimer();
+        const app = document.getElementById('app');
+        if (!app) return;
+        abortDom = document.createElement('div');
+        abortDom.className = 'q-abort-overlay';
+        abortDom.innerHTML = `
+            <div class="q-abort-panel" role="dialog" aria-modal="true">
+                <div class="q-abort-title">中断しますか？</div>
+                <div class="q-abort-desc">現在のスコアは記録されず、<br>ステージ選択へ戻ります。</div>
+                <div class="q-abort-actions">
+                    <button type="button" class="btn" data-abort="cancel">続ける</button>
+                    <button type="button" class="btn btn-accent-red" data-abort="ok">中断する</button>
+                </div>
+            </div>
+        `;
+        app.appendChild(abortDom);
+        window.SE?.fire('naviPop');
+        abortDom.querySelector('[data-abort="cancel"]').addEventListener('click', () => {
+            window.SE?.fire('cancel');
+            closeAbortConfirm();
+        });
+        abortDom.querySelector('[data-abort="ok"]').addEventListener('click', () => {
+            window.SE?.fire('confirm');
+            doAbort();
+        });
+        // パネル外タップでキャンセル
+        abortDom.addEventListener('click', (e) => {
+            if (e.target === abortDom) closeAbortConfirm();
+        });
+    }
+    function closeAbortConfirm() {
+        if (!abortDom) return;
+        abortDom.remove();
+        abortDom = null;
+        // 一時停止していた時間分 questionStartAt をずらしてタイマー再開
+        if (abortPauseAt && !resolved) {
+            const delta = Date.now() - abortPauseAt;
+            questionStartAt += delta;
+            abortPauseAt = 0;
+            startTimer();
+        } else {
+            abortPauseAt = 0;
+        }
+    }
+    function doAbort() {
+        // 先に resolved を立てておくことで closeAbortConfirm のタイマー再開を抑止
+        resolved = true;
+        stopTimer();
+        closeAbortConfirm();
+        window.Gimmicks?.dispose();
+        if (window.Keyboard?.unmount) window.Keyboard.unmount();
+        // 現セッションは破棄 (結果画面には行かず、まっすぐステージ選択へ)
+        if (window.GameState?.resetSession) window.GameState.resetSession();
+        window.Router.show('stageSelect');
     }
 
     function escapeHTML(s) {

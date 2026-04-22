@@ -60,6 +60,12 @@
             const bfly   = document.getElementById('titleBfly');
             if (!screen) return;
 
+            // タイトル BGM を試行 (iOS autoplay ブロック時は初回タップで後追い)
+            window.BGM?.play('title');
+
+            // 右上に ⚙ ボタン (設定パネル)
+            window.Settings?.mountTrigger(screen);
+
             let transitioning = false;
             const onTap = (ev) => {
                 if (transitioning) return;
@@ -84,11 +90,29 @@
                     });
                 }
 
+                // 蝶を screen 直下へ reparent してから tap を隠す。
+                // tap に is-gone (opacity:0) を付けると子の蝶も巻き込まれて
+                // 即消えるため、先に screen ルートへ移して opacity 汚染を回避。
+                if (bfly && screen) {
+                    const br = bfly.getBoundingClientRect();
+                    const sr = screen.getBoundingClientRect();
+                    const sc = sr.width > 0 ? sr.width / 1080 : 1;
+                    bfly.style.position = 'absolute';
+                    bfly.style.left     = Math.round((br.left - sr.left) / sc) + 'px';
+                    bfly.style.top      = Math.round((br.top  - sr.top)  / sc) + 'px';
+                    bfly.style.width    = '110px';
+                    bfly.style.margin   = '0';
+                    bfly.style.bottom   = 'auto';
+                    screen.appendChild(bfly);
+                }
+
                 // TAP TO START を即フェード
                 if (tap) tap.classList.add('is-gone');
 
-                // 蝶を右方向へ羽ばたかせて画面外へ
-                if (bfly) bfly.classList.add('is-flying');
+                // 蝶を右方向へ羽ばたかせて画面外へ (reparent 後に次フレームで発火)
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    if (bfly) bfly.classList.add('is-flying');
+                }));
 
                 // ロゴ崩壊 (1.2s) + 蝶フライアウト (1.6s) の長い方に合わせて遷移
                 setTimeout(() => {

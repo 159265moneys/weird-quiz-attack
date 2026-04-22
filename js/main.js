@@ -31,6 +31,15 @@
         window.Save.load();
         updateScale();
 
+        // 保存されてる音量/ミュート設定を起動時に反映
+        try {
+            const s = window.Save.getSettings();
+            window.SE?.setMasterVolume?.(s.seVolume);
+            window.BGM?.setVolume?.(s.bgmVolume);
+            window.SE?.mute?.(!!s.muted);
+            window.BGM?.mute?.(!!s.muted);
+        } catch (_) { /* noop */ }
+
         // ダブルタップズーム抑制 (iOS)
         let lastTap = 0;
         document.addEventListener('touchend', (e) => {
