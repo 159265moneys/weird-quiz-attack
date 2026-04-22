@@ -129,6 +129,11 @@
                 spawnButterflies(result.rank);
             }
 
+            // 演出が一段落した頃にナビゲーターがランクに対してコメント
+            setTimeout(() => {
+                speakResultComment(result, !!s.deathEnd);
+            }, 1800);
+
             // シェアボタン
             document.querySelector('[data-action="share"]')?.addEventListener('click', async (e) => {
                 const btn = e.currentTarget;
@@ -194,6 +199,85 @@
             });
         },
     };
+
+    // ---------- ナビゲーターによるランク別コメント ----------
+    function speakResultComment(result, deathEnd) {
+        if (!window.Navigator) return;
+        const rank = result.rank;
+        const pct = window.Ranks?.percentileText(rank) || '';
+        const meta = window.Ranks?.META?.[rank] || {};
+        const label = meta.labels?.[0] || '';
+
+        const DIALOGS = {
+            SS: {
+                poses: ['happy', 'hi'],
+                lines: [
+                    '嘘でしょ…！全問正解、しかも早い！',
+                    `${pct}…${label}級です。もう、人類の域じゃない。`,
+                ],
+            },
+            S: {
+                poses: ['happy', 'hi'],
+                lines: [
+                    'すごい。${pct} だよ、それ。'.replace('${pct}', pct),
+                    `${label}に匹敵するレベル。`,
+                ],
+            },
+            A: {
+                poses: ['hi', 'basic'],
+                lines: [
+                    `${pct}。かなり強いほうだと思う。`,
+                    `${label}くらいの頭脳って感じ。`,
+                ],
+            },
+            B: {
+                poses: ['basic'],
+                lines: [
+                    `${pct}。悪くないじゃない。`,
+                    `${label}、くらいの位置。`,
+                ],
+            },
+            C: {
+                poses: ['basic', 'think'],
+                lines: [
+                    `${pct}…まあ、${label}だね。`,
+                    '崩壊 UI に惑わされすぎ、かも？',
+                ],
+            },
+            D: {
+                poses: ['think'],
+                lines: [
+                    `${pct}。`,
+                    `ラベルは「${label}」。あと一歩、って感じ。`,
+                ],
+            },
+            E: {
+                poses: ['think_light'],
+                lines: [
+                    `${pct}…「${label}」と出ました。`,
+                    'UI 崩壊に呑まれてしまったね。',
+                ],
+            },
+            F: {
+                poses: ['think_light'],
+                lines: [
+                    `${pct}。「${label}」。`,
+                    'これは、再挑戦が必要かも。',
+                ],
+            },
+        };
+        const deathLines = {
+            poses: ['think_light', 'think'],
+            lines: [
+                'あ、死んだ。',
+                'あのギミックはもう、避けようが無い場合もあるから。',
+                '次はうまく切り抜けて。',
+            ],
+        };
+
+        const dlg = deathEnd ? deathLines : (DIALOGS[rank] || DIALOGS.C);
+        window.Navigator.speak(dlg.lines, { poses: dlg.poses });
+    }
 
     // ---------- 上位ランク専用: 蝶バースト ----------
     function spawnButterflies(rank) {
