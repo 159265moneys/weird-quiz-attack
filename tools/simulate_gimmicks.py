@@ -65,7 +65,7 @@ REGISTRY: List[Gimmick] = [
     Gimmick('B09', '画面縮小',               'both',   6, 6, conflicts=['B03', 'B05']),
     Gimmick('B10', '問題文ランダム出力',     'both',   6, 5, conflicts=['B02', 'B07', 'B15', 'B17']),
     Gimmick('W01', '文字盤見えない',         'input',  6, 7),
-    Gimmick('W02', '文字盤あべこべ',         'input',  6, 7, conflicts=['W17']),
+    Gimmick('W02', '文字盤あべこべ',         'input',  6, 7, conflicts=['W08', 'W15', 'W16', 'W17', 'W18']),
     Gimmick('W03', '解答欄見えない',         'input',  6, 6),
     Gimmick('W07', '入力1文字消失',          'input',  6, 7),
     Gimmick('C02', 'ダミー選択肢',           'choice', 6, 7),

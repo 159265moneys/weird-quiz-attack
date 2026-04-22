@@ -747,29 +747,50 @@
         },
     };
 
+    // W02 文字盤あべこべ: 旧実装は「ラベルだけシャッフル、タップは元の key を出力」
+    // だったが、実機テストでユーザが「タップしたのが反映されない」と混乱。
+    // → WYSIWYG 化: タップした瞬間に見えているラベルの文字を出力するように、
+    //   data-key JSON 自体を入れ替える方式に変更。
+    // 定期的にシャッフル。ただし「指が下りている最中」はシャッフルを保留。
+    // 英/日モード切替 (Keyboard の再 render) 後も postRender フックで再適用。
     const W02_KEYS_SHUFFLE = {
         id: 'W02', name: '文字盤あべこべ', supports: 'input', introducedAt: 6, difficulty: 7,
-        // W17 のモード切替は render() を走らせてラベルを元に戻してしまう
-        conflicts: ['W17'],
+        conflicts: ['W08', 'W15', 'W16', 'W17', 'W18'],
         apply(ctx) {
-            const shuffleLabels = () => {
-                // 現在のキーボードから「文字キー」の main ラベルを抽出
-                const keys = qa(ctx.screen, '.kb-key:not(.kb-fn)');
-                const mains = keys.map(k => k.querySelector('.kb-main')).filter(Boolean);
-                if (mains.length < 2) return;
-                const labels = mains.map(m => m.textContent);
-                // Fisher-Yates
-                for (let i = labels.length - 1; i > 0; i--) {
+            const shuffleAll = () => {
+                const keys = qa(ctx.screen, '.kb-key:not(.kb-fn):not(.kb-empty)');
+                if (keys.length < 2) return;
+                // 各キーの data-key JSON と表示ラベル (.kb-main) を一括取得
+                const records = keys.map(k => ({
+                    el: k,
+                    json: k.getAttribute('data-key'),
+                    main: k.querySelector('.kb-main')?.textContent ?? '',
+                }));
+                // シャッフル先 index
+                const order = records.map((_, i) => i);
+                for (let i = order.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
-                    [labels[i], labels[j]] = [labels[j], labels[i]];
+                    [order[i], order[j]] = [order[j], order[i]];
                 }
-                mains.forEach((m, i) => { m.textContent = labels[i]; });
+                order.forEach((srcI, dstI) => {
+                    const src = records[srcI];
+                    const dst = records[dstI].el;
+                    if (src.json) dst.setAttribute('data-key', src.json);
+                    const mainEl = dst.querySelector('.kb-main');
+                    if (mainEl) mainEl.textContent = src.main;
+                });
             };
-            shuffleLabels();
-            const timer = setInterval(shuffleLabels, 2800);
-            return () => clearInterval(timer);
-            // 表示だけのシャッフル。実際のタップ挙動は元の key のまま (=位置が正解)
-            // → ユーザは「表示に騙されて」別の文字を入力してしまう
+            const trySchedule = () => {
+                if (window.Keyboard?.isDragging?.()) return;   // タップ中は保留
+                shuffleAll();
+            };
+            shuffleAll();
+            const timer = setInterval(trySchedule, 2800);
+            const unreg = window.Keyboard?.addPostRender?.(shuffleAll);
+            return () => {
+                clearInterval(timer);
+                if (typeof unreg === 'function') unreg();
+            };
         },
     };
 
@@ -1192,10 +1213,6 @@
         id: 'W08', name: '文字盤あべこべv2', supports: 'input', introducedAt: 9, difficulty: 9,
         conflicts: ['W02', 'W15', 'W16', 'W17', 'W18'],
         apply(ctx) {
-            const grid = q(ctx.screen, '.kb-grid');
-            if (!grid) return () => {};
-
-            // W15 と同じシンプル実装。DOM ノードを placeholder 経由で入れ替え。
             function swapNodes(a, b) {
                 if (a === b) return;
                 if (!a.parentNode || !b.parentNode) return;
@@ -1205,34 +1222,34 @@
                 tmp.parentNode.insertBefore(b, tmp);
                 tmp.remove();
             }
-
             function shuffleAll() {
+                const grid = q(ctx.screen, '.kb-grid');
+                if (!grid) return;
                 const keys = qa(grid, '.kb-key:not(.kb-fn):not(.kb-empty)');
                 if (keys.length < 2) return;
-                // Fisher-Yates を DOM swap で実装
                 for (let i = keys.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     if (i !== j) swapNodes(keys[i], keys[j]);
                 }
             }
-
-            // 初期配置からシャッフルしておく
             shuffleAll();
-
-            // onChange をラップして、入力のたびに再配置
             const kb = window.Keyboard;
             const orig = kb?.getOnChange ? kb.getOnChange() : null;
             if (kb?.setOnChange) {
                 kb.setOnChange((val) => {
                     if (orig) orig(val);
-                    // 次フレームで再配置 (pointerup の後処理より後)
-                    requestAnimationFrame(shuffleAll);
+                    // タップ中はシャッフルしない (ユーザ視点のキーが急に動くのを防止)
+                    requestAnimationFrame(() => {
+                        if (kb?.isDragging?.()) return;
+                        shuffleAll();
+                    });
                 });
             }
-
+            // ABC ↔ あいう モード切替後も DOM を再シャッフル (ギミック継続)
+            const unreg = kb?.addPostRender?.(shuffleAll);
             return () => {
                 if (kb?.setOnChange && orig) kb.setOnChange(orig);
-                // DOM の並び順はそのまま (次問題で再マウントされるので OK)
+                if (typeof unreg === 'function') unreg();
             };
         },
     };

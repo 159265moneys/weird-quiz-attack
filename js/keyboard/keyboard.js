@@ -30,6 +30,11 @@
     // ギミック用フック: フリック方向変換 (fn(dir)=>dir'). null で無効。
     let flickTransform = null;
 
+    // render() 後 (モード切替でも呼ばれる) に実行されるコールバック。
+    // ギミック側で文字盤 DOM をいじるものはここに再適用処理を登録することで、
+    // ABC ↔ あいう切替でもギミックが継続する。
+    const postRenderHooks = [];
+
     // ---------------------------------------------------------
     // Public API
     // ---------------------------------------------------------
@@ -59,6 +64,7 @@
             opts = null;
             buffer = '';
             flickTransform = null;   // ギミック状態のリセット
+            postRenderHooks.length = 0;
         },
 
         getValue() { return buffer; },
@@ -73,6 +79,17 @@
         getOnSubmit() { return opts?.onSubmit; },
         setOnSubmit(fn) { if (opts) opts.onSubmit = fn || (() => {}); },
         setFlickTransform(fn) { flickTransform = typeof fn === 'function' ? fn : null; },
+        // render() 終了直後 (=モード切替直後) に fn() を呼ぶ。戻り値で登録解除。
+        addPostRender(fn) {
+            if (typeof fn !== 'function') return () => {};
+            postRenderHooks.push(fn);
+            return () => {
+                const i = postRenderHooks.indexOf(fn);
+                if (i >= 0) postRenderHooks.splice(i, 1);
+            };
+        },
+        // フリック/タップ中かどうか。ギミック側で「タップ中はシャッフルしない」判定に使う
+        isDragging() { return !!dragging; },
     };
 
     // ---------------------------------------------------------
@@ -119,6 +136,11 @@
         `;
 
         attachHandlers();
+
+        // ギミック側で文字盤 DOM に適用した変更 (W02/W08 等) を再適用
+        for (let i = 0; i < postRenderHooks.length; i++) {
+            try { postRenderHooks[i](); } catch (e) { console.error('[Keyboard] postRender hook failed', e); }
+        }
     }
 
     function renderBufferOnly() {
