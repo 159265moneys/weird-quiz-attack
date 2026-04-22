@@ -624,8 +624,7 @@
     const B13_TINY = {
         id: 'B13', name: 'フォント極小', supports: 'both', introducedAt: 7, difficulty: 7,
         // B17: stem inline fontSize=14px が .gk-b17-line の 34px(CSS)を上書き → B17難度弱化
-        // W14: .gk-b13 .kb-key .kb-main{font-size:14px !important} が W14 huge(96px)を上書き
-        conflicts: ['B17', 'W14'],
+        conflicts: ['B17'],
         apply(ctx) {
             const stem = q(ctx.screen, '.q-stem');
             const prevSize = stem ? stem.style.fontSize : '';
@@ -911,32 +910,9 @@
         },
     };
 
-    const W14_KEY_HUGE = {
-        id: 'W14', name: 'キー巨大化', supports: 'input', introducedAt: 7, difficulty: 7,
-        // W17 render() で .gk-w14-huge が消滅。B13 との conflict は B13 側で宣言済み。
-        conflicts: ['W17'],
-        apply(ctx) {
-            let target = null;
-            function pick() {
-                // OK/BS は避ける (操作不能事故防止)
-                const candidates = qa(ctx.screen, '.kb-key:not(.kb-empty):not(.kb-fn-ok):not(.kb-fn-bs)');
-                if (candidates.length === 0) return null;
-                return candidates[Math.floor(Math.random() * candidates.length)];
-            }
-            function apply() {
-                if (target) target.classList.remove('gk-w14-huge');
-                target = pick();
-                if (target) target.classList.add('gk-w14-huge');
-            }
-            apply();
-            // 問題中に1回だけ差し替え (10秒後) — 永続的に同じキーだと慣れてしまう
-            const swap = setTimeout(apply, 10000);
-            return () => {
-                clearTimeout(swap);
-                if (target) target.classList.remove('gk-w14-huge');
-            };
-        },
-    };
+    // W14_KEY_HUGE は削除 (2026-04 実機テスト結果: ぐにゃっと歪むだけで
+    // ユーザからは「謎の青縁白中の四角形が出る」としか認識されず、狙い通りの
+    // 「1キーだけ巨大化して邪魔」演出にならなかったため廃止)
 
     const W17_MODE_AUTO_SWAP = {
         id: 'W17', name: 'カナひら勝手切替', supports: 'input', introducedAt: 7, difficulty: 7,
@@ -1489,7 +1465,7 @@
         B01_REVERSE_TAP, B17_NOISE_TEXT,
         C01_SHUFFLE, C02_DUMMY_CHOICE, C03_CHAR_CORRUPT, C04_FAKE_5050,
         W01_KEYS_INVISIBLE, W02_KEYS_SHUFFLE, W03_ANSWER_INVISIBLE, W07_CHAR_DROP,
-        W05_CURSOR_WILD, W10_INPUT_DELAY, W14_KEY_HUGE, W17_MODE_AUTO_SWAP, W19_FLICK_REVERSE,
+        W05_CURSOR_WILD, W10_INPUT_DELAY, W17_MODE_AUTO_SWAP, W19_FLICK_REVERSE,
         W04_INPUT_SHIFT, W06_REVERSE_TEXT, W09_GHOST_INPUT, W15_KEY_WARP, W16_KEYS_MERGE,
         B21_INSTANT_DEATH, W08_KEYS_RESHUFFLE, W18_KEY_VANISH, W20_FLICK_SHUFFLE,
         G1_RANDOM_DEATH, G2_MISJUDGE, G4_GARBLED_TEXT, G5_CHOICE_WARP, G7_SCORE_TAUNT, G8_EASY_TRAP,

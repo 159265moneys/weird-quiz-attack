@@ -72,11 +72,10 @@ REGISTRY: List[Gimmick] = [
     Gimmick('C02', 'ダミー選択肢',           'choice', 6, 7),
     # Stage 7 (Batch 4)
     Gimmick('B01', '反転タップ',             'choice', 7, 8, conflicts=['C01']),
-    Gimmick('B13', 'フォント極小',           'both',   7, 7, conflicts=['B17', 'W14']),
+    Gimmick('B13', 'フォント極小',           'both',   7, 7, conflicts=['B17']),
     Gimmick('B17', '問題文めちゃくちゃ',     'both',   7, 7, conflicts=['B02', 'B07', 'B08', 'B10', 'B15']),
     Gimmick('W05', 'カーソル暴走',           'input',  7, 7, conflicts=['W07', 'W10']),
     Gimmick('W10', '入力遅延',               'input',  7, 7, conflicts=['W05', 'W07']),
-    Gimmick('W14', 'キー巨大化',             'input',  7, 7, conflicts=['W17']),
     Gimmick('W17', 'カナひら勝手切替',       'input',  7, 7),
     Gimmick('W19', 'フリック方向反転',       'input',  7, 7),
     # Stage 8 (Batch 5)

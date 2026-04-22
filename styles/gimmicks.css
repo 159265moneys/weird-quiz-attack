@@ -351,7 +351,7 @@
 }
 
 /* ============================================================
-   Phase 5b Batch4 — Stage 7 (B01/B17/W05/W10/W14/W17/W19)
+   Phase 5b Batch4 — Stage 7 (B01/B17/W05/W10/W17/W19)
    ============================================================ */
 
 /* ---------- B17 問題文めちゃくちゃ: ノイズの中から本物を探す ----------
@@ -382,24 +382,7 @@
     /* 色や太字を変えない。完全に溶け込ませる。 */
 }
 
-/* ---------- W14 キー巨大化: 1 キーだけ画面の半分級に ----------
-   scale で膨らませ z-index で前面に。隣接キーを物理的に覆い隠す。
-   transform-origin は中心のままなので、周囲に均等に広がる。 */
-.kb-key.gk-w14-huge {
-    transform: scale(2.4);
-    z-index: 20;
-    position: relative;
-    background: #fff;
-    border-color: var(--accent-cyan, #3ed);
-    box-shadow: 0 0 0 4px var(--accent-cyan, #3ed),
-                0 0 60px rgba(62, 221, 221, 0.4);
-}
-.kb-key.gk-w14-huge .kb-main {
-    font-size: 96px;
-}
-.kb-key.gk-w14-huge .kb-sub {
-    font-size: 32px;
-}
+/* W14 キー巨大化 は廃止 (2026-04) */
 
 /* W05 カーソル暴走: Keyboard.setValue 経由で buffer を入れ替えるのでCSS不要 */
 /* W10 入力遅延: onChange ラップのみでCSS不要 */
