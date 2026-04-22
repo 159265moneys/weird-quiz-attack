@@ -731,6 +731,15 @@
     align-items: center;
     animation: resultPctIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both 0.75s;
 }
+/* リザルト画面のボタンは幅・高さを完全統一 */
+.result-actions .btn {
+    width: 560px;
+    min-width: 0;
+    height: 140px;
+    min-height: 0;
+    padding: 0 48px;
+    box-sizing: border-box;
+}
 
 /* ---------- ランクごとの色 ---------- */
 .result-rank.rank-SS { color: var(--accent-warn); text-shadow: 12px 12px 0 var(--accent-red), -6px -6px 0 var(--accent-cyan); }
