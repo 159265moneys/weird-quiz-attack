@@ -89,6 +89,7 @@
                         if (resolved) return;
                         const idx = parseInt(btn.dataset.idx, 10);
                         if (Number.isNaN(idx)) return;  // C02 ダミー選択肢は data-idx 無し
+                        window.SE?.fire('select');
                         selectedIdx = idx;
                         document.querySelectorAll('.q-choice').forEach(b => b.classList.remove('is-selected'));
                         btn.classList.add('is-selected');
@@ -101,6 +102,7 @@
                     submitBtn.addEventListener('click', () => {
                         if (resolved) return;
                         if (selectedIdx < 0) return;
+                        window.SE?.fire('confirm');
                         const correct = selectedIdx === q.answer;
                         resolveAnswer(correct, String(selectedIdx), 'user');
                     });
@@ -167,10 +169,16 @@
 
     function startTimer() {
         stopTimer();
+        let warnedShort = false;
         const loop = () => {
             const elapsed = Date.now() - questionStartAt;
             const remaining = Math.max(0, Q_TIME_LIMIT_MS - elapsed);
             const pct = (remaining / Q_TIME_LIMIT_MS) * 100;
+            // 残り3秒切ったら時間警告 SE を一度だけ鳴らす
+            if (!warnedShort && !resolved && remaining > 0 && remaining <= 3000) {
+                warnedShort = true;
+                window.SE?.fire('timeWarn');
+            }
 
             const fill = document.getElementById('qTimerFill');
             const label = document.getElementById('qTimerLabel');
@@ -233,6 +241,19 @@
 
         // ◯×フラッシュ前にギミックを解除して見た目をリセット
         window.Gimmicks?.dispose();
+
+        // 正解/不正解/タイムアウトの SE
+        if (reason === 'timeout') {
+            window.SE?.fire('timeout');
+        } else if (correct) {
+            window.SE?.fire('correct');
+        } else if (reason === 'misjudge') {
+            window.SE?.fire('gG2Betray');  // G2 誤判定裏切り
+        } else if (reason === 'instant-death' || reason === 'gimmick-death') {
+            window.SE?.fire('gB21Death');
+        } else {
+            window.SE?.fire('wrong');
+        }
 
         // 不正解の場合は正解が読める時間を確保
         const fbDuration = correct ? 520 : 1500;

@@ -81,7 +81,10 @@
                     return;
                 }
                 firing = true;
+                // チャージ音 (CSS アニメ前半がチャージ相)、0.6s 後に発射音
+                window.SE?.fire('gB11Charge');
                 beam.classList.add('is-fire');
+                schedule(() => window.SE?.fire('gB11Fire'), 600);
                 schedule(() => {
                     beam.classList.remove('is-fire');
                     firing = false;
@@ -116,14 +119,22 @@
             const numEl = host.querySelector('.gk-b16-num');
             const TOTAL_MS = 20000; // 3倍速: 表示60秒 ÷ 3 = 実時間20秒
             const startAt = Date.now();
+            let lastSecond = -1;
+            let alarmed = false;
             const timer = setInterval(() => {
                 const remainMs = Math.max(0, TOTAL_MS - (Date.now() - startAt));
                 const sec = Math.floor((remainMs / TOTAL_MS) * 60);
+                // 見かけ上の秒が進んだ瞬間に tick
+                if (sec !== lastSecond) {
+                    lastSecond = sec;
+                    if (remainMs > 0) window.SE?.fire('gB16Tick');
+                }
                 const mm = Math.floor(sec / 60).toString().padStart(2, '0');
                 const ss = (sec % 60).toString().padStart(2, '0');
                 numEl.textContent = `${mm}:${ss}`;
                 if (remainMs <= 0) {
                     numEl.textContent = '00:00';
+                    if (!alarmed) { alarmed = true; window.SE?.fire('gB16Alarm'); }
                     clearInterval(timer);
                 }
             }, 100);
@@ -173,10 +184,11 @@
             backdrop.style.pointerEvents = 'none';
             alert.style.pointerEvents = 'none';
 
-            // 出現アニメ (iOS っぽく中央でふわっと)
+            // 出現アニメ (iOS っぽく中央でふわっと) + iOS 通知ポップ音
             requestAnimationFrame(() => {
                 backdrop.classList.add('is-on');
                 alert.classList.add('is-on');
+                window.SE?.fire('gB18Notify');
             });
 
             return () => {
@@ -206,6 +218,8 @@
                     return;
                 }
                 stem.textContent = chars.slice(0, i + 1).join('');
+                // タイプライタ音: 2文字に1回 (連打しすぎない)
+                if (i % 2 === 0) window.SE?.fire('keyTap');
                 i++;
             }, 90 + Math.random() * 40);
             return () => {
@@ -223,6 +237,7 @@
             const stem = q(ctx.screen, '.q-stem');
             if (!stem) return () => {};
             stem.classList.add('gk-b04-zoom');
+            window.SE?.fire('gB04Zoom');
             return () => stem.classList.remove('gk-b04-zoom');
         },
     };
@@ -273,10 +288,12 @@
             let showTimer = 0, hideTimer = 0;
             const show = () => {
                 host.classList.add('is-on');
+                window.SE?.fire('gB20Out');   // 電源OFF カッ
                 hideTimer = setTimeout(hide, 3000);
             };
             const hide = () => {
                 host.classList.remove('is-on');
+                window.SE?.fire('gB20In');    // 起動音 (先頭3s クロップ)
                 showTimer = setTimeout(show, 5000 + Math.random() * 3000);
             };
             showTimer = setTimeout(show, 1000);
@@ -306,6 +323,7 @@
             const el = ctx.screen;
             const prev = el.style.transform;
             el.style.transform = `${prev ? prev + ' ' : ''}scaleX(-1)`;
+            window.SE?.fire('gB05Mirror');  // シャキーン → b17_glitch 短縮で代用
             return () => { el.style.transform = prev; };
         },
     };
@@ -418,6 +436,7 @@
                 requestAnimationFrame(() => requestAnimationFrame(() => {
                     if (!alive) { img.remove(); return; }
                     img.style.transform = visibleT;
+                    window.SE?.fire('gB25Pop');  // ポップ → b18_notify (iOS通知) で代用
                 }));
 
                 schedule(() => {
@@ -451,6 +470,9 @@
             const original = stem.textContent;
             const noise = ['█', '▓', '▒', '░', '◊', '#', '@', '&', '%', '?', '*', '/'];
 
+            // ホワイトノイズループ (小音量)
+            window.SE?.fire('gGlitchLoop');
+
             let tickTimer = 0;
             let restoreTimer = 0;
             const tick = () => {
@@ -463,6 +485,7 @@
                             : ch;
                     }
                     stem.textContent = out;
+                    window.SE?.fire('gB17Glitch');  // B07 → b17_glitch 流用
                     clearTimeout(restoreTimer);
                     restoreTimer = setTimeout(() => {
                         if (stem.isConnected) stem.textContent = original;
@@ -474,6 +497,7 @@
             return () => {
                 clearTimeout(tickTimer);
                 clearTimeout(restoreTimer);
+                window.SE?.stopNamed('gGlitchLoop');
                 if (stem.isConnected) stem.textContent = original;
             };
         },
@@ -614,6 +638,7 @@
             }
             stem.classList.add('gk-b17-noise');
             stem.innerHTML = out.join('');
+            window.SE?.fire('gB17Glitch');
             return () => {
                 stem.className = prevClasses;
                 stem.innerHTML = originalHTML;
@@ -661,6 +686,7 @@
                     const j = Math.floor(Math.random() * (i + 1));
                     if (i !== j) grid.insertBefore(btns[i], btns[j]);
                 }
+                window.SE?.fire('gC01Shuffle');  // 琴 → w15_warp 頭0.4s 代用
             }, 1000);
             return () => clearInterval(timer);
         },
@@ -685,6 +711,7 @@
             const originalText = dst.textContent;
             dst.textContent = src.textContent;
             dst.classList.add('gk-c02-dummy');
+            window.SE?.fire('gB25Pop');  // AUDIO_INDEX 流用: C02 → b25_pop → 本プロジェクトでは b18_notify
             return () => {
                 dst.textContent = originalText;
                 dst.classList.remove('gk-c02-dummy');
@@ -733,6 +760,7 @@
             const noiseCh = () => NOISE[Math.floor(Math.random() * NOISE.length)];
 
             // 1秒ごとにランダムな選択肢のランダムな位置を1文字ずつ壊す
+            let ticks = 0;
             const timer = setInterval(() => {
                 const alive = states.filter(s => s.btn.isConnected);
                 if (alive.length === 0) return;
@@ -741,6 +769,8 @@
                 const pos = Math.floor(Math.random() * s.chars.length);
                 s.chars[pos] = noiseCh();
                 s.btn.textContent = s.chars.join('');
+                // 2ティックに1回グリッチ音 (鳴らしすぎ防止)
+                if (ticks++ % 2 === 0) window.SE?.fire('gB17Glitch');
             }, 1000);
 
             return () => {
@@ -1100,7 +1130,10 @@
                 if (pool.length === 0) return;
                 const partner = pool[Math.floor(Math.random() * pool.length)];
                 // ワープは次フレームで (今の pointerup の後処理が済むまで待つ)
-                requestAnimationFrame(() => swapNodes(keyEl, partner));
+                requestAnimationFrame(() => {
+                    swapNodes(keyEl, partner);
+                    window.SE?.fire('gW15Warp');
+                });
             }
             grid.addEventListener('pointerup', onUp, true);
             return () => {
@@ -1118,6 +1151,28 @@
             const keys = qa(grid, '.kb-key:not(.kb-empty):not(.kb-fn)');
             if (keys.length < 6) return () => {};
 
+            // 答えに使う文字を出せるキーは glue 禁止 (攻略不能防止)
+            const answerChars = new Set(
+                Array.from((ctx.q?.answer_text || '') + (ctx.q?.answer_variants || []).join(''))
+            );
+            const L = window.KeyboardLayouts;
+            if (L) {
+                // カタカナ/ひらがな両方カバー (judge.js が正規化するため)
+                Array.from(answerChars).forEach(ch => {
+                    if (/[\u3041-\u3096]/.test(ch)) answerChars.add(L.hiraToKata(ch));
+                    else if (/[\u30A1-\u30F6]/.test(ch)) answerChars.add(L.kataToHira(ch));
+                });
+            }
+            function keyCoversAnswer(keyEl) {
+                if (answerChars.size === 0) return false;
+                const raw = keyEl.getAttribute('data-key');
+                if (!raw) return false;
+                try {
+                    const def = JSON.parse(raw.replace(/&#39;/g, "'"));
+                    return ['c', 'u', 'd', 'l', 'r'].some(dir => def[dir] && answerChars.has(def[dir]));
+                } catch { return false; }
+            }
+
             // 元の data-key と main テキストを退避
             const snapshot = keys.map(k => ({
                 el: k,
@@ -1126,7 +1181,8 @@
             }));
 
             // 3 グループ、各 2〜3 個をランダムに選んで「くっつける」
-            const pool = keys.slice();
+            // 答えに必要なキーは pool から除外
+            const pool = keys.filter(k => !keyCoversAnswer(k));
             // Fisher-Yates shuffle
             for (let i = pool.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -1173,27 +1229,58 @@
     // 全て最高難度帯。Stage 10 の理不尽プールにも組み込まれる。
     // ============================================================
 
+    // --- 即死モード共通演出 (B21/G1 から呼ぶ) ---
+    // 1. .gk-instant-death クラスを画面に付与 → CSS変数でシアン→赤に一括変換
+    //    (タイマーバー・OKキー・選択肢枠・回答ボタン・入力欄が全部赤になる)
+    //    + ::after で画面周縁を赤グローで囲む (呼吸する点滅)
+    // 2. fx-vhs-tearing / fx-vhs-rgb を高頻度で繰り返し発火
+    //    (VHSキャンバスは question 画面中は停止しているため CSS クラス直叩き)
+    function applyDeathMode(screen) {
+        screen.classList.add('gk-instant-death');
+        const stage = document.getElementById('stage');
+        let dead = false;
+        let nextTimer = null;
+
+        function fireVhs() {
+            if (dead || !stage) return;
+            // CSSアニメは同クラスが既にあると再起動しないので一旦外す
+            stage.classList.remove('fx-vhs-tearing', 'fx-vhs-rgb');
+            requestAnimationFrame(() => {
+                if (dead) return;
+                stage.classList.add('fx-vhs-tearing');
+                setTimeout(() => { if (stage) stage.classList.remove('fx-vhs-tearing'); }, 280);
+                setTimeout(() => {
+                    if (dead || !stage) return;
+                    stage.classList.add('fx-vhs-rgb');
+                    setTimeout(() => { if (stage) stage.classList.remove('fx-vhs-rgb'); }, 360);
+                }, 130);
+            });
+            nextTimer = setTimeout(fireVhs, 900 + Math.random() * 1100);
+        }
+
+        nextTimer = setTimeout(fireVhs, 300 + Math.random() * 400);
+
+        return () => {
+            dead = true;
+            clearTimeout(nextTimer);
+            screen.classList.remove('gk-instant-death');
+            if (stage) stage.classList.remove('fx-vhs-tearing', 'fx-vhs-rgb');
+        };
+    }
+
     // --- B21: 即死 ---
     // 不正解で強制ゲームオーバー (残問スキップ → result 画面)。
-    // ヘッダ右上に "わずかに気付ける" 赤点を表示 (2〜3周目で気付くバランス)。
+    // 全UI赤化 + VHS高頻度グリッチで「この問題はやばい」を全力で伝える。
     // 実際の "即死" 処理は question.js 側で session.instantDeath フラグを拾って行う。
     const B21_INSTANT_DEATH = {
         id: 'B21', name: '即死', supports: 'both', introducedAt: 9, difficulty: 10,
         apply(ctx) {
             const session = window.GameState?.session;
             if (session) session.instantDeath = true;
-
-            // バレないマーク: ヘッダ右側にひっそり赤い点を光らせる
-            const header = q(ctx.screen, '.q-zone-header');
-            let mark = null;
-            if (header) {
-                mark = document.createElement('div');
-                mark.className = 'gk-b21-mark';
-                header.appendChild(mark);
-            }
+            const cleanupDeath = applyDeathMode(ctx.screen);
             return () => {
                 if (session) session.instantDeath = false;
-                if (mark && mark.parentNode) mark.parentNode.removeChild(mark);
+                cleanupDeath();
             };
         },
     };
@@ -1308,21 +1395,20 @@
     // supports は全て 'both' or 'choice' とし、input モードでも破綻しない設計。
     // ============================================================
 
-    // --- G1: ランダム即死 ---
-    // 問題表示から 200-700ms 後、10% の確率で問答無用に不正解扱いで進める。
-    // "問題を見る時間すら与えない" の理不尽具合が肝。
-    // 10% で発動 → 発動しない時は「何もしない」の普通の問題になる (ギミック枠1つが無駄打ち)。
+    // --- G1: 即死 (間違えたら即ゲームオーバー) ---
+    // B21 と同じく不正解で強制ゲームオーバー。
+    // B21 との違い: Stage 10 専用で赤UI演出は同じだが gk-b21-mark は出さない。
+    // (Stage 10 まで来たプレイヤーへの「また来たか」という絶望を演出)
     const G1_RANDOM_DEATH = {
-        id: 'G1', name: 'ランダム即死', supports: 'both', introducedAt: 10, difficulty: 10,
+        id: 'G1', name: '即死(隠し)', supports: 'both', introducedAt: 10, difficulty: 10,
         apply(ctx) {
-            if (Math.random() >= 0.10) return () => {};
-            const delay = 200 + Math.random() * 500;
-            const t = setTimeout(() => {
-                window.dispatchEvent(new CustomEvent('gimmick:forceFail', {
-                    detail: { reason: 'gimmick-g1-death' }
-                }));
-            }, delay);
-            return () => clearTimeout(t);
+            const session = window.GameState?.session;
+            if (session) session.instantDeath = true;
+            const cleanupDeath = applyDeathMode(ctx.screen);
+            return () => {
+                if (session) session.instantDeath = false;
+                cleanupDeath();
+            };
         },
     };
 
@@ -1359,6 +1445,7 @@
                 return GARBLE[Math.floor(Math.random() * GARBLE.length)];
             }).join('');
             stem.textContent = out;
+            window.SE?.fire('gB17Glitch');  // AUDIO_INDEX: G4 → b17_glitch 流用
             return () => { stem.textContent = original; };
         },
     };
@@ -1376,19 +1463,22 @@
             const submit = q(ctx.screen, '#qSubmitBtn');
             if (!submit) return () => {};
             function interceptor(ev) {
-                // 選択肢が複数ないと意味がない
                 const choices = qa(ctx.screen, '.q-choice');
                 if (choices.length < 2) return;
                 const cur = qa(ctx.screen, '.q-choice.is-selected')[0];
                 if (!cur) return;
-                const others = Array.from(choices).filter(c => c !== cur);
-                const next = others[Math.floor(Math.random() * others.length)];
+                // 2×2グリッドの時計回り: 0→1→3→2→0
+                // DOM順は 左上(0) 右上(1) 左下(2) 右下(3)
+                // 時計回りの次: 0→1, 1→3, 3→2, 2→0
+                const CW = [1, 3, 0, 2]; // index i の時計回り次index
+                const curIdx = Array.from(choices).indexOf(cur);
+                const nextIdx = CW[curIdx] ?? ((curIdx + 1) % choices.length);
+                const next = choices[nextIdx];
                 if (!next) return;
                 cur.classList.remove('is-selected');
                 next.classList.add('is-selected');
-                // data-idx を dispatch し直す: 既存 click ハンドラで selectedIdx が更新される
                 next.click();
-                // 少し待って回答処理を続行
+                window.SE?.fire('gW15Warp');  // AUDIO_INDEX: G5 → w15_warp 流用
                 ev.stopPropagation();
                 ev.preventDefault();
                 setTimeout(() => {

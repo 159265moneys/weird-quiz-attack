@@ -112,7 +112,7 @@
     text-align: center;
 }
 
-/* TAP TO START: 下部に点滅プロンプト */
+/* TAP TO START: ボタン枠を外して文字だけ。シアン発光で浮かせる */
 .title-tap {
     margin-top: 420px;
     display: flex;
@@ -121,50 +121,73 @@
     /* タップは screen 全体で受けるので prompt は表示のみ */
 }
 .title-tap-text {
-    font-size: 56px;
-    letter-spacing: 10px;
-    color: var(--text-on-light);
-    padding: 18px 44px;
-    border: 3px solid var(--accent-cyan);
-    box-shadow: 6px 6px 0 var(--accent-cyan-dim);
-    background: rgba(255, 255, 255, 0.05);
-    animation: tapBlink 1.4s ease-in-out infinite;
+    position: relative;                 /* 蝶の基準点 */
+    font-size: 58px;
+    font-weight: 300;
+    letter-spacing: 14px;
+    padding-right: 2px;                 /* letter-spacing の右空きを詰める */
+    color: var(--accent-cyan);
+    text-shadow:
+        0 0 6px var(--accent-cyan),
+        0 0 22px rgba(0, 229, 255, 0.55),
+        0 0 44px rgba(0, 229, 255, 0.25);
+    animation: tapBlink 1.8s ease-in-out infinite;
+    /* 中身の span を同じベースラインで並べる */
+    display: inline-flex;
+    align-items: baseline;
 }
+.tl-tap-lead,
+.tl-tap-last {
+    display: inline-block;
+}
+.tl-tap-last {
+    position: relative;                 /* 蝶をこの T 上に留める */
+}
+
 @keyframes tapBlink {
     0%, 100% { opacity: 1; }
-    50%      { opacity: 0.4; }
+    50%      { opacity: 0.5; }
 }
 .title-tap.is-gone {
     opacity: 0;
     transform: translateY(12px);
-    transition: opacity 0.25s ease, transform 0.25s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* 蝶 (画面遷移役): 小さいまま、ふらふらと画面外へ消える。
-   タイトル崩壊 (tlCharShatter 1.2s) と時間を揃える。 */
+/* 蝶 (画面遷移役): "START" の最後の T の上に留まって微振動。
+   タップされたら右方向に羽ばたいて画面外へ。 */
 .title-butterfly {
     position: absolute;
     left: 50%;
-    bottom: 460px; /* ロゴ下付近、画面中央やや下 */
-    width: 160px;
+    bottom: 100%;                       /* T の真上 */
+    width: 110px;
     height: auto;
-    opacity: 0;
+    margin-left: -55px;                 /* 中央合わせ */
+    margin-bottom: -8px;                /* T にほんの少しめり込んで乗ってる感 */
     pointer-events: none;
-    filter: drop-shadow(0 0 10px var(--accent-cyan));
-    transform: translate(-50%, 0) rotate(0deg);
+    filter: drop-shadow(0 0 8px var(--accent-cyan));
+    transform-origin: 50% 70%;          /* 羽ばたきは下寄りを軸に */
     will-change: transform, opacity;
+    animation: titleBflyIdle 2.6s ease-in-out infinite;
 }
+/* 羽ばたきっぽい待機モーション: わずかな上下 + 左右ローテ */
+@keyframes titleBflyIdle {
+    0%, 100% { transform: translateY(0)    rotate(-5deg) scale(1); }
+    25%      { transform: translateY(-3px) rotate( 4deg) scale(1.02); }
+    50%      { transform: translateY(-6px) rotate(-3deg) scale(1); }
+    75%      { transform: translateY(-2px) rotate( 5deg) scale(1.02); }
+}
+
 .title-butterfly.is-flying {
-    animation: titleBflyFly 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: titleBflyFly 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-/* 同じ小ささのまま、フラフラ蛇行しながら画面外(上)へ */
+/* 右方向に飛び立って画面外へ。縦は少しゆらぎながら */
 @keyframes titleBflyFly {
-    0%   { transform: translate(-50%,   0)     rotate(0deg);  opacity: 0; }
-    15%  { transform: translate(-50%,  -20px)  rotate(-6deg); opacity: 1; }
-    35%  { transform: translate(calc(-50% - 70px),  -280px)  rotate(10deg); opacity: 1; }
-    55%  { transform: translate(calc(-50% + 60px),  -620px)  rotate(-8deg); opacity: 1; }
-    75%  { transform: translate(calc(-50% - 50px), -1080px)  rotate(6deg);  opacity: 0.85; }
-    100% { transform: translate(calc(-50% + 80px), -1700px)  rotate(-12deg); opacity: 0; }
+    0%   { transform: translate(0,      0)    rotate(-8deg)  scale(1);   opacity: 1; }
+    15%  { transform: translate(60px,  -60px) rotate(12deg)  scale(1.05); opacity: 1; }
+    45%  { transform: translate(380px, -40px) rotate(-6deg)  scale(1);    opacity: 1; }
+    75%  { transform: translate(820px, -80px) rotate(10deg)  scale(0.98); opacity: 0.85; }
+    100% { transform: translate(1300px, -30px) rotate(-14deg) scale(0.9);  opacity: 0; }
 }
 
 .title-footer {

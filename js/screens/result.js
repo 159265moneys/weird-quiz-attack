@@ -23,7 +23,8 @@
 
             // 上位 % / 現実換算ラベル (ランダムだが session 内で固定)
             const meta = window.Ranks?.META?.[result.rank] || {};
-            const percentileText = window.Ranks?.percentileText(result.rank) || '';
+            const stageNo = window.GameState.currentStage;
+            const percentileText = window.Ranks?.percentileText(result.rank, stageNo) || '';
             const seed = `${s.startAt}_${result.rank}`;
             const realLabel = window.Ranks?.pickLabel(result.rank, seed) || '';
             const isPositive = !!meta.positive;
@@ -78,6 +79,20 @@
             const target = result.score;
             const el = document.getElementById('resultScore');
 
+            // --- 開幕: RANK 発表 SE (ノイズバースト + 電源カッ) ---
+            // 世界観整合のため"ジャジャーン"は使わず、グリッチで発表。
+            // deathEnd 時は rank_reveal 抑制 (game_over 系が後続しないので無音)。
+            if (!s.deathEnd) {
+                setTimeout(() => {
+                    window.SE?.fire('rankRevealSnap');
+                }, 80);
+                setTimeout(() => {
+                    window.SE?.fire('rankReveal');
+                }, 140);
+            } else {
+                setTimeout(() => window.SE?.fire('gameOver'), 120);
+            }
+
             // G7 スコア煽り: スクランブル数字 → 本スコア着地
             // 通常時: 0 からの一方向カウントアップ (演出0.9秒、0.6秒遅らせてランク登場に合わせる)
             if (el) {
@@ -90,12 +105,15 @@
                             n++;
                             const r = Math.floor(Math.random() * target * 2);
                             el.textContent = r.toLocaleString();
+                            // tick 音: 4 回ごとに鳴らす (連打しすぎない)
+                            if (n % 4 === 1) window.SE?.fire('scoreCount');
                             if (n < TICKS) {
                                 setTimeout(step, DUR / TICKS);
                             } else {
                                 el.classList.remove('is-taunting');
                                 el.classList.add('is-settled');
                                 el.textContent = target.toLocaleString();
+                                window.SE?.fire('confirm');  // 着地音
                             }
                         };
                         step();
@@ -112,11 +130,14 @@
                             const eased = 1 - (1 - t) * (1 - t);
                             const v = Math.floor(target * eased);
                             el.textContent = v.toLocaleString();
+                            // 3 tick ごとに tick 音
+                            if (n % 3 === 1) window.SE?.fire('scoreCount');
                             if (n < TICKS) {
                                 setTimeout(step, DUR / TICKS);
                             } else {
                                 el.textContent = target.toLocaleString();
                                 el.classList.add('is-settled');
+                                window.SE?.fire('confirm');  // 着地音
                             }
                         };
                         step();
@@ -207,7 +228,7 @@
     function speakResultComment(result, deathEnd) {
         if (!window.Navigator) return;
         const rank = result.rank;
-        const pct = window.Ranks?.percentileText(rank) || '';
+        const pct = window.Ranks?.percentileText(rank, window.GameState.currentStage) || '';
         const meta = window.Ranks?.META?.[rank] || {};
         const label = meta.labels?.[0] || '';
 
@@ -325,15 +346,17 @@
         const el = document.querySelector('[data-share-toast]');
         if (!el) return;
         let msg = '';
+        let sfx = 'shareOk';
         switch (r.method) {
             case 'share-file':         msg = 'シェアしました'; break;
             case 'share-text+download':msg = 'テキストをシェア / 画像をダウンロード'; break;
             case 'download+clipboard': msg = '画像をダウンロード / テキストをコピー'; break;
             case 'download':           msg = '画像をダウンロード'; break;
-            case 'cancel':             msg = 'キャンセル'; break;
-            case 'error':              msg = 'シェア失敗'; break;
+            case 'cancel':             msg = 'キャンセル'; sfx = 'cancel'; break;
+            case 'error':              msg = 'シェア失敗'; sfx = 'wrong'; break;
             default:                   msg = r.method || '';
         }
+        window.SE?.fire(sfx);
         el.textContent = msg;
         el.classList.add('is-show');
         clearTimeout(showToast._t);

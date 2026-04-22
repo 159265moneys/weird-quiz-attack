@@ -83,23 +83,26 @@
     100% { transform: translateY(0)    scale(1);    }
 }
 
-/* 吹き出し: キャラの口元付近 (頭の右横) から出ているように配置 */
+/* 吹き出し (共通 = デフォルト = tutorial): キャラの PNG 真上に余白すこし空けて設置 */
+/* .nav-figure は bottom:-80 / height:1440 なので PNG 上辺 ≒ y=560。
+   吹き出しは bottom=1400 (=1920-520) 付近に底辺を置いて PNG 上端 +40px 余白。 */
 .nav-bubble {
     position: absolute;
-    left: 80px;
-    right: 80px;
-    top: 160px;
-    min-height: 320px;
-    padding: 44px 56px 76px;
+    left: 140px;
+    right: 140px;
+    top: auto;
+    bottom: 1400px;
+    min-height: 140px;
+    padding: 28px 40px 52px;
     background: var(--box-bg, #151519);
     border: 4px solid var(--line, #ffffff);
     box-shadow:
         10px 10px 0 var(--accent-cyan, #00e5ff),
         inset 0 0 0 1px rgba(255, 255, 255, 0.08);
     color: var(--text-on-dark, #ffffff);
-    font-size: 44px;
-    line-height: 1.65;
-    letter-spacing: 2px;
+    font-size: 36px;
+    line-height: 1.55;
+    letter-spacing: 1.5px;
     overflow-wrap: anywhere;
 }
 .nav-bubble.is-pop {

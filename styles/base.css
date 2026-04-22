@@ -270,7 +270,10 @@ body {
     min-height: 0;
     overflow-x: hidden;
     overflow-y: auto;
-    overscroll-behavior: contain;
+    /* none にする事で iOS Safari のラバーバンドも抑止
+       (contain だと末端でバウンドするので "枠ごと引っ張れる" ように見える) */
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
     /* body の touch-action:none を上書き。これがないとタッチスクロール完全不能 */
     touch-action: pan-y;
     /* スタッキングコンテキストを閉じて #stage 側の transform/pointer と
@@ -279,6 +282,7 @@ body {
     isolation: isolate;
     /* 画面外に抜けた要素がスクロール中にちらつかないよう明示的に clip */
     clip-path: inset(0);
+    -webkit-overflow-scrolling: auto;  /* touch だと慣性 + バウンドが戻る */
 }
 .scroll-area::-webkit-scrollbar { width: 8px; }
 .scroll-area::-webkit-scrollbar-track { background: var(--bg-panel); }

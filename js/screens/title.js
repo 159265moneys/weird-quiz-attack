@@ -38,12 +38,12 @@
                     <div class="title-sub">WEIRD QUIZ ATTACK</div>
 
                     <div class="title-tap" id="titleTap">
-                        <div class="title-tap-text">TAP TO START</div>
+                        <div class="title-tap-text">
+                            <span class="tl-tap-lead">TAP TO STAR</span><span class="tl-tap-last">T<img class="title-butterfly" id="titleBfly"
+                                         src="sprite/butterfly.png" alt=""
+                                         onerror="this.style.display='none'"></span>
+                        </div>
                     </div>
-
-                    <img class="title-butterfly" id="titleBfly"
-                         src="sprite/butterfly.png" alt=""
-                         onerror="this.style.display='none'">
 
                     <div class="title-footer">
                         <span>v${window.CONFIG.VERSION}</span>
@@ -67,6 +67,9 @@
                 if (ev.target && ev.target.closest && ev.target.closest('.title-footer')) return;
                 transitioning = true;
                 screen.classList.add('is-leaving');
+
+                // タイトル tap-to-start SE: PC電源断の "カッ" (b20_out で代用)
+                window.SE?.fire('tapStart');
 
                 // ロゴ文字を個別にバラバラに落とす
                 if (logo) {

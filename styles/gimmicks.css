@@ -435,11 +435,36 @@
     50%      { opacity: 0.85; transform: scale(1.15); }
 }
 
+/* ---------- B21/G1 即死モード: UI全体を赤化 + 周縁グロー ----------
+   シアン差し色をすべて赤に置換 (CSS変数の継承でタイマー・OKキー・
+   選択肢ハイライト・入力欄・回答ボタンが全部赤に変わる)。
+   ::after で画面周縁を赤い枠+グローで覆い、呼吸するように点滅。 */
+.question-screen.gk-instant-death {
+    --accent-cyan:     var(--accent-red);
+    --accent-cyan-dim: var(--accent-red-dim);
+}
+.question-screen.gk-instant-death::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 5px solid var(--accent-red);
+    box-shadow:
+        inset 0 0 100px rgba(255, 48, 48, 0.18),
+        inset 0 0 240px rgba(255, 48, 48, 0.08);
+    pointer-events: none;
+    z-index: 500;
+    animation: gkDeathBorder 0.95s ease-in-out infinite alternate;
+}
+@keyframes gkDeathBorder {
+    from { opacity: 0.35; }
+    to   { opacity: 1.00; }
+}
+
 /* ---------- W18 キー消失: 押した0.5s後にひっそり消える ----------
-   visibility と pointer-events を切って、見た目はスッと影だけ残すフェード。 */
+   見た目だけ消える。pointer-events は残すのでタップは有効。
+   「消えたのに押せる」という見た目と操作の乖離が狙い。 */
 .kb-key.gk-w18-gone {
     visibility: hidden;
-    pointer-events: none;
     opacity: 0;
     transition: opacity 0.25s ease;
 }

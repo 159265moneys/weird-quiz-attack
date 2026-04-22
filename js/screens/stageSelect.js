@@ -83,8 +83,7 @@
 
             return `
                 <div class="screen stage-select-screen">
-                    <div class="screen-header" style="margin-bottom:16px;">
-                        <button class="back-btn" data-action="back">◀ BACK</button>
+                    <div class="screen-header" style="margin-bottom:16px;justify-content:flex-end;">
                         <div class="text-mute" style="font-size:24px;letter-spacing:3px;">v${window.CONFIG.VERSION}</div>
                     </div>
                     <div class="stage-title">STAGE SELECT</div>
@@ -103,17 +102,40 @@
         },
 
         init() {
-            document.querySelector('[data-action="back"]')?.addEventListener('click', () => {
-                window.Router.show('title');
-            });
-
             document.querySelectorAll('.stage-card').forEach((card) => {
                 card.addEventListener('click', () => {
-                    if (card.classList.contains('is-locked')) return;
+                    if (card.classList.contains('is-locked')) {
+                        window.SE?.fire('cancel');
+                        return;
+                    }
+                    // ここで confirm を鳴らすと直後の stageStart (b20_in) と
+                    // 重なって画面遷移 fade で切れるだけなので menuCursor の1音に絞る
+                    window.SE?.fire('menuCursor');
                     const no = parseInt(card.dataset.stage, 10);
                     startStage(no);
                 });
             });
+
+            // --- スクロールのバウンス抑止 (iOS Safari 対策) ---
+            // .scroll-area の上端/下端でさらに指を動かすとブラウザの
+            // ラバーバンドが発動し、結果として #stage ごと上下に引っ張られて
+            // 見える。端に達したら touchmove を preventDefault して遮断する。
+            const sa = document.querySelector('.stage-select-screen .scroll-area');
+            if (sa) {
+                let startY = 0;
+                sa.addEventListener('touchstart', (e) => {
+                    startY = e.touches[0].clientY;
+                }, { passive: true });
+                sa.addEventListener('touchmove', (e) => {
+                    const y = e.touches[0].clientY;
+                    const dy = y - startY;
+                    const atTop = sa.scrollTop <= 0;
+                    const atBottom = sa.scrollTop + sa.clientHeight >= sa.scrollHeight - 1;
+                    if ((atTop && dy > 0) || (atBottom && dy < 0)) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+            }
 
             // 初回のみナビゲーターで簡易チュートリアル
             if (!window.Save.getFlag('tutorialDone')) {
@@ -166,6 +188,8 @@
                 'K:', window.GameState.session.kAssignment,
                 'b18Slot:', window.GameState.session.b18Slot);
             window.Router.show('question');
+            // ステージ開始 SE: PC起動フェードイン (b20_in 頭1.5s で代用)
+            window.SE?.fire('stageStart');
         } catch (e) {
             console.error(e);
             alert('問題の読み込みに失敗しました。HTTPサーバ経由で開いているか確認してください。');

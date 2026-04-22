@@ -81,6 +81,8 @@
         bubble.classList.add('is-pop');
         figure.classList.add('is-pop');
 
+        window.SE?.fire('naviPop');
+
         textEl.textContent = line;
         const isLast = idx >= state.lines.length - 1;
         // oneShot: 吹き出しタップで閉じる (最終行と同じ)
