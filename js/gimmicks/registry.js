@@ -212,6 +212,11 @@
 
     // --- Stage 2+ ---
 
+    // --- B02: 問題文1文字ずつ (早押しクイズ風) ---
+    // 狙い: 「全部出るの待って読んでたら時間を大幅に消費する」 圧をかけるギミック。
+    // プレイヤーは読めた部分から推測して早撃ちするか、全文字出揃うまで待って確実に
+    // 答えるかのトレードオフを強いられる。
+    // → 1文字あたり 360 〜 520ms (前: 90〜130ms) と大幅にスロー化。
     const B02_TYPEWRITER = {
         id: 'B02', name: '問題文1文字ずつ', supports: 'both', introducedAt: 3, difficulty: 4,
         conflicts: ['B07', 'B08', 'B17'],
@@ -223,20 +228,23 @@
             stem.textContent = '';
             let i = 0;
             let done = false;
-            const timer = setInterval(() => {
-                if (i >= chars.length) {
-                    clearInterval(timer);
-                    done = true;
-                    return;
-                }
-                stem.textContent = chars.slice(0, i + 1).join('');
-                // タイプライタ音: 2文字に1回 (連打しすぎない)
-                // keyTap は廃止されたので専用エントリ gB02Type に差し替え済
-                if (i % 2 === 0) window.SE?.fire('gB02Type');
-                i++;
-            }, 90 + Math.random() * 40);
+            // 次の文字までのディレイを毎回ランダム化 (人間のタイピング感)
+            function scheduleNext() {
+                return setTimeout(() => {
+                    if (i >= chars.length) {
+                        done = true;
+                        return;
+                    }
+                    stem.textContent = chars.slice(0, i + 1).join('');
+                    // タイプライタ音: 2文字に1回 (間隔が広がった分テンポ感を保つ)
+                    if (i % 2 === 0) window.SE?.fire('gB02Type');
+                    i++;
+                    timer = scheduleNext();
+                }, 360 + Math.random() * 160);
+            }
+            let timer = scheduleNext();
             return () => {
-                clearInterval(timer);
+                clearTimeout(timer);
                 if (stem.isConnected && !done) stem.textContent = original;
             };
         },
@@ -255,6 +263,10 @@
         },
     };
 
+    // --- B08: 問題文フェードアウト ---
+    // 狙い: 読んでいる間にどんどん薄くなる圧。「早く読まないと消える」 焦り演出。
+    // → 4.5s かけて消えていた前実装だと遅すぎて読み切れてしまうので、
+    //   開始 300ms + 2.0s フェードで一気に消える仕様に短縮。
     const B08_FADEOUT = {
         id: 'B08', name: 'フェードアウト', supports: 'both', introducedAt: 3, difficulty: 4,
         conflicts: ['B02', 'B12'],
@@ -263,10 +275,10 @@
             if (!stem) return () => {};
             const prevTransition = stem.style.transition;
             const prevOpacity = stem.style.opacity;
-            stem.style.transition = 'opacity 4.5s linear';
+            stem.style.transition = 'opacity 2.0s linear';
             const timer = setTimeout(() => {
                 if (stem.isConnected) stem.style.opacity = '0';
-            }, 1000);
+            }, 300);
             return () => {
                 clearTimeout(timer);
                 if (stem.isConnected) {
@@ -477,6 +489,10 @@
         },
     };
 
+    // --- B07: グリッチ (問題文が文字化けしたり戻ったりする) ---
+    // 狙い: 大半の時間は化けてて、たまに正気に戻る瞬間に読む必要がある緊張感。
+    // 回転頻度: 250〜450ms に1ティック (前: 600〜1300ms)。
+    // 化け確率: 70% (前: 30%) → 半分以上の時間は読めない状態に。
     const B07_GLITCH = {
         id: 'B07', name: 'グリッチ', supports: 'both', introducedAt: 2, difficulty: 3,
         conflicts: ['B12', 'B13'],
@@ -486,30 +502,34 @@
             const original = stem.textContent;
             const noise = ['█', '▓', '▒', '░', '◊', '#', '@', '&', '%', '?', '*', '/'];
 
-            // ホワイトノイズループ (小音量)
             window.SE?.fire('gGlitchLoop');
 
             let tickTimer = 0;
             let restoreTimer = 0;
+            let glitchSfxCooldown = 0; // SE 連打防止 (視覚は高速回転、音は抑制)
             const tick = () => {
-                // 20% の確率でグリッチ発動
-                if (Math.random() < 0.3) {
+                if (Math.random() < 0.7) {
                     let out = '';
                     for (const ch of original) {
-                        out += Math.random() < 0.35
+                        out += Math.random() < 0.45
                             ? noise[Math.floor(Math.random() * noise.length)]
                             : ch;
                     }
                     stem.textContent = out;
-                    window.SE?.fire('gB17Glitch');  // B07 → b17_glitch 流用
+                    // glitch SE は 3 ティックに 1 回程度 (でないと壊れたラジオ状態になる)
+                    if (--glitchSfxCooldown <= 0) {
+                        window.SE?.fire('gB17Glitch');
+                        glitchSfxCooldown = 3;
+                    }
                     clearTimeout(restoreTimer);
+                    // 復元も速め (120ms) にして「読める瞬間」がチラつく感じに
                     restoreTimer = setTimeout(() => {
                         if (stem.isConnected) stem.textContent = original;
-                    }, 180);
+                    }, 120);
                 }
-                tickTimer = setTimeout(tick, 600 + Math.random() * 700);
+                tickTimer = setTimeout(tick, 250 + Math.random() * 200);
             };
-            tickTimer = setTimeout(tick, 400);
+            tickTimer = setTimeout(tick, 200);
             return () => {
                 clearTimeout(tickTimer);
                 clearTimeout(restoreTimer);
