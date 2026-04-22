@@ -100,7 +100,9 @@ body {
     height: 1920px;
     /* 背景は .screen 側で指定する (画面タイプでライト/ダーク切替) */
     background: var(--canvas-dark);
-    transform: scale(var(--scale));
+    /* --shake-x / --shake-y は VHS グリッチ中に JS から上書きして画面揺れ。
+       通常は 0。scale は viewport 適合。 */
+    transform: translate(var(--shake-x, 0px), var(--shake-y, 0px)) scale(var(--scale));
     transform-origin: center center;
     overflow: hidden;
 }
