@@ -63,8 +63,7 @@
             // タイトル BGM を試行 (iOS autoplay ブロック時は初回タップで後追い)
             window.BGM?.play('title');
 
-            // 右上に ⚙ ボタン (設定パネル)
-            window.Settings?.mountTrigger(screen);
+            // 設定はホーム (ステ選択) のハンバーガーメニューに集約したのでタイトルには置かない
 
             let transitioning = false;
             const onTap = (ev) => {

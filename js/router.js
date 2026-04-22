@@ -11,6 +11,7 @@
 
     const Router = {
         current: null,
+        previous: null,          // 直前の screen 名 (遷移演出の分岐用)
         currentParams: null,
 
         show(name, params = {}) {
@@ -25,6 +26,7 @@
                 try { window.Screens[this.current].destroy(); }
                 catch (e) { console.error('destroy error:', e); }
             }
+            this.previous = this.current;
 
             // 画面遷移時に長尺 SE / ループ SE を全停止
             // (timeout 6s / key_ok 4.7s / glitch_loop 等の残留防止)

@@ -68,10 +68,8 @@
         `;
         document.body.appendChild(overlay);
 
-        // 背景タップで閉じる (パネル内は stopPropagation)
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) close();
-        });
+        // ※ パネル外タップで閉じる挙動は意図的に無効化。誤タップで
+        //   設定中の値が閉じた扱いになるのを防ぐため、閉じるには ✕ 必須。
         overlay.querySelector('#settingsClose').addEventListener('click', () => {
             window.SE?.fire?.('cancel');
             close();

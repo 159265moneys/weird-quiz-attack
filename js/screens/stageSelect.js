@@ -104,11 +104,16 @@
         init() {
             // stageSelect は title と BGM 共有 (title&main.mp3)。
             // 同名 play は idempotent なので、title から遷移してきた場合は継続再生。
-            window.BGM?.play('title');
+            // question / result からホームへ戻る時は "完全フェードアウト → 頭から再生"
+            // にして切替のムラを消す (sequential モード)。
+            const prev = window.Router?.previous;
+            const seq = (prev === 'question' || prev === 'result');
+            window.BGM?.play('title', { sequential: seq });
 
-            // 右上に ⚙ ボタン (設定パネル)
+            // 右上に ≡ ボタン (ハンバーガーメニュー)。
+            // ステ選択 = ホームなので、設定/スコア/ABOUT/リセット を束ねる。
             const stageSelectRoot = document.querySelector('.stage-select-screen') || document.getElementById('app');
-            window.Settings?.mountTrigger(stageSelectRoot);
+            window.HomeMenu?.mountTrigger(stageSelectRoot);
 
             document.querySelectorAll('.stage-card').forEach((card) => {
                 card.addEventListener('click', () => {

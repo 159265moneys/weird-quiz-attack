@@ -1,0 +1,356 @@
+/* ============================================================
+   home-menu.css — ホーム (ステージ選択) 画面のハンバーガーメニュー
+   ------------------------------------------------------------
+   settings.css と同系統のモーダルスタイルで統一。
+   body 直下 position:fixed でマウントするので、サイズは viewport px 基準。
+   ============================================================ */
+
+/* ---- 右上トリガー (ハンバーガー) ----
+   .screen に appendChild されるので canvas 座標 (px) を使う。
+   (settings-trigger と同じ位置/大きさ感にして、差し替え感を出す) */
+.hm-trigger {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    width: 90px;
+    height: 90px;
+    border-radius: 20px;
+    border: 2px solid rgba(255,255,255,0.22);
+    background: rgba(0,0,0,0.58);
+    color: #d8e6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 90;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 6px 28px rgba(0,0,0,0.45);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.hm-trigger svg {
+    width: 44px;
+    height: 44px;
+    display: block;
+    filter: drop-shadow(0 0 6px rgba(0,255,240,0.35));
+}
+.hm-trigger:hover,
+.hm-trigger:active {
+    transform: scale(0.94);
+    border-color: var(--accent-cyan, #00fff0);
+    box-shadow: 0 6px 28px rgba(0,255,240,0.28);
+}
+
+/* ---- モーダル オーバーレイ (viewport px) ---- */
+.hm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.72);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9000;
+    padding: 24px 16px;
+    overflow-y: auto;
+}
+.hm-overlay.is-open {
+    display: flex;
+    animation: hmFadeIn 0.18s ease both;
+}
+@keyframes hmFadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+}
+
+/* ---- パネル ---- */
+.hm-panel {
+    width: min(480px, 92vw);
+    background: linear-gradient(180deg, #0c1018 0%, #0a0c14 100%);
+    border: 2px solid rgba(0,255,240,0.42);
+    border-radius: 20px;
+    padding: 26px 24px 20px;
+    color: #e6f1ff;
+    box-shadow:
+        0 0 0 3px rgba(0,0,0,0.4),
+        0 0 40px rgba(0,255,240,0.22),
+        inset 0 0 24px rgba(0,255,240,0.06);
+    position: relative;
+    animation: hmPopIn 0.22s cubic-bezier(0.2, 1.2, 0.3, 1) both;
+    /* 画面縦サイズを超えたらパネル内スクロール */
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.hm-panel-wide {
+    width: min(560px, 94vw);
+}
+@keyframes hmPopIn {
+    from { transform: translateY(14px) scale(0.96); opacity: 0; }
+    to   { transform: translateY(0)    scale(1);    opacity: 1; }
+}
+
+/* ---- ヘッダ (タイトル + 閉じる) ---- */
+.hm-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.hm-title {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(22px, 5vw, 30px);
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--accent-cyan, #00fff0);
+    text-shadow: 0 0 10px rgba(0,255,240,0.55);
+}
+.hm-close {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.24);
+    background: rgba(255,255,255,0.04);
+    color: #e6f1ff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+.hm-close svg { width: 24px; height: 24px; }
+.hm-close:hover,
+.hm-close:active {
+    border-color: var(--accent-red, #ff2e5e);
+    color: var(--accent-red, #ff2e5e);
+    transform: scale(0.92);
+}
+
+/* ---- メニューリスト ---- */
+.hm-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.hm-item {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 42px 1fr 20px;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    color: #e6f1ff;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: left;
+    transition: background 0.15s, border-color 0.15s, transform 0.12s;
+}
+.hm-item:hover,
+.hm-item:active {
+    background: rgba(0,255,240,0.08);
+    border-color: rgba(0,255,240,0.45);
+    transform: translateX(2px);
+}
+.hm-ic {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-cyan, #00fff0);
+}
+.hm-ic svg { width: 28px; height: 28px; display: block; }
+.hm-lbl {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+.hm-lbl-main {
+    font-size: clamp(16px, 3.5vw, 20px);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+}
+.hm-lbl-sub {
+    font-size: clamp(11px, 2.4vw, 13px);
+    letter-spacing: 0.06em;
+    color: rgba(230,241,255,0.6);
+}
+.hm-chv {
+    color: rgba(230,241,255,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hm-chv svg { width: 18px; height: 18px; }
+
+.hm-foot {
+    margin-top: 14px;
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(11px, 2vw, 13px);
+    letter-spacing: 0.15em;
+    color: rgba(230,241,255,0.35);
+}
+
+/* ---- SCORES 専用 ---- */
+.hm-sc-summary {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding: 12px 8px;
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed rgba(255,255,255,0.15);
+    border-radius: 10px;
+    font-family: 'Courier New', Courier, monospace;
+}
+.hm-sc-summary > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+.hm-sc-sum-lbl {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: rgba(230,241,255,0.55);
+}
+.hm-sc-sum-val {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    color: var(--accent-cyan, #00fff0);
+    text-shadow: 0 0 8px rgba(0,255,240,0.4);
+}
+
+.hm-sc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.hm-sc-row {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    font-family: 'Courier New', Courier, monospace;
+}
+.hm-sc-no {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    color: rgba(230,241,255,0.55);
+    text-align: center;
+}
+.hm-sc-name {
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    color: #e6f1ff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.hm-sc-body {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-variant-numeric: tabular-nums;
+}
+.hm-sc-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 28px;
+    padding: 0 6px;
+    border-radius: 6px;
+    border: 1.5px solid var(--rank-accent, rgba(255,255,255,0.3));
+    color: var(--rank-accent, #fff);
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-shadow: 0 0 6px var(--rank-accent, transparent);
+}
+.hm-sc-score {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    min-width: 80px;
+    text-align: right;
+}
+.hm-sc-plays {
+    font-size: 13px;
+    color: rgba(230,241,255,0.5);
+    min-width: 40px;
+    text-align: right;
+}
+.hm-sc-lock {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: rgba(230,241,255,0.35);
+    padding: 4px 10px;
+    border: 1px dashed rgba(255,255,255,0.18);
+    border-radius: 6px;
+}
+.hm-sc-none {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: rgba(230,241,255,0.35);
+}
+
+/* ---- ABOUT 専用 ---- */
+.hm-about {
+    text-align: center;
+    padding: 10px 4px 6px;
+    font-family: 'Courier New', Courier, monospace;
+}
+.hm-about-logo {
+    font-size: clamp(28px, 6vw, 40px);
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    color: #fff;
+    text-shadow:
+        3px 3px 0 rgba(0,255,240,0.5),
+        -3px -3px 0 rgba(255,46,94,0.5);
+    margin-bottom: 6px;
+}
+.hm-about-sub {
+    font-size: clamp(12px, 2.8vw, 14px);
+    letter-spacing: 0.3em;
+    color: rgba(230,241,255,0.55);
+    margin-bottom: 14px;
+}
+.hm-about-ver {
+    display: inline-block;
+    padding: 4px 12px;
+    border: 1.5px solid var(--accent-cyan, #00fff0);
+    border-radius: 6px;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    color: var(--accent-cyan, #00fff0);
+    margin-bottom: 18px;
+}
+.hm-about-desc {
+    font-size: clamp(12px, 2.8vw, 14px);
+    letter-spacing: 0.05em;
+    line-height: 1.7;
+    color: rgba(230,241,255,0.75);
+    margin: 0 0 16px;
+}
+.hm-about-credit {
+    font-size: clamp(10px, 2.2vw, 12px);
+    letter-spacing: 0.1em;
+    color: rgba(230,241,255,0.45);
+    line-height: 1.6;
+}
