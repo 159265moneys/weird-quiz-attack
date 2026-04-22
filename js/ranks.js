@@ -17,10 +17,32 @@
    ============================================================ */
 
 (function () {
+    // ------------------------------------------------------------
+    // ステージ別 上位/下位% テーブル (stage 1-9 は通し集計、10 は独立)
+    // 考え方:
+    //   - 正ランク(SS/S/A/B) は "上位 X%" → X 小ほどレア (難ステージほど小)
+    //   - 負ランク(C/D/E/F) は "下位 X%" → X 小ほど恥ずかしい (易ステージほど小)
+    //   - Stage 1 の SS は約40% (だれでも取れる) / F は 0.02% (ありえない)
+    //   - Stage 9 の SS は 0.01% (人類到達限界) / F は 80% (みんな負ける)
+    //   - Stage 10 は独立集計・更にレア
+    // ------------------------------------------------------------
+    const STAGE_RANK_PCT = {
+        1:  { SS: 40,    S: 55,   A: 70,   B: 85,   C: 2,   D: 0.5,  E: 0.1,  F: 0.02 },
+        2:  { SS: 28,    S: 42,   A: 58,   B: 75,   C: 4,   D: 1,    E: 0.3,  F: 0.05 },
+        3:  { SS: 18,    S: 30,   A: 45,   B: 62,   C: 8,   D: 2,    E: 0.5,  F: 0.1  },
+        4:  { SS: 10,    S: 20,   A: 35,   B: 50,   C: 14,  D: 5,    E: 1.5,  F: 0.3  },
+        5:  { SS: 5,     S: 12,   A: 25,   B: 40,   C: 22,  D: 10,   E: 3,    F: 0.8  },
+        6:  { SS: 2,     S: 6,    A: 15,   B: 30,   C: 28,  D: 18,   E: 7,    F: 2    },
+        7:  { SS: 0.5,   S: 3,    A: 10,   B: 22,   C: 32,  D: 28,   E: 15,   F: 5    },
+        8:  { SS: 0.1,   S: 1.5,  A: 5,    B: 15,   C: 35,  D: 38,   E: 25,   F: 10   },
+        9:  { SS: 0.01,  S: 1,    A: 3,    B: 10,   C: 30,  D: 50,   E: 70,   F: 80   },
+        10: { SS: 0.001, S: 0.05, A: 0.3,  B: 2,    C: 25,  D: 50,   E: 75,   F: 85   },
+    };
+
     // ランク → メタ
     const RANK_META = {
         SS: {
-            percentile: 0.01,    // 上位 0.01%
+            percentile: 0.01,    // fallback (stage 不明時)
             positive: true,
             labels: [
                 '宇宙飛行士選抜通過レベル',
@@ -131,16 +153,27 @@
         return h;
     }
 
-    function percentileText(rank) {
+    // ステージ補正付き %値を返す。stageNo 未指定時はメタのデフォルトにフォールバック。
+    function resolvePercentile(rank, stageNo) {
+        const table = STAGE_RANK_PCT[stageNo];
+        if (table && table[rank] != null) return table[rank];
         const meta = RANK_META[rank] || RANK_META.F;
-        if (meta.positive) {
-            // 小数を保ったまま (0.01 / 1 / 3 / 10)
-            const p = meta.percentile;
-            const s = p < 1 ? p.toFixed(2) : String(p);
-            return `上位 ${s}%`;
-        }
-        // 下位側: 下位 X% (≒ 100 - percentile と見るのは複雑なのでそのまま表記)
-        return `下位 ${meta.percentile}%`;
+        return meta.percentile;
+    }
+
+    function formatPct(p) {
+        if (p >= 1) return String(Math.round(p * 10) / 10).replace(/\.0$/, '');
+        // 1未満: 有効桁を確保 (0.01 / 0.001 / 0.05 等)
+        if (p >= 0.1)  return p.toFixed(1);
+        if (p >= 0.01) return p.toFixed(2);
+        return p.toFixed(3);
+    }
+
+    function percentileText(rank, stageNo) {
+        const meta = RANK_META[rank] || RANK_META.F;
+        const p = resolvePercentile(rank, stageNo);
+        if (meta.positive) return `上位 ${formatPct(p)}%`;
+        return `下位 ${formatPct(p)}%`;
     }
 
     function accentColorVar(rank) {
@@ -156,8 +189,10 @@
 
     window.Ranks = {
         META: RANK_META,
+        STAGE_RANK_PCT,
         pickLabel,
         percentileText,
+        resolvePercentile,
         accentColorVar,
     };
 })();

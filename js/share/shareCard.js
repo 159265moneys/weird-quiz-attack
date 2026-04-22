@@ -161,7 +161,7 @@
         // 5. 上位% / 現実換算ラベル (仕様書 8-4)
         //    ランク文字の直下に 1 行、その下に 1 行
         const meta = window.Ranks?.META?.[result.rank];
-        const pctText = window.Ranks?.percentileText(result.rank) || '';
+        const pctText = window.Ranks?.percentileText(result.rank, stageInfo?.no) || '';
         const realLabel = window.Ranks?.pickLabel(result.rank, extras.labelSeed) || '';
         const pctColor = (meta && meta.positive) ? rc : COLOR.accentRed;
 
@@ -257,7 +257,7 @@
     function buildText(result, stageInfo, extras = {}) {
         const rankLine = `Rank ${result.rank}  Score ${result.score.toLocaleString()}`;
         const stageLine = `Stage ${stageInfo.no} 「${stageInfo.name || ''}」`;
-        const pct = window.Ranks?.percentileText(result.rank) || '';
+        const pct = window.Ranks?.percentileText(result.rank, stageInfo?.no) || '';
         const label = window.Ranks?.pickLabel(result.rank, extras.labelSeed) || '';
         const pctLine = pct ? `${pct}${label ? `  ≒ ${label}` : ''}` : '';
         const lines = [rankLine, stageLine, `正解 ${result.correct}/${result.total}`];
