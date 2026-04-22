@@ -1,11 +1,17 @@
 /* ============================================================
-   title.js — タイトル画面
+   title.js — タイトル画面 (tap to start 方式)
+   ------------------------------------------------------------
+   タイトル文字をタップ → ロゴがバラバラに崩れ落ちる
+   蝶が画面下から羽ばたいて上空へ → stageSelect に遷移。
+   世界観 (VHS + 蝶 + モノクロ+差し色) を維持したシンプル構成。
    ============================================================ */
 
 (function () {
+    const LOGO_TEXT = '変なクイズ';
+
     const Screen = {
         render() {
-            // 浮遊文字 (3SEC風): 英数字・記号をランダムに散らす
+            // 背景に散らす浮遊文字 (英数字+記号)
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@!?*+=/\\'.split('');
             const floaters = Array.from({ length: 28 }, () => {
                 const c = chars[Math.floor(Math.random() * chars.length)];
@@ -17,28 +23,27 @@
                 return `<span style="top:${top}%;left:${left}%;font-size:${size}px;opacity:${op};animation-delay:${delay}s;">${c}</span>`;
             }).join('');
 
+            // ロゴ文字を 1 文字ずつ span で包む (崩壊時に個別に落下させるため)
+            const logoChars = Array.from(LOGO_TEXT)
+                .map((ch, i) => `<span class="tl-char" style="--idx:${i};">${ch}</span>`)
+                .join('');
+
             return `
-                <div class="screen title-screen">
+                <div class="screen title-screen" id="titleScreen">
                     <div class="title-floaters">${floaters}</div>
-                    <div class="title-logo">変なクイズ</div>
+
+                    <div class="title-logo-wrap">
+                        <div class="title-logo" id="titleLogo">${logoChars}</div>
+                    </div>
                     <div class="title-sub">WEIRD QUIZ ATTACK</div>
 
-                    <div class="title-menu">
-                        <button class="menu-item" data-action="start">
-                            <img src="sprite/butterfly.png" class="butterfly" alt="">
-                            <span>START</span>
-                        </button>
-                        <button class="menu-item" data-action="records">
-                            <img src="sprite/butterfly.png" class="butterfly" alt="">
-                            <span>RECORDS</span>
-                        </button>
-                        <button class="menu-item" data-action="settings">
-                            <img src="sprite/butterfly.png" class="butterfly" alt="">
-                            <span>SETTINGS</span>
-                        </button>
+                    <div class="title-tap" id="titleTap">
+                        <div class="title-tap-text">TAP TO START</div>
                     </div>
 
-                    <img class="title-navigator" src="sprite/girl/basic.png" alt="" onerror="this.style.display='none'">
+                    <img class="title-butterfly" id="titleBfly"
+                         src="sprite/butterfly.png" alt=""
+                         onerror="this.style.display='none'">
 
                     <div class="title-footer">
                         <span>v${window.CONFIG.VERSION}</span>
@@ -49,26 +54,45 @@
         },
 
         init() {
-            const items = document.querySelectorAll('.menu-item');
-            // デフォルトでSTARTをハイライト
-            items[0]?.classList.add('is-active');
+            const screen = document.getElementById('titleScreen');
+            const logo   = document.getElementById('titleLogo');
+            const tap    = document.getElementById('titleTap');
+            const bfly   = document.getElementById('titleBfly');
+            if (!screen) return;
 
-            items.forEach((el) => {
-                el.addEventListener('click', () => {
-                    const action = el.dataset.action;
-                    if (action === 'start') {
-                        window.Router.show('stageSelect');
-                    } else if (action === 'records') {
-                        alert('RECORDS画面は Phase 6 で実装予定です。');
-                    } else if (action === 'settings') {
-                        alert('SETTINGS画面は Phase 7 で実装予定です。');
-                    }
-                });
-                el.addEventListener('pointerenter', () => {
-                    items.forEach(i => i.classList.remove('is-active'));
-                    el.classList.add('is-active');
-                });
-            });
+            let transitioning = false;
+            const onTap = (ev) => {
+                if (transitioning) return;
+                transitioning = true;
+                screen.classList.add('is-leaving');
+
+                // ロゴ文字を個別にバラバラに落とす
+                if (logo) {
+                    logo.querySelectorAll('.tl-char').forEach(el => {
+                        const tx = (Math.random() - 0.5) * 280;
+                        const ty = 600 + Math.random() * 400;
+                        const rz = (Math.random() - 0.5) * 120;
+                        el.style.setProperty('--tx', `${tx}px`);
+                        el.style.setProperty('--ty', `${ty}px`);
+                        el.style.setProperty('--rz', `${rz}deg`);
+                        el.classList.add('is-shatter');
+                    });
+                }
+
+                // TAP TO START を即フェード
+                if (tap) tap.classList.add('is-gone');
+
+                // 蝶を飛ばす: 下から湧いて中央→上空へ
+                if (bfly) bfly.classList.add('is-flying');
+
+                // 1.5 秒後に stageSelect へ
+                setTimeout(() => {
+                    window.Router.show('stageSelect');
+                }, 1500);
+            };
+
+            // 全面タップで発火 (ボタンより広い当たり判定)
+            screen.addEventListener('pointerdown', onTap, { once: false });
         },
     };
 

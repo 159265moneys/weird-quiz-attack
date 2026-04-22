@@ -39,10 +39,26 @@
 .title-screen > * { position: relative; z-index: 1; }
 .title-screen .title-floaters { z-index: 0; }
 
-/* ロゴ: 黒 + 差し色のクロマティックシャドウ (3SEC流) */
+/* ========== TITLE (tap to start 方式) ==========
+   全面タップ起点。タップされるとロゴが文字単位でバラバラに崩れ、
+   蝶が下から羽ばたいて上空へ抜けた瞬間に stageSelect へ遷移。 */
+
+.title-screen {
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.title-logo-wrap {
+    margin-top: 320px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    /* 崩壊アニメで子要素が下まで飛ぶので、親は overflow visible */
+}
+
+/* ロゴ本体: 黒 + 差し色のクロマティックシャドウ (3SEC流) */
 .title-logo {
-    margin-top: 240px;
-    font-size: 140px;
+    font-size: 160px;
     font-weight: bold;
     letter-spacing: 12px;
     text-align: center;
@@ -51,7 +67,35 @@
         8px 8px 0 var(--accent-red),
         -6px -6px 0 var(--accent-cyan);
     animation: logo-shake 6s infinite;
+    display: inline-flex;
+    /* 1 文字ずつ崩れる時のために letter を block として扱う */
 }
+.tl-char {
+    display: inline-block;
+    transform: translate(0, 0) rotate(0deg);
+    /* 浮遊感: idx をずらしながら上下 2-3px ゆらぐ */
+    animation: tlCharFloat 3.8s ease-in-out infinite;
+    animation-delay: calc(var(--idx, 0) * 0.14s);
+}
+@keyframes tlCharFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+}
+
+/* タップ後: 文字が崩れ落ちる */
+.tl-char.is-shatter {
+    animation: tlCharShatter 1.2s cubic-bezier(0.32, 0, 0.67, 0) forwards;
+}
+@keyframes tlCharShatter {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; filter: blur(0); }
+    40%  { opacity: 1; }
+    100% {
+        transform: translate(var(--tx, 0), var(--ty, 600px)) rotate(var(--rz, 60deg));
+        opacity: 0;
+        filter: blur(4px);
+    }
+}
+
 @keyframes logo-shake {
     0%, 92%, 100% { transform: translate(0, 0); }
     93% { transform: translate(-6px, 2px); }
@@ -61,48 +105,62 @@
 }
 
 .title-sub {
-    margin-top: 32px;
-    font-size: 36px;
+    margin-top: 40px;
+    font-size: 40px;
     color: var(--text-mute);
-    letter-spacing: 6px;
+    letter-spacing: 8px;
     text-align: center;
 }
 
-.title-menu {
+/* TAP TO START: 下部に点滅プロンプト */
+.title-tap {
+    margin-top: 420px;
     display: flex;
-    flex-direction: column;
-    gap: 32px;
-    margin-top: 120px;
+    justify-content: center;
+    pointer-events: none;
+    /* タップは screen 全体で受けるので prompt は表示のみ */
+}
+.title-tap-text {
+    font-size: 56px;
+    letter-spacing: 10px;
+    color: var(--text-on-light);
+    padding: 18px 44px;
+    border: 3px solid var(--accent-cyan);
+    box-shadow: 6px 6px 0 var(--accent-cyan-dim);
+    background: rgba(255, 255, 255, 0.05);
+    animation: tapBlink 1.4s ease-in-out infinite;
+}
+@keyframes tapBlink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+}
+.title-tap.is-gone {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-.menu-item {
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    /* タッチターゲット確保: scale 0.333 × 140px = 46.6px 実px */
-    min-height: 140px;
-    padding: 36px 40px;
-    min-width: 520px;
-    font-size: 56px;
-    color: var(--text-on-light);
-    background: transparent;
-    border: none;
-    font-family: inherit;
-    cursor: pointer;
-    letter-spacing: 4px;
-}
-.menu-item .butterfly {
-    width: 48px;
-    height: 48px;
+/* 蝶 (画面遷移役): 通常時は非表示 → タップで下から舞い上がる */
+.title-butterfly {
+    position: absolute;
+    left: 50%;
+    bottom: -200px;
+    width: 360px;
+    height: auto;
     opacity: 0;
-    transition: opacity 0.12s ease;
+    pointer-events: none;
+    filter: drop-shadow(0 0 20px var(--accent-cyan));
+    transform: translateX(-50%) rotate(0deg);
+    will-change: transform, opacity;
 }
-.menu-item.is-active .butterfly,
-.menu-item:hover .butterfly {
-    opacity: 1;
+.title-butterfly.is-flying {
+    animation: titleBflyFly 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-.menu-item:active {
-    transform: translate(2px, 2px);
+@keyframes titleBflyFly {
+    0%   { transform: translateX(-50%) translateY(0)      rotate(0deg)  scale(0.4); opacity: 0; }
+    15%  { opacity: 1; }
+    45%  { transform: translateX(-30%) translateY(-900px) rotate(-18deg) scale(1.0); }
+    100% { transform: translateX(40%)  translateY(-2100px) rotate(28deg) scale(1.6); opacity: 0; }
 }
 
 .title-footer {
@@ -116,14 +174,12 @@
     opacity: 0.7;
 }
 
-.title-navigator {
-    position: absolute;
-    right: 40px;
-    bottom: 120px;
-    width: 360px;
-    height: auto;
-    opacity: 0.9;
-    pointer-events: none;
+/* 遷移中は背景の浮遊文字もフェードアウト */
+.title-screen.is-leaving .title-floaters,
+.title-screen.is-leaving .title-sub,
+.title-screen.is-leaving .title-footer {
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
 /* ========== STAGE SELECT ========== */
