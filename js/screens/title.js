@@ -39,9 +39,9 @@
 
                     <div class="title-tap" id="titleTap">
                         <div class="title-tap-text">
-                            <span class="tl-tap-first">T<img class="title-butterfly" id="titleBfly"
+                            <span class="tl-tap-char tl-tap-first" data-char="T"><img class="title-butterfly" id="titleBfly"
                                          src="sprite/butterfly.png" alt=""
-                                         onerror="this.style.display='none'"></span><span class="tl-tap-rest">AP TO START</span>
+                                         onerror="this.style.display='none'">T</span><span class="tl-tap-char" data-char="A">A</span><span class="tl-tap-char" data-char="P">P</span><span class="tl-tap-char tl-tap-space"> </span><span class="tl-tap-char" data-char="T">T</span><span class="tl-tap-char" data-char="O">O</span><span class="tl-tap-space"> </span><span class="tl-tap-char" data-char="S">S</span><span class="tl-tap-char" data-char="T">T</span><span class="tl-tap-char" data-char="A">A</span><span class="tl-tap-char" data-char="R">R</span><span class="tl-tap-char" data-char="T">T</span>
                         </div>
                     </div>
 
@@ -106,8 +106,21 @@
                     screen.appendChild(bfly);
                 }
 
-                // TAP TO START を即フェード
-                if (tap) tap.classList.add('is-gone');
+                // TAP TO START を文字ごとにバラバラ崩壊
+                if (tap) {
+                    tap.querySelectorAll('.tl-tap-char').forEach((el, i) => {
+                        const tx = (Math.random() - 0.5) * 320;
+                        const ty = -(200 + Math.random() * 500);  // 上方向へ散る
+                        const rz = (Math.random() - 0.5) * 160;
+                        el.style.setProperty('--tx', `${tx}px`);
+                        el.style.setProperty('--ty', `${ty}px`);
+                        el.style.setProperty('--rz', `${rz}deg`);
+                        el.style.animationDelay = `${i * 0.04}s`;
+                        el.classList.add('is-shatter');
+                    });
+                    // アニメ完了後に非表示
+                    setTimeout(() => { tap.style.visibility = 'hidden'; }, 1200);
+                }
 
                 // 蝶を右方向へ羽ばたかせて画面外へ (reparent 後に次フレームで発火)
                 requestAnimationFrame(() => requestAnimationFrame(() => {
