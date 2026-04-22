@@ -49,6 +49,16 @@
         const stageCfg = window.CONFIG.STAGES.find(s => s.no === stageNo);
         const diff = stageCfg?.diff || [1 / 3, 1 / 3, 1 / 3];
 
+        // level ±1 でプールをハードフィルタ。
+        // level=1 → diff 1-2、level=2 → diff 1-3、level=3 → diff 2-3。
+        const level   = stageCfg?.level ?? 2;
+        const minDiff = Math.max(1, level - 1);
+        const maxDiff = Math.min(3, level + 1);
+        const eligible = all.filter(q => {
+            const d = q.difficulty || 1;
+            return d >= minDiff && d <= maxDiff;
+        });
+
         // 各難度で何問取るか (端数丸めで合計が count になるよう調整)
         const c1 = Math.round(count * diff[0]);
         const c2 = Math.round(count * diff[1]);
@@ -57,7 +67,7 @@
 
         // 難度別プール (シャッフル済み)
         const pools = { 1: [], 2: [], 3: [] };
-        all.forEach(q => {
+        eligible.forEach(q => {
             const d = q.difficulty || 1;
             (pools[d] || pools[1]).push(q);
         });

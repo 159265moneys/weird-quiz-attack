@@ -20,17 +20,21 @@ window.CONFIG = Object.freeze({
     //   Stage 9   : K=2×20          (全問2重)
     //   Stage 10  : K=2×13 + K=3×7  (約1/3で3重)
     // 8/9/10 の差別化は K分布 + ギミックプールで付ける。
+    // level: 問題プール帯。各ステージは difficulty ∈ [level-1, level+1] の問題のみ引く。
+    //   level=1 → L1+L2 (序盤専用問題を保護)
+    //   level=2 → L1+L2+L3 (全プール)
+    //   level=3 → L2+L3 (終盤専用問題を保護)
     STAGES: [
-        { no: 1,  name: 'TUTORIAL ZONE',     stress: 'E', slots: 4,  kDist: [[1, 4]],            diff: [0.80, 0.20, 0.00] },
-        { no: 2,  name: 'WARMUP',            stress: 'E', slots: 5,  kDist: [[1, 5]],            diff: [0.70, 0.25, 0.05] },
-        { no: 3,  name: 'GENTLE GLITCH',     stress: 'E', slots: 7,  kDist: [[1, 7]],            diff: [0.60, 0.30, 0.10] },
-        { no: 4,  name: 'SOFT CHAOS',        stress: 'E', slots: 10, kDist: [[1, 10]],           diff: [0.50, 0.35, 0.15] },
-        { no: 5,  name: 'NOISE FLOOR',       stress: 'E', slots: 12, kDist: [[1, 12]],           diff: [0.40, 0.40, 0.20] },
-        { no: 6,  name: 'FRAGMENTED',        stress: 'M', slots: 15, kDist: [[1, 15]],           diff: [0.30, 0.45, 0.25] },
-        { no: 7,  name: 'DISTORTED',         stress: 'M', slots: 19, kDist: [[1, 19]],           diff: [0.25, 0.45, 0.30] },
-        { no: 8,  name: 'COLLAPSE',          stress: 'X', slots: 20, kDist: [[1, 13], [2, 7]],   diff: [0.20, 0.40, 0.40] },
-        { no: 9,  name: 'HELL',              stress: 'X', slots: 20, kDist: [[2, 20]],           diff: [0.15, 0.35, 0.50] },
-        { no: 10, name: 'ABYSS',             stress: 'X', slots: 20, kDist: [[2, 13], [3, 7]],   diff: [0.10, 0.30, 0.60] },
+        { no: 1,  name: 'TUTORIAL ZONE',     stress: 'E', slots: 4,  kDist: [[1, 4]],            diff: [0.80, 0.20, 0.00], level: 1 },
+        { no: 2,  name: 'WARMUP',            stress: 'E', slots: 5,  kDist: [[1, 5]],            diff: [0.70, 0.25, 0.05], level: 1 },
+        { no: 3,  name: 'GENTLE GLITCH',     stress: 'E', slots: 7,  kDist: [[1, 7]],            diff: [0.60, 0.30, 0.10], level: 1 },
+        { no: 4,  name: 'SOFT CHAOS',        stress: 'E', slots: 10, kDist: [[1, 10]],           diff: [0.50, 0.35, 0.15], level: 2 },
+        { no: 5,  name: 'NOISE FLOOR',       stress: 'E', slots: 12, kDist: [[1, 12]],           diff: [0.40, 0.40, 0.20], level: 2 },
+        { no: 6,  name: 'FRAGMENTED',        stress: 'M', slots: 15, kDist: [[1, 15]],           diff: [0.30, 0.45, 0.25], level: 2 },
+        { no: 7,  name: 'DISTORTED',         stress: 'M', slots: 19, kDist: [[1, 19]],           diff: [0.25, 0.45, 0.30], level: 2 },
+        { no: 8,  name: 'COLLAPSE',          stress: 'X', slots: 20, kDist: [[1, 13], [2, 7]],   diff: [0.20, 0.40, 0.40], level: 3 },
+        { no: 9,  name: 'HELL',              stress: 'X', slots: 20, kDist: [[2, 20]],           diff: [0.15, 0.35, 0.50], level: 3 },
+        { no: 10, name: 'ABYSS',             stress: 'X', slots: 20, kDist: [[2, 13], [3, 7]],   diff: [0.10, 0.30, 0.60], level: 3 },
     ],
 
     // 1ステージあたりの出題数
