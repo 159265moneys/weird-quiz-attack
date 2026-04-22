@@ -1,57 +1,56 @@
 /* ============================================================
-   keyboard.css — 内製文字盤スタイル
+   keyboard.css — 内製文字盤スタイル (iPhone ダークモード準拠)
    ------------------------------------------------------------
    論理解像度 1080x1920 内の下部にマウントされる想定。
-   キーボード全体: 1080 x 約 820px (上部ヒント含む)
+   キーボード全体: 1080 x 親(answer-zone)の残り高さ
+   デザインは iOS 17-18 日本語 10 キー (dark) に寄せる。
+   「必要キー構成 (4x4) は維持、見た目だけ iPhone」
    ============================================================ */
 
 #keyboardHost {
     position: relative;
     width: 100%;
-    height: 100%;   /* 親(answer-zone)の高さに合わせて伸縮 */
+    height: 100%;
 }
 
+/* ---------------- Wrap (キーボード全体枠) ---------------- */
+/* iOS dark keyboard の全体背景は #2a2a2c 近辺。
+   純正とはパディング・角丸を揃えるだけで「あ、iOS キーボードだ」と錯覚させる。 */
 .kb-wrap {
     position: relative;
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding: 0;
-    background: var(--bg-panel);
-    border: 3px solid var(--line);
-    box-shadow: inset 0 6px 0 rgba(0, 229, 255, 0.2);
+    padding: 10px 4px 16px;
+    background: #2b2b2e;                 /* iOS dark keyboard bg */
+    border: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue',
+                 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
     user-select: none;
     -webkit-user-select: none;
     touch-action: none;
     box-sizing: border-box;
 }
 
-/* 上部ステータス行 */
+/* ---------------- Mode line (削除) ---------------- */
+/* iPhone 純正は「モード表示バー」を持たない。
+   現在モードは ABC/あ/123 ボタン群のどれが "主キー" かで表現される。
+   要素自体は render() から出力されるので視覚的に潰しておく。 */
 .kb-modeline {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-    background: var(--bg-elevated);
-    border-bottom: 2px solid var(--line-dim);
-    font-size: 22px;
-    color: var(--text-dim);
-    letter-spacing: 3px;
-    min-height: 48px;
+    display: none;
 }
-.kb-modelabel { font-weight: bold; color: var(--accent-cyan); }
-.kb-caps { color: var(--accent-warn); letter-spacing: 4px; }
 
-/* --- Grid (親=.kb-wrap の残り高さを埋める) --- */
+/* ---------------- Grid ---------------- */
+/* 親(.kb-wrap)の残り高さを4行で均等に埋める。 */
 .kb-grid {
     flex: 1 1 0;
     min-height: 0;
     display: flex;
     flex-direction: column;
-    padding: 8px;
-    gap: 8px;
+    padding: 0 4px;
+    gap: 10px;                            /* iPhone の行間隔 ≒ 10-12px */
 }
 
 .kb-row {
@@ -59,10 +58,11 @@
     min-height: 0;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: 6px;                             /* iPhone の列間隔 ≒ 6px */
 }
 
-/* --- キー共通: 行の高さに追従 --- */
+/* ---------------- キー (文字) ---------------- */
+/* iOS dark のキー色 #6d6d72 (中間グレー)。下端に 1px 暗いエッジで立体感。 */
 .kb-key {
     position: relative;
     display: flex;
@@ -70,70 +70,100 @@
     justify-content: center;
     min-height: 0;
     height: 100%;
-    background: var(--bg-deep);
-    border: 3px solid var(--line);
-    color: var(--text);
+    background: #6d6d72;                  /* iOS dark char key */
+    border: none;
+    border-radius: 14px;                  /* 1080幅拡大分を考慮 (純正は ~8px) */
+    color: #ffffff;
     font-family: inherit;
-    font-size: 64px;
-    font-weight: bold;
-    letter-spacing: 2px;
+    font-size: 68px;
+    font-weight: 400;                     /* SF Pro Text Regular */
+    letter-spacing: 0;
     cursor: pointer;
     padding: 0;
     outline: none;
-    transition: transform 0.04s ease, background 0.04s ease;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.45);
+    transition: background 0.08s ease, box-shadow 0.08s ease;
     touch-action: none;
 }
+/* 押下: iPhone は translate せず、色だけ明るくなる */
 .kb-key.is-pressed,
 .kb-key:active {
-    background: var(--line);
-    color: var(--bg-deep);
-    transform: translateY(2px);
+    background: #8e8e93;
+    color: #ffffff;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+    transform: none;
 }
 .kb-key.kb-empty {
     background: transparent;
-    border: none;
+    box-shadow: none;
     cursor: default;
 }
-.kb-key.kb-empty:active { background: transparent; color: inherit; transform: none; }
+.kb-key.kb-empty:active {
+    background: transparent;
+    color: inherit;
+    box-shadow: none;
+}
 
 .kb-main {
     z-index: 1;
     pointer-events: none;
 }
 
-/* --- 機能キー色分け --- */
+/* ---------------- 機能キー ---------------- */
+/* iPhone 純正で機能キー (改行、⌫、ABC 等) は文字キーより一段暗い #4d4d52。 */
 .kb-fn {
-    font-size: 36px;
-    letter-spacing: 3px;
-    background: var(--bg-elevated);
+    background: #4d4d52;
+    font-size: 40px;
+    letter-spacing: 2px;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.5);
 }
-.kb-fn-bs { color: var(--accent-red); border-color: var(--accent-red); }
-.kb-fn-bs.is-pressed { background: var(--accent-red); color: var(--bg-deep); }
+.kb-fn:active,
+.kb-fn.is-pressed {
+    background: #6d6d72;                  /* 押したら文字キー色まで明るくなる */
+}
+.kb-fn-bs {
+    color: #ffffff;
+    font-size: 44px;
+}
+/* OK は本ゲーム専用: iOS の「改行」位置。system blue (#0a84ff) ではなく
+   ゲームの accent-cyan を使ってテーマ整合。 */
 .kb-fn-ok {
-    color: var(--accent-cyan);
-    border-color: var(--accent-cyan);
-    font-size: 48px;
+    background: var(--accent-cyan, #00e5ff);
+    color: #0a1a1c;
+    font-size: 44px;
+    font-weight: 600;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.45);
 }
-.kb-fn-ok.is-pressed { background: var(--accent-cyan); color: var(--bg-deep); }
-.kb-fn-dakuten { font-size: 34px; }
-.kb-fn-caps { color: var(--accent-warn); border-color: var(--accent-warn); font-size: 36px; }
+.kb-fn-ok:active,
+.kb-fn-ok.is-pressed {
+    background: #4dd9ee;
+}
+.kb-fn-dakuten { font-size: 32px; }
+.kb-fn-caps {
+    color: #ffffff;
+    font-size: 38px;
+}
 .kb-fn-space { font-size: 36px; }
 
-/* --- サブ文字 (フリック方向提示) --- */
+/* ---------------- フリック方向ヒント (サブ文字) ---------------- */
+/* iPhone 純正は「通常時はヒント非表示」。ただしプレイヤビリティのため最小サイズで残す。 */
 .kb-sub {
     position: absolute;
-    font-size: 22px;
-    color: var(--text-mute);
-    font-weight: normal;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.38);
+    font-weight: 400;
     letter-spacing: 0;
     pointer-events: none;
+    font-family: inherit;
 }
-.kb-sub-u { top: 6px; left: 50%; transform: translateX(-50%); }
-.kb-sub-d { bottom: 6px; left: 50%; transform: translateX(-50%); }
-.kb-sub-l { left: 8px; top: 50%; transform: translateY(-50%); }
-.kb-sub-r { right: 8px; top: 50%; transform: translateY(-50%); }
+.kb-sub-u { top: 4px; left: 50%; transform: translateX(-50%); }
+.kb-sub-d { bottom: 4px; left: 50%; transform: translateX(-50%); }
+.kb-sub-l { left: 6px; top: 50%; transform: translateY(-50%); }
+.kb-sub-r { right: 6px; top: 50%; transform: translateY(-50%); }
 
-/* --- フリックプレビュー (十字ポップアップ) --- */
+/* ---------------- フリックプレビュー (iPhone 風バブル) ---------------- */
+/* 中央 + 上下左右の 5 枠を、白角丸バブルで配置。選択中は iOS system blue 相当。
+   純正は「1 枚の吹き出し + 扇形分割」だが 5 分割バブル実装で視覚的に寄せる。 */
 .kb-preview {
     position: absolute;
     display: none;
@@ -146,34 +176,41 @@
     position: absolute;
     min-width: 140px;
     min-height: 100px;
-    padding: 12px 16px;
-    background: var(--bg-elevated);
-    border: 3px solid var(--line);
-    color: var(--text);
-    font-size: 56px;
-    font-weight: bold;
+    padding: 8px 12px;
+    background: #f4f4f7;                  /* iPhone の吹き出し白 */
+    color: #000;
+    font-family: inherit;
+    font-size: 60px;
+    font-weight: 400;
     display: flex;
     align-items: center;
     justify-content: center;
     letter-spacing: 0;
-    box-shadow: 4px 4px 0 var(--line-dim);
+    border: none;
+    border-radius: 12px;
+    box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(0, 0, 0, 0.18);
 }
 .kb-pv:empty { display: none; }
 .kb-pv-c { left: -70px; top: -120px; }
-.kb-pv-u { left: -70px; top: -260px; }
+.kb-pv-u { left: -70px; top: -250px; }
 .kb-pv-d { left: -70px; top: 20px; }
 .kb-pv-l { left: -220px; top: -120px; }
 .kb-pv-r { left: 80px; top: -120px; }
 .kb-pv.is-active {
-    background: var(--accent-cyan);
-    color: var(--bg-deep);
-    border-color: var(--accent-cyan);
-    box-shadow: 4px 4px 0 var(--accent-cyan-dim);
-    transform: scale(1.08);
+    background: #0a84ff;                  /* iOS system blue (選択中ハイライト) */
+    color: #ffffff;
+    box-shadow:
+        0 8px 20px rgba(10, 132, 255, 0.55),
+        0 0 0 1px rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
     z-index: 51;
 }
 
-/* --- 入力表示欄 (question.js側のもの) --- */
+/* ---------------- 入力表示欄 (question.js側) ---------------- */
+/* ゲーム側のテーマ (dark + accent-cyan 枠) は維持。
+   キーボードだけ iPhone 寄せ、入力欄は「ゲーム側 UI」の扱い。 */
 .q-input-box {
     width: 100%;
     min-height: 160px;

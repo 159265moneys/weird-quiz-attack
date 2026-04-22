@@ -102,6 +102,7 @@
     }
 
     function keyDisplayChar(key) {
+        if (key.fn === 'caps') return alphaCaps ? 'A' : 'a';
         if (key.fn) return key.label || '';
         if (mode === 'katakana' && key.c) return L.hiraToKata(key.c);
         if (mode === 'alpha' && alphaCaps && key.c && /[a-z]/.test(key.c)) return key.c.toUpperCase();
