@@ -290,7 +290,10 @@
         // 次の問題の頭に被っても良いので、最後まで聞かせたい。
         correct:       { path: 'se/system/correct.mp3',     volume: 0.7, persistOnTransition: true },
         wrong:         { path: 'se/system/wrong.mp3',       volume: 0.9, persistOnTransition: true },
-        timeout:       { path: 'se/system/timeout.mp3',     volume: 0.8, exclusive: true },
+        // timeout / gG2Betray / gB21Death は resolve 後 1500ms 前後で
+        // Router.show() が走るため、persist が無いと abortAll の
+        // 200ms フェードで切れてしまう。最後まで鳴らすため persist する。
+        timeout:       { path: 'se/system/timeout.mp3',     volume: 0.8, exclusive: true, persistOnTransition: true },
         // 渋滞回避のため、選択/確定/キャンセル/メニュー/naviPop などの小物音は
         // volume と clipMs を絞って "ピ" 程度の地味さに抑える。
         select:        { path: 'se/system/select.mp3',      volume: 0.18, clipMs: 80 },
@@ -330,14 +333,14 @@
         gB18Notify:    { path: 'se/gimmick/b18_notify.mp3', volume: 0.9 },
         gB20In:        { path: 'se/gimmick/b20_in.mp3',     volume: 0.7, clipMs: 3000 },
         gB20Out:       { path: 'se/gimmick/b20_out.mp3',    volume: 0.9 },
-        gB21Death:     { path: 'se/gimmick/b21_death.mp3',  volume: 1.0 },
+        gB21Death:     { path: 'se/gimmick/b21_death.mp3',  volume: 1.0, persistOnTransition: true },
         // B25 キャラ乱入: ポップ差し替え → b18_notify (iOS通知)
         gB25Pop:       { path: 'se/gimmick/b18_notify.mp3', volume: 0.7 },
         // C01 シャッフル: 琴差し替え → w15_warp を短クロップ
         gC01Shuffle:   { path: 'se/gimmick/w15_warp.mp3',   volume: 0.5, clipMs: 400 },
         // C04 嘘50:50: キラッ差し替え → 無音 (null)
         gC04Fake50:    null,
-        gG2Betray:     { path: 'se/gimmick/g2_betray.mp3',  volume: 0.9 },
+        gG2Betray:     { path: 'se/gimmick/g2_betray.mp3',  volume: 0.9, persistOnTransition: true },
         gGlitchLoop:   { path: 'se/gimmick/glitch_loop.mp3', volume: 0.25, loop: true },
         gW15Warp:      { path: 'se/gimmick/w15_warp.mp3',   volume: 0.7 },
         // W18 キー消失: チーン差し替え → 無音
