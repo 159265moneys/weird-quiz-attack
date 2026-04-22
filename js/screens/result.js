@@ -21,10 +21,40 @@
             const taunt = !!s.scoreTaunt;
             const initialScore = taunt ? 0 : result.score;
 
+            // 上位 % / 現実換算ラベル (ランダムだが session 内で固定)
+            const meta = window.Ranks?.META?.[result.rank] || {};
+            const percentileText = window.Ranks?.percentileText(result.rank) || '';
+            const seed = `${s.startAt}_${result.rank}`;
+            const realLabel = window.Ranks?.pickLabel(result.rank, seed) || '';
+            const isPositive = !!meta.positive;
+
+            const rankAccent = window.Ranks?.accentColorVar(result.rank) || 'var(--accent-cyan)';
+
+            // B21 で即死した場合は見出しに DEAD END を出す
+            const deathHead = s.deathEnd
+                ? '<div class="result-head result-head-dead">DEAD END</div>'
+                : '<div class="result-head">STAGE CLEAR</div>';
+
             return `
-                <div class="screen result-screen">
-                    <div class="result-rank rank-${result.rank}">${result.rank}</div>
-                    <div class="result-score" id="resultScore">${initialScore.toLocaleString()}</div>
+                <div class="screen result-screen rank-${result.rank}">
+                    ${deathHead}
+                    <div class="result-rank-wrap">
+                        <div class="result-rank-label">RANK</div>
+                        <div class="result-rank rank-${result.rank}">${result.rank}</div>
+                    </div>
+
+                    <div class="result-percentile ${isPositive ? 'is-positive' : 'is-negative'}">
+                        ${percentileText}
+                    </div>
+                    <div class="result-reallabel" style="--rank-accent:${rankAccent};">
+                        ≒ ${realLabel}
+                    </div>
+
+                    <div class="result-score-wrap">
+                        <div class="result-score-label">SCORE</div>
+                        <div class="result-score" id="resultScore">${initialScore.toLocaleString()}</div>
+                    </div>
+
                     <div class="result-detail">
                         正解 ${result.correct} / ${result.total} (${Math.round(result.accuracy * 100)}%)<br>
                         TOTAL ${result.totalTimeSec.toFixed(1)}s / AVG ${result.avgTimeSec.toFixed(1)}s<br>
@@ -43,33 +73,61 @@
         },
 
         init() {
-            // G7 スコア煽り: 1.4秒 "0" → カウントアップで本物スコアに着地
-            (() => {
-                const s = window.GameState.session;
-                if (!s.scoreTaunt) return;
-                const target = window.Scoring.compute(s).score;
-                const el = document.getElementById('resultScore');
-                if (!el) return;
-                el.classList.add('is-taunting');
-                const HOLD = 1400, TICKS = 24, DUR = 900;
-                setTimeout(() => {
-                    let n = 0;
-                    const step = () => {
-                        n++;
-                        // ランダムな桁を表示してカウントアップ感
-                        const r = Math.floor(Math.random() * target * 2);
-                        el.textContent = r.toLocaleString();
-                        if (n < TICKS) {
-                            setTimeout(step, DUR / TICKS);
-                        } else {
-                            el.classList.remove('is-taunting');
-                            el.classList.add('is-settled');
-                            el.textContent = target.toLocaleString();
-                        }
-                    };
-                    step();
-                }, HOLD);
-            })();
+            const s = window.GameState.session;
+            const result = window.Scoring.compute(s);
+            const target = result.score;
+            const el = document.getElementById('resultScore');
+
+            // G7 スコア煽り: スクランブル数字 → 本スコア着地
+            // 通常時: 0 からの一方向カウントアップ (演出0.9秒、0.6秒遅らせてランク登場に合わせる)
+            if (el) {
+                if (s.scoreTaunt) {
+                    el.classList.add('is-taunting');
+                    const HOLD = 1400, TICKS = 24, DUR = 900;
+                    setTimeout(() => {
+                        let n = 0;
+                        const step = () => {
+                            n++;
+                            const r = Math.floor(Math.random() * target * 2);
+                            el.textContent = r.toLocaleString();
+                            if (n < TICKS) {
+                                setTimeout(step, DUR / TICKS);
+                            } else {
+                                el.classList.remove('is-taunting');
+                                el.classList.add('is-settled');
+                                el.textContent = target.toLocaleString();
+                            }
+                        };
+                        step();
+                    }, HOLD);
+                } else {
+                    const DELAY = 600, DUR = 900, TICKS = 28;
+                    el.textContent = '0';
+                    setTimeout(() => {
+                        let n = 0;
+                        const step = () => {
+                            n++;
+                            // easeOutQuad っぽい進度
+                            const t = n / TICKS;
+                            const eased = 1 - (1 - t) * (1 - t);
+                            const v = Math.floor(target * eased);
+                            el.textContent = v.toLocaleString();
+                            if (n < TICKS) {
+                                setTimeout(step, DUR / TICKS);
+                            } else {
+                                el.textContent = target.toLocaleString();
+                                el.classList.add('is-settled');
+                            }
+                        };
+                        step();
+                    }, DELAY);
+                }
+            }
+
+            // 上位ランク (SS/S/A) だけ蝶バースト演出
+            if (result.rank === 'SS' || result.rank === 'S' || result.rank === 'A') {
+                spawnButterflies(result.rank);
+            }
 
             // シェアボタン
             document.querySelector('[data-action="share"]')?.addEventListener('click', async (e) => {
@@ -134,6 +192,39 @@
             });
         },
     };
+
+    // ---------- 上位ランク専用: 蝶バースト ----------
+    function spawnButterflies(rank) {
+        const screen = document.querySelector('.result-screen');
+        if (!screen) return;
+        let layer = screen.querySelector('.result-butterflies');
+        if (!layer) {
+            layer = document.createElement('div');
+            layer.className = 'result-butterflies';
+            screen.appendChild(layer);
+        }
+        // SS=12匹 / S=8匹 / A=5匹 くらい
+        const count = rank === 'SS' ? 14 : rank === 'S' ? 9 : 5;
+        for (let i = 0; i < count; i++) {
+            const b = document.createElement('span');
+            b.className = 'bfly';
+            const startX = 400 + Math.random() * 280; // 中央付近 (1080幅)
+            const startY = 1600 + Math.random() * 200;
+            b.style.left = `${startX}px`;
+            b.style.top  = `${startY}px`;
+            const tx = (Math.random() - 0.5) * 1200;
+            const ty = -1400 - Math.random() * 400;
+            const rz = (Math.random() - 0.5) * 120;
+            b.style.setProperty('--tx', `${tx}px`);
+            b.style.setProperty('--ty', `${ty}px`);
+            b.style.setProperty('--rz', `${rz}deg`);
+            b.style.animationDelay = `${0.6 + Math.random() * 0.8}s`;
+            b.style.animationDuration = `${7 + Math.random() * 4}s`;
+            layer.appendChild(b);
+            // 役目を終えたら捨てる
+            setTimeout(() => b.remove(), 14000);
+        }
+    }
 
     function showToast(r) {
         const el = document.querySelector('[data-share-toast]');

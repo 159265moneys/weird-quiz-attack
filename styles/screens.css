@@ -398,52 +398,215 @@
     min-height: 0;
 }
 
-/* ========== RESULT (Phase 1 placeholder) ========== */
+/* ============================================================
+   RESULT — ランク別ビジュアル (仕様書 8-2 / 8-4 準拠)
+   ============================================================ */
 .result-screen {
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding: 80px 60px 60px;
+    gap: 16px;
+    overflow: hidden;
 }
 
+/* ---- STAGE CLEAR / DEAD END 見出し ---- */
+.result-head {
+    font-size: 44px;
+    letter-spacing: 14px;
+    color: var(--text-dim);
+    text-align: center;
+    animation: resultHeadIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.result-head-dead {
+    color: var(--accent-red);
+    text-shadow: 4px 4px 0 var(--accent-red-dim);
+    letter-spacing: 20px;
+    animation: resultHeadIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both,
+               resultHeadDeadShake 1.6s steps(6, end) infinite;
+}
+@keyframes resultHeadIn {
+    0%   { opacity: 0; transform: translateY(-24px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes resultHeadDeadShake {
+    0%, 94%, 100% { transform: translate(0, 0); }
+    95% { transform: translate(-3px, 1px); }
+    96% { transform: translate(2px, -1px); }
+    97% { transform: translate(-1px, 2px); }
+}
+
+/* ---- RANK ブロック ---- */
+.result-rank-wrap {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.result-rank-label {
+    font-size: 36px;
+    letter-spacing: 16px;
+    color: var(--text-mute);
+    padding-left: 16px;
+}
 .result-rank {
-    font-size: 400px;
-    font-weight: bold;
+    font-size: 360px;
+    font-weight: 900;
     line-height: 1;
+    letter-spacing: 4px;
     color: var(--accent-cyan);
-    text-shadow:
-        12px 12px 0 var(--accent-red);
-    margin-bottom: 48px;
+    text-shadow: 12px 12px 0 var(--accent-red);
+    animation: resultRankIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes resultRankIn {
+    0%   { opacity: 0; transform: scale(0.3) rotate(-4deg); filter: blur(14px); }
+    70%  { opacity: 1; transform: scale(1.08) rotate(0); filter: blur(0); }
+    100% { transform: scale(1); }
 }
 
+/* ---- 上位% / 現実換算ラベル ---- */
+.result-percentile {
+    margin-top: 12px;
+    font-size: 60px;
+    font-weight: 900;
+    letter-spacing: 6px;
+    text-align: center;
+    animation: resultPctIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both 0.25s;
+}
+.result-percentile.is-positive {
+    color: var(--accent-cyan);
+    text-shadow: 6px 6px 0 var(--accent-red-dim);
+}
+.result-percentile.is-negative {
+    color: var(--accent-red);
+    text-shadow: 6px 6px 0 var(--line-dim);
+}
+.result-reallabel {
+    font-size: 36px;
+    letter-spacing: 3px;
+    text-align: center;
+    padding: 10px 28px;
+    color: var(--text-on-dark);
+    border: 2px solid var(--rank-accent, var(--accent-cyan));
+    box-shadow: 4px 4px 0 var(--rank-accent, var(--accent-cyan));
+    background: var(--box-bg);
+    animation: resultPctIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both 0.4s;
+}
+@keyframes resultPctIn {
+    0%   { opacity: 0; transform: translateY(18px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- SCORE ブロック ---- */
+.result-score-wrap {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+.result-score-label {
+    font-size: 28px;
+    letter-spacing: 12px;
+    color: var(--text-mute);
+}
 .result-score {
     font-size: 96px;
     letter-spacing: 6px;
     color: var(--text-on-dark);
-    margin-bottom: 24px;
+    font-weight: 900;
+    animation: resultPctIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both 0.55s;
 }
 
 .result-detail {
-    font-size: 36px;
+    margin-top: 8px;
+    font-size: 32px;
     color: var(--text-faint);
-    margin-bottom: 80px;
     letter-spacing: 3px;
     text-align: center;
-    line-height: 1.6;
+    line-height: 1.7;
+    animation: resultPctIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both 0.65s;
 }
 
 .result-actions {
+    margin-top: auto;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
     width: 100%;
     align-items: center;
+    animation: resultPctIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both 0.75s;
 }
 
+/* ---------- ランクごとの色 ---------- */
 .result-rank.rank-SS { color: var(--accent-warn); text-shadow: 12px 12px 0 var(--accent-red), -6px -6px 0 var(--accent-cyan); }
-.result-rank.rank-S  { color: var(--accent-cyan); }
-.result-rank.rank-A  { color: var(--text-on-dark); }
-.result-rank.rank-B  { color: var(--text-faint); text-shadow: 8px 8px 0 var(--line-dim); }
-.result-rank.rank-C  { color: var(--text-dim); text-shadow: 8px 8px 0 var(--line-dim); }
-.result-rank.rank-D  { color: var(--accent-red); text-shadow: 8px 8px 0 var(--accent-red-dim); }
+.result-rank.rank-S  { color: var(--accent-cyan); text-shadow: 10px 10px 0 var(--accent-red); }
+.result-rank.rank-A  { color: var(--accent-cyan); text-shadow: 8px 8px 0 var(--line-dim); }
+.result-rank.rank-B  { color: var(--text-on-dark); text-shadow: 8px 8px 0 var(--line-dim); }
+.result-rank.rank-C  { color: var(--text-faint); text-shadow: 8px 8px 0 var(--line-dim); }
+.result-rank.rank-D  { color: var(--text-dim); text-shadow: 6px 6px 0 var(--line-dim); }
+.result-rank.rank-E  { color: var(--accent-red); text-shadow: 8px 8px 0 var(--accent-red-dim); }
+.result-rank.rank-F  { color: var(--accent-red); text-shadow: 10px 10px 0 var(--accent-red-dim); }
+
+/* 上位勢 (SS / S / A) は持続パルス + RGB シフトで "輝いている" 感 */
+.result-screen.rank-SS .result-rank,
+.result-screen.rank-S  .result-rank,
+.result-screen.rank-A  .result-rank {
+    animation:
+        resultRankIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both,
+        resultRankPulse 2.8s ease-in-out infinite 0.9s;
+}
+@keyframes resultRankPulse {
+    0%, 100% { filter: brightness(1) drop-shadow(0 0 0 transparent); }
+    50%      { filter: brightness(1.25) drop-shadow(0 0 24px var(--accent-cyan)); }
+}
+
+/* SS 専用: 背景に蝶が舞うレイヤ (ButterflyBurstFX が動的に生成する器) */
+.result-butterflies {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+}
+.result-butterflies .bfly {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background-image: url('../sprite/butterfly.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 0 10px var(--accent-cyan));
+    animation: bflyFlutter 9s linear both;
+}
+@keyframes bflyFlutter {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+    8%   { opacity: 1; }
+    90%  { opacity: 0.7; }
+    100% { transform: translate(var(--tx, 400px), var(--ty, -800px)) rotate(var(--rz, 40deg)); opacity: 0; }
+}
+
+/* D/E/F 専用: 画面全体に微細なノイズを被せて "終わった" 感を出す */
+.result-screen.rank-D::after,
+.result-screen.rank-E::after,
+.result-screen.rank-F::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 51, 64, 0) 0 2px,
+        rgba(255, 51, 64, 0.05) 2px 3px
+    );
+    mix-blend-mode: screen;
+}
+
+/* F だけはさらに DEAD スタンプ重ね - すでにあるDEAD見出しを強調 */
+.result-screen.rank-F .result-head {
+    color: var(--accent-red);
+}
 
 /* ---------- G7 スコア煽り ---------- */
 .result-score.is-taunting {
