@@ -1388,17 +1388,26 @@
     // 【重要】buffer は触らない。onChange の表示文字列だけ各文字を w04ShiftChar で
     // 1 段ずらす。OK 判定は buffer (= 売った順) で行われるので、プレイヤーは
     // 自分の入力を信じて OK するのが正攻法。見た目上は全く違う文字列に見える。
+    //
+    // 2026-04 強化: 「静かすぎて気づかない」対策として、
+    //   - 入力ボックスに "⚠ INPUT DRIFT" 警告バッジを常時表示
+    //   - 表示文字列を subtle に左右ゆらし (jitter) → 目視で異常を主張
     const W04_INPUT_SHIFT = {
         id: 'W04', name: '入力ズレ', supports: 'input', introducedAt: 8, difficulty: 9,
         // onChange ラップの重複回避 + フリック方向弄り系とは別軸なので併用不可
         // (フリックで既に狂ってる文字がさらに見た目上ずれると解法が成立しない)
         conflicts: ['W06', 'W07', 'W09', 'W20'],
         apply(ctx) {
+            const box = q(ctx.screen, '.q-input-box');
+            if (box) box.classList.add('gk-w04-drift');
             const unwrap = wrapOnChange((orig) => (val) => {
                 const shifted = Array.from(val).map(ch => w04ShiftChar(ch)).join('');
                 if (orig) orig(shifted);
             });
-            return unwrap;
+            return () => {
+                if (box && box.isConnected) box.classList.remove('gk-w04-drift');
+                unwrap();
+            };
         },
     };
 
@@ -1627,19 +1636,33 @@
     // --- W20: フリック方向シャッフル ---
     // flickTransform フックで、上下左右を毎回ランダムに remap。中央タップ(c)は素通り。
     // W19 (反転) と同じフックを使うので conflict。
+    //
+    // 2026-04 強化: 「何が起きたか分からない」対策として、
+    //   - キーボード領域に "⚠ FLICK LOST" 警告バッジを常時表示
+    //   - フリック実行時にキーボード全体が一瞬ガクッと揺れる (視覚フィードバック)
     const W20_FLICK_SHUFFLE = {
         id: 'W20', name: 'フリック方向シャッフル', supports: 'input', introducedAt: 9, difficulty: 10,
         conflicts: [],
         apply(ctx) {
             const kb = window.Keyboard;
             if (!kb?.setFlickTransform) return () => {};
+            const host = q(ctx.screen, '#keyboardHost') || ctx.screen;
+            host.classList.add('gk-w20-chaos');
             const DIRS = ['u', 'd', 'l', 'r'];
+            let shakeTimer = 0;
             kb.setFlickTransform((dir) => {
                 if (dir === 'c' || !dir) return dir;
+                // フリック検出時に host 全体をピクッと揺らす (100ms)
+                host.classList.add('gk-w20-shake');
+                clearTimeout(shakeTimer);
+                shakeTimer = setTimeout(() => host.classList.remove('gk-w20-shake'), 140);
                 return DIRS[Math.floor(Math.random() * DIRS.length)];
             });
             return () => {
                 kb.setFlickTransform(null);
+                clearTimeout(shakeTimer);
+                host.classList.remove('gk-w20-chaos');
+                host.classList.remove('gk-w20-shake');
             };
         },
     };

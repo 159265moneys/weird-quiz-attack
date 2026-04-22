@@ -577,7 +577,81 @@
 }
 
 /* W08 文字盤あべこべv2: DOM swap のみ、CSS 不要 */
-/* W20 フリック方向シャッフル: setFlickTransform のみ、CSS 不要 */
+
+/* ---------- W04 入力ズレ (2026-04 強化: 気づきやすさ UP) ----------
+   - 入力ボックス右上に "⚠ INPUT DRIFT" バッジをオーバーレイ
+   - 入力文字列にサブトルな左右ゆらぎ (jitter) を加えて異常性を主張 */
+.q-input-box.gk-w04-drift {
+    position: relative;
+}
+.q-input-box.gk-w04-drift::before {
+    content: '⚠ INPUT DRIFT';
+    position: absolute;
+    top: -14px;
+    right: -6px;
+    padding: 3px 9px;
+    background: #ff2e4a;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    border-radius: 4px;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+    transform: rotate(-3deg);
+    pointer-events: none;
+    z-index: 5;
+    animation: gkW04BadgeFlash 1.2s ease-in-out infinite;
+}
+@keyframes gkW04BadgeFlash {
+    0%, 100% { opacity: 0.9; }
+    50%      { opacity: 0.55; }
+}
+.q-input-box.gk-w04-drift .q-input-text {
+    animation: gkW04Jitter 0.32s linear infinite;
+    display: inline-block;
+}
+@keyframes gkW04Jitter {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(-1.5px, 0.5px); }
+    50%  { transform: translate(1px, -0.5px); }
+    75%  { transform: translate(-1px, 1px); }
+    100% { transform: translate(0, 0); }
+}
+
+/* ---------- W20 フリック方向シャッフル (2026-04 強化: 気づきやすさ UP) ----------
+   - キーボード領域左上に "⚠ FLICK LOST" バッジ
+   - フリック実行時 (.gk-w20-shake 付与) に全体が 100ms ピクッと揺れる
+   - 常時の演出は控えめ (プレイヤーの文字盤視認性を殺さない) */
+#keyboardHost.gk-w20-chaos {
+    position: relative;
+}
+#keyboardHost.gk-w20-chaos::before {
+    content: '⚠ FLICK LOST';
+    position: absolute;
+    top: -12px;
+    left: 8px;
+    padding: 3px 9px;
+    background: #ff2e4a;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    border-radius: 4px;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+    transform: rotate(2deg);
+    pointer-events: none;
+    z-index: 5;
+    animation: gkW04BadgeFlash 1.2s ease-in-out infinite;
+}
+#keyboardHost.gk-w20-chaos.gk-w20-shake {
+    animation: gkW20Shake 0.14s steps(3, end);
+}
+@keyframes gkW20Shake {
+    0%   { transform: translate(0, 0); }
+    33%  { transform: translate(-4px, 2px); }
+    66%  { transform: translate(3px, -2px); }
+    100% { transform: translate(0, 0); }
+}
 
 /* ============================================================
    2026-04 追加: 問題文系ギミック B22-B31
