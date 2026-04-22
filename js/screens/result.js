@@ -209,9 +209,13 @@
                     window.GameState.session.kAssignment =
                         window.GimmickSelector.generateKAssignment(no, slots);
                     const b18Prob = window.CONFIG.B18_STAGE_PROB ?? 1.0;
-                    window.GameState.session.b18Slot = Math.random() < b18Prob
-                        ? Math.floor(Math.random() * picked.length)
-                        : -1;
+                    const inputIdxs = picked
+                        .map((q, i) => (q.mode === 'input' ? i : -1))
+                        .filter(i => i >= 0);
+                    window.GameState.session.b18Slot =
+                        (Math.random() < b18Prob && inputIdxs.length > 0)
+                            ? inputIdxs[Math.floor(Math.random() * inputIdxs.length)]
+                            : -1;
                     window.Router.show('question');
                 })();
             });

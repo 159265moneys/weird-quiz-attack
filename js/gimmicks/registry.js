@@ -154,7 +154,10 @@
     // - DOM は #stage にマウント → B09 (SHRINK) 等 .screen にかかる scale の影響を受けない
     // - 1.5倍表示、z-index 最上位
     const B18_FAKE_ERROR = {
-        id: 'B18', name: '偽エラー表示', supports: 'both', introducedAt: 1, difficulty: 2,
+        // input 問題専用。choice 問題だと選択肢上半分を完全に隠してしまい、
+        // 正解が上半分にあると当て勘になるため。(stageSelect/result 側の
+        // b18Slot 抽選も input-mode のインデックスに限定している)
+        id: 'B18', name: '偽エラー表示', supports: 'input', introducedAt: 1, difficulty: 2,
         excludeFromPool: true,
         apply(ctx) {
             const stage = document.getElementById('stage') || document.body;
@@ -353,16 +356,21 @@
                 'sprite/girl/basic.png', 'sprite/girl/happy.png',
                 'sprite/girl/hi.png', 'sprite/girl/think.png', 'sprite/girl/think_light.png',
             ];
-            const CHAR_H   = 560;   // 画像高さ (px, 仮想座標)
-            const CHAR_W   = 280;   // 画像幅 (CSSで width:280px 固定と一致)
-            const PEEK     = 200;   // 頭が覗き込む量 (px)
-            const PAD      = 60;    // 退場時の追加オフセット
+            const CHAR_H   = 360;   // 画像高さ (px, 仮想座標) ※ height:360px; width:auto 表示
+            const CHAR_W   = 640;   // 画像幅 (960×540→高さ360表示時: 360/540*960=640)
+            const PEEK     = 300;   // 頭が覗き込む量 (px)
+            const PAD      = 80;    // 退場時の追加オフセット
             const SCREEN_W = 1080;
-            const CX0 = CHAR_W / 2; // 140
-            const CY0 = CHAR_H / 2; // 280
+            const CX0 = CHAR_W / 2; // 320
+            const CY0 = CHAR_H / 2; // 180
 
             const timers = new Set();
             let alive = true;
+
+            // クリップ用コンテナ: overflow:hidden で境界以下の足を隠す
+            const clipDiv = document.createElement('div');
+            clipDiv.className = 'gk-b25-clip';
+            ctx.screen.appendChild(clipDiv);
 
             function schedule(fn, delay) {
                 const t = setTimeout(() => { timers.delete(t); if (alive) fn(); }, delay);
@@ -399,6 +407,8 @@
             function spawnChar() {
                 if (!alive) return;
                 const boundaryY = getBoundaryY();
+                // clipDiv の高さを最新の boundaryY に合わせる (境界以下の足を隠す)
+                clipDiv.style.height = boundaryY + 'px';
                 const dirs = getDirs(boundaryY);
                 const { R, bx: bxFn, by: byFn } = dirs[Math.floor(Math.random() * dirs.length)];
                 const bx = bxFn(), by = byFn();
@@ -414,12 +424,12 @@
                 const hdx = Math.sin(rad);   // 頭方向 x
                 const hdy = -Math.cos(rad);  // 頭方向 y
 
-                // visible: 頭が境界からPEEK内側 (PEEK_OFS = PEEK - CY0 = -80)
+                // visible: 頭が境界からPEEK内側 (PEEK_OFS = PEEK - CY0 = 120)
                 const PEEK_OFS = PEEK - CY0;
                 const vcx = bx + hdx * PEEK_OFS;
                 const vcy = by + hdy * PEEK_OFS;
 
-                // hidden: 頭まで壁の外に退場 (HIDE_OFS = CY0 + PAD = 340)
+                // hidden: 頭まで壁の外に退場 (HIDE_OFS = CY0 + PAD = 260)
                 const HIDE_OFS = CY0 + PAD;
                 const hcx = bx - hdx * HIDE_OFS;
                 const hcy = by - hdy * HIDE_OFS;
@@ -447,10 +457,13 @@
 
             function loop() {
                 spawnChar();
-                schedule(loop, 600 + Math.random() * 800);
+                schedule(loop, 400 + Math.random() * 600);
             }
 
-            schedule(loop, 900);
+            // 3本並列ループでモグラ叩き的に連続出現
+            schedule(loop, 100);
+            schedule(loop, 500);
+            schedule(loop, 950);
 
             return () => {
                 alive = false;

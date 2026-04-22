@@ -180,10 +180,15 @@
                 window.GimmickSelector.generateKAssignment(no, slots);
             // B18 (偽エラー表示): 確率 (CONFIG.B18_STAGE_PROB) で 1 問だけ発生する特別枠。
             // 通常のギミックスロットに依存せず重ねて発動する。
+            // choice 問題に出すと選択肢上半分を塞いで当て勘になるので input 限定。
             const b18Prob = window.CONFIG.B18_STAGE_PROB ?? 1.0;
-            window.GameState.session.b18Slot = Math.random() < b18Prob
-                ? Math.floor(Math.random() * picked.length)
-                : -1;
+            const inputIdxs = picked
+                .map((q, i) => (q.mode === 'input' ? i : -1))
+                .filter(i => i >= 0);
+            window.GameState.session.b18Slot =
+                (Math.random() < b18Prob && inputIdxs.length > 0)
+                    ? inputIdxs[Math.floor(Math.random() * inputIdxs.length)]
+                    : -1;
             console.log('[Stage]', no, 'slots:', slots,
                 'K:', window.GameState.session.kAssignment,
                 'b18Slot:', window.GameState.session.b18Slot);
