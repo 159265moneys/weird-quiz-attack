@@ -42,9 +42,6 @@
                 try { window.Debug.refresh(); } catch (e) { /* noop */ }
             }
 
-            if (window.ButterflyFX?.onScreenChange) {
-                try { window.ButterflyFX.onScreenChange(name); } catch (e) { /* noop */ }
-            }
             if (window.FloatingTextFX?.onScreenChange) {
                 try { window.FloatingTextFX.onScreenChange(name); } catch (e) { /* noop */ }
             }

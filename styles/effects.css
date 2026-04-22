@@ -2,48 +2,33 @@
    effects.css — 画面全体にかかる演出 (蝶々 / 浮遊文字 / VHS)
    ============================================================ */
 
-/* ---------- 蝶々カーソル ---------- */
-.fx-butterfly {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 0;
-    height: 0;
-    pointer-events: none;
-    z-index: 2000;
-    will-change: transform;
-    transition: opacity 0.3s ease;
-    opacity: 1;
+/* ---------- 蝶バッジ (選択中の要素の左上端に表示) ----------
+   旧: 画面をフワフワ追従する蝶カーソル。
+   新: スマホはタッチ操作なので追従は無意味。選択した要素の左上に蝶アイコンを
+       ::before で載せる。現在の対象は `.q-choice.is-selected` のみ。
+   画像は sprite/butterfly.png を使用。 */
+.q-choice {
+    position: relative;   /* ::before 配置用 */
 }
-.fx-butterfly.is-hidden {
-    opacity: 0;
-}
-
-/* 回転用の内側 wrapper (進行方向に傾ける) */
-.fx-butterfly-rot {
+.q-choice.is-selected::before {
+    content: '';
     position: absolute;
-    left: 0;
-    top: 0;
-    transform-origin: 0 0;
-    will-change: transform;
-}
-
-/* 羽ばたき (scale で羽をぱたぱた) */
-.fx-butterfly-img {
-    display: block;
+    top: -18px;
+    left: -18px;
     width: 72px;
-    height: auto;
-    transform: translate(-50%, -50%) scale(1, 1);
+    height: 72px;
+    background-image: url('../sprite/butterfly.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+    pointer-events: none;
+    z-index: 20;
+    animation: fxButterflyBadgeFlap 0.32s ease-in-out infinite alternate;
     transform-origin: center;
-    animation: fxButterflyFlap 0.22s ease-in-out infinite alternate;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
-    user-select: none;
-    -webkit-user-drag: none;
 }
-
-@keyframes fxButterflyFlap {
-    0%   { transform: translate(-50%, -50%) scale(1.05, 0.45); }
-    100% { transform: translate(-50%, -50%) scale(0.95, 1.05); }
+@keyframes fxButterflyBadgeFlap {
+    0%   { transform: scale(1.05, 0.8) rotate(-4deg); }
+    100% { transform: scale(0.95, 1.1) rotate(4deg); }
 }
 
 /* ---------- 浮遊文字背景 ---------- */

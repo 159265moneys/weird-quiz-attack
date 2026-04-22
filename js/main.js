@@ -42,7 +42,9 @@
         window.Debug?.init();
         window.FloatingTextFX?.mount();
         window.VhsFX?.mount();
-        window.ButterflyFX?.mount();
+        // 蝶カーソル: スマホはタッチ操作なのでカーソル追従は無意味。
+        // 代わりに選択した要素 (.is-selected 等) の左上に蝶アイコンを表示する
+        // CSS 方式に変更 (styles/effects.css 参照)。
         window.Router.show('title');
     }
 
