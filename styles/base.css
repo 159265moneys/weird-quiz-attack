@@ -287,3 +287,78 @@ body {
 .scroll-area::-webkit-scrollbar { width: 8px; }
 .scroll-area::-webkit-scrollbar-track { background: var(--bg-panel); }
 .scroll-area::-webkit-scrollbar-thumb { background: var(--line-dim); }
+
+/* ============================================================
+   横向きガード (landscape 時に縦向きに戻させる)
+   ------------------------------------------------------------
+   デフォルト非表示。@media (orientation: landscape) で表示され、
+   #stage (z-index なし) の上に被さってタッチを全遮断する。
+   portrait に戻したら自動で display:none に戻る。
+   Capacitor ネイティブでは config の orientation: 'portrait' が
+   画面回転自体をロックするのでこのガードは発動しない。
+   ============================================================ */
+#rotate-guard {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #050508;
+    color: var(--text, #e8e8ee);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    font-family: 'Courier New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', monospace;
+    /* 背景に極薄のスキャンライン (タイトル画面と世界観を揃える) */
+    background-image:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.028) 0,
+            rgba(255, 255, 255, 0.028) 1px,
+            transparent 1px,
+            transparent 3px
+        );
+}
+#rotate-guard .rg-inner {
+    max-width: 340px;
+}
+#rotate-guard .rg-icon {
+    font-size: 64px;
+    color: var(--accent-cyan, #00e5ff);
+    margin-bottom: 16px;
+    animation: rg-spin 2.4s ease-in-out infinite;
+    text-shadow:
+        0 0 18px rgba(0, 229, 255, 0.55),
+        2px 0 0 rgba(255, 0, 80, 0.45),
+        -2px 0 0 rgba(0, 200, 255, 0.45);
+}
+#rotate-guard .rg-title {
+    font-size: 18px;
+    letter-spacing: 0.14em;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+#rotate-guard .rg-desc {
+    font-size: 13px;
+    color: var(--text-dim, #8e8e98);
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+}
+@keyframes rg-spin {
+    0%   { transform: rotate(0deg); }
+    50%  { transform: rotate(-90deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@media (orientation: landscape) and (max-height: 600px) {
+    /* 横向きかつ画面が低い (=スマホを横にした状態) の時だけ発動。
+       iPad 横や PC ウィンドウは対象外にする (タブレット/デスクトップでも
+       とりあえず letterbox で遊べるようにしておく)。 */
+    #rotate-guard {
+        display: flex;
+    }
+    /* 横画面中は裏の #stage のサウンドや VHS が鳴るのも止めたいので透明に */
+    #stage {
+        visibility: hidden;
+    }
+}

@@ -22,6 +22,17 @@
         <div id="app"></div>
     </div>
 
+    <!-- 横向きガード: @media (orientation: landscape) で表示される。
+         Capacitor ネイティブでは capacitor.config で portrait lock するが、
+         Web / PWA 版はブラウザ側で回転禁止できないのでオーバーレイで遮断。 -->
+    <div id="rotate-guard" aria-hidden="true">
+        <div class="rg-inner">
+            <div class="rg-icon">⟲</div>
+            <div class="rg-title">縦向きに戻してください</div>
+            <div class="rg-desc">このゲームは縦画面専用です。</div>
+        </div>
+    </div>
+
     <!-- 設定・状態 -->
     <script src="js/config.js"></script>
     <script src="js/state.js"></script>
