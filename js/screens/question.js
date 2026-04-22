@@ -107,7 +107,8 @@
                     submitBtn.addEventListener('click', () => {
                         if (resolved) return;
                         if (selectedIdx < 0) return;
-                        window.SE?.fire('confirm');
+                        // 確定音はあえて鳴らさない (直後の正解/不正解 SE と被って
+                        // 何が鳴っているか分かりにくくなるため)。選択時の select SE で十分。
                         const correct = selectedIdx === q.answer;
                         resolveAnswer(correct, String(selectedIdx), 'user');
                     });
@@ -341,14 +342,10 @@
     }
 
     // --- 中断確認モーダル (pause ではなく完全中断 → ステージ選択へ戻る) ---
-    // モーダル表示中はタイマーを止める (pause ではなく「決断待ち」なので残時間を
-    // 失わせない)。cancel で再開、confirm ならそのまま離脱。
+    // モーダル表示中もタイマーは継続 (ズル防止)。
     let abortDom = null;
-    let abortPauseAt = 0;
     function openAbortConfirm() {
         if (abortDom) return;
-        abortPauseAt = Date.now();
-        stopTimer();
         const app = document.getElementById('app');
         if (!app) return;
         abortDom = document.createElement('div');
@@ -382,15 +379,6 @@
         if (!abortDom) return;
         abortDom.remove();
         abortDom = null;
-        // 一時停止していた時間分 questionStartAt をずらしてタイマー再開
-        if (abortPauseAt && !resolved) {
-            const delta = Date.now() - abortPauseAt;
-            questionStartAt += delta;
-            abortPauseAt = 0;
-            startTimer();
-        } else {
-            abortPauseAt = 0;
-        }
     }
     function doAbort() {
         // 先に resolved を立てておくことで closeAbortConfirm のタイマー再開を抑止

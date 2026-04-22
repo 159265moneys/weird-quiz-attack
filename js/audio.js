@@ -176,6 +176,12 @@
         const src = audioCtx.createBufferSource();
         src.buffer = buffer;
         src.loop = !!opts.loop;
+        // playbackRate: 1.0 以外なら高速/低速再生 (ピッチも変わる)。
+        // 正解音を 2x で短く圧縮したり、B16 カウントダウン tick をループで
+        // 3x ピッチアップして鳴らしたり等に使う。
+        if (opts.playbackRate && opts.playbackRate !== 1.0) {
+            try { src.playbackRate.value = Number(opts.playbackRate); } catch (_) {}
+        }
         src.connect(gainNode);
 
         const entry = {
@@ -292,12 +298,12 @@
         return play(path, { ...opts, key: path });
     }
 
-    function playLoop(path, volume = 0.3) {
+    function playLoop(path, volume = 0.3, playbackRate = 1.0) {
         if (muted) return null;
         ensureCtx();
         // 同 path の loop/排他があれば止める
         stop(path);
-        const opts = { volume, loop: true, key: path };
+        const opts = { volume, loop: true, key: path, playbackRate };
         const buf = buffers.get(path);
         if (buf) {
             const entry = startBuffer(buf, opts);
@@ -409,8 +415,9 @@
         // --- system ---
         // 正解/不正解は画面遷移で中断させない (persistOnTransition: true)。
         // 次の問題の頭に被っても良いので、最後まで聞かせたい。
-        correct:       { path: 'se/system/correct.mp3',     volume: 0.7, persistOnTransition: true },
-        wrong:         { path: 'se/system/wrong.mp3',       volume: 0.9, persistOnTransition: true },
+        // ただし原音は長めなので 2x 倍速で圧縮してスピード感を出す (ピッチも少し上がる)。
+        correct:       { path: 'se/system/correct.mp3',     volume: 0.7, persistOnTransition: true, playbackRate: 2.0 },
+        wrong:         { path: 'se/system/wrong.mp3',       volume: 0.9, persistOnTransition: true, playbackRate: 2.0 },
         // timeout / gG2Betray / gB21Death は resolve 後 1500ms 前後で
         // Router.show() が走るため、persist が無いと abortAll の
         // 200ms フェードで切れてしまう。最後まで鳴らすため persist する。
@@ -438,17 +445,26 @@
         stageStart:    null,
         // ランク発表: 元はジャジャーン → b17_glitch (ノイズ) の単打 (b20_out 重ねは発火側で)
         rankReveal:    { path: 'se/gimmick/b17_glitch.mp3', volume: 0.9 },
-        rankRevealSnap:{ path: 'se/gimmick/b20_out.mp3',    volume: 0.7 },
+        // snap は reveal と同時発音なので音量を抑えて重ね感だけ残す
+        rankRevealSnap:{ path: 'se/gimmick/b20_out.mp3',    volume: 0.5 },
         // シェア成功: 元は鉄琴キラッ → confirm 流用
         shareOk:       { path: 'se/system/confirm.mp3',     volume: 0.8 },
 
         // --- gimmick ---
+        // B02 タイプライタ演出: 元は keyTap を流用していたが、ユーザー入力音を
+        // 全廃したので専用エントリを用意。menu_cursor を極小音量で流用してカチ音を再現。
+        gB02Type:      { path: 'se/system/menu_cursor.mp3', volume: 0.1,  clipMs: 40 },
         gB04Zoom:      { path: 'se/gimmick/b04_zoom.mp3',   volume: 0.8 },
         // B05 ミラー: シャキーン差し替え → b17_glitch 短縮
         gB05Mirror:    { path: 'se/gimmick/b17_glitch.mp3', volume: 0.7, clipMs: 600 },
-        gB11Charge:    { path: 'se/gimmick/b11_charge.mp3', volume: 0.7 },
-        gB11Fire:      { path: 'se/gimmick/b11_fire.mp3',   volume: 0.9 },
-        gB16Tick:      { path: 'se/gimmick/b16_tick.mp3',   volume: 0.7 },
+        // B11 連射: 複数ビームを時間差で撃つためチャージ/発射音が多重化し得る。
+        //           同 SE の重ね鳴りは濁るだけなので exclusive で直列化する。
+        gB11Charge:    { path: 'se/gimmick/b11_charge.mp3', volume: 0.7, exclusive: true },
+        gB11Fire:      { path: 'se/gimmick/b11_fire.mp3',   volume: 0.9, exclusive: true },
+        // B16 偽カウントダウン: 以前は 300ms ごとに tick を叩きまくって途切れ感が出ていた。
+        // 改修: 単一ループ SE を 3x 倍速で流し続ける方式に変更 (registry.js 側でも連打停止)。
+        //       これで途切れなく「ザーッ」と時計が走る感じになる。
+        gB16Tick:      { path: 'se/gimmick/b16_tick.mp3',   volume: 0.45, loop: true, playbackRate: 3.0 },
         gB16Alarm:     { path: 'se/gimmick/b16_alarm.mp3',  volume: 0.85 },
         gB17Glitch:    { path: 'se/gimmick/b17_glitch.mp3', volume: 0.8 },
         gB18Notify:    { path: 'se/gimmick/b18_notify.mp3', volume: 0.9 },
@@ -471,13 +487,15 @@
     function fire(name) {
         const spec = SE_SPEC[name];
         if (!spec) return null;           // null = 無音マッピング (仕様的にミュート)
-        if (spec.loop) return playLoop(spec.path, spec.volume);
+        if (spec.loop) return playLoop(spec.path, spec.volume, spec.playbackRate || 1.0);
         const opts = {
             volume: spec.volume,
             clipMs: spec.clipMs,
             persist: !!spec.persistOnTransition,
             // SE 素材の頭に無音があるやつはここで個別に skip させる
             startOffsetMs: spec.startOffsetMs,
+            // 2x 倍速再生など (正解/不正解 SE を短く圧縮するのに使う)
+            playbackRate: spec.playbackRate,
         };
         if (spec.exclusive) return playExclusive(spec.path, opts);
         return play(spec.path, opts);

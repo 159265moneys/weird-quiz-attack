@@ -119,27 +119,36 @@
             const numEl = host.querySelector('.gk-b16-num');
             const TOTAL_MS = 20000; // 3倍速: 表示60秒 ÷ 3 = 実時間20秒
             const startAt = Date.now();
-            let lastSecond = -1;
             let alarmed = false;
+
+            // tick 音はループ SE を 3x 倍速で流し続ける (audio.js 側で設定済)。
+            // 以前は毎秒 3 回叩いて途切れ感が強かったが、単一ループに変えたことで
+            // 途切れないスピード感のある「ザーッ」とした時計音になる。
+            window.SE?.fire('gB16Tick');
+
             const timer = setInterval(() => {
                 const remainMs = Math.max(0, TOTAL_MS - (Date.now() - startAt));
                 const sec = Math.floor((remainMs / TOTAL_MS) * 60);
-                // 見かけ上の秒が進んだ瞬間に tick
-                if (sec !== lastSecond) {
-                    lastSecond = sec;
-                    if (remainMs > 0) window.SE?.fire('gB16Tick');
-                }
                 const mm = Math.floor(sec / 60).toString().padStart(2, '0');
                 const ss = (sec % 60).toString().padStart(2, '0');
                 numEl.textContent = `${mm}:${ss}`;
                 if (remainMs <= 0) {
                     numEl.textContent = '00:00';
-                    if (!alarmed) { alarmed = true; window.SE?.fire('gB16Alarm'); }
+                    if (!alarmed) {
+                        alarmed = true;
+                        // tick ループを止めてアラームを鳴らす。さらに b17_glitch を
+                        // 重ねて「不協和音系」の警告感を追加 (ユーザー要望)。
+                        window.SE?.stopNamed('gB16Tick');
+                        window.SE?.fire('gB16Alarm');
+                        window.SE?.fire('gB17Glitch');
+                    }
                     clearInterval(timer);
                 }
             }, 100);
             return () => {
                 clearInterval(timer);
+                // 解答確定などで dispose された時も tick ループを必ず止める
+                window.SE?.stopNamed('gB16Tick');
                 host.remove();
             };
         },
@@ -222,7 +231,8 @@
                 }
                 stem.textContent = chars.slice(0, i + 1).join('');
                 // タイプライタ音: 2文字に1回 (連打しすぎない)
-                if (i % 2 === 0) window.SE?.fire('keyTap');
+                // keyTap は廃止されたので専用エントリ gB02Type に差し替え済
+                if (i % 2 === 0) window.SE?.fire('gB02Type');
                 i++;
             }, 90 + Math.random() * 40);
             return () => {
