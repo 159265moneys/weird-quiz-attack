@@ -1,166 +1,291 @@
 /* ============================================================
-   audio.js — 効果音 (SE) ラッパ
+   audio.js — 効果音 (SE) ラッパ (Web Audio API 実装)
    ------------------------------------------------------------
    設計方針:
-     - HTMLAudio プール方式。短尺SE中心なので低負荷。
-     - 初回ユーザー操作でアンロック (iOS Safari 対策)。
-     - 同時再生可 (overlap)。排他再生・ループ・クリップ再生も対応。
+     - Web Audio API (AudioContext + AudioBuffer) ベース。
+       * iOS WKWebView / Android Chrome どちらでも確実にアンロック可能
+         (AudioContext.resume() が公式 API)。
+       * decodeAudioData で全 SE を PCM としてメモリ展開しておくため
+         「初回再生が 0.x 秒遅れる」症状が構造的に出ない。
+       * AudioBufferSourceNode は使い捨てなのでプール管理不要。
+         多重再生は上限なく確実。
+     - 外部 API (`window.SE.*`) は HTMLAudio 版と完全互換。
+       呼び出し側コード (registry.js / question.js / result.js 等) は
+       一切変更する必要が無い。
 
    API:
-     Audio.play(path, {volume, clipMs, key})
-        path      : audio/se/... の相対パス
-        volume    : 0.0〜1.0 (既定 1.0)
-        clipMs    : ミリ秒指定で先頭からだけ再生してフェードアウト
-                    (例: 長尺 b20_in.mp3 の先頭 1500ms だけ使う)
-        key       : 同 key の既存再生を先に止めたい時に指定
-                    (指定なしなら path をキーに使う)
-     Audio.playExclusive(path, opts)     ← key 指定と同義
-     Audio.playLoop(path, volume=0.3)    ← loop 再生開始
-     Audio.stop(path)                    ← loop/単発 どちらでも停止
-     Audio.abortAll()                    ← 全停止 (画面遷移時)
-     Audio.mute(flag) / Audio.isMuted()
+     SE.play(path, opts)
+        path    : audio/se/... の相対パス
+        opts    :
+          volume         0.0〜1.0 (既定 1.0)
+          clipMs         先頭からのミリ秒指定。経過後にフェードアウトして停止
+          key            排他キー。同 key の既存再生を先に止める
+                         (指定なし = 非排他、同 path でも独立に重ねる)
+          persist        true: abortAll(force=false) で停止しない
+          startOffsetMs  先頭無音を飛ばして再生開始
+     SE.playExclusive(path, opts)  = play(path, {key:path, ...opts})
+     SE.playLoop(path, volume=0.3) = loop 再生 (active[path] で管理)
+     SE.stop(path)                  = loop/排他 の停止
+     SE.abortAll(fadeMs=200, force=false)
+         全停止 (画面遷移時)。persist は force=true でのみ止める
+     SE.mute(flag) / SE.isMuted()
+     SE.setMasterVolume(v) / SE.getMasterVolume()
+     SE.fire(name) / SE.stopNamed(name)  ← SE_SPEC ベースのセマンティック層
    ============================================================ */
 
 (function () {
     const BASE = 'audio/';
-    // 同SE同時再生上限。短尺のタップ音/スコアtick等は連打されると
-    // 6 では足りず、プール満杯で oldest を強制上書き = "前に鳴ったやつが
-    // 途中で消される" という現象が起きるため余裕を持って 16 にする。
-    const MAX_POOL_PER_KEY = 16;
+    // フェードアウトで 0 にすると Safari が「値が変わらなかった」とみなす
+    // 場合があるので、極小正値まで落として stop() する。
+    const FADE_MIN = 0.0001;
 
-    // path -> [{el, expiresAt}] のプール (単発用 / 終了を待たず再利用)
-    const pool = new Map();
-    // loop/exclusive 用の現在再生中マップ (key -> HTMLAudioElement)
+    // ---- AudioContext 本体 ----
+    let audioCtx = null;
+    let masterGain = null;       // masterVolume × (muted?0:1) を掛ける最上位 gain
+    const buffers = new Map();   // path -> AudioBuffer
+    const fetchPromises = new Map(); // path -> Promise<AudioBuffer|null> (二重 fetch 抑止)
+
+    // ---- 再生中状態 ----
+    // active: 排他 (key) で 1 本だけ保持するもの。loop/exclusive 用
+    //   key -> entry
     const active = new Map();
-    // ミュート状態 (後でオプション画面とか繋げる)
+    // liveSources: 現在鳴っている全 entry の集合 (abortAll で走査する用)
+    //   非排他単発もここに入る。entry.source.onended で自動的に抜ける。
+    const liveSources = new Set();
+
+    // ---- フラグ ----
     let muted = false;
     let unlocked = false;
-    // マスター音量 (設定画面から変更される)。spec.volume に掛け合わせて適用。
     let masterVolume = 1.0;
 
-    // 初回タップでモバイルの autoplay 制限を解除
-    function unlockOnce() {
-        if (unlocked) return;
-        unlocked = true;
-        // ダミーの無音再生を一度だけ走らせることで以後の play() が許可される
+    // ====== AudioContext 準備 ======
+    function ensureCtx() {
+        if (audioCtx) return audioCtx;
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return null;
         try {
-            const a = new Audio();
-            a.muted = true;
-            a.play().catch(() => {/* noop */});
-        } catch (_) { /* noop */ }
-        // 念のためアンロック直後にも preloadAll (スクリプト読込直後の fetch が
-        // まだ届いてなかったり キャッシュ弾きされた場合のリトライ) を走らせる。
-        try { preloadAll(); } catch (_) {}
+            audioCtx = new Ctx();
+            masterGain = audioCtx.createGain();
+            masterGain.gain.value = muted ? 0 : masterVolume;
+            masterGain.connect(audioCtx.destination);
+        } catch (e) {
+            // iOS の超旧版などで user-gesture 無しに new AudioContext が弾かれる
+            // 場合は null のまま。次の user-gesture (unlockOnce) で再試行される。
+            console.warn('[SE] AudioContext init failed:', e);
+            audioCtx = null;
+            masterGain = null;
+        }
+        return audioCtx;
     }
 
-    // 指定 path の Audio を 1 本だけ pool に先置きしてデコードをキックする
-    function preload(path) {
-        let list = pool.get(path);
-        if (!list) { list = []; pool.set(path, list); }
-        if (list.length > 0) return;
-        const el = new Audio(BASE + path);
-        el.preload = 'auto';
-        try { el.load(); } catch (_) {}
-        list.push({ el });
+    // ====== デコード済みバッファの取得 (memoize) ======
+    function loadBuffer(path) {
+        if (buffers.has(path)) return Promise.resolve(buffers.get(path));
+        if (fetchPromises.has(path)) return fetchPromises.get(path);
+        const ctx = ensureCtx();
+        if (!ctx) return Promise.resolve(null);
+
+        const url = BASE + encodeURI(path);
+        const p = fetch(url)
+            .then((r) => {
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                return r.arrayBuffer();
+            })
+            .then((ab) => new Promise((resolve, reject) => {
+                // Safari 旧版は Promise 返さないので callback 形式で包む。
+                // Promise 版対応ブラウザでも callback 版は同じ挙動で動く。
+                try {
+                    const ret = ctx.decodeAudioData(ab, resolve, reject);
+                    if (ret && typeof ret.then === 'function') {
+                        ret.then(resolve, reject);
+                    }
+                } catch (e) { reject(e); }
+            }))
+            .then((buf) => {
+                buffers.set(path, buf);
+                fetchPromises.delete(path);
+                return buf;
+            })
+            .catch((err) => {
+                fetchPromises.delete(path);
+                console.warn('[SE] load failed:', path, err);
+                return null;
+            });
+        fetchPromises.set(path, p);
+        return p;
     }
 
     function preloadAll() {
+        if (!ensureCtx()) return;
         const seen = new Set();
         for (const name in SE_SPEC) {
             const spec = SE_SPEC[name];
             if (!spec || !spec.path) continue;
             if (seen.has(spec.path)) continue;
             seen.add(spec.path);
-            preload(spec.path);
+            // fire-and-forget。失敗は loadBuffer 内で握りつぶして warn。
+            loadBuffer(spec.path);
+        }
+    }
+
+    // ====== ユーザー操作でのアンロック ======
+    function unlockOnce() {
+        const ctx = ensureCtx();
+        if (!ctx) return;
+        if (ctx.state !== 'running') {
+            // iOS WKWebView ではこれが「有効な user-gesture 起点の再生予約」と
+            // みなされて、以後の source.start() が通るようになる。
+            ctx.resume().catch(() => { /* noop */ });
+        }
+        if (!unlocked) {
+            unlocked = true;
+            // preload を保険でもう一度走らせる (スクリプト読込直後の preload が
+            // まだ完了していない、もしくはキャッシュ弾きされた場合に備えて)。
+            preloadAll();
         }
     }
 
     function installUnlockGuard() {
-        const handler = () => {
-            unlockOnce();
-            document.removeEventListener('pointerdown', handler);
-            document.removeEventListener('touchstart', handler);
-            document.removeEventListener('keydown', handler);
+        const handler = () => { try { unlockOnce(); } catch (_) {} };
+        // 永続リスナ。iOS は着信 / 他アプリ復帰で ctx が suspended に戻るため
+        // 毎回 user-gesture で resume を試みる。
+        document.addEventListener('pointerdown', handler, { passive: true });
+        document.addEventListener('touchstart',  handler, { passive: true });
+        document.addEventListener('keydown',     handler);
+        // visibilitychange: 他アプリから戻ったとき suspended ならリジュームを試みる
+        //                   (user-gesture 必須なので成功は保証されないが、復帰直後の
+        //                    タップで確実に動くようにする最善手)。
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && audioCtx
+                && audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+        });
+    }
+
+    // ====== 内部: 1 発再生する ======
+    // buffer を鳴らして {source, gain, persistOnTransition, stopped} を返す。
+    // 失敗時 null。
+    function startBuffer(buffer, opts) {
+        if (!audioCtx || !masterGain || !buffer) return null;
+        const gainNode = audioCtx.createGain();
+        const baseVol = opts.volume == null ? 1.0 : Number(opts.volume);
+        gainNode.gain.value = clampVol(baseVol);  // master は別 node で掛ける
+        gainNode.connect(masterGain);
+
+        const src = audioCtx.createBufferSource();
+        src.buffer = buffer;
+        src.loop = !!opts.loop;
+        src.connect(gainNode);
+
+        const entry = {
+            source: src,
+            gain: gainNode,
+            persistOnTransition: !!opts.persist,
+            loop: !!opts.loop,
+            stopped: false,
+            key: opts.key || null,
         };
-        document.addEventListener('pointerdown', handler, { once: false });
-        document.addEventListener('touchstart', handler, { once: false });
-        document.addEventListener('keydown', handler, { once: false });
+        liveSources.add(entry);
+        src.onended = () => {
+            entry.stopped = true;
+            liveSources.delete(entry);
+            try { src.disconnect(); } catch (_) {}
+            try { gainNode.disconnect(); } catch (_) {}
+            // active に自分が残ってたら掃除 (自然終了で抜ける loop/排他)
+            if (entry.key && active.get(entry.key) === entry) {
+                active.delete(entry.key);
+            }
+        };
+
+        const offsetSec = Math.max(0, (opts.startOffsetMs || 0) / 1000);
+        try {
+            src.start(audioCtx.currentTime, offsetSec);
+        } catch (e) {
+            // start が既に呼ばれていたら捨てる
+            liveSources.delete(entry);
+            try { src.disconnect(); } catch (_) {}
+            try { gainNode.disconnect(); } catch (_) {}
+            return null;
+        }
+
+        // clipMs: 先頭 clipMs ms だけ鳴らしてフェードアウト & 停止を AudioContext の
+        // スケジューラに予約する (setTimeout ではなくサンプル精度)。
+        if (opts.clipMs) {
+            const FADE_MS = 180;
+            const startAt = audioCtx.currentTime + opts.clipMs / 1000;
+            const endAt   = startAt + FADE_MS / 1000;
+            try {
+                gainNode.gain.setValueAtTime(gainNode.gain.value, startAt);
+                gainNode.gain.linearRampToValueAtTime(FADE_MIN, endAt);
+                src.stop(endAt + 0.02);
+            } catch (_) { /* noop */ }
+        }
+        return entry;
     }
 
-    function acquire(path) {
-        let list = pool.get(path);
-        if (!list) { list = []; pool.set(path, list); }
-        // 終了/一時停止のインスタンスがあれば再利用 (再生中のものは触らない)
-        for (const entry of list) {
-            if (entry.el.ended || entry.el.paused) return entry.el;
+    // ====== 停止系 ======
+    // 指定 entry をフェードアウトして停止。
+    function fadeStopEntry(entry, fadeMs = 200) {
+        if (!entry || entry.stopped || !audioCtx) return;
+        entry.stopped = true;
+        const now = audioCtx.currentTime;
+        const endAt = now + Math.max(0, fadeMs) / 1000;
+        try {
+            entry.gain.gain.cancelScheduledValues(now);
+            entry.gain.gain.setValueAtTime(entry.gain.gain.value, now);
+            entry.gain.gain.linearRampToValueAtTime(FADE_MIN, endAt);
+        } catch (_) {}
+        try {
+            entry.source.stop(endAt + 0.02);
+        } catch (_) {
+            // すでに stop 済みで InvalidStateError 等は無視
         }
-        if (list.length < MAX_POOL_PER_KEY) {
-            const el = new Audio(BASE + path);
-            el.preload = 'auto';
-            list.push({ el });
-            return el;
-        }
-        // 上限到達 = 全て再生中。やむを得ず最もゴールに近い (currentTime が
-        // duration に近い) 1 本を選んで再利用する。list[0] 固定だと、
-        // 冒頭から鳴り始めた SE が一番早く犠牲になるので。
-        let victim = list[0].el;
-        let bestRatio = 0;
-        for (const { el } of list) {
-            const dur = el.duration || 1;
-            const r = (el.currentTime || 0) / dur;
-            if (r > bestRatio) { bestRatio = r; victim = el; }
-        }
-        try { victim.pause(); } catch (_) {}
-        victim.currentTime = 0;
-        return victim;
     }
 
+    // 即停止 (ループを切りたい時用)。
+    function hardStopEntry(entry) {
+        if (!entry || entry.stopped) return;
+        entry.stopped = true;
+        try { entry.source.stop(); } catch (_) {}
+    }
+
+    // ====== 公開: play / playExclusive / playLoop / stop ======
     function play(path, opts = {}) {
         if (muted) return null;
+        ensureCtx();
 
-        // "排他" は opts.key を明示的に渡した時 (= playExclusive/playLoop 経由)
-        // に限定する。非排他の通常 play() が、前に鳴ったループや exclusive
-        // SE を勝手に止めてしまう事故を防ぐ。
-        // (以前は const key = opts.key || path で active を常に参照していたため、
-        //  たまたま同じ path を使う非排他 SE が先行 SE を蹴っていた)
+        // 排他 key 指定があれば、既存を即断してから新規を鳴らす。
         if (opts.key) {
             const prev = active.get(opts.key);
-            if (prev) { try { prev.pause(); } catch (_) {} active.delete(opts.key); }
+            if (prev) {
+                hardStopEntry(prev);
+                active.delete(opts.key);
+            }
         }
 
-        const el = acquire(path);
-        // 以前のこの el に仕掛けた fade / clip タイマーを全部解除してから再生する。
-        // これをやらないと、"前回の play で予約された setTimeout(fadeStop) が
-        // 再利用された新しい再生を途中で殺す" 事故が起きる。
-        // (同 path を連打した時に「2回目の音がプツッと切れる」症状の根本原因)
-        cancelFade(el);
-        cancelClip(el);
-        el.loop = false;
-        // spec.volume * masterVolume をかけて適用 (設定画面のスライダと連動)
-        const baseVol = opts.volume == null ? 1.0 : Number(opts.volume);
-        el.volume = clampVol(baseVol * masterVolume);
-        // abortAll が画面遷移時にこの SE を強制停止するか判定する印。
-        // true なら次画面の頭に被って完走させる (正解/不正解音など)。
-        if (opts.persist) el.dataset.persistOnTransition = '1';
-        else delete el.dataset.persistOnTransition;
-        // 先頭無音スキップ (opts.startOffsetMs 指定時、その位置から再生開始)。
-        // SE 素材の頭に 50-200ms の無音マージンがあるとユーザー体感で "SE が遅れる" と
-        // 感じるので、該当 SE だけこっちで補正する。
-        const offsetSec = (opts.startOffsetMs || 0) / 1000;
-        try { el.currentTime = offsetSec; } catch (_) {}
-        const playPromise = el.play();
-        if (playPromise && playPromise.catch) playPromise.catch(() => {});
-
-        if (opts.key) active.set(opts.key, el);
-
-        if (opts.clipMs) {
-            // 新しい clipTimer を保持 (次回 play/abortAll 時にキャンセルできるよう)
-            el._clipTimer = setTimeout(() => {
-                el._clipTimer = null;
-                try { fadeStop(el, 180); } catch (_) {}
-            }, opts.clipMs);
+        const buf = buffers.get(path);
+        if (buf) {
+            const entry = startBuffer(buf, opts);
+            if (entry && opts.key) active.set(opts.key, entry);
+            return entry;
         }
-        return el;
+
+        // まだデコードが完了していない場合、完了後に再生。
+        // ユーザー体感の遅延を避けるため、preloadAll でほぼ全ての SE は
+        // スクリプト読込段階で decode 済みになっているが、念のためのフォールバック。
+        loadBuffer(path).then((b) => {
+            if (!b) return;
+            if (muted) return;
+            // 間に mute や別の exclusive 呼び出しが入ってるかも。再チェック。
+            if (opts.key) {
+                const prev = active.get(opts.key);
+                if (prev) { hardStopEntry(prev); active.delete(opts.key); }
+            }
+            const entry = startBuffer(b, opts);
+            if (entry && opts.key) active.set(opts.key, entry);
+        });
+        return null;
     }
 
     function playExclusive(path, opts = {}) {
@@ -169,107 +294,103 @@
 
     function playLoop(path, volume = 0.3) {
         if (muted) return null;
-        stop(path); // 同ループ多重起動防止
-        const el = new Audio(BASE + path);
-        el.loop = true;
-        el.volume = clampVol(volume * masterVolume);
-        el.preload = 'auto';
-        const p = el.play();
-        if (p && p.catch) p.catch(() => {});
-        active.set(path, el);
-        return el;
+        ensureCtx();
+        // 同 path の loop/排他があれば止める
+        stop(path);
+        const opts = { volume, loop: true, key: path };
+        const buf = buffers.get(path);
+        if (buf) {
+            const entry = startBuffer(buf, opts);
+            if (entry) active.set(path, entry);
+            return entry;
+        }
+        loadBuffer(path).then((b) => {
+            if (!b || muted) return;
+            if (active.has(path)) return;  // 直近で別が始まっていれば何もしない
+            const entry = startBuffer(b, opts);
+            if (entry) active.set(path, entry);
+        });
+        return null;
     }
 
     function stop(path) {
-        const el = active.get(path);
-        if (!el) return;
-        try { el.pause(); } catch (_) {}
+        const entry = active.get(path);
+        if (!entry) return;
+        if (entry.loop) {
+            hardStopEntry(entry);  // ループは即断で切替感を出す
+        } else {
+            fadeStopEntry(entry, 80);
+        }
         active.delete(path);
     }
 
-    // 画面遷移時の一斉停止。ブツ切れ回避のため短いフェードアウトをかけてから止める。
-    // ループ系はフェード不要 (長尺の残響が問題になりにくく、即断の方が切替感が出る)。
-    //   force = true: persistOnTransition も含めて完全停止 (ミュート時用)
+    // ====== 画面遷移で全停止 ======
+    //   fadeMs: フェード秒数 (既定 200ms)
+    //   force:  true なら persistOnTransition も含めて止める (mute 時)
     function abortAll(fadeMs = 200, force = false) {
-        // active (ループ/排他): ループは即停止、exclusive単発はフェード
-        // persistOnTransition が立っている要素は完走させる (active からだけ外す)
-        for (const el of active.values()) {
-            if (!force && el.dataset.persistOnTransition === '1') continue;
-            // 停止時に stale な clip/fade timer が残ると、後で reuse された時に
-            // 新しい再生を殺す原因になる。abortAll 時点で明示的にクリア。
-            cancelClip(el);
-            if (el.loop) {
-                try { el.pause(); } catch (_) {}
-            } else {
-                fadeStop(el, fadeMs);
-            }
+        // active (排他/ループ): ループは即断、排他単発はフェード。
+        const toDelete = [];
+        for (const [key, entry] of active.entries()) {
+            if (!force && entry.persistOnTransition) continue;
+            if (entry.loop) hardStopEntry(entry);
+            else            fadeStopEntry(entry, fadeMs);
+            toDelete.push(key);
         }
-        // active からは persist 要素も外す (次画面で同じ key の再生を妨げないように)
-        active.clear();
-        // 単発プール側: 再生中のやつだけフェードアウト (persist は飛ばす)
-        for (const list of pool.values()) {
-            for (const { el } of list) {
-                if (!force && el.dataset.persistOnTransition === '1') continue;
-                cancelClip(el);
-                if (!el.paused && !el.ended) {
-                    fadeStop(el, fadeMs);
-                }
-            }
+        for (const k of toDelete) active.delete(k);
+
+        // liveSources: 非排他単発 + 排他のエイリアス (両方入っている)。
+        // 既に hardStop/fadeStop で止めたものは entry.stopped=true でスキップ。
+        for (const entry of Array.from(liveSources)) {
+            if (entry.stopped) continue;
+            if (!force && entry.persistOnTransition) continue;
+            if (entry.loop) hardStopEntry(entry);
+            else            fadeStopEntry(entry, fadeMs);
         }
     }
 
-    // ミュートは persist 音も含め完全停止 (ユーザー操作を尊重)。
-    function mute(flag) { muted = !!flag; if (muted) abortAll(200, true); }
+    // ====== ミュート / 音量 ======
+    function mute(flag) {
+        muted = !!flag;
+        // masterGain を実ゲインでも 0 にする (将来スケジュール済みの音にも効く)。
+        if (masterGain && audioCtx) {
+            const now = audioCtx.currentTime;
+            try {
+                masterGain.gain.cancelScheduledValues(now);
+                masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+                masterGain.gain.linearRampToValueAtTime(
+                    muted ? 0 : masterVolume,
+                    now + 0.12
+                );
+            } catch (_) {}
+        }
+        // 鳴っている音も全停止 (persist 音含めて ユーザー操作を尊重)
+        if (muted) abortAll(200, true);
+    }
     function isMuted() { return muted; }
+
+    function setMasterVolume(v) {
+        masterVolume = clampVol(v);
+        if (masterGain && audioCtx && !muted) {
+            const now = audioCtx.currentTime;
+            try {
+                masterGain.gain.cancelScheduledValues(now);
+                masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+                masterGain.gain.linearRampToValueAtTime(masterVolume, now + 0.05);
+            } catch (_) {}
+        }
+    }
+    function getMasterVolume() { return masterVolume; }
 
     function clampVol(v) {
         if (v == null) return 1.0;
-        return Math.max(0, Math.min(1, Number(v)));
+        const n = Number(v);
+        if (!isFinite(n)) return 1.0;
+        return Math.max(0, Math.min(1, n));
     }
-
-    // 短くフェードアウトしてから停止 (clipMs 用 + abortAll 用)
-    // 再生直後に fade が被って鳴らなくなるのを防ぐため、各要素に _fadeTimer を貯めて
-    // 新規 play() 時にキャンセルする (play 側で cancelFade() を呼ぶ)。
-    function fadeStop(el, durationMs = 200) {
-        // 先に stale timer をクリア (paused で早期 return しても timer が残らないよう)
-        cancelFade(el);
-        if (el.paused) return;
-        const startVol = el.volume;
-        const steps = 10;
-        const dt = Math.max(10, Math.floor(durationMs / steps));
-        let i = 0;
-        el._fadeTimer = setInterval(() => {
-            i++;
-            el.volume = Math.max(0, startVol * (1 - i / steps));
-            if (i >= steps) {
-                cancelFade(el);
-                try { el.pause(); el.volume = startVol; } catch (_) {}
-            }
-        }, dt);
-    }
-
-    function cancelFade(el) {
-        if (el && el._fadeTimer) {
-            clearInterval(el._fadeTimer);
-            el._fadeTimer = null;
-        }
-    }
-
-    // clipMs 用の stale な停止タイマーを解除。
-    // play() が pool から古い el を再利用するとき、前回の setTimeout(fadeStop)
-    // が残っていると新しい再生を途中で殺すので必ず呼ぶ。
-    function cancelClip(el) {
-        if (el && el._clipTimer) {
-            clearTimeout(el._clipTimer);
-            el._clipTimer = null;
-        }
-    }
-
-    installUnlockGuard();
 
     // ------------------------------------------------------------
     // セマンティック SE 層
-    //   各発火点は SE.fire('correct') / SE.fire('gimmick.b04Zoom') の形で呼ぶ。
+    //   各発火点は SE.fire('correct') / SE.fire('gB21Death') の形で呼ぶ。
     //   世界観に合わない音は厳格フィルタにより差し替え/無音化する。
     //
     //   ★ 厳格フィルタでの差し替え:
@@ -349,7 +470,7 @@
 
     function fire(name) {
         const spec = SE_SPEC[name];
-        if (!spec) return null;           // 無音マッピング
+        if (!spec) return null;           // null = 無音マッピング (仕様的にミュート)
         if (spec.loop) return playLoop(spec.path, spec.volume);
         const opts = {
             volume: spec.volume,
@@ -362,21 +483,18 @@
         return play(spec.path, opts);
     }
 
-    function setMasterVolume(v) {
-        masterVolume = clampVol(v);
-    }
-    function getMasterVolume() { return masterVolume; }
-
     function stopNamed(name) {
         const spec = SE_SPEC[name];
-        if (!spec) return;
+        if (!spec || !spec.path) return;
         stop(spec.path);
     }
 
-    // スクリプト読込直後に全 SE の fetch & decode を開始。
-    // `new Audio()` 自体は user-activation を要求しないので autoplay block の
-    // 影響を受けない。これにより「初回 SE が 0.x 秒遅れる (decode 待ち)」症状を解消。
-    try { preloadAll(); } catch (_) {}
+    // ====== 初期化 ======
+    installUnlockGuard();
+    // スクリプト読込直後に ctx を作って全 SE の fetch & decode を開始。
+    // AudioContext は user-gesture 無しだと suspended 状態で生成されるが、
+    // decodeAudioData はそれでも実行できるので、タップ前に全 SE が decode 済みになる。
+    try { ensureCtx(); preloadAll(); } catch (_) {}
 
     window.SE = {
         // 低レベル (path 指定)
