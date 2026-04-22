@@ -160,29 +160,30 @@
 }
 
 /* ---------- B18 偽エラー: スマホの「インターネット未接続」に寄せる ---------- */
-/* 暗転オーバーレイ (UI 全体を鈍らせる) */
+/* #stage 直下に配置 → .screen にかかる scale/transform 影響を受けない。
+   1.5 倍サイズ + z-index 最上位で他ギミックの影響を完全遮断。 */
 .gk-b18-backdrop {
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.55);
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
-    z-index: 90;
+    z-index: 9998;
     opacity: 0;
     transition: opacity 0.22s ease;
     pointer-events: none;
 }
 .gk-b18-backdrop.is-on { opacity: 1; }
 
-/* iOS 風アラートカード */
+/* iOS 風アラートカード (1.5倍) */
 .gk-b18-alert {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(1.06);
+    transform: translate(-50%, -50%) scale(1.56);
     width: 520px;
     max-width: 90%;
-    z-index: 91;
+    z-index: 9999;
     background: rgba(245, 245, 247, 0.96);
     border-radius: 28px;
     overflow: hidden;
@@ -199,7 +200,7 @@
 }
 .gk-b18-alert.is-on {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%) scale(1.5);
 }
 
 .gk-b18-alert-body {

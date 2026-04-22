@@ -36,6 +36,7 @@ class Gimmick:
     difficulty: int
     conflicts: List[str] = field(default_factory=list)
     implemented: bool = True # False なら MVP 未実装
+    exclude_from_pool: bool = False   # True なら通常抽選対象外 (B18 等の特別枠)
 
 
 # --- MVP 実装済み 18 ギミック (registry.js と同期) ---
@@ -43,7 +44,7 @@ REGISTRY: List[Gimmick] = [
     # Stage 1 (Batch 1)
     Gimmick('B11', 'コーナービーム',         'both', 1, 4),
     Gimmick('B16', '高速カウントダウン',     'both', 1, 2),
-    Gimmick('B18', '偽エラー表示',           'both', 1, 2),
+    Gimmick('B18', '偽エラー表示',           'both', 1, 2, exclude_from_pool=True),
     # Stage 2
     Gimmick('B03', '問題文逆さ',             'both', 2, 3),
     Gimmick('B07', 'グリッチ',               'both', 2, 3, conflicts=['B12', 'B13']),
@@ -186,6 +187,8 @@ def pick_gimmicks(stage: StageConfig, q_mode: str, registry: List[Gimmick],
         return []
     pool = pool_for_stage(stage.no, registry)
     pool = filter_by_mode(pool, q_mode)
+    # B18 等の「特別枠」は通常抽選対象外
+    pool = [g for g in pool if not g.exclude_from_pool]
     if not pool:
         return []
     if conflict_map is None:

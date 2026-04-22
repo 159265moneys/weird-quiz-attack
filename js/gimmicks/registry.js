@@ -137,14 +137,20 @@
     // 本物のスマホの「インターネット接続エラー」ダイアログに寄せる。
     // 問題中ずっと表示しっぱなし。背景は暗転、ダイアログは pointer-events:none で
     // 見た目上ブロックされてるように見えるが実際は操作可能 (フェイク)。
+    // B18 偽エラー表示: ユーザ評価が特に良いので「全ステージで必ず1回は出す」特別枠。
+    // - `excludeFromPool: true` で通常抽選から除外 (二重発生防止)
+    // - engine.js 側で session.b18Slot と idx が一致する回に強制適用
+    // - DOM は #stage にマウント → B09 (SHRINK) 等 .screen にかかる scale の影響を受けない
+    // - 1.5倍表示、z-index 最上位
     const B18_FAKE_ERROR = {
         id: 'B18', name: '偽エラー表示', supports: 'both', introducedAt: 1, difficulty: 2,
+        excludeFromPool: true,
         apply(ctx) {
-            // 1. 暗転オーバーレイ (UI を鈍らせる)
+            const stage = document.getElementById('stage') || document.body;
+
             const backdrop = document.createElement('div');
             backdrop.className = 'gk-b18-backdrop';
 
-            // 2. iOS 風アラート (白カード + 丸角 + 影)
             const alert = document.createElement('div');
             alert.className = 'gk-b18-alert';
             alert.innerHTML = `
@@ -161,10 +167,9 @@
                 </div>
             `;
 
-            ctx.screen.appendChild(backdrop);
-            ctx.screen.appendChild(alert);
+            stage.appendChild(backdrop);
+            stage.appendChild(alert);
 
-            // pointer-events:none にして見た目だけ閉塞感を出す (タップは通る)
             backdrop.style.pointerEvents = 'none';
             alert.style.pointerEvents = 'none';
 

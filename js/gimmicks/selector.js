@@ -19,6 +19,11 @@
         return gimmicks.filter(g => g.supports === 'both' || g.supports === qMode);
     }
 
+    // excludeFromPool: 通常抽選から除外 (B18 のような「特別枠で別経路で必ず出す」ギミック用)
+    function filterPoolable(gimmicks) {
+        return gimmicks.filter(g => !g.excludeFromPool);
+    }
+
     // ステージ別プール (設計書§9-3 準拠)
     //   Stage 1   : introducedAt === 1
     //   Stage 2-7 : introducedAt ∈ {n-1, n}  (当該 + 1個下まで)
@@ -128,9 +133,10 @@
         if (!stageConfig) return [];
         if (!count || count <= 0) return [];
 
-        // ①ステージ別プール ②回答モード の二段フィルタ
+        // ①ステージ別プール ②回答モード ③excludeFromPool除外 の三段フィルタ
         const stageOK = poolForStage(window.GimmickRegistry.all, stageNo);
-        const pool = filterByMode(stageOK, q.mode);
+        const modeOK = filterByMode(stageOK, q.mode);
+        const pool = filterPoolable(modeOK);
         if (pool.length === 0) {
             console.warn(`[Gimmick] no compatible gimmick for stage=${stageNo} mode=${q.mode}`);
             return [];

@@ -88,7 +88,13 @@
             // 各 slot に K 値 (同時ギミック数) を割当
             window.GameState.session.kAssignment =
                 window.GimmickSelector.generateKAssignment(no, slots);
-            console.log('[Stage]', no, 'slots:', slots, 'K:', window.GameState.session.kAssignment);
+            // B18 (偽エラー表示): 全ステージで 1 問だけ必ず発生する「特別枠」。
+            // 通常のギミックスロットに依存せず重ねて発動する。
+            window.GameState.session.b18Slot =
+                Math.floor(Math.random() * picked.length);
+            console.log('[Stage]', no, 'slots:', slots,
+                'K:', window.GameState.session.kAssignment,
+                'b18Slot:', window.GameState.session.b18Slot);
             window.Router.show('question');
         } catch (e) {
             console.error(e);

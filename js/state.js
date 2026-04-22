@@ -17,6 +17,7 @@ window.GameState = {
         score: 0,
         gimmickSlots: [],   // ギミック発動問題の index 配列 (0..19)
         kAssignment: {},    // { slotIdx: K } そのスロットで同時発動するギミック数
+        b18Slot: -1,        // B18 偽エラー表示の特別枠: この index で必ず発動
         instantDeath: false,// B21 適用中フラグ
         deathEnd: false,    // B21 で強制終了したか (結果画面の演出用)
         misjudge: false,    // G2 誤判定 適用中フラグ (正解を不正解にすり替える確率)
@@ -36,6 +37,7 @@ window.GameState = {
             score: 0,
             gimmickSlots: [],
             kAssignment: {},
+            b18Slot: -1,
             instantDeath: false,
             deathEnd: false,
             misjudge: false,

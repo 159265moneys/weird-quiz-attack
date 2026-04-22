@@ -32,6 +32,9 @@
         if (!ctx.screen) return [];
 
         let picked;
+        const session = window.GameState?.session;
+        const idx = session?.index ?? -1;
+
         if (forcedIds && forcedIds.length) {
             // デバッグ強制: mode合致するものだけ適用 (非対応はスキップ)
             picked = forcedIds
@@ -40,17 +43,26 @@
                 .filter(g => g.supports === 'both' || g.supports === q.mode);
             forcedIds = null;
         } else {
-            // このインデックスが今ステージの「ギミック発動スロット」に入っていなければ何もしない
-            const session = window.GameState?.session;
             const slots = session?.gimmickSlots || [];
-            const idx = session?.index ?? -1;
             if (!slots.includes(idx)) {
-                lastAppliedIds = [];
-                return [];
+                picked = [];
+            } else {
+                const k = (session?.kAssignment && session.kAssignment[idx]) || 1;
+                picked = window.GimmickSelector.pickGimmicks(stageNo, q, k);
             }
-            // このスロットに割り当てられた K 値を引く (未設定なら 1)
-            const k = (session?.kAssignment && session.kAssignment[idx]) || 1;
-            picked = window.GimmickSelector.pickGimmicks(stageNo, q, k);
+        }
+
+        // B18 特別枠: session.b18Slot に当たった問題では B18 を強制追加 (通常枠とは別経路)
+        if (session?.b18Slot === idx) {
+            const b18 = window.GimmickRegistry?.B18_FAKE_ERROR;
+            if (b18 && !picked.some(g => g.id === 'B18')) {
+                picked = picked.concat([b18]);
+            }
+        }
+
+        if (picked.length === 0) {
+            lastAppliedIds = [];
+            return [];
         }
 
         picked.forEach(g => {

@@ -121,6 +121,8 @@
                     window.GameState.session.gimmickSlots = slots;
                     window.GameState.session.kAssignment =
                         window.GimmickSelector.generateKAssignment(no, slots);
+                    window.GameState.session.b18Slot =
+                        Math.floor(Math.random() * picked.length);
                     window.Router.show('question');
                 })();
             });
