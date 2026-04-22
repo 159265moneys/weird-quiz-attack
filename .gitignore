@@ -31,3 +31,6 @@ android/local.properties
 # Env
 .env
 .env.local
+
+# Backup files (created before destructive rewrites; keep locally)
+*.bak

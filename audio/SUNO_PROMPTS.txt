@@ -1,0 +1,296 @@
+================================================================
+  変なクイズ (WEIRD QUIZ ATTACK) — Suno.ai BGM プロンプト集 v2
+  ※ Suno v4 の "Style of Music" 欄に貼り付ける形式。
+    Title 欄は任意。必ず "Instrumental" トグルをONにする。
+================================================================
+
+--------------------------------
+【この世界の核】  プロンプトを書くとき必ず念頭に置く
+--------------------------------
+  ◆ 3SEC と同じ世界観の別作品。3SEC=秩序崩壊の「戦い」、本作=秩序崩壊の「学び」。
+  ◆ 主役: 無表情なパズルボール頭 (数学記号が刻まれた球体) の女の子。
+    セーラー服+シアン/ミントのリボン。モノクロ線画の身体。
+  ◆ 画面アクセント: 蝶 (選択ハイライト) / 浮遊する英数字記号 / VHSスキャンライン。
+  ◆ 色: モノクロ (白〜黒) + シアン #00e5ff 一点差し + 赤 #ff3340 警告 + 黄 #ffcc00 SS。
+  ◆ 質感: ターミナル/ハッカーUI に学生服の可愛さが混入した "矛盾"。
+    等幅フォントの機械的リズム × CRT/VHS グリッチ。
+  ◆ ストーリーモチーフ:
+      「崩壊した情報空間で、忘れかけた知識の断片を拾い集める。
+       目の前の画面は、もう正しく動作しない。」
+
+--------------------------------
+【全曲共通ルール】
+--------------------------------
+  ★ Instrumental / No vocals (歌詞禁止、vocal chops は許可)
+  ★ Seamless loopable (始端と終端が自然に繋がる)
+  ★ Japanese game-music heritage に軸足を置く
+      (Famicom / DS / PS1 / 同人シューティング / kusoge 系のDNA)
+  ★ 過剰に派手にしない。モノクロ映像と同居できる"余白"を残す。
+
+================================================================
+  BGM_01 : audio/bgm/title.mp3     ——  タイトル画面
+================================================================
+
+[配置場所]
+  ほぼ白背景 (#f0f0f2) に巨大ロゴ「変なクイズ」(赤-シアンのクロマチックシャドウ)。
+  右下にパズル頭少女の立ち絵 (basic.png, 腕組み)。画面全体に浮遊する英数字。
+  ロゴは6秒に一度だけ軽く震える。VHSスキャンラインは常時薄く走る。
+
+[世界観フック]  "静かな予兆" / "可愛さの裏側に何かが壊れている" / "図書館の静けさ"
+
+[Suno Prompt]
+----
+ambient electronic, monochrome cyberpunk lullaby,
+BPM 72, slow and sparse, minor 7 chords that never resolve,
+crystalline piano melody over warm CRT hum bed,
+glass-harmonica ghost notes drifting in and out,
+subtle VHS tape warble every 16 bars,
+faint dial-up modem static in the stereo periphery,
+one piercing cyan-colored synth accent per phrase, nothing more,
+Japanese RPG title screen feel (FF7, Chrono Cross influence),
+sailor uniform softness meeting hacker terminal coldness,
+the room tone of a library after system failure,
+instrumental, no vocals, seamless 60-90s loop
+----
+
+================================================================
+  BGM_02 : audio/bgm/stage_select.mp3    ——  ステージ選択画面
+================================================================
+
+[配置場所]
+  グレー背景 (#bbb) + 黒60pxグリッド。暗いステージカードが縦並び。
+  ロック中は灰色&鍵アイコン。ステージ番号はシアン (高難度は黄→赤)。
+  ステージカード選択で軽い振動感のアニメ。
+
+[世界観フック]  "機械的高揚" / "ミッション選択" / "まだ崩壊は始まっていない"
+
+[Suno Prompt]
+----
+upbeat chiptune electronic, terminal hacker dashboard music,
+BPM 118, minor key but with bouncy confidence,
+8-bit saw leads crossed with early-2000s IDM textures,
+quantized glitch arpeggios over clean sharp kicks,
+Famicom heritage meets Autechre minimalism,
+tight attack transients, 10-bit lo-fi crush on percussion,
+grid-based rhythmic precision, subtle industrial bounce,
+faint CRT scanline hiss panning slowly in stereo field,
+the music of selecting which part of reality to break first,
+instrumental, no vocals, seamless loop
+----
+
+================================================================
+  BGM_03 : audio/bgm/stage_s1_s2.mp3     ——  Stage 1-2 (TUTORIAL / WARMUP)
+================================================================
+
+[配置場所]
+  stress=E / slots 4-5 / kDist K1。プール: B11(コーナービーム)、B16(偽カウントダウン)、
+  B18(偽エラー)、B03(問題文逆さ)、B07(軽グリッチ)。崩壊は視覚ノイズのみで操作には影響ゼロ。
+
+[世界観フック]  "教育ソフトのBGM、だが何かが正しすぎて気持ち悪い" / "うっすら漂う虫の予感"
+
+[Suno Prompt]
+----
+light chiptune game music, intentionally "too innocent",
+BPM 108, major key, bouncy saw bass, cute square lead melody,
+Nintendo DS era educational software vibe (脳トレ / ことばのパズル),
+uncanny wholesomeness — a sweetness that sets off alarms,
+almost imperceptible pitch wobble on every 4th bar,
+warm digital hand-claps, playful triplet arpeggio runs,
+one tiny glitch hiccup every 32 bars that breaks the sweetness,
+sailor-school-uniform cuteness with hidden pixel decay,
+the feeling of a children's game cartridge that has been tampered with,
+instrumental, no vocals, seamless loop
+----
+
+================================================================
+  BGM_04 : audio/bgm/stage_s3_s4.mp3     ——  Stage 3-4 (GENTLE GLITCH / SOFT CHAOS)
+================================================================
+
+[配置場所]
+  stress=E / slots 7-10 / kDist K1。プール拡大: B02(問題文1文字ずつ)、B08(フェードアウト)、
+  B04(ズーム暴走)、B15(問題文逆順)、B20(暗転)、C01(選択肢シャッフル)。
+  違和感がはっきり表面化するフェーズ。
+
+[世界観フック]  "学習ソフトが壊れ始めた" / "画面が嘘をつき始める" / "うっすら IDM"
+
+[Suno Prompt]
+----
+electronic game music with glitch leaking in,
+BPM 120, driving synth beat, minor key tension slowly building,
+melodic lead with pitch-shifted artifacts every 8 bars,
+early Aphex Twin / Boards of Canada texture creeping in,
+micro-cut snare edits, granular hi-hat stutters,
+CRT static undertones, brief dropouts in the low-end,
+catchy groove but definitely wrong, uncanny valley dance music,
+system trying to stay cheerful while silently failing,
+educational software infected with slow data rot,
+instrumental, no vocals, seamless loop
+----
+
+================================================================
+  BGM_05 : audio/bgm/stage_s5_s6.mp3     ——  Stage 5-6 (NOISE FLOOR / FRAGMENTED)
+================================================================
+
+[配置場所]
+  stress=E→M / slots 12-15 / kDist K1。プール拡大: B25(キャラ妨害=パズル頭少女が8方向から
+  覗き込んでくる)、B06(色覚破壊)、B14(余白暴走)、B12(ぼかし)、B05(ミラー)、
+  W系(文字盤見えない等) 投入開始。
+
+[世界観フック]  "キャラが画面に侵入してくる" / "色彩が嘘をつく" / "ノイズフロアが上がる"
+
+[Suno Prompt]
+----
+glitch-hop, IDM, fragmented electronic beats,
+BPM 130, aggressive hi-hats with irregular displacement,
+distorted sub bass, melodic fragments that cut in and out mid-phrase,
+data corruption aesthetic, the noise floor itself becomes the hook,
+breakbeat elements with heavy stutter edits,
+tense and uncomfortable but still recognizably rhythmic,
+cyberpunk industrial palette, bit-crush 8-bit destruction,
+the sound of a puzzle-headed mannequin teleporting between rooms,
+Squarepusher meets Capsule, with menstrual-cramp-tight hats,
+instrumental, no vocals, seamless loop
+----
+
+================================================================
+  BGM_06 : audio/bgm/stage_s7_s8.mp3     ——  Stage 7-8 (DISTORTED / COLLAPSE)
+================================================================
+
+[配置場所]
+  stress=M→X / slots 19-20 / kDist K1×13+K2×7。K=2重複が混入開始。
+  B17(問題文めちゃくちゃ)、B01(反転タップ)、W04(入力ズレ)、W15(キーワープ)。
+  UIそのものが秩序を失う。
+
+[世界観フック]  "UIの秩序が音を立てて崩れる" / "ブレークコアが侵食" / "学習は既にほぼ不可能"
+
+[Suno Prompt]
+----
+breakcore influenced electronic, heavy distortion, intense glitch,
+BPM 150-160 with frequent tempo stutters every 4 bars,
+aggressive kick patterns that refuse to quantize,
+distorted synth bass in minor key, fragmented melody shards,
+wall-of-noise aesthetic, industrial percussion overkill,
+digital-collapse sound design, pitched-down vocal chops (no words),
+chaotic but mathematically precise, Venetian Snares DNA,
+synth leads half-buried under static bursts,
+urgent and overwhelming but still secretly loopable,
+the sound of a quiz show being demolished live on air,
+instrumental, no vocals, seamless loop
+----
+
+================================================================
+  BGM_07 : audio/bgm/stage_s9_s10.mp3    ——  Stage 9-10 (HELL / ABYSS)
+================================================================
+
+[配置場所]
+  stress=X / slots 20 / kDist K2×20 (S9) or K2×13+K3×7 (S10)。
+  B21(即死)、W18(キー消失)、W20(フリックシャッフル)、G1(ランダム即死)、
+  G2(誤判定)、G4(文字化け)、G7(スコア煽り)。STAGE10_POOL は最高難度のみ。
+
+[世界観フック]  "情報空間の終焉" / "学習の不可能性" / "system failure が音楽になる"
+
+[Suno Prompt]
+----
+extreme breakcore, noise music, digital hell, chaotic electronic,
+irregular BPM 170-200 constantly shifting and destabilizing,
+polyrhythmic percussion explosion, no two bars the same,
+heavy glitch distortion saturating every element,
+abrasive synth textures, industrial noise wall,
+dark ambient undertone buried beneath the chaos,
+horror game influence (Silent Hill 2 ambient beds, but destroyed),
+oppressive, relentless, and yet still somehow a loop,
+digital entropy, system-failure soundscape,
+micro-cut edits every quarter note, no stable groove allowed,
+the sound of knowledge being deleted faster than it can be read,
+instrumental, no vocals, seamless loop
+----
+
+================================================================
+  BGM_08 : audio/bgm/result_clear.mp3    ——  リザルト (SS / S / A rank)
+================================================================
+
+[配置場所]
+  暗背景(#111)。巨大ランク文字400px中央。SS=黄+赤シアンずれ / S=シアン / A=白。
+  浮遊文字は mix-blend-mode:screen で漂う。VHS演出は消す (スクショ品質保持)。
+
+[世界観フック]  "勝ったが世界はまだ壊れている" / "胴上げの向こう側でCRTが鳴いている"
+
+[Suno Prompt]
+----
+triumphant chiptune electronic, victory fanfare with glitch twist,
+BPM 128, major key with cyberpunk synth texture,
+bright square-wave lead melody, punchy electronic drums,
+game-clear music with residual VHS artifact undertones,
+catchy and satisfying yet still mechanical,
+8-bit celebration fanfare with slight glitch hiccups remaining,
+Japanese video-game result-screen aesthetic (サガ / メガテン感),
+the feeling of winning something inside a broken world,
+60-90 second arrangement with clean intro-out for looping,
+instrumental, no vocals, seamless loop
+----
+
+================================================================
+  BGM_09 : audio/bgm/result_failed.mp3   ——  リザルト (C / D rank)
+================================================================
+
+[配置場所]
+  rank-D は赤、D-Fは下位バズラベル (「令和の維管束知らず」「現代の縄文人」等)。
+  G7スコア煽り発動時は0から実スコアへ pop-in。辛辣だが悪意なくネット文化寄り。
+
+[世界観フック]  "嘲笑する game over" / "皮肉な慰め" / "パズル頭少女のため息"
+
+[Suno Prompt]
+----
+deflating electronic music, sarcastic game-over feel,
+BPM 80, minor key, sad synth melody with a clearly mocking undertone,
+slow glitch beats, pitch-bending synth bass going flat on purpose,
+Japanese kusoge game-over music, intentionally disappointing,
+lo-fi melancholy with a hint of comedic tragedy,
+VHS degradation sound design, broken chiptune feel,
+music that laughs quietly at the player while patting them on the back,
+the sound of a puzzle-headed doll sighing through CRT static,
+short loop (30-60s), kind of pathetic on purpose,
+instrumental, no vocals, seamless loop
+----
+
+================================================================
+  【Suno 生成の実運用Tips】
+================================================================
+  ・必ず [Instrumental] トグルをON。スタイル欄最後に "instrumental, no vocals" を念押しで残す。
+  ・"seamless loop" / "loopable" は v4 でもやや不安定 → 生成後に Audacity等でループ加工推奨。
+  ・v4 の "Remaster" 機能は音圧・明瞭度が上がる。タイトルBGMのような静曲で特に有効。
+  ・長めの BGM が出たら 60-90秒の"おいしい部分"を切り出してループ用マテリアルにする。
+  ・1回で理想が出ないのが普通。プロンプトは固定のままシード違いで 5-10 回回す。
+  ・BPM・key 指定は効かないことも多い。参照アーティスト (Venetian Snares 等) を
+    入れると雰囲気は寄る。固有名を嫌うケースは "breakcore influenced" 等にぼかす。
+  ・Suno が拒否したキーワードは "cyberpunk" "industrial" "glitch" 等の汎用語に置換。
+
+================================================================
+  【ファイル配置まとめ】
+================================================================
+  audio/
+  ├── bgm/
+  │   ├── title.mp3
+  │   ├── stage_select.mp3
+  │   ├── stage_s1_s2.mp3       (Stage 1-2 共通)
+  │   ├── stage_s3_s4.mp3       (Stage 3-4 共通)
+  │   ├── stage_s5_s6.mp3       (Stage 5-6 共通)
+  │   ├── stage_s7_s8.mp3       (Stage 7-8 共通)
+  │   ├── stage_s9_s10.mp3      (Stage 9-10 共通)
+  │   ├── result_clear.mp3      (SS/S/A)
+  │   └── result_failed.mp3     (C/D/F)
+  └── se/
+      ├── system/  ... 13 系統 (下記 SE_SHOPPING_LIST.txt 参照)
+      └── gimmick/ ... 11+ 系統 (同上)
+
+================================================================
+  【旧版との差分】
+================================================================
+  v1 → v2 で差し替えた主軸:
+    - 各曲に "世界観フック" を追記 (文章での目標感情の定義)
+    - 参照アーティスト (Venetian Snares / Squarepusher / Boards of Canada 等) を
+      Suno が解釈しやすい形で具体化
+    - "可愛さ × 崩壊" の矛盾が常に音像の中に残るような descriptor を徹底
+    - パズル頭少女 / 学生服 / CRT hum / 図書館 等、具体的視覚語彙の言語化
+    - Stage ごとの stress / K 分布に音像を正確にマッピング
+================================================================
