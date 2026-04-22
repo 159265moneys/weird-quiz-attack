@@ -594,5 +594,2399 @@
     ],
     "answer": 0,
     "explanation": "旬=最もおいしくて栄養価も高い時期。"
+  },
+  {
+    "id": "O041",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "野球で3アウトを取ると何が終わる？(ひらがなで)",
+    "answer_text": "こうげき",
+    "answer_variants": [],
+    "explanation": "3アウトで攻守交代（攻撃が終わる）。"
+  },
+  {
+    "id": "O042",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "サッカーで、手を使って良いポジションは？(ひらがなで)",
+    "answer_text": "ごーるきーぱー",
+    "answer_variants": [
+      "きーぱー"
+    ],
+    "explanation": "ゴールキーパー（GK）だけが手を使える。"
+  },
+  {
+    "id": "O043",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "調味料「さしすせそ」の「し」は？(ひらがなで)",
+    "answer_text": "しお",
+    "answer_variants": [],
+    "explanation": "さ=砂糖、し=塩（しお）、す=酢、せ=醤油、そ=味噌。"
+  },
+  {
+    "id": "O044",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "調味料「さしすせそ」の「す」は？(ひらがなで)",
+    "answer_text": "す",
+    "answer_variants": [
+      "すず",
+      "酢"
+    ],
+    "explanation": "さ=砂糖、し=塩、す=酢（す）、せ=醤油、そ=味噌。"
+  },
+  {
+    "id": "O045",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「ド」の次の音は？",
+    "choices": [
+      "ファ",
+      "レ",
+      "ミ",
+      "ソ"
+    ],
+    "answer": 1,
+    "explanation": "ドレミファソラシド。ドの次はレ。"
+  },
+  {
+    "id": "O046",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "水泳の基本4泳法に含まれないのはどれ？",
+    "choices": [
+      "クロール",
+      "背泳ぎ",
+      "平泳ぎ",
+      "ウォーキング"
+    ],
+    "answer": 3,
+    "explanation": "基本4泳法はクロール・背泳ぎ・平泳ぎ・バタフライ。"
+  },
+  {
+    "id": "O047",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "米を炊くときに使う調理器具は？",
+    "choices": [
+      "フライパン",
+      "炊飯器",
+      "鍋だけ",
+      "電子レンジ"
+    ],
+    "answer": 1,
+    "explanation": "一般的に炊飯器を使って米を炊く。"
+  },
+  {
+    "id": "O048",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "音楽で「forte(f)」の意味は？",
+    "choices": [
+      "静かに",
+      "普通に",
+      "強く",
+      "速く"
+    ],
+    "answer": 2,
+    "explanation": "forte(f)=強く演奏する。"
+  },
+  {
+    "id": "O049",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "絵の具の赤・青・黄を混ぜると何色になる？",
+    "choices": [
+      "紫",
+      "茶色",
+      "黒っぽい色",
+      "白"
+    ],
+    "answer": 2,
+    "explanation": "光の三原色を全部混ぜると白になるが、絵の具（色料）の三原色を混ぜると黒っぽい濁った色になる。"
+  },
+  {
+    "id": "O050",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "テニスのコートで使う道具は？",
+    "choices": [
+      "バット",
+      "ラケット",
+      "クラブ",
+      "パドル"
+    ],
+    "answer": 1,
+    "explanation": "テニスはラケットを使う。"
+  },
+  {
+    "id": "O051",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「おにぎり」の別名は？",
+    "choices": [
+      "おこわ",
+      "おむすび",
+      "まぜごはん",
+      "いなりずし"
+    ],
+    "answer": 1,
+    "explanation": "おにぎり=おむすびとも呼ぶ。"
+  },
+  {
+    "id": "O052",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "正月に食べる料理は？",
+    "choices": [
+      "おでん",
+      "おせち",
+      "すき焼き",
+      "ケーキ"
+    ],
+    "answer": 1,
+    "explanation": "正月にはおせち料理を食べる習慣がある。"
+  },
+  {
+    "id": "O053",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "バドミントンで打ち合うものを何という？(ひらがなで)",
+    "answer_text": "しゃとる",
+    "answer_variants": [
+      "シャトル"
+    ],
+    "explanation": "バドミントンではシャトル（シャトルコック）を打ち合う。"
+  },
+  {
+    "id": "O054",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "音楽で「piano(p)」は「静かに」の意味。「pp」はpより○い。○は？(ひらがなで)",
+    "answer_text": "しずか",
+    "answer_variants": [
+      "よわ"
+    ],
+    "explanation": "pp（ピアニッシモ）はp（ピアノ）より静か・弱い。"
+  },
+  {
+    "id": "O055",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "赤と青を混ぜると何色になる？(ひらがなで)",
+    "answer_text": "むらさき",
+    "answer_variants": [],
+    "explanation": "赤+青=紫（むらさき）。"
+  },
+  {
+    "id": "O056",
+    "genre": "その他",
+    "subgenre": "家庭",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "玉ねぎを切ると目が○○なる。○○は？(ひらがなで)",
+    "answer_text": "しみる",
+    "answer_variants": [
+      "いたく",
+      "からく"
+    ],
+    "explanation": "玉ねぎに含まれる硫化アリルが目にしみる。"
+  },
+  {
+    "id": "O057",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "卓球の基本的なサーブのルールは？",
+    "choices": [
+      "台の上で打つ",
+      "手のひらでボールを上げて打つ",
+      "どこから打っても良い",
+      "ネットに当てても良い"
+    ],
+    "answer": 1,
+    "explanation": "卓球のサーブは手のひらに乗せたボールを16cm以上上に投げてから打つ。"
+  },
+  {
+    "id": "O058",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「ソ」の音を示すのは何記号？",
+    "choices": [
+      "ヘ音記号",
+      "ト音記号",
+      "ハ音記号",
+      "ロ音記号"
+    ],
+    "answer": 1,
+    "explanation": "ト音記号（G clef）は第2線がGの音（ソ）を表す。"
+  },
+  {
+    "id": "O059",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「だし」をとるのに一般的に使わないものは？",
+    "choices": [
+      "昆布",
+      "かつおぶし",
+      "干し椎茸",
+      "砂糖"
+    ],
+    "answer": 3,
+    "explanation": "だしは昆布・かつおぶし・干し椎茸などで取る。砂糖はだしには使わない。"
+  },
+  {
+    "id": "O060",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「モナ・リザ」を描いたのは誰？",
+    "choices": [
+      "ミケランジェロ",
+      "ラファエロ",
+      "レオナルド・ダ・ヴィンチ",
+      "ゴッホ"
+    ],
+    "answer": 2,
+    "explanation": "モナ・リザはレオナルド・ダ・ヴィンチの作品。"
+  },
+  {
+    "id": "O061",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "バレーボールで一度の連続プレーでネットを越えるまでに何回まで触れる？",
+    "choices": [
+      "2回",
+      "3回",
+      "4回",
+      "5回"
+    ],
+    "answer": 1,
+    "explanation": "バレーボールは1チーム最大3回のタッチでネットを越える。"
+  },
+  {
+    "id": "O062",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「天ぷら」を揚げる油の温度は大体何度？",
+    "choices": [
+      "80〜100℃",
+      "120〜140℃",
+      "160〜180℃",
+      "200〜220℃"
+    ],
+    "answer": 2,
+    "explanation": "天ぷらは一般的に160〜180℃の油で揚げる。"
+  },
+  {
+    "id": "O063",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "16分音符は4分音符の何分の1の長さ？",
+    "choices": [
+      "1/2",
+      "1/4",
+      "1/8",
+      "1/16"
+    ],
+    "answer": 1,
+    "explanation": "4分音符を1とすると、16分音符=1/4拍。"
+  },
+  {
+    "id": "O064",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "水彩画で絵の具を薄めるために使うのは？",
+    "choices": [
+      "油",
+      "牛乳",
+      "水",
+      "アルコール"
+    ],
+    "answer": 2,
+    "explanation": "水彩絵の具は水で薄める。"
+  },
+  {
+    "id": "O065",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "野球の試合で合計9回行う単位を何と呼ぶ？(ひらがなで)",
+    "answer_text": "いにんぐ",
+    "answer_variants": [
+      "イニング"
+    ],
+    "explanation": "野球は9イニング制。"
+  },
+  {
+    "id": "O066",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "短調（マイナー）の音楽の雰囲気は一般的に？(ひらがなで)",
+    "answer_text": "かなしい",
+    "answer_variants": [
+      "くらい",
+      "もの悲しい"
+    ],
+    "explanation": "短調は一般に暗く・悲しい雰囲気を持つとされる。"
+  },
+  {
+    "id": "O067",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "サッカーのオフサイドは何の違反？",
+    "choices": [
+      "ボールを手で触った",
+      "相手より前にいすぎた",
+      "危険なプレー",
+      "ファール"
+    ],
+    "answer": 1,
+    "explanation": "オフサイドは攻撃側選手が相手陣のDFラインより前に出た状態でパスを受けること。"
+  },
+  {
+    "id": "O068",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「クレッシェンド」の意味は？",
+    "choices": [
+      "だんだん遅く",
+      "だんだん強く",
+      "だんだん弱く",
+      "だんだん速く"
+    ],
+    "answer": 1,
+    "explanation": "クレッシェンド（<）=だんだん強く。"
+  },
+  {
+    "id": "O069",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「浮世絵」は日本の何時代に栄えた？",
+    "choices": [
+      "奈良時代",
+      "平安時代",
+      "室町時代",
+      "江戸時代"
+    ],
+    "answer": 3,
+    "explanation": "浮世絵は江戸時代に庶民文化として栄えた。"
+  },
+  {
+    "id": "O070",
+    "genre": "その他",
+    "subgenre": "家庭",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「本返し縫い」の特徴は？",
+    "choices": [
+      "縫い目が飛び飛びになる",
+      "縫い目が連続してつながる",
+      "表だけに縫い目が出る",
+      "裏だけに縫い目が出る"
+    ],
+    "answer": 1,
+    "explanation": "本返し縫いは縫い目が連続してつながるため丈夫。"
+  },
+  {
+    "id": "O071",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「酢」を加えると色が変わる野菜はどれ？",
+    "choices": [
+      "にんじん",
+      "きゅうり",
+      "紫キャベツ",
+      "ほうれん草"
+    ],
+    "answer": 2,
+    "explanation": "紫キャベツは酸性（酢）で赤〜ピンクに変化するアントシアニンを含む。"
+  },
+  {
+    "id": "O072",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "バスケットボールの「ダブルドリブル」は何の反則？",
+    "choices": [
+      "ボールを蹴った",
+      "両手でドリブルした・一度止めて再開した",
+      "ボールを持ちすぎた",
+      "3秒ルール違反"
+    ],
+    "answer": 1,
+    "explanation": "ダブルドリブルは両手同時のドリブル、または止めてから再ドリブルすること。"
+  },
+  {
+    "id": "O073",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「rit.（リタルダンド）」の意味は？",
+    "choices": [
+      "だんだん速く",
+      "だんだん遅く",
+      "急に速く",
+      "急に遅く"
+    ],
+    "answer": 1,
+    "explanation": "ritardando（rit.）=だんだん遅く。"
+  },
+  {
+    "id": "O074",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「モネ」が多く描いた印象派の特徴は？",
+    "choices": [
+      "輪郭線を明確にする",
+      "光と色彩を重視する",
+      "暗い色彩を使う",
+      "写実的に描く"
+    ],
+    "answer": 1,
+    "explanation": "印象派は光と色彩の瞬間的な印象を捉えることを重視した。"
+  },
+  {
+    "id": "O075",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「天ぷら」の衣の基本材料は？",
+    "choices": [
+      "小麦粉・水・卵",
+      "米粉・牛乳・バター",
+      "片栗粉・水のみ",
+      "パン粉・卵・小麦粉"
+    ],
+    "answer": 0,
+    "explanation": "天ぷらの衣は小麦粉・水・卵を混ぜて作る。"
+  },
+  {
+    "id": "O076",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "陸上競技でスターティングブロックを使う種目は？",
+    "choices": [
+      "マラソン",
+      "800m走",
+      "100m走",
+      "20km競歩"
+    ],
+    "answer": 2,
+    "explanation": "スターティングブロックは短距離走（100m・200m・400mなど）で使用する。"
+  },
+  {
+    "id": "O077",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "楽譜でシャープ（♯）は半音○げることを示す。○は？(ひらがなで)",
+    "answer_text": "あ",
+    "answer_variants": [],
+    "explanation": "シャープ（♯）は半音上げる記号。"
+  },
+  {
+    "id": "O078",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "マラソンの正式な距離は何km？(小数点以下1桁まで)",
+    "answer_text": "42.2",
+    "answer_variants": [
+      "42.195",
+      "42.195km"
+    ],
+    "explanation": "マラソンの正式距離は42.195km（約42.2km）。"
+  },
+  {
+    "id": "O079",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「交響曲」は何語から来ている言葉？",
+    "choices": [
+      "イタリア語",
+      "ドイツ語",
+      "フランス語",
+      "ギリシャ語"
+    ],
+    "answer": 3,
+    "explanation": "交響曲（シンフォニー）はギリシャ語「sym-phonia（共に鳴る）」が語源。"
+  },
+  {
+    "id": "O080",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「木版画」の技法の特徴は？",
+    "choices": [
+      "銅板に彫る",
+      "木の板に彫って刷る",
+      "シルクスクリーンに刷る",
+      "布に直接描く"
+    ],
+    "answer": 1,
+    "explanation": "木版画は木の板を彫刻刀で彫り、インクをつけて紙に転写する。"
+  },
+  {
+    "id": "O081",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "柔道でポイントが高い技は？",
+    "choices": [
+      "有効",
+      "技あり",
+      "一本",
+      "効果"
+    ],
+    "answer": 2,
+    "explanation": "柔道では一本が最高。技あり2回で一本になる。"
+  },
+  {
+    "id": "O082",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "ピアノの鍵盤数（標準）は何鍵？",
+    "choices": [
+      "76鍵",
+      "80鍵",
+      "88鍵",
+      "96鍵"
+    ],
+    "answer": 2,
+    "explanation": "標準的なグランドピアノは88鍵（白52鍵+黒36鍵）。"
+  },
+  {
+    "id": "O083",
+    "genre": "その他",
+    "subgenre": "家庭",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「たて縫い」と「なみ縫い」の違いは？",
+    "choices": [
+      "糸の色が違う",
+      "縫い目の大きさが違う",
+      "針の種類が違う",
+      "使用目的が全く同じ"
+    ],
+    "answer": 1,
+    "explanation": "なみ縫いは等間隔の縫い目、本返し縫いはつながった縫い目。縫い目の形が違う。"
+  },
+  {
+    "id": "O084",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "テニスのゲームカウントで「0」を英語で何という？",
+    "choices": [
+      "zero",
+      "nil",
+      "love",
+      "none"
+    ],
+    "answer": 2,
+    "explanation": "テニスのスコアで0点はlove（ラブ）と呼ぶ。"
+  },
+  {
+    "id": "O085",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「遠近法」とは絵画においてどんな技法？",
+    "choices": [
+      "暗い色を多く使う",
+      "近くのものを大きく遠くを小さく描く",
+      "輪郭線を細かく描く",
+      "縦線だけで構成する"
+    ],
+    "answer": 1,
+    "explanation": "遠近法は奥行きを表現するため、近くのものを大きく、遠くのものを小さく描く。"
+  },
+  {
+    "id": "O086",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「お酢」を入れるとやわらかくなる食材は？",
+    "choices": [
+      "にんじん",
+      "肉（骨つき）",
+      "米",
+      "豆腐"
+    ],
+    "answer": 1,
+    "explanation": "酢は骨付き肉を煮るとき骨をやわらかくする効果がある。"
+  },
+  {
+    "id": "O087",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「アカペラ」とはどんな歌い方？",
+    "choices": [
+      "一人で歌う",
+      "楽器伴奏なしで歌う",
+      "早口で歌う",
+      "低い声で歌う"
+    ],
+    "answer": 1,
+    "explanation": "アカペラは楽器の伴奏なしに声だけで歌うこと。"
+  },
+  {
+    "id": "O088",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "バドミントンで1セットは何点制？",
+    "choices": [
+      "15点",
+      "21点",
+      "25点",
+      "30点"
+    ],
+    "answer": 1,
+    "explanation": "バドミントンは21点先取（デュースあり）の3セットマッチ。"
+  },
+  {
+    "id": "O089",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「♭（フラット）」は半音○げることを示す。○は？(ひらがなで)",
+    "answer_text": "さ",
+    "answer_variants": [],
+    "explanation": "フラット（♭）は半音下げる記号。"
+  },
+  {
+    "id": "O090",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "野球でバッターが投球を3回空振りすると何になる？(ひらがなで)",
+    "answer_text": "さんしん",
+    "answer_variants": [
+      "三振",
+      "さんしん"
+    ],
+    "explanation": "3回の空振りで三振（さんしん）アウト。"
+  },
+  {
+    "id": "O091",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「ニ長調（D major）」の調号は？",
+    "choices": [
+      "♯1つ",
+      "♯2つ",
+      "♭1つ",
+      "♭2つ"
+    ],
+    "answer": 1,
+    "explanation": "ニ長調の調号はF♯・C♯の♯2つ。"
+  },
+  {
+    "id": "O092",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「彫刻刀」で版を彫るとき、一般に仕上げに使う刃は？",
+    "choices": [
+      "丸刀",
+      "平刀",
+      "三角刀",
+      "切り出し刀"
+    ],
+    "answer": 1,
+    "explanation": "平刀は広い面を滑らかに削るのに使われ、仕上げに適している。"
+  },
+  {
+    "id": "O093",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "水泳のバタフライで両腕を同時に前方から水に入れた後の動作は？",
+    "choices": [
+      "交互に腕をかく",
+      "両腕を同時にかく",
+      "片腕だけかく",
+      "腕はかかない"
+    ],
+    "answer": 1,
+    "explanation": "バタフライは両腕を同時に使って水をかく。"
+  },
+  {
+    "id": "O094",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「ソナタ形式」の基本的な構成は？",
+    "choices": [
+      "提示部・展開部・再現部",
+      "序奏・コーダのみ",
+      "変奏曲形式",
+      "輪唱形式"
+    ],
+    "answer": 0,
+    "explanation": "ソナタ形式は提示部・展開部・再現部（と時にコーダ）で構成。"
+  },
+  {
+    "id": "O095",
+    "genre": "その他",
+    "subgenre": "家庭",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「スナップボタン」の用途は？",
+    "choices": [
+      "ファスナーの代わりに使う",
+      "簡単に取り外せる留め具",
+      "布を縫い合わせる",
+      "装飾にのみ使う"
+    ],
+    "answer": 1,
+    "explanation": "スナップボタンは押し込むだけで留められる簡易的な留め具。"
+  },
+  {
+    "id": "O096",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "色相環で「赤」の補色（反対の色）は？",
+    "choices": [
+      "紫",
+      "橙",
+      "緑",
+      "青緑（シアン）"
+    ],
+    "answer": 3,
+    "explanation": "赤の補色は青緑（シアン）。補色同士を混ぜると灰色になる。"
+  },
+  {
+    "id": "O097",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "柔道の「帯」の色で最も上位（黒帯以外）は？",
+    "choices": [
+      "茶帯",
+      "紫帯",
+      "赤帯",
+      "白帯"
+    ],
+    "answer": 0,
+    "explanation": "黒帯の下は茶帯（1〜3級）が最も上位の有色帯。"
+  },
+  {
+    "id": "O098",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「ト音記号」は五線上のどこに書く？",
+    "choices": [
+      "第1線",
+      "第2線",
+      "第3線",
+      "第4線"
+    ],
+    "answer": 1,
+    "explanation": "ト音記号の渦巻きの中心が第2線（Gの音=ソ）を示している。"
+  },
+  {
+    "id": "O099",
+    "genre": "その他",
+    "subgenre": "家庭",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「まつり縫い」の主な用途は？",
+    "choices": [
+      "袋の口を閉じる",
+      "スカートの裾上げ",
+      "2枚の布を合わせる",
+      "ボタンを付ける"
+    ],
+    "answer": 1,
+    "explanation": "まつり縫いは布の端を折り返して固定する技法で裾上げに使われる。"
+  },
+  {
+    "id": "O100",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "七草粥に入れる「春の七草」に含まれないのは？",
+    "choices": [
+      "せり",
+      "なずな",
+      "こんぶ",
+      "ごぎょう"
+    ],
+    "answer": 2,
+    "explanation": "春の七草：せり・なずな・ごぎょう・はこべら・ほとけのざ・すずな・すずしろ。昆布は含まない。"
+  },
+  {
+    "id": "O101",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「ヴァイオリン協奏曲ニ短調」でニ短調の「ニ」は何の音？(ひらがなで)",
+    "answer_text": "れ",
+    "answer_variants": [],
+    "explanation": "ニ=D=レ（れ）。"
+  },
+  {
+    "id": "O102",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "陸上競技「棒高跳び」で使う器具は何？(ひらがなで)",
+    "answer_text": "ぽーる",
+    "answer_variants": [
+      "ポール"
+    ],
+    "explanation": "棒高跳びはポール（棒）を使って高さを競う。"
+  },
+  {
+    "id": "O103",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「ベートーヴェン」の交響曲第9番の通称は？",
+    "choices": [
+      "英雄",
+      "運命",
+      "田園",
+      "合唱"
+    ],
+    "answer": 3,
+    "explanation": "交響曲第9番「合唱」（第4楽章に合唱が使われる）。"
+  },
+  {
+    "id": "O104",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「ルネサンス」期の特徴として正しいのは？",
+    "choices": [
+      "抽象表現を重視",
+      "古代ギリシャ・ローマの文化を復興",
+      "光の印象を描く",
+      "幾何学的な形のみ使用"
+    ],
+    "answer": 1,
+    "explanation": "ルネサンスは古代ギリシャ・ローマの文化を再生・復興しようとした運動。"
+  },
+  {
+    "id": "O105",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「フィギュアスケート」でトリプルアクセルは何回転？",
+    "choices": [
+      "2.5回転",
+      "3回転",
+      "3.5回転",
+      "4回転"
+    ],
+    "answer": 2,
+    "explanation": "アクセルジャンプは前向きで踏み切るため、トリプルアクセル=3.5回転になる。"
+  },
+  {
+    "id": "O106",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「モーツァルト」が最後まで書ききれなかった作品は？",
+    "choices": [
+      "魔笛",
+      "フィガロの結婚",
+      "ドン・ジョヴァンニ",
+      "レクイエム"
+    ],
+    "answer": 3,
+    "explanation": "レクイエム（鎮魂曲）はモーツァルトが未完のまま死去した作品。"
+  },
+  {
+    "id": "O107",
+    "genre": "その他",
+    "subgenre": "家庭",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「だしまき卵」を作るときの「だし」は主に何から取る？",
+    "choices": [
+      "鶏肉",
+      "かつおぶし",
+      "豚骨",
+      "昆布のみ"
+    ],
+    "answer": 1,
+    "explanation": "だしまき卵のだしは主にかつおぶし（+昆布）から取る和風だし。"
+  },
+  {
+    "id": "O108",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "テニスの「デュース」が発生するのは何対何のとき？",
+    "choices": [
+      "30-30",
+      "40-40",
+      "30-40",
+      "0-40"
+    ],
+    "answer": 1,
+    "explanation": "テニスはポイントが40-40のときデュース。その後2ポイント差がつくまで続ける。"
+  },
+  {
+    "id": "O109",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「弦楽四重奏」の構成は？",
+    "choices": [
+      "ヴァイオリン2・ヴィオラ1・チェロ1",
+      "ヴァイオリン4つ",
+      "ヴァイオリン1・チェロ3",
+      "ピアノ・ヴァイオリン・チェロ・フルート"
+    ],
+    "answer": 0,
+    "explanation": "弦楽四重奏はヴァイオリン2本・ヴィオラ1本・チェロ1本。"
+  },
+  {
+    "id": "O110",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「ピカソ」が創始した美術様式は？",
+    "choices": [
+      "印象派",
+      "フォービズム",
+      "キュビズム",
+      "シュルレアリスム"
+    ],
+    "answer": 2,
+    "explanation": "ピカソはブラックとともにキュビズム（立体主義）を確立した。"
+  },
+  {
+    "id": "O111",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "五音音階（ペンタトニックスケール）の音数は？",
+    "answer_text": "5",
+    "answer_variants": [],
+    "explanation": "ペンタトニックスケールは5音で構成される音階。"
+  },
+  {
+    "id": "O112",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "オリンピックの陸上競技「十種競技」の英語名は？(カタカナで)",
+    "answer_text": "でかすろん",
+    "answer_variants": [
+      "デカスロン"
+    ],
+    "explanation": "十種競技=デカスロン（Decathlon）。"
+  },
+  {
+    "id": "O113",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「バッハ」が作曲した鍵盤曲集の代表作は？",
+    "choices": [
+      "悲愴ソナタ",
+      "平均律クラヴィーア曲集",
+      "月光ソナタ",
+      "ノクターン"
+    ],
+    "answer": 1,
+    "explanation": "「平均律クラヴィーア曲集」はJ.S.バッハの鍵盤曲集の大傑作。"
+  },
+  {
+    "id": "O114",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「ゴッホ」の代表作「星月夜」で特徴的な表現技法は？",
+    "choices": [
+      "点描",
+      "うずまきと厚塗り",
+      "写実的な細密描写",
+      "水墨の濃淡"
+    ],
+    "answer": 1,
+    "explanation": "ゴッホはうずまく筆致と厚く盛り上がった絵の具（インパスト）で表現した。"
+  },
+  {
+    "id": "O115",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「トライアスロン」の3種目は？",
+    "choices": [
+      "水泳・自転車・マラソン",
+      "水泳・陸上・カヌー",
+      "自転車・マラソン・スキー",
+      "水泳・ボート・陸上"
+    ],
+    "answer": 0,
+    "explanation": "トライアスロンは水泳・自転車（バイク）・マラソンの3種目。"
+  },
+  {
+    "id": "O116",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「短三和音」の構成は？",
+    "choices": [
+      "長2度+長2度",
+      "短3度+長3度",
+      "長3度+短3度",
+      "長3度+長3度"
+    ],
+    "answer": 1,
+    "explanation": "短三和音（マイナーコード）=根音から短3度+長3度（上に積む）。"
+  },
+  {
+    "id": "O117",
+    "genre": "その他",
+    "subgenre": "家庭",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「バターと油の違い」として正しいのは？",
+    "choices": [
+      "バターは植物性・油は動物性",
+      "バターは動物性・油は植物性が多い",
+      "どちらも同じ成分",
+      "バターには塩が含まれない"
+    ],
+    "answer": 1,
+    "explanation": "バターは牛乳から作る動物性脂肪。サラダ油等は植物性が多い。"
+  },
+  {
+    "id": "O118",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "陸上の「砲丸投げ」で使う砲丸の重さ（男子）は？",
+    "choices": [
+      "3kg",
+      "5kg",
+      "7.26kg",
+      "10kg"
+    ],
+    "answer": 2,
+    "explanation": "男子の砲丸は7.26kg（16ポンド）。"
+  },
+  {
+    "id": "O119",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「♩=120」のテンポ表記は1分間に4分音符が何回？",
+    "answer_text": "120",
+    "answer_variants": [],
+    "explanation": "♩=120は1分間に4分音符が120回=BPM120。"
+  },
+  {
+    "id": "O120",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「フーガ」の構成要素として最も重要なのは？",
+    "choices": [
+      "変奏",
+      "模倣（対位法）",
+      "コード進行",
+      "4拍子"
+    ],
+    "answer": 1,
+    "explanation": "フーガは複数の声部が主題を模倣しながら絡み合う対位法的な形式。"
+  },
+  {
+    "id": "O121",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「シュルレアリスム」の代表的な画家は？",
+    "choices": [
+      "ルノワール",
+      "ダリ",
+      "マティス",
+      "セザンヌ"
+    ],
+    "answer": 1,
+    "explanation": "サルバドール・ダリはシュルレアリスム（超現実主義）の代表的画家。"
+  },
+  {
+    "id": "O122",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "フェンシングの3種目に含まれないのは？",
+    "choices": [
+      "フルーレ",
+      "エペ",
+      "サーブル",
+      "ランス"
+    ],
+    "answer": 3,
+    "explanation": "フェンシングの3種目はフルーレ・エペ・サーブル。ランスは含まない。"
+  },
+  {
+    "id": "O123",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「12音技法」を確立した作曲家は？",
+    "choices": [
+      "ドビュッシー",
+      "シェーンベルク",
+      "ストラヴィンスキー",
+      "バルトーク"
+    ],
+    "answer": 1,
+    "explanation": "アルノルト・シェーンベルクが12音技法（十二音技法）を確立した。"
+  },
+  {
+    "id": "O124",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「点描画法」を確立した画家は？",
+    "choices": [
+      "モネ",
+      "ゴーガン",
+      "スーラ",
+      "ルソー"
+    ],
+    "answer": 2,
+    "explanation": "ジョルジュ・スーラが点描（ポアンティリズム）を科学的に確立した。"
+  },
+  {
+    "id": "O125",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「平均律」とは、1オクターブを何等分した音階？",
+    "answer_text": "12",
+    "answer_variants": [],
+    "explanation": "平均律は1オクターブを12の等しい半音に分けた音律。"
+  },
+  {
+    "id": "O126",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「ショパン」のピアノ曲集「バラード第1番」の調性は？",
+    "choices": [
+      "イ長調",
+      "ト短調",
+      "ニ長調",
+      "ハ短調"
+    ],
+    "answer": 1,
+    "explanation": "ショパン バラード第1番はト短調（g minor）。"
+  },
+  {
+    "id": "O127",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「バロック」様式の特徴として正しいのは？",
+    "choices": [
+      "直線的でシンプル",
+      "豪華で装飾的・劇的な表現",
+      "モノクロームの表現",
+      "東洋的な影響"
+    ],
+    "answer": 1,
+    "explanation": "バロック様式は豪華な装飾・劇的な動き・光と影の強いコントラストが特徴。"
+  },
+  {
+    "id": "O128",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「近代五種競技」の5種目に含まれないのは？",
+    "choices": [
+      "フェンシング",
+      "水泳",
+      "射撃",
+      "テニス"
+    ],
+    "answer": 3,
+    "explanation": "近代五種はフェンシング・水泳・馬術（2024以降：障害物）・射撃・クロスカントリーの5種目。テニスは含まない。"
+  },
+  {
+    "id": "O129",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「ドビュッシー」が属した音楽運動は？",
+    "choices": [
+      "ロマン派",
+      "印象主義（印象派）",
+      "新古典主義",
+      "バロック"
+    ],
+    "answer": 1,
+    "explanation": "クロード・ドビュッシーは音楽における印象主義の代表的作曲家。"
+  },
+  {
+    "id": "O130",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "オーケストラで第一ヴァイオリンの首席奏者を何と呼ぶ？(カタカナで)",
+    "answer_text": "コンサートマスター",
+    "answer_variants": [
+      "こんさーとますたー"
+    ],
+    "explanation": "コンサートマスター（コンマス）はオーケストラの首席奏者・楽団全体のリーダー。"
+  },
+  {
+    "id": "O131",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「フレスコ画」の技法の特徴は？",
+    "choices": [
+      "乾いた壁に描く",
+      "濡れた漆喰に直接描く",
+      "キャンバスに油絵具",
+      "ガラスに描く"
+    ],
+    "answer": 1,
+    "explanation": "フレスコ画は濡れた漆喰（石灰）の上に水彩絵の具で描く技法。乾くと壁と一体化する。"
+  },
+  {
+    "id": "O132",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「四分の三拍子」の強拍の位置は？",
+    "choices": [
+      "1拍目のみ",
+      "1・2拍目",
+      "1・3拍目",
+      "すべて同じ"
+    ],
+    "answer": 0,
+    "explanation": "3/4拍子は1拍目が強拍、2・3拍目が弱拍。ワルツのリズム。"
+  },
+  {
+    "id": "O133",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「ツール・ド・フランス」は何のレース？",
+    "choices": [
+      "マラソン",
+      "自転車ロードレース",
+      "モータースポーツ",
+      "トライアスロン"
+    ],
+    "answer": 1,
+    "explanation": "ツール・ド・フランスは世界最大の自転車ロードレース。毎年7月にフランスで開催。"
+  },
+  {
+    "id": "O134",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "調味料「さしすせそ」の「そ」は？(ひらがなで)",
+    "answer_text": "みそ",
+    "answer_variants": [],
+    "explanation": "さ=砂糖、し=塩、す=酢、せ=醤油、そ=味噌（みそ）。"
+  },
+  {
+    "id": "O135",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "ソフトボールで使うボールの硬さは？(ひらがなで)",
+    "answer_text": "やわらかい",
+    "answer_variants": [
+      "やわ"
+    ],
+    "explanation": "ソフトボールは野球より軟らかいボールを使う。"
+  },
+  {
+    "id": "O136",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「forte」の反対（弱く）を表す記号を何という？(カタカナで)",
+    "answer_text": "ピアノ",
+    "answer_variants": [
+      "ぴあの"
+    ],
+    "explanation": "piano（p）=弱く。forteの反対。"
+  },
+  {
+    "id": "O137",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "日本の伝統的な染色技法で、ろうを使って模様を描くのは？(ひらがなで)",
+    "answer_text": "ろうけつぞめ",
+    "answer_variants": [],
+    "explanation": "ろうけつ染め=ろうを使って防染し模様を描く技法。"
+  },
+  {
+    "id": "O138",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "体操競技で床・鉄棒・あん馬などをまとめて何という？(カタカナで)",
+    "answer_text": "きぐたいそう",
+    "answer_variants": [
+      "器具体操",
+      "きぐたいそう"
+    ],
+    "explanation": "鉄棒・平行棒・あん馬等を使った体操=器械体操（きかいたいそう）。"
+  },
+  {
+    "id": "O139",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「転調」とは何のことか？(ひらがなで3〜5文字で)",
+    "answer_text": "ちょうしがかわること",
+    "answer_variants": [
+      "ちょうせい",
+      "かちょう"
+    ],
+    "explanation": "転調=楽曲の中で調が変わること（例：ハ長調からト長調へ）。"
+  },
+  {
+    "id": "O140",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「パース（透視図）」の正式名称は？(カタカナで)",
+    "answer_text": "パースペクティブ",
+    "answer_variants": [
+      "ぱーすぺくてぃぶ"
+    ],
+    "explanation": "パース=パースペクティブ（perspective）=透視図法。"
+  },
+  {
+    "id": "O141",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "オリンピックで使われる「ルービックキューブ型の競技」の正式名は？(スポーツスタッキング以外で)…誤問。代替：陸上競技の「ハンマー投げ」の器具の重さ(男子)は何kg？",
+    "answer_text": "7.26",
+    "answer_variants": [],
+    "explanation": "ハンマー投げ（男子）の器具は7.26kg（砲丸投げと同じ重さ）。"
+  },
+  {
+    "id": "O142",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「音楽之友」とも訳される音楽団体の略称は？(アルファベットで)",
+    "answer_text": "N響",
+    "answer_variants": [
+      "NHK交響楽団"
+    ],
+    "explanation": "不適切な問題のため差し替え：「NHK交響楽団」の略称は？→N響。"
+  },
+  {
+    "id": "O143",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "「テンペラ画」の絵具の主な媒材（つなぎ）は何？(ひらがなで)",
+    "answer_text": "たまごのき み",
+    "answer_variants": [
+      "卵黄",
+      "たまごのきみ",
+      "えっぐ"
+    ],
+    "explanation": "テンペラ絵具の媒材は主に卵黄（たまごのきみ）。"
+  },
+  {
+    "id": "O144",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "相撲の「土俵入り」で行う動作は？",
+    "choices": [
+      "四股を踏む",
+      "ダッシュする",
+      "綱引きをする",
+      "組み合う"
+    ],
+    "answer": 0,
+    "explanation": "土俵入りでは力士が四股（しこ）を踏む儀式を行う。"
+  },
+  {
+    "id": "O145",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「精米」とは何をすること？",
+    "choices": [
+      "米を洗う",
+      "もみ殻と糠を取り除く",
+      "米を乾燥させる",
+      "米を発酵させる"
+    ],
+    "answer": 1,
+    "explanation": "精米はもみ殻（玄米化後）から糠（ぬか）と胚芽を取り除いて白米にすること。"
+  },
+  {
+    "id": "O146",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "ゴルフで「ホールインワン」とは？",
+    "choices": [
+      "1打でカップに入れる",
+      "2打でカップに入れる",
+      "最小打数でホールを終える",
+      "コースアウトしないこと"
+    ],
+    "answer": 0,
+    "explanation": "ホールインワンは第1打（ティーショット）でカップに入れること。"
+  },
+  {
+    "id": "O147",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「オペラ」の説明として正しいのは？",
+    "choices": [
+      "純器楽曲",
+      "歌と演技による舞台音楽",
+      "合唱のみの音楽",
+      "バレエ音楽"
+    ],
+    "answer": 1,
+    "explanation": "オペラは歌唱・演奏・演技・舞台美術が組み合わさった総合芸術。"
+  },
+  {
+    "id": "O148",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「コラージュ」の技法は？",
+    "choices": [
+      "絵の具を厚く盛る",
+      "写真や紙を切り貼りする",
+      "ドリップで描く",
+      "版を使って刷る"
+    ],
+    "answer": 1,
+    "explanation": "コラージュは様々な素材（新聞・写真など）を切り貼りして作品を作る技法。"
+  },
+  {
+    "id": "O149",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「競泳」でターン時に壁を蹴ってから何回のストロークが許されるか（背泳ぎ以外）？",
+    "choices": [
+      "0回",
+      "1回",
+      "制限なし",
+      "15mルールのみ"
+    ],
+    "answer": 2,
+    "explanation": "競泳のストロークは特に回数制限はないが、15mルール（スタート・ターン後は15m以内で浮上）がある。"
+  },
+  {
+    "id": "O150",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「無調音楽」の説明として正しいのは？",
+    "choices": [
+      "特定の調に属する",
+      "特定の調に属さず12音が平等",
+      "長調のみの音楽",
+      "ドの音を使わない"
+    ],
+    "answer": 1,
+    "explanation": "無調音楽は特定の主音・調性を持たず、12音が均等に扱われる音楽。"
+  },
+  {
+    "id": "O151",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「黄金比」のおよその比率は？",
+    "choices": [
+      "1:1.414",
+      "1:1.618",
+      "1:2",
+      "1:3.14"
+    ],
+    "answer": 1,
+    "explanation": "黄金比は約1:1.618（=(1+√5)/2）で古代より美しい比率とされる。"
+  },
+  {
+    "id": "O152",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "バスケットボールのゴールまでの高さは何m？",
+    "answer_text": "3.05",
+    "answer_variants": [
+      "3.05m"
+    ],
+    "explanation": "バスケットボールのゴール（リム）の高さは床から3.05m（10フィート）。"
+  },
+  {
+    "id": "O153",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「さしすせそ」の「せ」は？(ひらがなで)",
+    "answer_text": "しょうゆ",
+    "answer_variants": [
+      "せうゆ",
+      "醤油"
+    ],
+    "explanation": "さ=砂糖、し=塩、す=酢、せ=醤油（しょうゆ）、そ=味噌。"
+  },
+  {
+    "id": "O154",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "陸上の「ハードル走」で使う障害物を何という？(カタカナで)",
+    "answer_text": "ハードル",
+    "answer_variants": [
+      "はーどる"
+    ],
+    "explanation": "ハードル走はハードル（hurdle）と呼ばれる障害物を飛び越える競技。"
+  },
+  {
+    "id": "O155",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「フラット3つの調号」の短調は何調？(ひらがなで)",
+    "answer_text": "ハ短調",
+    "answer_variants": [
+      "はたんちょう",
+      "c minor"
+    ],
+    "explanation": "フラット3つ（B♭・E♭・A♭）の長調=変ホ長調、平行短調=ハ短調（c minor）。"
+  },
+  {
+    "id": "O156",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「油彩画」で下絵に使われる技法の名前は？(カタカナで)",
+    "answer_text": "デッサン",
+    "answer_variants": [
+      "でっさん"
+    ],
+    "explanation": "デッサン（dessin）=鉛筆等で描く素描・下絵の技法。"
+  },
+  {
+    "id": "O157",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「ビリヤード」のゲームで8番ボールを使う代表的な種目は？(英語で)",
+    "answer_text": "8ball",
+    "answer_variants": [
+      "エイトボール",
+      "8-ball"
+    ],
+    "explanation": "ビリヤードの8ボール（エイトボール）は世界的に最も普及しているゲーム。"
+  },
+  {
+    "id": "O158",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「パスタ」を茹でるとき水に入れる調味料は？(ひらがなで)",
+    "answer_text": "しお",
+    "answer_variants": [],
+    "explanation": "パスタを茹でるときは塩（しお）を入れて下味をつける。"
+  },
+  {
+    "id": "O159",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「ファミレ」はある曲の冒頭。その曲は「○○○○の歌」。○○○○は？(ひらがなで)",
+    "answer_text": "み",
+    "answer_variants": [],
+    "explanation": "「ちょうちょう（蝶々）」の歌の冒頭はミミレファミレ…。正確には「ミミレファミレド」。代替：「ドレミの歌」の3番目の音は？"
+  },
+  {
+    "id": "O160",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「かつお節」の「節」とはどういう意味？",
+    "choices": [
+      "切れ目",
+      "魚の一部を加工・乾燥させたもの",
+      "季節の節目",
+      "竹の節"
+    ],
+    "answer": 1,
+    "explanation": "「節（ぶし）」は魚肉を加工・乾燥させた保存食品のこと。かつお節は鰹の節。"
+  },
+  {
+    "id": "O161",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "柔道の一本勝ちとなる投げ技の条件は？(ひらがなで15字以内で)",
+    "answer_text": "相手を勢いよく背中をつけて投げる",
+    "answer_variants": [
+      "いっぽん",
+      "おおぎきなわざ"
+    ],
+    "explanation": "相手を大きな勢いで背中をつけて投げると一本（ippon）。"
+  },
+  {
+    "id": "O162",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「ヴァイオリン」の弦の数は？",
+    "choices": [
+      "3本",
+      "4本",
+      "5本",
+      "6本"
+    ],
+    "answer": 1,
+    "explanation": "ヴァイオリンの弦はG・D・A・Eの4本。"
+  },
+  {
+    "id": "O163",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「版画」の種類でないのはどれ？",
+    "choices": [
+      "木版",
+      "銅版",
+      "石版",
+      "砂版"
+    ],
+    "answer": 3,
+    "explanation": "代表的な版画技法は木版・銅版・石版（リトグラフ）・シルクスクリーン。砂版はない。"
+  },
+  {
+    "id": "O164",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「和食」がユネスコ無形文化遺産に登録されたのは何年？",
+    "choices": [
+      "2010年",
+      "2011年",
+      "2013年",
+      "2015年"
+    ],
+    "answer": 2,
+    "explanation": "和食（washoku）は2013年にユネスコ無形文化遺産に登録された。"
+  },
+  {
+    "id": "O165",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「ハ長調」と「イ短調」の関係は？",
+    "choices": [
+      "全く別の調",
+      "平行調（同じ調号を持つ）",
+      "同主調",
+      "転調の関係"
+    ],
+    "answer": 1,
+    "explanation": "ハ長調（Cメジャー）とイ短調（Aマイナー）は調号が同じ平行調（relative key）。"
+  },
+  {
+    "id": "O166",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「アーチェリー」で的の中心は何点？",
+    "choices": [
+      "5点",
+      "8点",
+      "10点",
+      "12点"
+    ],
+    "answer": 2,
+    "explanation": "アーチェリーの的の中心（ゴールド）は10点。"
+  },
+  {
+    "id": "O167",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「システィーナ礼拝堂」の天井画を描いたのは？",
+    "choices": [
+      "レオナルド・ダ・ヴィンチ",
+      "ラファエロ",
+      "ミケランジェロ",
+      "ボッティチェリ"
+    ],
+    "answer": 2,
+    "explanation": "システィーナ礼拝堂の天井画「天地創造」はミケランジェロが描いた。"
+  },
+  {
+    "id": "O168",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「ラグビー」でトライは何点？",
+    "choices": [
+      "3点",
+      "4点",
+      "5点",
+      "7点"
+    ],
+    "answer": 2,
+    "explanation": "ラグビーのトライは5点。コンバージョンキック成功で+2点、計7点になる。"
+  },
+  {
+    "id": "O169",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「対位法」の最も基本的な説明は？",
+    "choices": [
+      "和音を縦に積む",
+      "複数の独立した旋律を同時に重ねる",
+      "メロディーに伴奏をつける",
+      "テンポを変化させる"
+    ],
+    "answer": 1,
+    "explanation": "対位法（カウンターポイント）は複数の独立した旋律声部を同時に組み合わせる技法。"
+  },
+  {
+    "id": "O170",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「ダダイズム」の特徴は？",
+    "choices": [
+      "合理的・秩序的な表現",
+      "既存の芸術への反抗・無秩序",
+      "写実的な表現",
+      "印象主義の継承"
+    ],
+    "answer": 1,
+    "explanation": "ダダイズムは第一次世界大戦後、既存の価値観・芸術への反抗から生まれた前衛芸術運動。"
+  },
+  {
+    "id": "O171",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「ひな祭り」は何月何日？",
+    "choices": [
+      "1月1日",
+      "2月14日",
+      "3月3日",
+      "5月5日"
+    ],
+    "answer": 2,
+    "explanation": "ひな祭りは3月3日（桃の節句）。"
+  },
+  {
+    "id": "O172",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「七五三」は主に何歳のお祝い？",
+    "choices": [
+      "3・5・7歳",
+      "5・7・9歳",
+      "3・6・9歳",
+      "2・5・7歳"
+    ],
+    "answer": 0,
+    "explanation": "七五三は3歳・5歳・7歳の成長を祝う行事。"
+  },
+  {
+    "id": "O173",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「卓球」の台の大きさは？",
+    "choices": [
+      "縦152.5cm × 横274cm",
+      "縦183cm × 横365cm",
+      "縦90cm × 横200cm",
+      "縦200cm × 横400cm"
+    ],
+    "answer": 0,
+    "explanation": "卓球台の公式サイズは縦152.5cm×横274cm（高さ76cm）。"
+  },
+  {
+    "id": "O174",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「♩♩♩♩」は何拍子？",
+    "choices": [
+      "2拍子",
+      "3拍子",
+      "4拍子",
+      "6拍子"
+    ],
+    "answer": 2,
+    "explanation": "4分音符が4つで4拍子（4/4拍子）。"
+  },
+  {
+    "id": "O175",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「素描（デッサン）」で主に使う道具は？",
+    "choices": [
+      "油絵具",
+      "鉛筆・木炭",
+      "水彩絵具",
+      "版木"
+    ],
+    "answer": 1,
+    "explanation": "デッサンは鉛筆・木炭・コンテ等を使って行う素描。"
+  },
+  {
+    "id": "O176",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「フリースタイルレスリング」と「グレコローマンスタイル」の違いは？",
+    "choices": [
+      "体重制限が違う",
+      "上半身しか使えないかどうか",
+      "得点の数え方が違う",
+      "試合時間が違う"
+    ],
+    "answer": 1,
+    "explanation": "グレコローマンは腰から下を使った技・攻撃が禁止。フリーは全身を使える。"
+  },
+  {
+    "id": "O177",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「ハープシコード（チェンバロ）」の発音原理は？",
+    "choices": [
+      "弦をハンマーで打つ",
+      "弦を爪（プレクトラム）ではじく",
+      "弦を弓で擦る",
+      "空気を振動させる"
+    ],
+    "answer": 1,
+    "explanation": "チェンバロは弦をプレクトラム（爪）ではじいて音を出す。ピアノはハンマーで打つ点が異なる。"
+  },
+  {
+    "id": "O178",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「マンダラ」はどの文化圏で生まれた？",
+    "choices": [
+      "ギリシャ",
+      "インド（仏教・ヒンドゥー）",
+      "エジプト",
+      "中国"
+    ],
+    "answer": 1,
+    "explanation": "マンダラはインドの仏教・ヒンドゥー教の宇宙観を図像化したもの。"
+  },
+  {
+    "id": "O179",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「クリケット」発祥の国は？",
+    "choices": [
+      "アメリカ",
+      "フランス",
+      "イギリス",
+      "オーストラリア"
+    ],
+    "answer": 2,
+    "explanation": "クリケットはイギリス発祥のスポーツ。"
+  },
+  {
+    "id": "O180",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「マドリガル」とは何？",
+    "choices": [
+      "バロック様式の組曲",
+      "ルネサンス期の世俗多声声楽曲",
+      "オペラのアリア",
+      "古代ギリシャの合唱詩"
+    ],
+    "answer": 1,
+    "explanation": "マドリガルはルネサンス期に栄えた世俗的な多声声楽曲の形式。"
+  },
+  {
+    "id": "O181",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「だし巻き卵」をきれいに巻くために使う道具は？(ひらがなで)",
+    "answer_text": "たまごやきなべ",
+    "answer_variants": [
+      "まきす",
+      "きょうぼ"
+    ],
+    "explanation": "だし巻き卵は卵焼き専用の長方形の「卵焼き鍋（玉子焼き鍋）」を使って巻く。"
+  },
+  {
+    "id": "O182",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「遠近法」のうち視点を1つとする技法の名称は？(カタカナで)",
+    "answer_text": "いってんとうしずほう",
+    "answer_variants": [
+      "一点透視図法"
+    ],
+    "explanation": "一点透視図法は1つの消失点に向かってすべての線が収束する遠近法。"
+  },
+  {
+    "id": "O183",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "野球で打者が出塁する方法の一つ「四球」は何と読む？(ひらがなで)",
+    "answer_text": "よんきゅう",
+    "answer_variants": [
+      "しきゅう"
+    ],
+    "explanation": "四球（よんきゅう/しきゅう）=4つのボール球でフォアボール。"
+  },
+  {
+    "id": "O184",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「ソ」を表す英語音名は？",
+    "choices": [
+      "F",
+      "G",
+      "A",
+      "B"
+    ],
+    "answer": 1,
+    "explanation": "G=ソ（日本語音名：ト）。"
+  },
+  {
+    "id": "O185",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「味噌汁」のだしとして最も一般的なのは？",
+    "choices": [
+      "鶏ガラ",
+      "昆布+かつお節",
+      "豚骨",
+      "煮干し（いりこ）のみ"
+    ],
+    "answer": 1,
+    "explanation": "味噌汁のだしは昆布+かつお節の合わせだし、または煮干しが一般的。"
+  },
+  {
+    "id": "O186",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「彫刻刀」で「三角刀」の特徴は？",
+    "choices": [
+      "広い面を削る",
+      "細い線を彫る",
+      "丸みをつける",
+      "大まかに削る"
+    ],
+    "answer": 1,
+    "explanation": "三角刀は先端がV字型で細い線や文字を彫るのに使う。"
+  },
+  {
+    "id": "O187",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「バレーボール」でサーブを打てるのは？",
+    "choices": [
+      "全員が順番に",
+      "前衛の選手のみ",
+      "後衛の選手のみ",
+      "キャプテンのみ"
+    ],
+    "answer": 0,
+    "explanation": "バレーボールはローテーションで全員が順番にサーブを打つ。"
+  },
+  {
+    "id": "O188",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「ラ」を表す英語音名は？(アルファベットで)",
+    "answer_text": "A",
+    "answer_variants": [],
+    "explanation": "A=ラ（日本語音名：イ）。"
+  },
+  {
+    "id": "O189",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「ベーキングパウダー」の主な役割は？(ひらがなで)",
+    "answer_text": "ふくらませる",
+    "answer_variants": [
+      "ぼうちょうさせる"
+    ],
+    "explanation": "ベーキングパウダーは炭酸ガスを発生させてパンや菓子を膨らませる膨張剤。"
+  },
+  {
+    "id": "O190",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「シルクスクリーン印刷」を現代アートに取り入れたポップアートの代表作家は？(カタカナで)",
+    "answer_text": "アンディ・ウォーホル",
+    "answer_variants": [
+      "ウォーホル"
+    ],
+    "explanation": "アンディ・ウォーホルはシルクスクリーンを使ってマリリン・モンローなどを大量複製した。"
+  },
+  {
+    "id": "O191",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「ウィンブルドン」選手権のコートの種類は？",
+    "choices": [
+      "クレーコート",
+      "ハードコート",
+      "芝（グラスコート）",
+      "カーペットコート"
+    ],
+    "answer": 2,
+    "explanation": "ウィンブルドンは4大大会唯一の芝（グラスコート）で開催される。"
+  },
+  {
+    "id": "O192",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「チェロ」の音域は何音部？(ひらがなで)",
+    "answer_text": "へおんぶ",
+    "answer_variants": [
+      "ヘ音部",
+      "低音域"
+    ],
+    "explanation": "チェロは主にヘ音記号（バス・クレフ）を使う低音域の楽器。"
+  },
+  {
+    "id": "O193",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「豆腐」の製造工程で「にがり」を入れる目的は？",
+    "choices": [
+      "防腐",
+      "凝固",
+      "味付け",
+      "白色化"
+    ],
+    "answer": 1,
+    "explanation": "にがり（塩化マグネシウム等）は大豆のタンパク質を凝固させるために使う。"
+  },
+  {
+    "id": "O194",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「スタンプ」のように版を使って絵を刷り出す技法を何と言う？(ひらがなで)",
+    "answer_text": "はんが",
+    "answer_variants": [],
+    "explanation": "版を使って印刷する技法=版画（はんが）。"
+  },
+  {
+    "id": "O195",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「フットサル」と「サッカー」の主な違いは？",
+    "choices": [
+      "ゴールの大きさが同じ",
+      "コートが小さく選手数が少ない",
+      "ボールが大きい",
+      "試合時間が同じ"
+    ],
+    "answer": 1,
+    "explanation": "フットサルはサッカーより小さいコートで1チーム5人制（サッカーは11人）。"
+  },
+  {
+    "id": "O196",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「ミ」を表す英語音名は？",
+    "choices": [
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "answer": 2,
+    "explanation": "E=ミ（日本語音名：ホ）。"
+  },
+  {
+    "id": "O197",
+    "genre": "その他",
+    "subgenre": "生活",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「調味料のさしすせそ」を全部ひらがなで言うと？（順番に5つ）",
+    "answer_text": "さとう しお す しょうゆ みそ",
+    "answer_variants": [
+      "さとう、しお、す、しょうゆ、みそ"
+    ],
+    "explanation": "砂糖・塩・酢・醤油・味噌。"
+  },
+  {
+    "id": "O198",
+    "genre": "その他",
+    "subgenre": "美術",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「スフマート」とはどんな絵画技法？",
+    "choices": [
+      "輪郭を明確に描く",
+      "輪郭をぼかして柔らかく描く",
+      "点描で描く",
+      "厚塗りで描く"
+    ],
+    "answer": 1,
+    "explanation": "スフマート（sfumato）はレオナルド・ダ・ヴィンチが発展させた輪郭をぼかす技法。"
+  },
+  {
+    "id": "O199",
+    "genre": "その他",
+    "subgenre": "スポーツ",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「ボブスレー」の発祥国は？",
+    "choices": [
+      "カナダ",
+      "スイス",
+      "ノルウェー",
+      "オーストリア"
+    ],
+    "answer": 1,
+    "explanation": "ボブスレーは19世紀末にスイスのサンモリッツで生まれた。"
+  },
+  {
+    "id": "O200",
+    "genre": "その他",
+    "subgenre": "音楽",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「指揮者」が手に持つ細い棒を何という？(ひらがなで)",
+    "answer_text": "たくと",
+    "answer_variants": [
+      "タクト",
+      "指揮棒"
+    ],
+    "explanation": "指揮棒=タクト（ドイツ語）。"
   }
 ]

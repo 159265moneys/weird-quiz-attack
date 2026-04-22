@@ -1726,5 +1726,955 @@
     ],
     "answer": 2,
     "explanation": "定価×0.8=800。定価=1000円。"
+  },
+  {
+    "id": "M129",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "半径5cmの円の面積は何cm²？(円周率=3.14)",
+    "answer_text": "78.5",
+    "answer_variants": [],
+    "explanation": "5×5×3.14=78.5。"
+  },
+  {
+    "id": "M130",
+    "genre": "算数",
+    "subgenre": "分数",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "3/4 × 8/9 = ?（最も簡単な分数で）",
+    "answer_text": "2/3",
+    "answer_variants": [],
+    "explanation": "3/4×8/9=24/36=2/3。"
+  },
+  {
+    "id": "M131",
+    "genre": "算数",
+    "subgenre": "比",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "2:5 = 6:□ のとき□は？",
+    "answer_text": "15",
+    "answer_variants": [],
+    "explanation": "2×□=5×6=30。□=15。"
+  },
+  {
+    "id": "M132",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "定価1200円の3割引きの値段は何円？",
+    "answer_text": "840",
+    "answer_variants": [],
+    "explanation": "1200×0.7=840円。"
+  },
+  {
+    "id": "M133",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "18 と 24 の最小公倍数は？",
+    "answer_text": "72",
+    "answer_variants": [],
+    "explanation": "18=2×3², 24=2³×3。最小公倍数=2³×3²=72。"
+  },
+  {
+    "id": "M134",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "4km を20分で走ると時速何km？",
+    "answer_text": "12",
+    "answer_variants": [],
+    "explanation": "20分=1/3時間。4÷(1/3)=12km/h。"
+  },
+  {
+    "id": "M135",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "時速45km で走る車は1分で何m進む？",
+    "answer_text": "750",
+    "answer_variants": [],
+    "explanation": "45000m÷60=750m/分。"
+  },
+  {
+    "id": "M136",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "800円の品物に消費税10%をかけると合計何円？",
+    "answer_text": "880",
+    "answer_variants": [],
+    "explanation": "800×1.1=880円。"
+  },
+  {
+    "id": "M137",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "半径4cmの円の円周は何cm？(円周率=3.14)",
+    "choices": [
+      "12.56cm",
+      "25.12cm",
+      "50.24cm",
+      "100.48cm"
+    ],
+    "answer": 1,
+    "explanation": "直径8cm×3.14=25.12cm。"
+  },
+  {
+    "id": "M138",
+    "genre": "算数",
+    "subgenre": "分数",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "5/6 ÷ 5/3 = ?",
+    "choices": [
+      "1/2",
+      "1/3",
+      "25/18",
+      "3/6"
+    ],
+    "answer": 0,
+    "explanation": "5/6÷5/3=5/6×3/5=15/30=1/2。"
+  },
+  {
+    "id": "M139",
+    "genre": "算数",
+    "subgenre": "比",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "砂糖と塩の比が3:1で合計200g。砂糖は何g？",
+    "choices": [
+      "50g",
+      "100g",
+      "150g",
+      "175g"
+    ],
+    "answer": 2,
+    "explanation": "200×(3/4)=150g。"
+  },
+  {
+    "id": "M140",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "素数を小さい順に並べたとき、5番目の素数は？",
+    "choices": [
+      "7",
+      "9",
+      "11",
+      "13"
+    ],
+    "answer": 2,
+    "explanation": "2,3,5,7,11。5番目は11。"
+  },
+  {
+    "id": "M141",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "原価500円の品物を40%の利益を見込んで定価をつけると？",
+    "choices": [
+      "600円",
+      "650円",
+      "700円",
+      "750円"
+    ],
+    "answer": 2,
+    "explanation": "500×1.4=700円。"
+  },
+  {
+    "id": "M142",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "底面が一辺4cmの正方形で高さ5cmの直方体の体積は？",
+    "choices": [
+      "40cm³",
+      "60cm³",
+      "80cm³",
+      "100cm³"
+    ],
+    "answer": 2,
+    "explanation": "4×4×5=80cm³。"
+  },
+  {
+    "id": "M143",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "100 以下の素数は何個？",
+    "choices": [
+      "20個",
+      "25個",
+      "28個",
+      "30個"
+    ],
+    "answer": 1,
+    "explanation": "100以下の素数は25個。"
+  },
+  {
+    "id": "M144",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "濃度5%の食塩水300g に溶けている食塩は何g？",
+    "answer_text": "15",
+    "answer_variants": [],
+    "explanation": "300×0.05=15g。"
+  },
+  {
+    "id": "M145",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "底面積12cm²、高さ7cmの角柱の体積は何cm³？",
+    "answer_text": "84",
+    "answer_variants": [],
+    "explanation": "12×7=84cm³。"
+  },
+  {
+    "id": "M146",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "Aは時速4km、Bは時速6km で同じ地点を逆方向に歩き始めた。2時間後の距離は何km？",
+    "answer_text": "20",
+    "answer_variants": [],
+    "explanation": "(4+6)×2=20km。"
+  },
+  {
+    "id": "M147",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "1〜20 の整数のうち、3の倍数は何個？",
+    "answer_text": "6",
+    "answer_variants": [],
+    "explanation": "3,6,9,12,15,18 の6個。"
+  },
+  {
+    "id": "M148",
+    "genre": "算数",
+    "subgenre": "数列",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "2, 4, 8, 16, □ … の□は？",
+    "answer_text": "32",
+    "answer_variants": [],
+    "explanation": "前の項を2倍する数列。16×2=32。"
+  },
+  {
+    "id": "M149",
+    "genre": "算数",
+    "subgenre": "比",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "A:B=3:4、B:C=2:5 のとき A:C は □:□。□+□の値は？",
+    "answer_text": "13",
+    "answer_variants": [],
+    "explanation": "B=4のとき：A:B=3:4、B:C=2:5。B=8として通分→A:B:C=6:8:20。A:C=6:20=3:10。3+10=13。"
+  },
+  {
+    "id": "M150",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "定価の2割引きで960円。元の定価は何円？",
+    "answer_text": "1200",
+    "answer_variants": [],
+    "explanation": "定価×0.8=960。定価=960÷0.8=1200円。"
+  },
+  {
+    "id": "M151",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "30 の約数の個数は？",
+    "answer_text": "8",
+    "answer_variants": [],
+    "explanation": "30=2×3×5。約数の個数=(1+1)(1+1)(1+1)=8個。"
+  },
+  {
+    "id": "M152",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "正五角形の内角は何度？",
+    "answer_text": "108",
+    "answer_variants": [],
+    "explanation": "内角の和=540°。1つ=540÷5=108°。"
+  },
+  {
+    "id": "M153",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "元値が400円の品物に4割の利益を乗せた定価は？",
+    "choices": [
+      "440円",
+      "480円",
+      "520円",
+      "560円"
+    ],
+    "answer": 3,
+    "explanation": "400×1.4=560円。"
+  },
+  {
+    "id": "M154",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "円周率 3.14 で直径7cmの円の面積は？",
+    "choices": [
+      "21.98cm²",
+      "38.465cm²",
+      "43.96cm²",
+      "153.86cm²"
+    ],
+    "answer": 1,
+    "explanation": "半径3.5cm。3.5×3.5×3.14=38.465cm²。"
+  },
+  {
+    "id": "M155",
+    "genre": "算数",
+    "subgenre": "数列",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "3, 6, 12, 24, □ … の□は？",
+    "choices": [
+      "36",
+      "42",
+      "48",
+      "60"
+    ],
+    "answer": 2,
+    "explanation": "前の項を2倍する数列。24×2=48。"
+  },
+  {
+    "id": "M156",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "180km の道のりを時速60km で走ると何時間かかる？",
+    "choices": [
+      "2時間",
+      "3時間",
+      "4時間",
+      "5時間"
+    ],
+    "answer": 1,
+    "explanation": "180÷60=3時間。"
+  },
+  {
+    "id": "M157",
+    "genre": "算数",
+    "subgenre": "分数",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "2と3/4 を仮分数にすると？",
+    "choices": [
+      "5/4",
+      "9/4",
+      "11/4",
+      "7/4"
+    ],
+    "answer": 2,
+    "explanation": "2=8/4。8/4+3/4=11/4。"
+  },
+  {
+    "id": "M158",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "定価2000円の品が30%引きで売られているとき、値引き額は？",
+    "choices": [
+      "400円",
+      "500円",
+      "600円",
+      "700円"
+    ],
+    "answer": 2,
+    "explanation": "2000×0.3=600円引き。"
+  },
+  {
+    "id": "M159",
+    "genre": "算数",
+    "subgenre": "鶴亀算",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "鶴と亀が合わせて15匹、足の合計が42本。鶴は何羽？",
+    "answer_text": "9",
+    "answer_variants": [],
+    "explanation": "全部鶴なら30本。42-30=12、差2本ずつなので12÷2=6匹が亀。鶴=15-6=9羽。"
+  },
+  {
+    "id": "M160",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "食塩8gを水192gに溶かした食塩水の濃度は何%？",
+    "answer_text": "4",
+    "answer_variants": [],
+    "explanation": "8÷(8+192)×100=8÷200×100=4%。"
+  },
+  {
+    "id": "M161",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "AはBより4km先を時速6km で歩く。BはAを追いかけて時速10km で歩く。BがAに追いつくのは何時間後？",
+    "answer_text": "1",
+    "answer_variants": [],
+    "explanation": "差は4km、縮まる速さ10-6=4km/h。4÷4=1時間後。"
+  },
+  {
+    "id": "M162",
+    "genre": "算数",
+    "subgenre": "数列",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "フィボナッチ数列 1,1,2,3,5,8,□ の□は？",
+    "answer_text": "13",
+    "answer_variants": [],
+    "explanation": "前2つの和。5+8=13。"
+  },
+  {
+    "id": "M163",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "1〜50 の整数のうち、2でも3でも割り切れる数は何個？",
+    "answer_text": "8",
+    "answer_variants": [],
+    "explanation": "6の倍数の個数。50÷6=8余り2。8個。"
+  },
+  {
+    "id": "M164",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "ある仕事をAは6日、Bは4日で完成させる。2人でやると何日で終わる？",
+    "answer_text": "2.4",
+    "answer_variants": [
+      "2.4",
+      "12/5"
+    ],
+    "explanation": "1日の仕事量：A=1/6、B=1/4。合計=1/6+1/4=5/12。完成まで12/5=2.4日。"
+  },
+  {
+    "id": "M165",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "3桁の整数のうち11の倍数で最小のものは？",
+    "answer_text": "110",
+    "answer_variants": [],
+    "explanation": "11×10=110。"
+  },
+  {
+    "id": "M166",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "底面の半径3cm、高さ10cmの円柱の体積は何cm³？(π=3.14)",
+    "answer_text": "282.6",
+    "answer_variants": [],
+    "explanation": "3×3×3.14×10=282.6cm³。"
+  },
+  {
+    "id": "M167",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "分速80mで歩くと12分かかる道を、分速120mで歩くと何分かかる？",
+    "answer_text": "8",
+    "answer_variants": [],
+    "explanation": "距離=80×12=960m。960÷120=8分。"
+  },
+  {
+    "id": "M168",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "食塩水500gのうち食塩が25g。この食塩水の濃度は？",
+    "choices": [
+      "0.5%",
+      "4%",
+      "5%",
+      "10%"
+    ],
+    "answer": 2,
+    "explanation": "25÷500×100=5%。"
+  },
+  {
+    "id": "M169",
+    "genre": "算数",
+    "subgenre": "数列",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "等差数列 5, 8, 11, 14 … の第10項は？",
+    "choices": [
+      "29",
+      "30",
+      "32",
+      "35"
+    ],
+    "answer": 2,
+    "explanation": "初項5、公差3。第10項=5+(10-1)×3=5+27=32。"
+  },
+  {
+    "id": "M170",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "直角三角形の斜辺以外の2辺が5cmと12cmのとき、斜辺は何cm？",
+    "choices": [
+      "10cm",
+      "13cm",
+      "15cm",
+      "17cm"
+    ],
+    "answer": 1,
+    "explanation": "5²+12²=25+144=169=13²。斜辺=13cm。"
+  },
+  {
+    "id": "M171",
+    "genre": "算数",
+    "subgenre": "鶴亀算",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "100円と50円の合わせて20枚で1450円。100円は何枚？",
+    "choices": [
+      "7枚",
+      "8枚",
+      "9枚",
+      "10枚"
+    ],
+    "answer": 2,
+    "explanation": "全部50円なら1000円。差450円、1枚増えるごとに50円増。450÷50=9枚。"
+  },
+  {
+    "id": "M172",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "2⁸ = ?",
+    "answer_text": "256",
+    "answer_variants": [],
+    "explanation": "2⁸=256。"
+  },
+  {
+    "id": "M173",
+    "genre": "算数",
+    "subgenre": "数列",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "等差数列 3, 7, 11, 15 … の第20項は？",
+    "answer_text": "79",
+    "answer_variants": [],
+    "explanation": "初項3、公差4。第20項=3+(20-1)×4=3+76=79。"
+  },
+  {
+    "id": "M174",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "原価の25%の利益を乗せて1250円で売った。原価は何円？",
+    "answer_text": "1000",
+    "answer_variants": [],
+    "explanation": "原価×1.25=1250。原価=1000円。"
+  },
+  {
+    "id": "M175",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "1から100までの整数の中で3または5の倍数は何個？",
+    "answer_text": "47",
+    "answer_variants": [],
+    "explanation": "3の倍数33個+5の倍数20個-15の倍数6個=47個。"
+  },
+  {
+    "id": "M176",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "AとBが1周1200mのトラックを同じ地点から逆方向に出発し、それぞれ分速80mと分速70mで走る。2人が初めて出会うのは何分後？",
+    "answer_text": "8",
+    "answer_variants": [],
+    "explanation": "(80+70)×t=1200。150t=1200。t=8分。"
+  },
+  {
+    "id": "M177",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "12と15と20の最小公倍数は？",
+    "answer_text": "60",
+    "answer_variants": [],
+    "explanation": "12=2²×3、15=3×5、20=2²×5。最小公倍数=2²×3×5=60。"
+  },
+  {
+    "id": "M178",
+    "genre": "算数",
+    "subgenre": "数列",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "1+3+5+7+…+19（奇数の和）= ?",
+    "answer_text": "100",
+    "answer_variants": [],
+    "explanation": "1から2n-1まで奇数n個の和=n²。1〜19は10個の奇数。10²=100。"
+  },
+  {
+    "id": "M179",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "ある数を1.25倍すると500になる。元の数は？",
+    "choices": [
+      "375",
+      "400",
+      "425",
+      "450"
+    ],
+    "answer": 1,
+    "explanation": "500÷1.25=400。"
+  },
+  {
+    "id": "M180",
+    "genre": "算数",
+    "subgenre": "数列",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "2, 6, 18, 54, □ の□は？（等比数列）",
+    "choices": [
+      "108",
+      "126",
+      "162",
+      "216"
+    ],
+    "answer": 2,
+    "explanation": "公比3。54×3=162。"
+  },
+  {
+    "id": "M181",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "半径6cmの球の体積は？(π=3.14、4/3πr³)",
+    "choices": [
+      "603.19cm³",
+      "904.32cm³",
+      "1206.37cm³",
+      "1809.6cm³"
+    ],
+    "answer": 1,
+    "explanation": "4/3×3.14×6³=4/3×3.14×216≒904.32cm³。"
+  },
+  {
+    "id": "M182",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "列車が600mのトンネルを通過するのに30秒かかった。列車の長さが200mのとき、速度は？",
+    "choices": [
+      "20m/秒",
+      "25m/秒",
+      "26.7m/秒",
+      "30m/秒"
+    ],
+    "answer": 2,
+    "explanation": "(600+200)÷30=800÷30≈26.7m/秒。"
+  },
+  {
+    "id": "M183",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "1から10まで10個の整数をすべてかけた積（10!）は何桁の数？",
+    "answer_text": "7",
+    "answer_variants": [],
+    "explanation": "10!=3628800。7桁。"
+  },
+  {
+    "id": "M184",
+    "genre": "算数",
+    "subgenre": "数列",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "1から100までの整数で4の倍数の総和は？",
+    "answer_text": "1300",
+    "answer_variants": [],
+    "explanation": "4+8+…+100。初項4、末項100、項数25。(4+100)×25÷2=1300。"
+  },
+  {
+    "id": "M185",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "食塩水A(10%・100g)と食塩水B(4%・150g)を混ぜると濃度は何%？",
+    "answer_text": "6.4",
+    "answer_variants": [],
+    "explanation": "食塩：100×0.1+150×0.04=10+6=16g。水：100+150=250g。16÷250×100=6.4%。"
+  },
+  {
+    "id": "M186",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "1から200までに含まれる素数の個数は？",
+    "answer_text": "46",
+    "answer_variants": [],
+    "explanation": "エラトステネスの篩で200以下の素数は46個。"
+  },
+  {
+    "id": "M187",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "AとBが同地点から同時に同方向に出発。A=分速50m、B=分速80m。BがAより1周分（600m）多く進むのは何分後？",
+    "answer_text": "20",
+    "answer_variants": [],
+    "explanation": "差=80-50=30m/分。600÷30=20分後。"
+  },
+  {
+    "id": "M188",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "1辺10cmの立方体の対角線（頂点間を結ぶ最長の線）の長さは？(√3≈1.732)",
+    "choices": [
+      "10cm",
+      "約14.14cm",
+      "約17.32cm",
+      "約20cm"
+    ],
+    "answer": 2,
+    "explanation": "対角線=10√3≈17.32cm。"
+  },
+  {
+    "id": "M189",
+    "genre": "算数",
+    "subgenre": "数列",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "等差数列で初項5・末項101・項数50の総和は？",
+    "choices": [
+      "2550",
+      "2650",
+      "2700",
+      "2750"
+    ],
+    "answer": 1,
+    "explanation": "(5+101)×50÷2=106×25=2650。"
+  },
+  {
+    "id": "M190",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "元値 3000円の品に2割の利益を乗せ、さらに1割引きで売ると利益または損失は？",
+    "choices": [
+      "損失300円",
+      "利益108円",
+      "利益240円",
+      "利益360円"
+    ],
+    "answer": 2,
+    "explanation": "定価3600円×0.9=3240円。利益=3240-3000=240円。"
+  },
+  {
+    "id": "M191",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "上りが時速3km、下りが時速5km の山道を往復した平均時速は？",
+    "choices": [
+      "3.75km/h",
+      "4km/h",
+      "4.5km/h",
+      "4.8km/h"
+    ],
+    "answer": 0,
+    "explanation": "調和平均。2÷(1/3+1/5)=2÷(8/15)=2×15/8=30/8=3.75km/h。"
+  },
+  {
+    "id": "M192",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "72を素因数分解すると？",
+    "choices": [
+      "2³×3²",
+      "2⁴×3",
+      "2²×3³",
+      "2³×3×4"
+    ],
+    "answer": 0,
+    "explanation": "72=8×9=2³×3²。"
+  },
+  {
+    "id": "M193",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "円に内接する正六角形の面積は、その円の面積の何倍？(√3≈1.732)",
+    "choices": [
+      "0.827倍",
+      "0.866倍",
+      "0.906倍",
+      "0.955倍"
+    ],
+    "answer": 0,
+    "explanation": "正六角形面積=(3√3/2)r²。円面積=πr²。比≈2.598/3.14≈0.827。"
+  },
+  {
+    "id": "M194",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "300 円の品物に20%の利益を乗せると定価は何円？",
+    "answer_text": "360",
+    "answer_variants": [],
+    "explanation": "300×1.2=360円。"
+  },
+  {
+    "id": "M195",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "底面が一辺6cmの正方形、高さ4cmの四角錐の体積は？",
+    "choices": [
+      "36cm³",
+      "48cm³",
+      "72cm³",
+      "96cm³"
+    ],
+    "answer": 1,
+    "explanation": "底面積×高さ÷3=36×4÷3=48cm³。"
+  },
+  {
+    "id": "M196",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "長さ150mの列車が時速90kmで走るとき、鉄橋350mを通過するのに何秒かかる？",
+    "choices": [
+      "16秒",
+      "20秒",
+      "24秒",
+      "25秒"
+    ],
+    "answer": 1,
+    "explanation": "時速90km=秒速25m。(150+350)÷25=20秒。"
+  },
+  {
+    "id": "M197",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "24の約数をすべて足すと？",
+    "answer_text": "60",
+    "answer_variants": [],
+    "explanation": "約数: 1,2,3,4,6,8,12,24。合計=1+2+3+4+6+8+12+24=60。"
+  },
+  {
+    "id": "M198",
+    "genre": "算数",
+    "subgenre": "比",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "A:B=2:3、合計が30のとき B は？",
+    "answer_text": "18",
+    "answer_variants": [],
+    "explanation": "30×(3/5)=18。"
+  },
+  {
+    "id": "M199",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "Aが単独で6日、BとAが一緒にやると4日で終わる仕事。Bが単独でやると何日かかる？",
+    "choices": [
+      "8日",
+      "10日",
+      "12日",
+      "14日"
+    ],
+    "answer": 2,
+    "explanation": "Aの1日=1/6。合計の1日=1/4。Bの1日=1/4-1/6=1/12。Bは12日。"
+  },
+  {
+    "id": "M200",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "1から50までの整数で、2の倍数でも3の倍数でもない数は何個？",
+    "choices": [
+      "14個",
+      "16個",
+      "17個",
+      "18個"
+    ],
+    "answer": 2,
+    "explanation": "2の倍数25個、3の倍数16個、6の倍数8個。2または3の倍数=25+16-8=33個。50-33=17個。"
   }
 ]

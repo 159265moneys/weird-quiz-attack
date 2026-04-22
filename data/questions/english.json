@@ -587,5 +587,2330 @@
     ],
     "answer": 0,
     "explanation": "restaurant=レストラン。"
+  },
+  {
+    "id": "E041",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「white（白い）」の反対語は？(英語で)",
+    "answer_text": "black",
+    "answer_variants": [],
+    "explanation": "white=白い、反対はblack（黒い）。"
+  },
+  {
+    "id": "E042",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「big（大きい）」の反対語は？(英語で)",
+    "answer_text": "small",
+    "answer_variants": [
+      "little"
+    ],
+    "explanation": "big=大きい、反対はsmall/little（小さい）。"
+  },
+  {
+    "id": "E043",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「sun（太陽）」を日本語で言うと？(ひらがなで)",
+    "answer_text": "たいよう",
+    "answer_variants": [],
+    "explanation": "sun=太陽（たいよう）。"
+  },
+  {
+    "id": "E044",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「bird（鳥）」を日本語で言うと？(ひらがなで)",
+    "answer_text": "とり",
+    "answer_variants": [],
+    "explanation": "bird=鳥（とり）。"
+  },
+  {
+    "id": "E045",
+    "genre": "英語",
+    "subgenre": "数",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「ten」は数字でいくつ？",
+    "answer_text": "10",
+    "answer_variants": [],
+    "explanation": "ten=10。"
+  },
+  {
+    "id": "E046",
+    "genre": "英語",
+    "subgenre": "数",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「twenty」は数字でいくつ？",
+    "answer_text": "20",
+    "answer_variants": [],
+    "explanation": "twenty=20。"
+  },
+  {
+    "id": "E047",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「fish（魚）」の複数形は？",
+    "choices": [
+      "fishs",
+      "fishes",
+      "fish",
+      "fishies"
+    ],
+    "answer": 2,
+    "explanation": "fishの複数形は変化なしでfish（または魚の種類ならfishes）。一般的にはfish。"
+  },
+  {
+    "id": "E048",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「water」の意味は？",
+    "choices": [
+      "風",
+      "火",
+      "水",
+      "土"
+    ],
+    "answer": 2,
+    "explanation": "water=水。"
+  },
+  {
+    "id": "E049",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「hat」の意味は？",
+    "choices": [
+      "靴",
+      "帽子",
+      "手袋",
+      "上着"
+    ],
+    "answer": 1,
+    "explanation": "hat=帽子。"
+  },
+  {
+    "id": "E050",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「run」の意味は？",
+    "choices": [
+      "歩く",
+      "泳ぐ",
+      "走る",
+      "飛ぶ"
+    ],
+    "answer": 2,
+    "explanation": "run=走る。"
+  },
+  {
+    "id": "E051",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「mother」の意味は？",
+    "choices": [
+      "父",
+      "母",
+      "兄",
+      "妹"
+    ],
+    "answer": 1,
+    "explanation": "mother=母。"
+  },
+  {
+    "id": "E052",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「yellow」の意味は？",
+    "choices": [
+      "青",
+      "赤",
+      "黄色",
+      "緑"
+    ],
+    "answer": 2,
+    "explanation": "yellow=黄色。"
+  },
+  {
+    "id": "E053",
+    "genre": "英語",
+    "subgenre": "月",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "Januaryは何月？(数字で)",
+    "answer_text": "1",
+    "answer_variants": [],
+    "explanation": "January=1月。"
+  },
+  {
+    "id": "E054",
+    "genre": "英語",
+    "subgenre": "月",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "Marchは何月？(数字で)",
+    "answer_text": "3",
+    "answer_variants": [],
+    "explanation": "March=3月。"
+  },
+  {
+    "id": "E055",
+    "genre": "英語",
+    "subgenre": "月",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "Julyは何月？(数字で)",
+    "answer_text": "7",
+    "answer_variants": [],
+    "explanation": "July=7月。"
+  },
+  {
+    "id": "E056",
+    "genre": "英語",
+    "subgenre": "月",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "Decemberは何月？(数字で)",
+    "answer_text": "12",
+    "answer_variants": [],
+    "explanation": "December=12月。"
+  },
+  {
+    "id": "E057",
+    "genre": "英語",
+    "subgenre": "曜日",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "Tuesdayは何曜日？(ひらがなで)",
+    "answer_text": "かようび",
+    "answer_variants": [],
+    "explanation": "Tuesday=火曜日（かようび）。"
+  },
+  {
+    "id": "E058",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「学校」を英語で書くと？",
+    "answer_text": "school",
+    "answer_variants": [],
+    "explanation": "学校=school。"
+  },
+  {
+    "id": "E059",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「友達」を英語で書くと？",
+    "answer_text": "friend",
+    "answer_variants": [],
+    "explanation": "友達=friend。"
+  },
+  {
+    "id": "E060",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「動物」を英語で書くと？",
+    "answer_text": "animal",
+    "answer_variants": [],
+    "explanation": "動物=animal。"
+  },
+  {
+    "id": "E061",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「I ___ a student.」の空欄は？",
+    "choices": [
+      "am",
+      "is",
+      "are",
+      "be"
+    ],
+    "answer": 0,
+    "explanation": "Iの後にはam。"
+  },
+  {
+    "id": "E062",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「go」の過去形は？",
+    "choices": [
+      "goed",
+      "went",
+      "gos",
+      "gone"
+    ],
+    "answer": 1,
+    "explanation": "goの過去形はwent（不規則変化）。"
+  },
+  {
+    "id": "E063",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「dog」の複数形は？",
+    "choices": [
+      "dog",
+      "dogs",
+      "doge",
+      "doges"
+    ],
+    "answer": 1,
+    "explanation": "dog→dogs（sをつける）。"
+  },
+  {
+    "id": "E064",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「She ___ tennis every day.」の空欄は？",
+    "choices": [
+      "play",
+      "plays",
+      "playing",
+      "played"
+    ],
+    "answer": 1,
+    "explanation": "She（三人称単数）現在形はplays。"
+  },
+  {
+    "id": "E065",
+    "genre": "英語",
+    "subgenre": "曜日",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "Saturdayは何曜日？",
+    "choices": [
+      "金曜日",
+      "土曜日",
+      "日曜日",
+      "月曜日"
+    ],
+    "answer": 1,
+    "explanation": "Saturday=土曜日。"
+  },
+  {
+    "id": "E066",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「teacher」の意味は？",
+    "choices": [
+      "生徒",
+      "先生",
+      "親",
+      "友達"
+    ],
+    "answer": 1,
+    "explanation": "teacher=先生。"
+  },
+  {
+    "id": "E067",
+    "genre": "英語",
+    "subgenre": "月",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "Juneは何月？",
+    "choices": [
+      "4月",
+      "5月",
+      "6月",
+      "7月"
+    ],
+    "answer": 2,
+    "explanation": "June=6月。"
+  },
+  {
+    "id": "E068",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「music」の意味は？",
+    "choices": [
+      "体育",
+      "理科",
+      "音楽",
+      "算数"
+    ],
+    "answer": 2,
+    "explanation": "music=音楽。"
+  },
+  {
+    "id": "E069",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「窓」を英語で書くと？",
+    "answer_text": "window",
+    "answer_variants": [],
+    "explanation": "窓=window。"
+  },
+  {
+    "id": "E070",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「病院」を英語で書くと？",
+    "answer_text": "hospital",
+    "answer_variants": [],
+    "explanation": "病院=hospital。"
+  },
+  {
+    "id": "E071",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「空港」を英語で書くと？",
+    "answer_text": "airport",
+    "answer_variants": [],
+    "explanation": "空港=airport。"
+  },
+  {
+    "id": "E072",
+    "genre": "英語",
+    "subgenre": "曜日",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "Sundayは何曜日？(ひらがなで)",
+    "answer_text": "にちようび",
+    "answer_variants": [],
+    "explanation": "Sunday=日曜日（にちようび）。"
+  },
+  {
+    "id": "E073",
+    "genre": "英語",
+    "subgenre": "月",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "Aprilは何月？(数字で)",
+    "answer_text": "4",
+    "answer_variants": [],
+    "explanation": "April=4月。"
+  },
+  {
+    "id": "E074",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「eat」の過去形は？",
+    "choices": [
+      "eated",
+      "ated",
+      "ate",
+      "eats"
+    ],
+    "answer": 2,
+    "explanation": "eatの過去形はate（不規則変化）。"
+  },
+  {
+    "id": "E075",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「I ___ my homework yesterday.」の空欄は？",
+    "choices": [
+      "do",
+      "does",
+      "did",
+      "done"
+    ],
+    "answer": 2,
+    "explanation": "昨日（過去）→did。"
+  },
+  {
+    "id": "E076",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「vegetable」の意味は？",
+    "choices": [
+      "果物",
+      "野菜",
+      "肉",
+      "魚"
+    ],
+    "answer": 1,
+    "explanation": "vegetable=野菜。"
+  },
+  {
+    "id": "E077",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「Tuesday」の正しいスペルは？",
+    "choices": [
+      "Tewsday",
+      "Tuseday",
+      "Tuesday",
+      "Tusday"
+    ],
+    "answer": 2,
+    "explanation": "Tuesday=火曜日。"
+  },
+  {
+    "id": "E078",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「These ___ my books.」の空欄は？",
+    "choices": [
+      "am",
+      "is",
+      "are",
+      "be"
+    ],
+    "answer": 2,
+    "explanation": "Theseは複数なのでare。"
+  },
+  {
+    "id": "E079",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「cold」の意味は？",
+    "choices": [
+      "熱い",
+      "暖かい",
+      "涼しい",
+      "寒い"
+    ],
+    "answer": 3,
+    "explanation": "cold=寒い・冷たい。"
+  },
+  {
+    "id": "E080",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「see」の過去形は？",
+    "choices": [
+      "seed",
+      "saw",
+      "seen",
+      "sawed"
+    ],
+    "answer": 1,
+    "explanation": "seeの過去形はsaw（不規則変化）。"
+  },
+  {
+    "id": "E081",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「mountain」の意味は？",
+    "choices": [
+      "海",
+      "川",
+      "山",
+      "湖"
+    ],
+    "answer": 2,
+    "explanation": "mountain=山。"
+  },
+  {
+    "id": "E082",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「March」を日本語にすると？",
+    "choices": [
+      "1月",
+      "2月",
+      "3月",
+      "4月"
+    ],
+    "answer": 2,
+    "explanation": "March=3月。"
+  },
+  {
+    "id": "E083",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「make」の過去形は？(英語で)",
+    "answer_text": "made",
+    "answer_variants": [],
+    "explanation": "makeの過去形はmade（不規則変化）。"
+  },
+  {
+    "id": "E084",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「take」の過去形は？(英語で)",
+    "answer_text": "took",
+    "answer_variants": [],
+    "explanation": "takeの過去形はtook（不規則変化）。"
+  },
+  {
+    "id": "E085",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「museum（博物館）」の意味を日本語で書くと？(ひらがなで)",
+    "answer_text": "はくぶつかん",
+    "answer_variants": [
+      "びじゅつかん"
+    ],
+    "explanation": "museum=博物館・美術館。"
+  },
+  {
+    "id": "E086",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「question」の意味は？(ひらがなで)",
+    "answer_text": "しつもん",
+    "answer_variants": [
+      "もんだい"
+    ],
+    "explanation": "question=質問・問題。"
+  },
+  {
+    "id": "E087",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「She ___ to school tomorrow.」の空欄に入る正しい表現は？",
+    "choices": [
+      "go",
+      "goes",
+      "will go",
+      "went"
+    ],
+    "answer": 2,
+    "explanation": "tomorrow（未来）→will go。"
+  },
+  {
+    "id": "E088",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「I ___ playing soccer now.」の空欄は？",
+    "choices": [
+      "am",
+      "is",
+      "are",
+      "be"
+    ],
+    "answer": 0,
+    "explanation": "Iは現在進行形でam ～ing。"
+  },
+  {
+    "id": "E089",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「afternoon」の意味は？",
+    "choices": [
+      "朝",
+      "昼",
+      "午後",
+      "夜"
+    ],
+    "answer": 2,
+    "explanation": "afternoon=午後。"
+  },
+  {
+    "id": "E090",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「difficult」の意味は？",
+    "choices": [
+      "簡単な",
+      "難しい",
+      "嬉しい",
+      "悲しい"
+    ],
+    "answer": 1,
+    "explanation": "difficult=難しい。"
+  },
+  {
+    "id": "E091",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「know」の過去形は？",
+    "choices": [
+      "knowed",
+      "knew",
+      "known",
+      "knews"
+    ],
+    "answer": 1,
+    "explanation": "knowの過去形はknew（不規則変化）。"
+  },
+  {
+    "id": "E092",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「How ___ do you study every day?」の空欄は？",
+    "choices": [
+      "many",
+      "much",
+      "long",
+      "big"
+    ],
+    "answer": 2,
+    "explanation": "時間の長さを聞くのはHow long。"
+  },
+  {
+    "id": "E093",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「kitchen」の意味は？",
+    "choices": [
+      "部屋",
+      "台所",
+      "風呂",
+      "玄関"
+    ],
+    "answer": 1,
+    "explanation": "kitchen=台所・キッチン。"
+  },
+  {
+    "id": "E094",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「swim」の過去形は？",
+    "choices": [
+      "swimmed",
+      "swam",
+      "swum",
+      "swimed"
+    ],
+    "answer": 1,
+    "explanation": "swimの過去形はswam（不規則変化）。"
+  },
+  {
+    "id": "E095",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「piano（ピアノ）」の複数形は？(英語で)",
+    "answer_text": "pianos",
+    "answer_variants": [],
+    "explanation": "pianoの複数形はpianos。"
+  },
+  {
+    "id": "E096",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「dictionary（辞書）」を日本語で？(ひらがなで)",
+    "answer_text": "じしょ",
+    "answer_variants": [],
+    "explanation": "dictionary=辞書（じしょ）。"
+  },
+  {
+    "id": "E097",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「I have ___ apple.」の空欄は？",
+    "choices": [
+      "a",
+      "an",
+      "the",
+      "–"
+    ],
+    "answer": 1,
+    "explanation": "apple（母音で始まる語）の前はan。"
+  },
+  {
+    "id": "E098",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「This is the book ___ I read yesterday.」の空欄は？",
+    "choices": [
+      "who",
+      "which",
+      "whose",
+      "where"
+    ],
+    "answer": 1,
+    "explanation": "物（book）を受ける関係代名詞はwhich（またはthat）。"
+  },
+  {
+    "id": "E099",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「give」の過去形は？",
+    "choices": [
+      "gived",
+      "gave",
+      "given",
+      "gives"
+    ],
+    "answer": 1,
+    "explanation": "giveの過去形はgave（不規則変化）。"
+  },
+  {
+    "id": "E100",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「popular」の意味は？",
+    "choices": [
+      "珍しい",
+      "難しい",
+      "人気がある",
+      "正確な"
+    ],
+    "answer": 2,
+    "explanation": "popular=人気がある。"
+  },
+  {
+    "id": "E101",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「He is taller ___ me.」の空欄は？",
+    "choices": [
+      "than",
+      "then",
+      "that",
+      "as"
+    ],
+    "answer": 0,
+    "explanation": "比較級の後にはthan。"
+  },
+  {
+    "id": "E102",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「tired」の意味は？",
+    "choices": [
+      "嬉しい",
+      "空腹な",
+      "眠い",
+      "疲れた"
+    ],
+    "answer": 3,
+    "explanation": "tired=疲れた。"
+  },
+  {
+    "id": "E103",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「can」の過去形は？",
+    "choices": [
+      "could",
+      "canned",
+      "cans",
+      "canned"
+    ],
+    "answer": 0,
+    "explanation": "canの過去形はcould。"
+  },
+  {
+    "id": "E104",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「February」の正しいスペルは？",
+    "choices": [
+      "Febuary",
+      "February",
+      "Feburary",
+      "Februray"
+    ],
+    "answer": 1,
+    "explanation": "February=2月。rが2つある。"
+  },
+  {
+    "id": "E105",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「I ___ never been to America.」の空欄は？",
+    "choices": [
+      "do",
+      "have",
+      "has",
+      "had"
+    ],
+    "answer": 1,
+    "explanation": "現在完了形（経験）：I have never been...。"
+  },
+  {
+    "id": "E106",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「refrigerator」の意味は？",
+    "choices": [
+      "洗濯機",
+      "テレビ",
+      "冷蔵庫",
+      "電子レンジ"
+    ],
+    "answer": 2,
+    "explanation": "refrigerator=冷蔵庫。"
+  },
+  {
+    "id": "E107",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「buy」の過去形は？(英語で)",
+    "answer_text": "bought",
+    "answer_variants": [],
+    "explanation": "buyの過去形はbought（不規則変化）。"
+  },
+  {
+    "id": "E108",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「break」の過去形は？(英語で)",
+    "answer_text": "broke",
+    "answer_variants": [],
+    "explanation": "breakの過去形はbroke（不規則変化）。"
+  },
+  {
+    "id": "E109",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「calendar（カレンダー）」のスペルを英語で書くと？",
+    "answer_text": "calendar",
+    "answer_variants": [],
+    "explanation": "calendar。正しいスペル。"
+  },
+  {
+    "id": "E110",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「necessary」の意味は？",
+    "choices": [
+      "必要な",
+      "自由な",
+      "正確な",
+      "安全な"
+    ],
+    "answer": 0,
+    "explanation": "necessary=必要な。"
+  },
+  {
+    "id": "E111",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「If I ___ you, I would go.」の空欄は？",
+    "choices": [
+      "am",
+      "was",
+      "were",
+      "be"
+    ],
+    "answer": 2,
+    "explanation": "仮定法過去：if節はwere（主語に関わらず）。"
+  },
+  {
+    "id": "E112",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「She asked me ___ I was free.」の空欄は？",
+    "choices": [
+      "that",
+      "if",
+      "which",
+      "what"
+    ],
+    "answer": 1,
+    "explanation": "間接疑問（yes/no疑問文）を導くのはif/whether。"
+  },
+  {
+    "id": "E113",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「environment」の意味は？",
+    "choices": [
+      "政治",
+      "経済",
+      "環境",
+      "文化"
+    ],
+    "answer": 2,
+    "explanation": "environment=環境。"
+  },
+  {
+    "id": "E114",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「speak」の過去分詞形は？",
+    "choices": [
+      "speaked",
+      "spoke",
+      "spoken",
+      "speaks"
+    ],
+    "answer": 2,
+    "explanation": "speak-spoke-spoken。過去分詞はspoken。"
+  },
+  {
+    "id": "E115",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「November」は何月？",
+    "choices": [
+      "9月",
+      "10月",
+      "11月",
+      "12月"
+    ],
+    "answer": 2,
+    "explanation": "November=11月。"
+  },
+  {
+    "id": "E116",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「convenient」の意味は？",
+    "choices": [
+      "危険な",
+      "便利な",
+      "退屈な",
+      "重要な"
+    ],
+    "answer": 1,
+    "explanation": "convenient=便利な。"
+  },
+  {
+    "id": "E117",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「think」の過去形は？(英語で)",
+    "answer_text": "thought",
+    "answer_variants": [],
+    "explanation": "thinkの過去形はthought（不規則変化）。"
+  },
+  {
+    "id": "E118",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「catch」の過去形は？(英語で)",
+    "answer_text": "caught",
+    "answer_variants": [],
+    "explanation": "catchの過去形はcaught（不規則変化）。"
+  },
+  {
+    "id": "E119",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「schedule」の正しいスペルは？",
+    "choices": [
+      "shedule",
+      "scedule",
+      "schedule",
+      "schecule"
+    ],
+    "answer": 2,
+    "explanation": "schedule=予定・スケジュール。"
+  },
+  {
+    "id": "E120",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「international」の意味は？",
+    "choices": [
+      "国内の",
+      "国際的な",
+      "地域の",
+      "歴史的な"
+    ],
+    "answer": 1,
+    "explanation": "international=国際的な。"
+  },
+  {
+    "id": "E121",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「The book ___ on the table is mine.」の空欄は？",
+    "choices": [
+      "lying",
+      "lay",
+      "laid",
+      "lain"
+    ],
+    "answer": 0,
+    "explanation": "現在分詞lying（横たわっている）で後ろからbookを修飾。"
+  },
+  {
+    "id": "E122",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「frequently」の意味は？",
+    "choices": [
+      "めったに～ない",
+      "時々",
+      "たびたび",
+      "ほとんど"
+    ],
+    "answer": 2,
+    "explanation": "frequently=たびたび・頻繁に。"
+  },
+  {
+    "id": "E123",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「It is important ___ us to study English.」の空欄は？",
+    "choices": [
+      "of",
+      "for",
+      "to",
+      "with"
+    ],
+    "answer": 1,
+    "explanation": "It is ... for 人 to不定詞。important には for を使う。"
+  },
+  {
+    "id": "E124",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「disappointed」の意味は？",
+    "choices": [
+      "驚いた",
+      "失望した",
+      "満足した",
+      "怒った"
+    ],
+    "answer": 1,
+    "explanation": "disappointed=失望した・がっかりした。"
+  },
+  {
+    "id": "E125",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「write」の過去分詞は？(英語で)",
+    "answer_text": "written",
+    "answer_variants": [],
+    "explanation": "write-wrote-written。過去分詞はwritten。"
+  },
+  {
+    "id": "E126",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「sing」の過去形は？(英語で)",
+    "answer_text": "sang",
+    "answer_variants": [],
+    "explanation": "sing-sang-sung。過去形はsang。"
+  },
+  {
+    "id": "E127",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「thorough」の意味は？",
+    "choices": [
+      "速い",
+      "徹底的な",
+      "軽い",
+      "大きな"
+    ],
+    "answer": 1,
+    "explanation": "thorough=徹底的な。"
+  },
+  {
+    "id": "E128",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「He ___ to be a doctor.」（なりたがっている）の空欄は？",
+    "choices": [
+      "wants",
+      "hopes",
+      "wishes",
+      "wants"
+    ],
+    "answer": 0,
+    "explanation": "want to do=～したい。He wants to be a doctor."
+  },
+  {
+    "id": "E129",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「sophisticated」の意味は？",
+    "choices": [
+      "単純な",
+      "洗練された",
+      "危険な",
+      "怠け者の"
+    ],
+    "answer": 1,
+    "explanation": "sophisticated=洗練された・複雑な。"
+  },
+  {
+    "id": "E130",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「Despite ___ tired, she kept working.」の空欄は？",
+    "choices": [
+      "be",
+      "been",
+      "being",
+      "to be"
+    ],
+    "answer": 2,
+    "explanation": "despite + 動名詞（being tired）。"
+  },
+  {
+    "id": "E131",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「acknowledge」の意味は？",
+    "choices": [
+      "無視する",
+      "否定する",
+      "認める",
+      "忘れる"
+    ],
+    "answer": 2,
+    "explanation": "acknowledge=認める・承認する。"
+  },
+  {
+    "id": "E132",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「He ___ there for five years.」（ずっといた）の空欄は？",
+    "choices": [
+      "lived",
+      "has lived",
+      "had lived",
+      "was living"
+    ],
+    "answer": 1,
+    "explanation": "現在完了（継続）：has lived。"
+  },
+  {
+    "id": "E133",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「Wednesday（水曜日）」の正しいスペルを書くと？",
+    "answer_text": "Wednesday",
+    "answer_variants": [],
+    "explanation": "Wednesday。dが2つ入り、真ん中のdは発音しない。"
+  },
+  {
+    "id": "E134",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「pneumonia」の意味は？",
+    "choices": [
+      "肺炎",
+      "骨折",
+      "頭痛",
+      "花粉症"
+    ],
+    "answer": 0,
+    "explanation": "pneumonia=肺炎（小学校高学年の英語語彙範囲）。"
+  },
+  {
+    "id": "E135",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「Hardly ___ I arrived when it started raining.」の空欄は？",
+    "choices": [
+      "did",
+      "had",
+      "was",
+      "have"
+    ],
+    "answer": 1,
+    "explanation": "Hardly had ... when（～するやいなや）。過去完了倒置。"
+  },
+  {
+    "id": "E136",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「February」のスペルで正しいものは？",
+    "choices": [
+      "Febuary",
+      "Februrary",
+      "February",
+      "Febraury"
+    ],
+    "answer": 2,
+    "explanation": "February=2月。r が2つ入る。"
+  },
+  {
+    "id": "E137",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「autumn」と同じ意味の英語は？",
+    "choices": [
+      "spring",
+      "summer",
+      "fall",
+      "winter"
+    ],
+    "answer": 2,
+    "explanation": "autumn=秋。アメリカ英語ではfallとも言う。"
+  },
+  {
+    "id": "E138",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「I wish I ___ more time.」（あればいいのに）の空欄は？",
+    "choices": [
+      "have",
+      "had",
+      "will have",
+      "would have"
+    ],
+    "answer": 1,
+    "explanation": "I wish + 仮定法過去（had）。"
+  },
+  {
+    "id": "E139",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「conscience」の意味は？",
+    "choices": [
+      "意識",
+      "良心",
+      "科学",
+      "経験"
+    ],
+    "answer": 1,
+    "explanation": "conscience=良心。"
+  },
+  {
+    "id": "E140",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「No sooner ___ I left than it rained.」の空欄は？",
+    "choices": [
+      "did",
+      "had",
+      "was",
+      "have"
+    ],
+    "answer": 1,
+    "explanation": "No sooner had ... than（～するやいなや）。過去完了倒置。"
+  },
+  {
+    "id": "E141",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「perseverance」の意味は？",
+    "choices": [
+      "協力",
+      "怠慢",
+      "忍耐",
+      "優雅さ"
+    ],
+    "answer": 2,
+    "explanation": "perseverance=忍耐・粘り強さ。"
+  },
+  {
+    "id": "E142",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「It was not until midnight ___ she came home.」の空欄は？",
+    "choices": [
+      "when",
+      "that",
+      "which",
+      "before"
+    ],
+    "answer": 1,
+    "explanation": "It was not until ... that（～して初めて）の強調構文。"
+  },
+  {
+    "id": "E143",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「soccer（サッカー）」を日本語で？(ひらがなで)",
+    "answer_text": "さっかー",
+    "answer_variants": [],
+    "explanation": "soccer=サッカー（さっかー）。"
+  },
+  {
+    "id": "E144",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「rainbow（虹）」を日本語で？(ひらがなで)",
+    "answer_text": "にじ",
+    "answer_variants": [],
+    "explanation": "rainbow=虹（にじ）。"
+  },
+  {
+    "id": "E145",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「run」の現在分詞は？(英語で)",
+    "answer_text": "running",
+    "answer_variants": [],
+    "explanation": "短母音+子音で終わる語はnnを重ねてing。"
+  },
+  {
+    "id": "E146",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「drive」の過去分詞は？(英語で)",
+    "answer_text": "driven",
+    "answer_variants": [],
+    "explanation": "drive-drove-driven。過去分詞はdriven。"
+  },
+  {
+    "id": "E147",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「sunny」の意味は？",
+    "choices": [
+      "曇りの",
+      "雨の",
+      "晴れた",
+      "風の強い"
+    ],
+    "answer": 2,
+    "explanation": "sunny=晴れた・日差しが明るい。"
+  },
+  {
+    "id": "E148",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「speak」の過去形は？",
+    "choices": [
+      "speaked",
+      "spoken",
+      "spoke",
+      "speaks"
+    ],
+    "answer": 2,
+    "explanation": "speak-spoke-spoken。過去形はspoke。"
+  },
+  {
+    "id": "E149",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「situation」の意味は？",
+    "choices": [
+      "状況",
+      "感情",
+      "意見",
+      "目的"
+    ],
+    "answer": 0,
+    "explanation": "situation=状況・場面。"
+  },
+  {
+    "id": "E150",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「I'm looking forward ___ seeing you.」の空欄は？",
+    "choices": [
+      "to",
+      "for",
+      "at",
+      "of"
+    ],
+    "answer": 0,
+    "explanation": "look forward to ～ing（～を楽しみにしている）。toの後は動名詞。"
+  },
+  {
+    "id": "E151",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「curious」の意味は？",
+    "choices": [
+      "退屈な",
+      "好奇心旺盛な",
+      "静かな",
+      "厳しい"
+    ],
+    "answer": 1,
+    "explanation": "curious=好奇心旺盛な。"
+  },
+  {
+    "id": "E152",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「The more you study, ___ you will learn.」の空欄は？",
+    "choices": [
+      "more",
+      "the more",
+      "most",
+      "the most"
+    ],
+    "answer": 1,
+    "explanation": "The 比較級 ～, the 比較級 ～ 構文。"
+  },
+  {
+    "id": "E153",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「profound」の意味は？",
+    "choices": [
+      "浅い",
+      "深い",
+      "広い",
+      "狭い"
+    ],
+    "answer": 1,
+    "explanation": "profound=深い・深遠な。"
+  },
+  {
+    "id": "E154",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「meticulous」の意味は？",
+    "choices": [
+      "大雑把な",
+      "細心な",
+      "鈍い",
+      "騒がしい"
+    ],
+    "answer": 1,
+    "explanation": "meticulous=細心な・几帳面な。"
+  },
+  {
+    "id": "E155",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「diligent」の意味は？",
+    "choices": [
+      "怠惰な",
+      "勤勉な",
+      "不注意な",
+      "無礼な"
+    ],
+    "answer": 1,
+    "explanation": "diligent=勤勉な。"
+  },
+  {
+    "id": "E156",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「ambiguous」の意味は？",
+    "choices": [
+      "明確な",
+      "曖昧な",
+      "正確な",
+      "詳細な"
+    ],
+    "answer": 1,
+    "explanation": "ambiguous=曖昧な・多義的な。"
+  },
+  {
+    "id": "E157",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「___ it may seem strange, the story is true.」の空欄は？",
+    "choices": [
+      "Although",
+      "Despite",
+      "However",
+      "For all"
+    ],
+    "answer": 0,
+    "explanation": "Although it may seem strange（たとえ奇妙に見えても）。"
+  },
+  {
+    "id": "E158",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「winter」の意味は？",
+    "choices": [
+      "春",
+      "夏",
+      "秋",
+      "冬"
+    ],
+    "answer": 3,
+    "explanation": "winter=冬。"
+  },
+  {
+    "id": "E159",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「hungry」の意味は？",
+    "choices": [
+      "眠い",
+      "疲れた",
+      "空腹な",
+      "怒った"
+    ],
+    "answer": 2,
+    "explanation": "hungry=空腹な。"
+  },
+  {
+    "id": "E160",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「fly」の過去形は？",
+    "choices": [
+      "flied",
+      "flew",
+      "flown",
+      "flyes"
+    ],
+    "answer": 1,
+    "explanation": "flyの過去形はflew（不規則変化）。"
+  },
+  {
+    "id": "E161",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「grow」の過去形は？(英語で)",
+    "answer_text": "grew",
+    "answer_variants": [],
+    "explanation": "growの過去形はgrew（不規則変化）。"
+  },
+  {
+    "id": "E162",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「steal」の過去形は？(英語で)",
+    "answer_text": "stole",
+    "answer_variants": [],
+    "explanation": "stealの過去形はstole（不規則変化）。"
+  },
+  {
+    "id": "E163",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「地図」を英語で書くと？",
+    "answer_text": "map",
+    "answer_variants": [],
+    "explanation": "地図=map。"
+  },
+  {
+    "id": "E164",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「図書館」を英語で書くと？",
+    "answer_text": "library",
+    "answer_variants": [],
+    "explanation": "図書館=library。"
+  },
+  {
+    "id": "E165",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「受け取る」を英語で書くと？",
+    "answer_text": "receive",
+    "answer_variants": [],
+    "explanation": "受け取る=receive。"
+  },
+  {
+    "id": "E166",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「achievement（達成）」のスペルを書くと？",
+    "answer_text": "achievement",
+    "answer_variants": [],
+    "explanation": "achievement=達成。"
+  },
+  {
+    "id": "E167",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「temperature（気温・温度）」のスペルを書くと？",
+    "answer_text": "temperature",
+    "answer_variants": [],
+    "explanation": "temperature=温度・気温。"
+  },
+  {
+    "id": "E168",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "「恩恵」を英語で書くと？",
+    "answer_text": "benefit",
+    "answer_variants": [],
+    "explanation": "恩恵・利益=benefit。"
+  },
+  {
+    "id": "E169",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「dangerous」の意味は？",
+    "choices": [
+      "安全な",
+      "危険な",
+      "便利な",
+      "退屈な"
+    ],
+    "answer": 1,
+    "explanation": "dangerous=危険な。"
+  },
+  {
+    "id": "E170",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「get」の過去分詞は？",
+    "choices": [
+      "got",
+      "gotten",
+      "geted",
+      "gots"
+    ],
+    "answer": 1,
+    "explanation": "get-got-gotten（またはgot）。過去分詞はgotten。"
+  },
+  {
+    "id": "E171",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「anniversary」の意味は？",
+    "choices": [
+      "記念日",
+      "誕生日",
+      "休日",
+      "祭り"
+    ],
+    "answer": 0,
+    "explanation": "anniversary=記念日・周年。"
+  },
+  {
+    "id": "E172",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「communicate」の意味は？",
+    "choices": [
+      "争う",
+      "無視する",
+      "伝える",
+      "疑う"
+    ],
+    "answer": 2,
+    "explanation": "communicate=意思疎通する・伝える。"
+  },
+  {
+    "id": "E173",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「nutrition」の意味は？",
+    "choices": [
+      "食欲",
+      "栄養",
+      "運動",
+      "休息"
+    ],
+    "answer": 1,
+    "explanation": "nutrition=栄養。"
+  },
+  {
+    "id": "E174",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「simultaneously」の意味は？",
+    "choices": [
+      "徐々に",
+      "同時に",
+      "別々に",
+      "定期的に"
+    ],
+    "answer": 1,
+    "explanation": "simultaneously=同時に。"
+  },
+  {
+    "id": "E175",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「surprised」の意味は？",
+    "choices": [
+      "失望した",
+      "怒った",
+      "驚いた",
+      "悲しんだ"
+    ],
+    "answer": 2,
+    "explanation": "surprised=驚いた。"
+  },
+  {
+    "id": "E176",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「begin」の過去形は？",
+    "choices": [
+      "beginned",
+      "began",
+      "begun",
+      "begins"
+    ],
+    "answer": 1,
+    "explanation": "beginの過去形はbegan（不規則変化）。"
+  },
+  {
+    "id": "E177",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「big」の比較級は？",
+    "choices": [
+      "biger",
+      "bigger",
+      "more big",
+      "bigg"
+    ],
+    "answer": 1,
+    "explanation": "短い形容詞の比較級：語尾の子音を重ねてer。biggerが正しい。"
+  },
+  {
+    "id": "E178",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「breakfast」の意味は？",
+    "choices": [
+      "昼食",
+      "夕食",
+      "朝食",
+      "おやつ"
+    ],
+    "answer": 2,
+    "explanation": "breakfast=朝食。"
+  },
+  {
+    "id": "E179",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「umbrella」の意味は？",
+    "choices": [
+      "帽子",
+      "手袋",
+      "傘",
+      "靴"
+    ],
+    "answer": 2,
+    "explanation": "umbrella=傘。"
+  },
+  {
+    "id": "E180",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「good」の最上級は？",
+    "choices": [
+      "gooder",
+      "goodest",
+      "better",
+      "best"
+    ],
+    "answer": 3,
+    "explanation": "good-better-best（不規則変化）。"
+  },
+  {
+    "id": "E181",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「He told me ___ wait outside.」の空欄は？",
+    "choices": [
+      "to",
+      "for",
+      "at",
+      "of"
+    ],
+    "answer": 0,
+    "explanation": "tell + 人 + to不定詞。He told me to wait...。"
+  },
+  {
+    "id": "E182",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「transportation」の意味は？",
+    "choices": [
+      "建設",
+      "通信",
+      "交通機関",
+      "医療"
+    ],
+    "answer": 2,
+    "explanation": "transportation=交通機関・輸送。"
+  },
+  {
+    "id": "E183",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「Were it not ___ your help, I couldn't do it.」の空欄は？",
+    "choices": [
+      "for",
+      "with",
+      "by",
+      "of"
+    ],
+    "answer": 0,
+    "explanation": "were it not for=もし～がなければ。仮定法倒置。"
+  },
+  {
+    "id": "E184",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「eloquent」の意味は？",
+    "choices": [
+      "無口な",
+      "雄弁な",
+      "礼儀正しい",
+      "謙虚な"
+    ],
+    "answer": 1,
+    "explanation": "eloquent=雄弁な・表現力豊かな。"
+  },
+  {
+    "id": "E185",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「catastrophe」の意味は？",
+    "choices": [
+      "勝利",
+      "奇跡",
+      "大惨事",
+      "成功"
+    ],
+    "answer": 2,
+    "explanation": "catastrophe=大惨事・壊滅的な出来事。"
+  },
+  {
+    "id": "E186",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「green」の意味は？",
+    "choices": [
+      "赤",
+      "青",
+      "緑",
+      "白"
+    ],
+    "answer": 2,
+    "explanation": "green=緑。"
+  },
+  {
+    "id": "E187",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「elephant」の意味は？",
+    "choices": [
+      "キリン",
+      "ライオン",
+      "ゾウ",
+      "サル"
+    ],
+    "answer": 2,
+    "explanation": "elephant=ゾウ。"
+  },
+  {
+    "id": "E188",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「hospital」の意味は？",
+    "choices": [
+      "学校",
+      "病院",
+      "駅",
+      "店"
+    ],
+    "answer": 1,
+    "explanation": "hospital=病院。"
+  },
+  {
+    "id": "E189",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「expensive」の意味は？",
+    "choices": [
+      "安い",
+      "高い",
+      "大きい",
+      "重い"
+    ],
+    "answer": 1,
+    "explanation": "expensive=高価な。"
+  },
+  {
+    "id": "E190",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「I ___ my keys. I can't find them.」の空欄は？",
+    "choices": [
+      "lose",
+      "lost",
+      "have lost",
+      "had lost"
+    ],
+    "answer": 2,
+    "explanation": "現在完了（結果）：have lost（なくしてしまった、今もない）。"
+  },
+  {
+    "id": "E191",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「October」は何月？",
+    "choices": [
+      "8月",
+      "9月",
+      "10月",
+      "11月"
+    ],
+    "answer": 2,
+    "explanation": "October=10月。"
+  },
+  {
+    "id": "E192",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「rise」の過去形は？",
+    "choices": [
+      "risen",
+      "raised",
+      "rose",
+      "rised"
+    ],
+    "answer": 2,
+    "explanation": "rise-rose-risen。過去形はrose。"
+  },
+  {
+    "id": "E193",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「scenery」の意味は？",
+    "choices": [
+      "科学",
+      "舞台",
+      "景色",
+      "声"
+    ],
+    "answer": 2,
+    "explanation": "scenery=景色・風景。"
+  },
+  {
+    "id": "E194",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「The window ___ broken by someone.」の空欄は？",
+    "choices": [
+      "is",
+      "was",
+      "has",
+      "had"
+    ],
+    "answer": 1,
+    "explanation": "過去の受け身：was broken。"
+  },
+  {
+    "id": "E195",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「abundance」の意味は？",
+    "choices": [
+      "不足",
+      "豊富さ",
+      "均衡",
+      "混乱"
+    ],
+    "answer": 1,
+    "explanation": "abundance=豊富さ・大量。"
+  },
+  {
+    "id": "E196",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「inevitable」の意味は？",
+    "choices": [
+      "避けられる",
+      "偶然の",
+      "不可避の",
+      "可能な"
+    ],
+    "answer": 2,
+    "explanation": "inevitable=不可避の・必然的な。"
+  },
+  {
+    "id": "E197",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「cold（寒い）」の反対語は？(英語で)",
+    "answer_text": "hot",
+    "answer_variants": [
+      "warm"
+    ],
+    "explanation": "cold=寒い・冷たい、反対はhot（暑い・熱い）。"
+  },
+  {
+    "id": "E198",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「長い」を英語で書くと？",
+    "answer_text": "long",
+    "answer_variants": [],
+    "explanation": "長い=long。"
+  },
+  {
+    "id": "E199",
+    "genre": "英語",
+    "subgenre": "単語",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「テレビ」を英語で書くと？",
+    "answer_text": "television",
+    "answer_variants": [
+      "TV"
+    ],
+    "explanation": "テレビ=television（TV）。"
+  },
+  {
+    "id": "E200",
+    "genre": "英語",
+    "subgenre": "文法",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「come」の過去形は？(英語で)",
+    "answer_text": "came",
+    "answer_variants": [],
+    "explanation": "comeの過去形はcame（不規則変化）。"
   }
 ]

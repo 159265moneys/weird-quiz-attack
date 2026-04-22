@@ -284,5 +284,1189 @@
     "answer_text": "645",
     "answer_variants": [],
     "explanation": "645年、中大兄皇子らによる改革。"
+  },
+  {
+    "id": "S021",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "日本で最も南にある都道府県は？(ひらがなで)",
+    "answer_text": "おきなわけん",
+    "answer_variants": [
+      "おきなわ"
+    ],
+    "explanation": "沖縄県（おきなわけん）が日本最南端。"
+  },
+  {
+    "id": "S022",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "日本で最も北にある都道府県は？(ひらがなで)",
+    "answer_text": "ほっかいどう",
+    "answer_variants": [],
+    "explanation": "北海道（ほっかいどう）が日本最北端の都道府県。"
+  },
+  {
+    "id": "S023",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "東京スカイツリーがある都市は？",
+    "choices": [
+      "大阪市",
+      "名古屋市",
+      "東京都",
+      "横浜市"
+    ],
+    "answer": 2,
+    "explanation": "東京スカイツリーは東京都墨田区にある。"
+  },
+  {
+    "id": "S024",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "日本の国旗の色は？",
+    "choices": [
+      "青と白",
+      "赤と白",
+      "赤と青と白",
+      "白と緑"
+    ],
+    "answer": 1,
+    "explanation": "日の丸は白地に赤の円（日章旗）。"
+  },
+  {
+    "id": "S025",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "世界で一番大きい国（面積）は？",
+    "choices": [
+      "アメリカ",
+      "中国",
+      "ロシア",
+      "カナダ"
+    ],
+    "answer": 2,
+    "explanation": "面積最大の国はロシア（約1700万km²）。"
+  },
+  {
+    "id": "S026",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "日本の面積は約何万km²？(大まかな数字で)",
+    "answer_text": "38",
+    "answer_variants": [
+      "37.8",
+      "38万"
+    ],
+    "explanation": "日本の国土面積は約37.8万km²（約38万km²）。"
+  },
+  {
+    "id": "S027",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "北海道の県庁所在地は？(ひらがなで)",
+    "answer_text": "さっぽろ",
+    "answer_variants": [
+      "さっぽろし"
+    ],
+    "explanation": "北海道の道庁所在地は札幌市（さっぽろし）。"
+  },
+  {
+    "id": "S028",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「聖徳太子」が制定した「十七条の憲法」は何時代？",
+    "choices": [
+      "奈良時代",
+      "平安時代",
+      "飛鳥時代",
+      "鎌倉時代"
+    ],
+    "answer": 2,
+    "explanation": "聖徳太子が活躍したのは飛鳥時代（6〜7世紀）。"
+  },
+  {
+    "id": "S029",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "日本で人口が最も多い都市は？",
+    "choices": [
+      "大阪市",
+      "名古屋市",
+      "東京都（23区）",
+      "横浜市"
+    ],
+    "answer": 2,
+    "explanation": "東京都（特に東京23区）が日本最大の都市。"
+  },
+  {
+    "id": "S030",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「奈良の大仏」がある寺は？",
+    "choices": [
+      "金閣寺",
+      "東大寺",
+      "法隆寺",
+      "唐招提寺"
+    ],
+    "answer": 1,
+    "explanation": "奈良の大仏（廬舎那仏）は東大寺（とうだいじ）にある。"
+  },
+  {
+    "id": "S031",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "琵琶湖がある都道府県は？",
+    "choices": [
+      "奈良県",
+      "三重県",
+      "滋賀県",
+      "京都府"
+    ],
+    "answer": 2,
+    "explanation": "琵琶湖は滋賀県（しがけん）にある日本最大の湖。"
+  },
+  {
+    "id": "S032",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "日本最初の元号（大化）は何年に始まった？",
+    "choices": [
+      "645年",
+      "710年",
+      "794年",
+      "1192年"
+    ],
+    "answer": 0,
+    "explanation": "大化の改新（645年）が始まりで「大化」が日本最初の元号。"
+  },
+  {
+    "id": "S033",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "本州・四国・九州・北海道以外の日本の主要な島は？(ひらがなで)",
+    "answer_text": "おきなわ",
+    "answer_variants": [
+      "おきなわじま",
+      "りゅうきゅう"
+    ],
+    "explanation": "日本の主要5島は本州・北海道・九州・四国・沖縄。"
+  },
+  {
+    "id": "S034",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「大政奉還」を行った江戸幕府最後の将軍は？(ひらがなで)",
+    "answer_text": "とくがわよしのぶ",
+    "answer_variants": [
+      "よしのぶ"
+    ],
+    "explanation": "第15代将軍・徳川慶喜（よしのぶ）が1867年に大政奉還を行った。"
+  },
+  {
+    "id": "S035",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "日本の国会の種類で、衆議院と何院がある？",
+    "choices": [
+      "参議院",
+      "上院",
+      "下院",
+      "市民院"
+    ],
+    "answer": 0,
+    "explanation": "日本の国会は衆議院と参議院の二院制。"
+  },
+  {
+    "id": "S036",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「瀬戸内海」に面していない県は？",
+    "choices": [
+      "広島県",
+      "香川県",
+      "長崎県",
+      "兵庫県"
+    ],
+    "answer": 2,
+    "explanation": "長崎県は九州西部にあり、瀬戸内海には面していない（東シナ海・対馬海峡側）。"
+  },
+  {
+    "id": "S037",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「足利尊氏」が開いた幕府は？",
+    "choices": [
+      "鎌倉幕府",
+      "室町幕府",
+      "江戸幕府",
+      "奈良幕府"
+    ],
+    "answer": 1,
+    "explanation": "足利尊氏が1338年に開いたのは室町幕府（むろまちばくふ）。"
+  },
+  {
+    "id": "S038",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "日本アルプスの3つに含まれないのは？",
+    "choices": [
+      "北アルプス（飛騨山脈）",
+      "中央アルプス（木曽山脈）",
+      "南アルプス（赤石山脈）",
+      "東アルプス"
+    ],
+    "answer": 3,
+    "explanation": "日本アルプスは北（飛騨）・中央（木曽）・南（赤石）の3山脈。東アルプスはない。"
+  },
+  {
+    "id": "S039",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「元禄文化」が花開いたのは何時代？(ひらがなで)",
+    "answer_text": "えどじだい",
+    "answer_variants": [],
+    "explanation": "元禄文化は江戸時代（元禄年間・17〜18世紀初め）に栄えた。"
+  },
+  {
+    "id": "S040",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "日本の「三大都市圏」の一つ、名古屋を中心とする圏を何という？(ひらがなで)",
+    "answer_text": "ちゅうきょうけん",
+    "answer_variants": [
+      "なごやけん",
+      "ちゅうぶけん"
+    ],
+    "explanation": "名古屋を中心とする都市圏を中京圏（ちゅうきょうけん）という。"
+  },
+  {
+    "id": "S041",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "日本国憲法で定められた「基本的人権」に含まれないのは？",
+    "choices": [
+      "立法権",
+      "行政権",
+      "司法権",
+      "財政権"
+    ],
+    "answer": 3,
+    "explanation": "三権分立の三権は立法・行政・司法。財政権は含まれない。"
+  },
+  {
+    "id": "S042",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「明治維新」が起きたのはいつ頃？",
+    "choices": [
+      "1603年頃",
+      "1868年頃",
+      "1945年頃",
+      "1600年頃"
+    ],
+    "answer": 1,
+    "explanation": "明治維新は1868年（明治元年）。江戸幕府から明治政府への転換。"
+  },
+  {
+    "id": "S043",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「日本の三大工業地帯」に含まれないのはどれ？",
+    "choices": [
+      "京浜工業地帯",
+      "中京工業地帯",
+      "阪神工業地帯",
+      "北九州工業地帯"
+    ],
+    "answer": 3,
+    "explanation": "三大工業地帯は京浜・中京・阪神。北九州は「四大」に含まれることもある。"
+  },
+  {
+    "id": "S044",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「国会」の役割として正しいのは？",
+    "choices": [
+      "法律を執行する",
+      "法律を作る",
+      "裁判を行う",
+      "外交を担う"
+    ],
+    "answer": 1,
+    "explanation": "国会（立法府）は法律を作る機関。行政は内閣、司法は裁判所。"
+  },
+  {
+    "id": "S045",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「関ヶ原の戦い」が起きたのは西暦何年？",
+    "answer_text": "1600",
+    "answer_variants": [],
+    "explanation": "関ヶ原の戦いは1600年（慶長5年）。徳川家康率いる東軍が勝利。"
+  },
+  {
+    "id": "S046",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「信濃川」は日本最長の川。全長はおよそ何km？(大まかに)",
+    "answer_text": "367",
+    "answer_variants": [
+      "367km",
+      "370"
+    ],
+    "explanation": "信濃川の全長は367km（日本最長）。"
+  },
+  {
+    "id": "S047",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「日本国憲法」が施行されたのはいつ？",
+    "choices": [
+      "1946年11月3日",
+      "1947年5月3日",
+      "1945年8月15日",
+      "1952年4月28日"
+    ],
+    "answer": 1,
+    "explanation": "日本国憲法は1947年5月3日に施行（公布は1946年11月3日）。"
+  },
+  {
+    "id": "S048",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「豊臣秀吉」が行った「太閤検地」の目的は？",
+    "choices": [
+      "農民の反乱を防ぐ",
+      "土地・石高を統一的に把握する",
+      "外交を強化する",
+      "仏教を保護する"
+    ],
+    "answer": 1,
+    "explanation": "太閤検地は全国の土地を測量・統一基準で石高を確定し、支配体制を整えた。"
+  },
+  {
+    "id": "S049",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「東南アジア」に位置する国はどれ？",
+    "choices": [
+      "パキスタン",
+      "ミャンマー",
+      "イラン",
+      "カザフスタン"
+    ],
+    "answer": 1,
+    "explanation": "ミャンマーは東南アジアのインドシナ半島西部に位置する。"
+  },
+  {
+    "id": "S050",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「衆議院の優越」として正しいのは？",
+    "choices": [
+      "予算を先に審議できる",
+      "最高裁判所長官を指名できる",
+      "外交を単独で決定できる",
+      "条約の批准を拒否できる"
+    ],
+    "answer": 0,
+    "explanation": "衆議院は予算の先議権を持つ（衆議院の優越の一つ）。"
+  },
+  {
+    "id": "S051",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「廃藩置県」が行われたのは西暦何年？",
+    "answer_text": "1871",
+    "answer_variants": [],
+    "explanation": "廃藩置県（はいはんちけん）は1871年（明治4年）。"
+  },
+  {
+    "id": "S052",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「ライン川」が流れるヨーロッパの国を一つ答えると？(ひらがなで)",
+    "answer_text": "ドイツ",
+    "answer_variants": [
+      "どいつ",
+      "フランス",
+      "ふらんす",
+      "オランダ",
+      "おらんだ"
+    ],
+    "explanation": "ライン川はスイス→ドイツ→フランス→オランダを流れる国際河川。"
+  },
+  {
+    "id": "S053",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「最高裁判所」の裁判官を国民が審査できる制度は？",
+    "choices": [
+      "弾劾裁判",
+      "国民審査",
+      "違憲審査",
+      "司法審査"
+    ],
+    "answer": 1,
+    "explanation": "最高裁判所裁判官の国民審査は、衆議院選挙と同時に実施される。"
+  },
+  {
+    "id": "S054",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「ペリー来航」はいつ？",
+    "choices": [
+      "1850年",
+      "1853年",
+      "1860年",
+      "1868年"
+    ],
+    "answer": 1,
+    "explanation": "ペリーが浦賀に来航したのは1853年（嘉永6年）。"
+  },
+  {
+    "id": "S055",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「サハラ砂漠」がある大陸は？",
+    "choices": [
+      "アジア",
+      "北アメリカ",
+      "アフリカ",
+      "南アメリカ"
+    ],
+    "answer": 2,
+    "explanation": "サハラ砂漠は世界最大の砂漠で、アフリカ大陸北部に位置する。"
+  },
+  {
+    "id": "S056",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「GNP」の正式名称は？",
+    "choices": [
+      "Gross National Product",
+      "General National Provision",
+      "Government New Plan",
+      "Great National Power"
+    ],
+    "answer": 0,
+    "explanation": "GNP=Gross National Product（国民総生産）。"
+  },
+  {
+    "id": "S057",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「日露戦争」が終結した条約の名前は？(ひらがなで)",
+    "answer_text": "ぽーつますじょうやく",
+    "answer_variants": [
+      "ポーツマス条約"
+    ],
+    "explanation": "日露戦争はポーツマス条約（1905年）で終結。アメリカが仲介。"
+  },
+  {
+    "id": "S058",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「ASEAN（東南アジア諸国連合）」の加盟国数は？(2024年時点)",
+    "answer_text": "10",
+    "answer_variants": [],
+    "explanation": "ASEANは2024年時点で10カ国が加盟（タイ・インドネシア・マレーシア・フィリピン・シンガポール・ブルネイ・ベトナム・ラオス・ミャンマー・カンボジア）。"
+  },
+  {
+    "id": "S059",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "日本の「消費税」が初めて導入されたのはいつ？",
+    "choices": [
+      "1985年",
+      "1989年",
+      "1993年",
+      "1997年"
+    ],
+    "answer": 1,
+    "explanation": "消費税は1989年（平成元年）に税率3%で導入された。"
+  },
+  {
+    "id": "S060",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「西南戦争」を起こした人物は？",
+    "choices": [
+      "坂本龍馬",
+      "西郷隆盛",
+      "大久保利通",
+      "木戸孝允"
+    ],
+    "answer": 1,
+    "explanation": "西南戦争（1877年）は西郷隆盛が率いた士族の反乱。"
+  },
+  {
+    "id": "S061",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「メコン川」が流れる地域は？",
+    "choices": [
+      "南アジア",
+      "東南アジア",
+      "中東",
+      "中央アジア"
+    ],
+    "answer": 1,
+    "explanation": "メコン川はチベット高原から中国・ミャンマー・ラオス・タイ・カンボジア・ベトナムを流れる東南アジアの大河。"
+  },
+  {
+    "id": "S062",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「比例代表制」の説明として正しいのは？",
+    "choices": [
+      "一番得票した候補が当選",
+      "得票数に応じて議席を配分",
+      "小選挙区制と同じ",
+      "候補者名のみを書く"
+    ],
+    "answer": 1,
+    "explanation": "比例代表制は各政党の得票率に応じて議席を配分する選挙制度。"
+  },
+  {
+    "id": "S063",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「西洋に対抗するためにアジア諸国が団結すべき」という19世紀の思想を何という？(ひらがなで)",
+    "answer_text": "あじあしゅぎ",
+    "answer_variants": [
+      "アジア主義",
+      "だいあじあしゅぎ"
+    ],
+    "explanation": "アジア主義（大アジア主義）は欧米帝国主義に対抗してアジア諸国が連帯すべきという思想。"
+  },
+  {
+    "id": "S064",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「国際日付変更線」はほぼ何度の経線に沿っている？",
+    "answer_text": "180",
+    "answer_variants": [
+      "180度"
+    ],
+    "explanation": "国際日付変更線はほぼ東経/西経180度の経線に沿って設定されている。"
+  },
+  {
+    "id": "S065",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「三権分立」を最初に理論化した思想家は？",
+    "choices": [
+      "ルソー",
+      "ロック",
+      "モンテスキュー",
+      "ホッブズ"
+    ],
+    "answer": 2,
+    "explanation": "モンテスキューが『法の精神』（1748年）で三権分立（立法・行政・司法）を体系化した。"
+  },
+  {
+    "id": "S066",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「壬申の乱」はいつ？",
+    "choices": [
+      "645年",
+      "672年",
+      "710年",
+      "794年"
+    ],
+    "answer": 1,
+    "explanation": "壬申の乱（じんしんのらん）は672年。天武天皇が甥の大友皇子に勝利した内乱。"
+  },
+  {
+    "id": "S067",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「排他的経済水域（EEZ）」は沿岸から何海里まで？",
+    "choices": [
+      "12海里",
+      "24海里",
+      "200海里",
+      "400海里"
+    ],
+    "answer": 2,
+    "explanation": "EEZは沿岸から200海里（約370km）の範囲。"
+  },
+  {
+    "id": "S068",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「国連安全保障理事会」の常任理事国でないのは？",
+    "choices": [
+      "アメリカ",
+      "中国",
+      "日本",
+      "ロシア"
+    ],
+    "answer": 2,
+    "explanation": "常任理事国（P5）は米・英・仏・中・露の5カ国。日本は含まれない。"
+  },
+  {
+    "id": "S069",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「承久の乱」が起きたのは西暦何年？",
+    "answer_text": "1221",
+    "answer_variants": [],
+    "explanation": "承久の乱（じょうきゅうのらん）は1221年。後鳥羽上皇が鎌倉幕府に討幕を試みた。"
+  },
+  {
+    "id": "S070",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「社会契約論」を著したフランスの思想家は？(カタカナで)",
+    "answer_text": "ルソー",
+    "answer_variants": [
+      "じゃんじゃくるそー"
+    ],
+    "explanation": "ジャン＝ジャック・ルソーが『社会契約論』（1762年）を著した。"
+  },
+  {
+    "id": "S071",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「享保の改革」を行った将軍は？",
+    "choices": [
+      "徳川家光",
+      "徳川吉宗",
+      "松平定信",
+      "水野忠邦"
+    ],
+    "answer": 1,
+    "explanation": "享保の改革は8代将軍・徳川吉宗（よしむね）が実施した幕政改革。"
+  },
+  {
+    "id": "S072",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「シルクロード」の主要な終点（西側）の都市は？",
+    "choices": [
+      "バグダッド",
+      "ローマ",
+      "コンスタンティノープル",
+      "アレクサンドリア"
+    ],
+    "answer": 1,
+    "explanation": "シルクロードは中国から中央アジア・中東を経てローマ（ヨーロッパ）に至った交易路。"
+  },
+  {
+    "id": "S073",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「プライマリーバランス（基礎的財政収支）」の説明は？",
+    "choices": [
+      "国の借金の総額",
+      "税収と公債金を除く歳入で政策経費をまかなう収支",
+      "GDP成長率",
+      "貿易収支"
+    ],
+    "answer": 1,
+    "explanation": "プライマリーバランスは国債発行・返済を除いた税収等の収入と政策経費の収支。"
+  },
+  {
+    "id": "S074",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「応仁の乱」が起きたのはいつ？",
+    "choices": [
+      "1467年",
+      "1492年",
+      "1543年",
+      "1600年"
+    ],
+    "answer": 0,
+    "explanation": "応仁の乱は1467年（応仁元年）に始まった11年に及ぶ大乱。"
+  },
+  {
+    "id": "S075",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "「大宝律令」が制定されたのは西暦何年？",
+    "answer_text": "701",
+    "answer_variants": [],
+    "explanation": "大宝律令（たいほうりつりょう）は701年（大宝元年）に制定された。"
+  },
+  {
+    "id": "S076",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "「ケインズ経済学」で国が景気刺激のために行う支出を何という？(ひらがなで)",
+    "answer_text": "ざいせいせいさく",
+    "answer_variants": [
+      "ざいせいしゅっし",
+      "こうきょうとうし"
+    ],
+    "explanation": "ケインズ経済学では政府の財政政策（公共投資・減税等）が有効需要を生み出すと主張。"
+  },
+  {
+    "id": "S077",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「奴国」の王が後漢の皇帝から金印を授かったのはいつ？",
+    "choices": [
+      "BC57年",
+      "57年",
+      "107年",
+      "239年"
+    ],
+    "answer": 1,
+    "explanation": "57年（弥生時代）、倭の奴国王が後漢の光武帝から「漢委奴国王」の金印を授かった。"
+  },
+  {
+    "id": "S078",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「チグリス川」と「ユーフラテス川」にはさまれた「肥沃な三日月地帯」の旧称は？",
+    "choices": [
+      "インダス文明",
+      "メソポタミア",
+      "エジプト",
+      "ペルシャ"
+    ],
+    "answer": 1,
+    "explanation": "チグリス川とユーフラテス川にはさまれた地域をメソポタミア（現在のイラク周辺）と呼ぶ。"
+  },
+  {
+    "id": "S079",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「ヘゲモニー」とは？",
+    "choices": [
+      "国際法上の主権",
+      "指導的影響力・覇権",
+      "経済的な貿易黒字",
+      "軍事同盟の合意"
+    ],
+    "answer": 1,
+    "explanation": "ヘゲモニー（hegemony）は指導的な支配力・覇権のこと（グラムシ等の概念でも使われる）。"
+  },
+  {
+    "id": "S080",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「版籍奉還」が行われたのは西暦何年？",
+    "choices": [
+      "1868年",
+      "1869年",
+      "1871年",
+      "1873年"
+    ],
+    "answer": 1,
+    "explanation": "版籍奉還は1869年（明治2年）。大名が藩の土地（版）と人民（籍）を天皇に返上した。"
+  },
+  {
+    "id": "S081",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "日本で一番大きい島は？",
+    "choices": [
+      "九州",
+      "四国",
+      "北海道",
+      "本州"
+    ],
+    "answer": 3,
+    "explanation": "日本最大の島は本州（ほんしゅう）。"
+  },
+  {
+    "id": "S082",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「江戸幕府」が開かれたのはいつ？",
+    "choices": [
+      "1192年",
+      "1338年",
+      "1603年",
+      "1615年"
+    ],
+    "answer": 2,
+    "explanation": "徳川家康が征夷大将軍となり江戸幕府を開いたのは1603年。"
+  },
+  {
+    "id": "S083",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「ライン川」河口はどの国？",
+    "choices": [
+      "ドイツ",
+      "フランス",
+      "オランダ",
+      "ベルギー"
+    ],
+    "answer": 2,
+    "explanation": "ライン川はオランダ（北海）に注ぐ。"
+  },
+  {
+    "id": "S084",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「織田信長」が天下統一をほぼ果たしかけたとき暗殺された場所は？",
+    "choices": [
+      "本能寺",
+      "安土城",
+      "桶狭間",
+      "長篠"
+    ],
+    "answer": 0,
+    "explanation": "本能寺の変（1582年）で明智光秀に討たれた。"
+  },
+  {
+    "id": "S085",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「内閣不信任決議」が成立したとき内閣がとれる行動は？",
+    "choices": [
+      "内閣が解散する",
+      "衆議院を解散するか内閣が総辞職する",
+      "参議院を解散する",
+      "次の選挙まで継続する"
+    ],
+    "answer": 1,
+    "explanation": "衆議院が内閣不信任を可決した場合、内閣は10日以内に衆議院を解散するか総辞職する。"
+  },
+  {
+    "id": "S086",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「刀狩令」を出したのは誰？",
+    "choices": [
+      "織田信長",
+      "徳川家康",
+      "豊臣秀吉",
+      "足利義満"
+    ],
+    "answer": 2,
+    "explanation": "刀狩令（1588年）は豊臣秀吉が農民から武器を没収するために出した。"
+  },
+  {
+    "id": "S087",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「フィヨルド」地形が発達している国は？",
+    "choices": [
+      "スペイン",
+      "ポルトガル",
+      "ノルウェー",
+      "イタリア"
+    ],
+    "answer": 2,
+    "explanation": "フィヨルドは氷河の浸食でできた深い入り江。ノルウェーが特に有名。"
+  },
+  {
+    "id": "S088",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「元寇」で鎌倉幕府が戦った二度の戦いは？",
+    "choices": [
+      "文永の役・弘安の役",
+      "壬申の乱・天智天皇の乱",
+      "承久の乱・保元の乱",
+      "応仁の乱・明応の政変"
+    ],
+    "answer": 0,
+    "explanation": "元寇は文永の役（1274年）と弘安の役（1281年）の2回。"
+  },
+  {
+    "id": "S089",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「選挙権年齢」が18歳以上に引き下げられたのはいつ？",
+    "choices": [
+      "2013年",
+      "2015年",
+      "2016年",
+      "2018年"
+    ],
+    "answer": 2,
+    "explanation": "2016年（平成28年）の参議院選挙から18歳以上が選挙権を持つようになった。"
+  },
+  {
+    "id": "S090",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「保元の乱」はいつ？",
+    "choices": [
+      "1156年",
+      "1180年",
+      "1185年",
+      "1221年"
+    ],
+    "answer": 0,
+    "explanation": "保元の乱（ほうげんのらん）は1156年（保元元年）。後白河天皇と崇徳上皇の争い。"
+  },
+  {
+    "id": "S091",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "四国に含まれる県は4つ。徳島・高知・愛媛ともう一つは？(ひらがなで)",
+    "answer_text": "かがわけん",
+    "answer_variants": [
+      "かがわ",
+      "香川"
+    ],
+    "explanation": "四国は徳島・高知・愛媛・香川（かがわ）の4県。"
+  },
+  {
+    "id": "S092",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「鎌倉幕府」が滅びたのは西暦何年？",
+    "answer_text": "1333",
+    "answer_variants": [],
+    "explanation": "鎌倉幕府は1333年（元弘3年）、新田義貞らによって滅ぼされた。"
+  },
+  {
+    "id": "S093",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「GDP」は「国内○○生産」の略。○○は？(漢字2文字で)",
+    "answer_text": "総生",
+    "answer_variants": [
+      "そうせい",
+      "総生産",
+      "そうせいさん"
+    ],
+    "explanation": "GDP=Gross Domestic Product=国内総生産（こくないそうせいさん）。"
+  },
+  {
+    "id": "S094",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「ヨーロッパ連合」の略称は？(アルファベットで)",
+    "answer_text": "EU",
+    "answer_variants": [],
+    "explanation": "EU=European Union（ヨーロッパ連合）。"
+  },
+  {
+    "id": "S095",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「江戸時代の三大改革」のうち最後に行われたものは？(ひらがなで)",
+    "answer_text": "てんぽうのかいかく",
+    "answer_variants": [
+      "天保の改革"
+    ],
+    "explanation": "享保の改革（吉宗）→寛政の改革（松平定信）→天保の改革（水野忠邦）の順。"
+  },
+  {
+    "id": "S096",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「壬申の乱」で勝利した後に即位した天皇は？(ひらがなで)",
+    "answer_text": "てんむてんのう",
+    "answer_variants": [
+      "天武天皇",
+      "てんむ"
+    ],
+    "explanation": "壬申の乱で大海人皇子が勝利し、天武天皇（てんむてんのう）として即位した。"
+  },
+  {
+    "id": "S097",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「南北朝時代」が統一されたのは西暦何年？",
+    "answer_text": "1392",
+    "answer_variants": [],
+    "explanation": "南北朝の統一は1392年（明徳3年）、足利義満が南朝の後亀山天皇を北朝に合一させた。"
+  },
+  {
+    "id": "S098",
+    "genre": "社会",
+    "subgenre": "地理",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "「国際連合（UN）」の本部が置かれている都市は？(カタカナで)",
+    "answer_text": "ニューヨーク",
+    "answer_variants": [
+      "にゅーよーく"
+    ],
+    "explanation": "国際連合本部はアメリカ・ニューヨーク市にある。"
+  },
+  {
+    "id": "S099",
+    "genre": "社会",
+    "subgenre": "公民",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「市区町村」レベルの地方自治体の長（首長）を何という？(ひらがなで)",
+    "answer_text": "しちょうそんちょう",
+    "answer_variants": [
+      "くちょう",
+      "ちょう",
+      "しちょう"
+    ],
+    "explanation": "市区町村の首長は市長・区長・町長・村長などを総称して市町村長（しちょうそんちょう）。"
+  },
+  {
+    "id": "S100",
+    "genre": "社会",
+    "subgenre": "歴史",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「江戸時代の参勤交代」制度を制度化したのは何年頃？(西暦)",
+    "answer_text": "1635",
+    "answer_variants": [],
+    "explanation": "参勤交代は1635年（寛永12年）の武家諸法度改定で義務化された。"
   }
 ]

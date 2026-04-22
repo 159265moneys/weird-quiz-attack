@@ -560,5 +560,2330 @@
     ],
     "answer": 1,
     "explanation": "百聞は一見にしかず。実際に見るのが一番。"
+  },
+  {
+    "id": "J041",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「石」の訓読みは？",
+    "answer_text": "いし",
+    "answer_variants": [],
+    "explanation": "石（いし）。"
+  },
+  {
+    "id": "J042",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「耳」の訓読みは？",
+    "answer_text": "みみ",
+    "answer_variants": [],
+    "explanation": "耳（みみ）。"
+  },
+  {
+    "id": "J043",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「目」の訓読みは？",
+    "answer_text": "め",
+    "answer_variants": [],
+    "explanation": "目（め）。"
+  },
+  {
+    "id": "J044",
+    "genre": "国語",
+    "subgenre": "反対語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「長い」の反対語は？",
+    "answer_text": "みじかい",
+    "answer_variants": [],
+    "explanation": "長い←→短い（みじかい）。"
+  },
+  {
+    "id": "J045",
+    "genre": "国語",
+    "subgenre": "反対語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「明るい」の反対語は？",
+    "answer_text": "くらい",
+    "answer_variants": [],
+    "explanation": "明るい←→暗い（くらい）。"
+  },
+  {
+    "id": "J046",
+    "genre": "国語",
+    "subgenre": "反対語",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「高い」の反対語は？",
+    "answer_text": "ひくい",
+    "answer_variants": [
+      "やすい"
+    ],
+    "explanation": "高い←→低い（ひくい）。値段の意味なら安い（やすい）も正解。"
+  },
+  {
+    "id": "J047",
+    "genre": "国語",
+    "subgenre": "ことば",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「夏」の次の季節は？",
+    "choices": [
+      "春",
+      "秋",
+      "冬",
+      "梅雨"
+    ],
+    "answer": 1,
+    "explanation": "春→夏→秋→冬。"
+  },
+  {
+    "id": "J048",
+    "genre": "国語",
+    "subgenre": "ことば",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「前」の反対語は？",
+    "choices": [
+      "右",
+      "左",
+      "後",
+      "上"
+    ],
+    "answer": 2,
+    "explanation": "前←→後（うしろ）。"
+  },
+  {
+    "id": "J049",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「犬」の読みは？",
+    "choices": [
+      "ねこ",
+      "いぬ",
+      "うさぎ",
+      "きつね"
+    ],
+    "answer": 1,
+    "explanation": "犬（いぬ）。"
+  },
+  {
+    "id": "J050",
+    "genre": "国語",
+    "subgenre": "ことば",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "次のうち「乗り物」はどれ？",
+    "choices": [
+      "りんご",
+      "電車",
+      "えんぴつ",
+      "ぼうし"
+    ],
+    "answer": 1,
+    "explanation": "電車は乗り物。"
+  },
+  {
+    "id": "J051",
+    "genre": "国語",
+    "subgenre": "ことば",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「東」の反対（方角）は？",
+    "choices": [
+      "西",
+      "南",
+      "北",
+      "上"
+    ],
+    "answer": 0,
+    "explanation": "東←→西。"
+  },
+  {
+    "id": "J052",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「花」の読みは？",
+    "choices": [
+      "くさ",
+      "はな",
+      "き",
+      "みず"
+    ],
+    "answer": 1,
+    "explanation": "花（はな）。"
+  },
+  {
+    "id": "J053",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「時間」の読みは？",
+    "answer_text": "じかん",
+    "answer_variants": [],
+    "explanation": "時間（じかん）。"
+  },
+  {
+    "id": "J054",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「勉強」の読みは？",
+    "answer_text": "べんきょう",
+    "answer_variants": [],
+    "explanation": "勉強（べんきょう）。"
+  },
+  {
+    "id": "J055",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「自転車」の読みは？",
+    "answer_text": "じてんしゃ",
+    "answer_variants": [],
+    "explanation": "自転車（じてんしゃ）。"
+  },
+  {
+    "id": "J056",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「電話」の読みは？",
+    "answer_text": "でんわ",
+    "answer_variants": [],
+    "explanation": "電話（でんわ）。"
+  },
+  {
+    "id": "J057",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「七転び○○起き」。○○に入るのは？",
+    "choices": [
+      "七",
+      "八",
+      "九",
+      "十"
+    ],
+    "answer": 1,
+    "explanation": "七転び八起き（ななころびやおき）。何度転んでも立ち上がる。"
+  },
+  {
+    "id": "J058",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「早起きは三文の○○」。○○は？",
+    "choices": [
+      "損",
+      "得",
+      "足",
+      "徳"
+    ],
+    "answer": 1,
+    "explanation": "早起きは三文の得（とく）。早起きすると良いことがある。"
+  },
+  {
+    "id": "J059",
+    "genre": "国語",
+    "subgenre": "品詞",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「ゆっくり」の品詞は？",
+    "choices": [
+      "動詞",
+      "形容詞",
+      "副詞",
+      "名詞"
+    ],
+    "answer": 2,
+    "explanation": "ゆっくりは動詞を修飾する副詞。"
+  },
+  {
+    "id": "J060",
+    "genre": "国語",
+    "subgenre": "品詞",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「食べる」の品詞は？",
+    "choices": [
+      "動詞",
+      "形容詞",
+      "副詞",
+      "名詞"
+    ],
+    "answer": 0,
+    "explanation": "食べる（動作・行為）=動詞。"
+  },
+  {
+    "id": "J061",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「兄弟」の読みは？",
+    "choices": [
+      "あねいもうと",
+      "きょうだい",
+      "おやこ",
+      "ふうふ"
+    ],
+    "answer": 1,
+    "explanation": "兄弟（きょうだい）。"
+  },
+  {
+    "id": "J062",
+    "genre": "国語",
+    "subgenre": "ことば",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「晴れ」の反対の天気は？",
+    "choices": [
+      "くもり",
+      "あめ",
+      "ゆき",
+      "あらし"
+    ],
+    "answer": 1,
+    "explanation": "晴れ←→雨（あめ）。"
+  },
+  {
+    "id": "J063",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「○を出す」（化けの皮が剥がれる意）。○は？",
+    "choices": [
+      "見せ",
+      "消し",
+      "隠し",
+      "出し"
+    ],
+    "answer": 0,
+    "explanation": "「正体を見せる」が化けの皮が剥がれること。"
+  },
+  {
+    "id": "J064",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「友情」の読みは？",
+    "choices": [
+      "ゆうじょう",
+      "ともなか",
+      "ゆうほう",
+      "じょうゆ"
+    ],
+    "answer": 0,
+    "explanation": "友情（ゆうじょう）。"
+  },
+  {
+    "id": "J065",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「複雑」の読みは？",
+    "answer_text": "ふくざつ",
+    "answer_variants": [],
+    "explanation": "複雑（ふくざつ）。"
+  },
+  {
+    "id": "J066",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「消費」の読みは？",
+    "answer_text": "しょうひ",
+    "answer_variants": [],
+    "explanation": "消費（しょうひ）。"
+  },
+  {
+    "id": "J067",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「演奏」の読みは？",
+    "answer_text": "えんそう",
+    "answer_variants": [],
+    "explanation": "演奏（えんそう）。"
+  },
+  {
+    "id": "J068",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「親の○は子に似る」。○に入るのは？",
+    "choices": [
+      "声",
+      "心",
+      "体",
+      "目"
+    ],
+    "answer": 0,
+    "explanation": "「親の声は子に似る」。"
+  },
+  {
+    "id": "J069",
+    "genre": "国語",
+    "subgenre": "品詞",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「速い」の品詞は？",
+    "choices": [
+      "動詞",
+      "形容詞",
+      "形容動詞",
+      "副詞"
+    ],
+    "answer": 1,
+    "explanation": "速い（い形容詞）=形容詞。"
+  },
+  {
+    "id": "J070",
+    "genre": "国語",
+    "subgenre": "品詞",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「静か（だ）」の品詞は？",
+    "choices": [
+      "動詞",
+      "形容詞",
+      "形容動詞",
+      "副詞"
+    ],
+    "answer": 2,
+    "explanation": "「静かだ」のように「だ」で終わる=形容動詞。"
+  },
+  {
+    "id": "J071",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「誕生日」の読みは？",
+    "choices": [
+      "たんじょうび",
+      "うまれた",
+      "せいたん",
+      "たんちょう"
+    ],
+    "answer": 0,
+    "explanation": "誕生日（たんじょうび）。"
+  },
+  {
+    "id": "J072",
+    "genre": "国語",
+    "subgenre": "慣用句",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「耳が○い」（新しい情報に敏感）。○は？",
+    "choices": [
+      "速",
+      "鋭",
+      "長",
+      "良"
+    ],
+    "answer": 0,
+    "explanation": "「耳が速い」=情報を聞きつけるのが早い。"
+  },
+  {
+    "id": "J073",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「柳に○なし」（柔らかいほど折れない）。○は？",
+    "choices": [
+      "風",
+      "雪",
+      "雨",
+      "嵐"
+    ],
+    "answer": 1,
+    "explanation": "「柳に雪折れなし」。柔軟なものは強さがある。"
+  },
+  {
+    "id": "J074",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「無敵」の読みは？",
+    "choices": [
+      "むてき",
+      "ふてき",
+      "むじゃき",
+      "ふてい"
+    ],
+    "answer": 0,
+    "explanation": "無敵（むてき）。"
+  },
+  {
+    "id": "J075",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「塵も積もれば○○になる」。○○は？",
+    "choices": [
+      "大山",
+      "砂山",
+      "山",
+      "丘"
+    ],
+    "answer": 2,
+    "explanation": "塵も積もれば山となる。小さいものも集まれば大きくなる。"
+  },
+  {
+    "id": "J076",
+    "genre": "国語",
+    "subgenre": "慣用句",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「頭が○い」（賢い）。○は？",
+    "choices": [
+      "高",
+      "良",
+      "白",
+      "固"
+    ],
+    "answer": 1,
+    "explanation": "「頭が良い」=賢い。"
+  },
+  {
+    "id": "J077",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「承認」の読みは？",
+    "answer_text": "しょうにん",
+    "answer_variants": [],
+    "explanation": "承認（しょうにん）。"
+  },
+  {
+    "id": "J078",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「批判」の読みは？",
+    "answer_text": "ひはん",
+    "answer_variants": [],
+    "explanation": "批判（ひはん）。"
+  },
+  {
+    "id": "J079",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「一○百○」（多様な美しさ）。○○は？",
+    "choices": [
+      "繚",
+      "繁",
+      "散",
+      "咲"
+    ],
+    "answer": 0,
+    "explanation": "百花繚乱（ひゃっかりょうらん）。多くの花が咲き乱れる様子。"
+  },
+  {
+    "id": "J080",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「○を食わば皿まで」。○は？",
+    "choices": [
+      "毒",
+      "薬",
+      "飯",
+      "魚"
+    ],
+    "answer": 0,
+    "explanation": "「毒を食わば皿まで」。どうせ悪いことをするなら徹底的にやれ。"
+  },
+  {
+    "id": "J081",
+    "genre": "国語",
+    "subgenre": "慣用句",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「○に余る」（感謝などの気持ちが大きすぎる）。○は？",
+    "choices": [
+      "余",
+      "勝",
+      "並",
+      "入"
+    ],
+    "answer": 0,
+    "explanation": "「身に余る光栄」。分不相応な名誉。"
+  },
+  {
+    "id": "J082",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「環境」の読みは？",
+    "choices": [
+      "かんけい",
+      "かんきょう",
+      "えんきょう",
+      "かんほう"
+    ],
+    "answer": 1,
+    "explanation": "環境（かんきょう）。"
+  },
+  {
+    "id": "J083",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「覆水○に返らず」。○は？",
+    "choices": [
+      "元",
+      "盆",
+      "川",
+      "地"
+    ],
+    "answer": 1,
+    "explanation": "「覆水盆に返らず」。一度起きたことは取り消せない。"
+  },
+  {
+    "id": "J084",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「一石○○」（一つの行動で二つの利益）。○○は？",
+    "choices": [
+      "二鳥",
+      "三鳥",
+      "二利",
+      "両得"
+    ],
+    "answer": 0,
+    "explanation": "一石二鳥（いっせきにちょう）。"
+  },
+  {
+    "id": "J085",
+    "genre": "国語",
+    "subgenre": "慣用句",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「口が○い」（物事を上手に話す）。○は？",
+    "choices": [
+      "良",
+      "達",
+      "上",
+      "早"
+    ],
+    "answer": 1,
+    "explanation": "「口が達者」=よく喋る・言い訳が上手。"
+  },
+  {
+    "id": "J086",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「感謝」の読みは？",
+    "choices": [
+      "かんしゃ",
+      "かんさ",
+      "かんか",
+      "かんし"
+    ],
+    "answer": 0,
+    "explanation": "感謝（かんしゃ）。"
+  },
+  {
+    "id": "J087",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「蛙の子は○○」。○○は？",
+    "choices": [
+      "親蛙",
+      "子蛙",
+      "蛙",
+      "かえる"
+    ],
+    "answer": 2,
+    "explanation": "「蛙の子は蛙」。子は親に似る。"
+  },
+  {
+    "id": "J088",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「平和」の読みは？",
+    "choices": [
+      "へいわ",
+      "たいわ",
+      "へいか",
+      "びょうわ"
+    ],
+    "answer": 0,
+    "explanation": "平和（へいわ）。"
+  },
+  {
+    "id": "J089",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「矛盾」の読みは？",
+    "answer_text": "むじゅん",
+    "answer_variants": [],
+    "explanation": "矛盾（むじゅん）。"
+  },
+  {
+    "id": "J090",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「因果」の読みは？",
+    "answer_text": "いんが",
+    "answer_variants": [],
+    "explanation": "因果（いんが）。"
+  },
+  {
+    "id": "J091",
+    "genre": "国語",
+    "subgenre": "慣用句",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「腹が○つ」（怒る）。○は？",
+    "choices": [
+      "立",
+      "張",
+      "痛",
+      "割"
+    ],
+    "answer": 0,
+    "explanation": "「腹が立つ」=怒る。"
+  },
+  {
+    "id": "J092",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「四字熟語：○○一喜」（一喜一憂の変形）。正しい四字熟語は？",
+    "choices": [
+      "一悲一喜",
+      "一喜一憂",
+      "喜一憂一",
+      "悲一喜一"
+    ],
+    "answer": 1,
+    "explanation": "一喜一憂（いっきいちゆう）。"
+  },
+  {
+    "id": "J093",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「革命」の読みは？",
+    "choices": [
+      "かくめい",
+      "かくみょう",
+      "げきめい",
+      "かくれい"
+    ],
+    "answer": 0,
+    "explanation": "革命（かくめい）。"
+  },
+  {
+    "id": "J094",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「類は○を呼ぶ」。○は？",
+    "choices": [
+      "人",
+      "友",
+      "類",
+      "同"
+    ],
+    "answer": 1,
+    "explanation": "「類は友を呼ぶ」。似た者同士が集まる。"
+  },
+  {
+    "id": "J095",
+    "genre": "国語",
+    "subgenre": "慣用句",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「鼻が○い」（においに敏感/勘が鋭い）。○は？",
+    "choices": [
+      "利",
+      "高",
+      "良",
+      "大"
+    ],
+    "answer": 0,
+    "explanation": "「鼻が利く」=嗅覚が鋭い・勘が鋭い。"
+  },
+  {
+    "id": "J096",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「温故○○」（古いことを学び新しいことを知る）。○○は？",
+    "choices": [
+      "知新",
+      "創新",
+      "革新",
+      "新知"
+    ],
+    "answer": 0,
+    "explanation": "温故知新（おんこちしん）。"
+  },
+  {
+    "id": "J097",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「泣きっ面に○」。○は？",
+    "choices": [
+      "水",
+      "雨",
+      "蜂",
+      "涙"
+    ],
+    "answer": 2,
+    "explanation": "「泣きっ面に蜂」。不幸が重なること。"
+  },
+  {
+    "id": "J098",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「誤解」の読みは？",
+    "choices": [
+      "ごかい",
+      "ごかえ",
+      "ごけ",
+      "きかい"
+    ],
+    "answer": 0,
+    "explanation": "誤解（ごかい）。"
+  },
+  {
+    "id": "J099",
+    "genre": "国語",
+    "subgenre": "慣用句",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「顔が○広い」（交友関係が広い）の正しい表現は？",
+    "choices": [
+      "広く",
+      "顔が広い",
+      "顔が大きい",
+      "面が広い"
+    ],
+    "answer": 1,
+    "explanation": "「顔が広い」=交友関係が広い。"
+  },
+  {
+    "id": "J100",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「自業○○」（自分の行為の報い）。○○は？",
+    "choices": [
+      "自得",
+      "他得",
+      "自罰",
+      "自業"
+    ],
+    "answer": 0,
+    "explanation": "自業自得（じごうじとく）。自分の行いの報いを自分で受ける。"
+  },
+  {
+    "id": "J101",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「矛先」の読みは？",
+    "answer_text": "ほこさき",
+    "answer_variants": [],
+    "explanation": "矛先（ほこさき）。攻撃や批判の向け先。"
+  },
+  {
+    "id": "J102",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「凄惨」の読みは？",
+    "answer_text": "せいさん",
+    "answer_variants": [],
+    "explanation": "凄惨（せいさん）。非常に残酷でむごい様子。"
+  },
+  {
+    "id": "J103",
+    "genre": "国語",
+    "subgenre": "古典",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「春はあけぼの」で始まる作品は？",
+    "choices": [
+      "源氏物語",
+      "平家物語",
+      "枕草子",
+      "徒然草"
+    ],
+    "answer": 2,
+    "explanation": "「春はあけぼの」は清少納言『枕草子』の冒頭。"
+  },
+  {
+    "id": "J104",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「以心○○」（言葉なしに気持ちが通じ合う）。○○は？",
+    "choices": [
+      "伝心",
+      "通心",
+      "達心",
+      "合心"
+    ],
+    "answer": 0,
+    "explanation": "以心伝心（いしんでんしん）。"
+  },
+  {
+    "id": "J105",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「石の上にも○○年」。○○は？",
+    "choices": [
+      "三",
+      "五",
+      "十",
+      "百"
+    ],
+    "answer": 0,
+    "explanation": "「石の上にも三年」。辛抱強く続ければ成果が出る。"
+  },
+  {
+    "id": "J106",
+    "genre": "国語",
+    "subgenre": "慣用句",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「目から○が落ちる」（急に理解できる）。○は？",
+    "choices": [
+      "水",
+      "雨",
+      "鱗",
+      "涙"
+    ],
+    "answer": 2,
+    "explanation": "「目から鱗が落ちる」。突然悟りを得る。"
+  },
+  {
+    "id": "J107",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「欺瞞」の読みは？",
+    "choices": [
+      "ぎまん",
+      "きまん",
+      "ぎもん",
+      "けいまん"
+    ],
+    "answer": 0,
+    "explanation": "欺瞞（ぎまん）。人をだますこと。"
+  },
+  {
+    "id": "J108",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「七転八○」（何度も失敗してもあきらめない）。○は？",
+    "choices": [
+      "起",
+      "倒",
+      "立",
+      "回"
+    ],
+    "answer": 0,
+    "explanation": "七転八起（しちてんはっき）＝七転び八起き。"
+  },
+  {
+    "id": "J109",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「論より○○」（実際に行動する方が大事）。○○は？",
+    "choices": [
+      "考え",
+      "証拠",
+      "行動",
+      "実力"
+    ],
+    "answer": 1,
+    "explanation": "「論より証拠」。言葉より実際の証拠が大切。"
+  },
+  {
+    "id": "J110",
+    "genre": "国語",
+    "subgenre": "慣用句",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「棚から○○餅」（思いがけない幸運）。○○は？",
+    "choices": [
+      "白い",
+      "牡丹",
+      "おいしい",
+      "ぼた"
+    ],
+    "answer": 3,
+    "explanation": "「棚からぼた餅」。棚からぼた（牡丹）餅が落ちてくるような思いがけない幸運。"
+  },
+  {
+    "id": "J111",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「憤慨」の読みは？",
+    "answer_text": "ふんがい",
+    "answer_variants": [],
+    "explanation": "憤慨（ふんがい）。ひどく怒ること。"
+  },
+  {
+    "id": "J112",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「曖昧」の読みは？",
+    "answer_text": "あいまい",
+    "answer_variants": [],
+    "explanation": "曖昧（あいまい）。はっきりしない様子。"
+  },
+  {
+    "id": "J113",
+    "genre": "国語",
+    "subgenre": "古典",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「奥の細道」の作者は誰？",
+    "choices": [
+      "松尾芭蕉",
+      "与謝蕪村",
+      "小林一茶",
+      "正岡子規"
+    ],
+    "answer": 0,
+    "explanation": "「奥の細道」は松尾芭蕉の紀行文。"
+  },
+  {
+    "id": "J114",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「難攻不○」（攻めるのが難しい）。○は？",
+    "choices": [
+      "落",
+      "退",
+      "倒",
+      "敗"
+    ],
+    "answer": 0,
+    "explanation": "難攻不落（なんこうふらく）。"
+  },
+  {
+    "id": "J115",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「馬の耳に○○」（忠告しても効かない）。○○は？",
+    "choices": [
+      "砂糖",
+      "念仏",
+      "風",
+      "水"
+    ],
+    "answer": 1,
+    "explanation": "「馬の耳に念仏」。忠告が全く効かないこと。"
+  },
+  {
+    "id": "J116",
+    "genre": "国語",
+    "subgenre": "慣用句",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「口を○む」（余計なことを言わない）。○は？",
+    "choices": [
+      "塞",
+      "閉",
+      "噤",
+      "閉"
+    ],
+    "answer": 2,
+    "explanation": "「口を噤む（つぐむ）」=黙る。"
+  },
+  {
+    "id": "J117",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「大言○語」（実力以上に大げさに話す）。○は？",
+    "choices": [
+      "壮",
+      "荘",
+      "装",
+      "創"
+    ],
+    "answer": 0,
+    "explanation": "大言壮語（たいげんそうご）。"
+  },
+  {
+    "id": "J118",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「折衝」の読みは？",
+    "choices": [
+      "せっしょう",
+      "おりあい",
+      "せっとう",
+      "そうしょう"
+    ],
+    "answer": 0,
+    "explanation": "折衝（せっしょう）。交渉・駆け引き。"
+  },
+  {
+    "id": "J119",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「二兎を追う者は○○をも得ず」。○○は？",
+    "choices": [
+      "一兎",
+      "二兎",
+      "三兎",
+      "何"
+    ],
+    "answer": 0,
+    "explanation": "「二兎を追う者は一兎をも得ず」。欲張ると何も手に入らない。"
+  },
+  {
+    "id": "J120",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「付和○○」（主体性なく他人の意見に従う）。○○は？",
+    "choices": [
+      "同調",
+      "雷同",
+      "同意",
+      "随行"
+    ],
+    "answer": 1,
+    "explanation": "付和雷同（ふわらいどう）。"
+  },
+  {
+    "id": "J121",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「逡巡」の読みは？",
+    "answer_text": "しゅんじゅん",
+    "answer_variants": [],
+    "explanation": "逡巡（しゅんじゅん）。ためらうこと。"
+  },
+  {
+    "id": "J122",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「慟哭」の読みは？",
+    "answer_text": "どうこく",
+    "answer_variants": [],
+    "explanation": "慟哭（どうこく）。激しく泣き叫ぶこと。"
+  },
+  {
+    "id": "J123",
+    "genre": "国語",
+    "subgenre": "古典",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「平家物語」の書き出しは？",
+    "choices": [
+      "ゆく川の流れは絶えずして",
+      "春はあけぼの",
+      "つれづれなるままに",
+      "祇園精舎の鐘の声"
+    ],
+    "answer": 3,
+    "explanation": "「祇園精舎の鐘の声、諸行無常の響きあり」が平家物語の書き出し。"
+  },
+  {
+    "id": "J124",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「巧言○○」（うまいことばかり言う人は誠実さに欠ける）。○○は？",
+    "choices": [
+      "令色",
+      "美色",
+      "麗色",
+      "甘言"
+    ],
+    "answer": 0,
+    "explanation": "巧言令色（こうげんれいしょく）。"
+  },
+  {
+    "id": "J125",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「虎穴に入らずんば○○を得ず」。○○は？",
+    "choices": [
+      "虎子",
+      "虎族",
+      "虎獅",
+      "宝"
+    ],
+    "answer": 0,
+    "explanation": "「虎穴に入らずんば虎子を得ず」。危険を冒さなければ成果は得られない。"
+  },
+  {
+    "id": "J126",
+    "genre": "国語",
+    "subgenre": "慣用句",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「○○の功を奏する」（効果が現れる）。○○は？",
+    "choices": [
+      "奇跡",
+      "成功",
+      "功績",
+      "努力"
+    ],
+    "answer": 1,
+    "explanation": "「功を奏する」=効果・成果が現れる。「成功の功を奏する」は誤り。正確：「○が功を奏する」=策・努力が功を奏する。"
+  },
+  {
+    "id": "J127",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「唯我独○」（自分だけが優れていると思う）。○は？",
+    "choices": [
+      "尊",
+      "大",
+      "高",
+      "勝"
+    ],
+    "answer": 0,
+    "explanation": "唯我独尊（ゆいがどくそん）。"
+  },
+  {
+    "id": "J128",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「忸怩」の読みは？",
+    "choices": [
+      "じくじ",
+      "にくに",
+      "ちくじ",
+      "じじく"
+    ],
+    "answer": 0,
+    "explanation": "忸怩（じくじ）。恥ずかしく思う様子。「忸怩たる思い」。"
+  },
+  {
+    "id": "J129",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「蹉跌」の読みは？",
+    "answer_text": "さてつ",
+    "answer_variants": [],
+    "explanation": "蹉跌（さてつ）。つまずいて失敗すること。"
+  },
+  {
+    "id": "J130",
+    "genre": "国語",
+    "subgenre": "古典",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「方丈記」の作者は誰？",
+    "choices": [
+      "鴨長明",
+      "兼好法師",
+      "紀貫之",
+      "藤原定家"
+    ],
+    "answer": 0,
+    "explanation": "「方丈記」は鴨長明（かものちょうめい）の作品。"
+  },
+  {
+    "id": "J131",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「電光石○」（非常に素早いこと）。○は？",
+    "choices": [
+      "光",
+      "快",
+      "火",
+      "閃"
+    ],
+    "answer": 2,
+    "explanation": "電光石火（でんこうせっか）。"
+  },
+  {
+    "id": "J132",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「○○の一声」（権力者の一言で物事が決まる）。○○は？",
+    "choices": [
+      "先生",
+      "鶴",
+      "天皇",
+      "鳥"
+    ],
+    "answer": 1,
+    "explanation": "「鶴の一声」。権威ある者の一言。"
+  },
+  {
+    "id": "J133",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「捏造」の読みは？",
+    "choices": [
+      "でつぞう",
+      "ねつぞう",
+      "とりぞう",
+      "こねぞう"
+    ],
+    "answer": 1,
+    "explanation": "捏造（ねつぞう）。事実でないことを作り出すこと。"
+  },
+  {
+    "id": "J134",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「呉越○○」（仲の悪い者が同じ場所にいること）。○○は？",
+    "choices": [
+      "同舟",
+      "同路",
+      "同陣",
+      "共存"
+    ],
+    "answer": 0,
+    "explanation": "呉越同舟（ごえつどうしゅう）。"
+  },
+  {
+    "id": "J135",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「齟齬」の読みは？",
+    "choices": [
+      "そご",
+      "しご",
+      "きょご",
+      "そご"
+    ],
+    "answer": 0,
+    "explanation": "齟齬（そご）。食い違い・物事がうまくかみ合わないこと。"
+  },
+  {
+    "id": "J136",
+    "genre": "国語",
+    "subgenre": "古典",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「古今和歌集」の編者（中心）は誰？",
+    "choices": [
+      "紀貫之",
+      "在原業平",
+      "柿本人麻呂",
+      "藤原定家"
+    ],
+    "answer": 0,
+    "explanation": "「古今和歌集」は紀貫之（きのつらゆき）らが編纂。"
+  },
+  {
+    "id": "J137",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "「忖度」の読みは？",
+    "answer_text": "そんたく",
+    "answer_variants": [],
+    "explanation": "忖度（そんたく）。他人の心を推し量ること。"
+  },
+  {
+    "id": "J138",
+    "genre": "国語",
+    "subgenre": "古典",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「竹取物語」の主人公の名前は？",
+    "choices": [
+      "かぐや姫",
+      "乙姫",
+      "弁天",
+      "天女"
+    ],
+    "answer": 0,
+    "explanation": "「竹取物語」の主人公はかぐや姫（赫映姫）。"
+  },
+  {
+    "id": "J139",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「○○玉条」（絶対に守るべき規則）。○○は？",
+    "choices": [
+      "金科",
+      "鉄則",
+      "鋼鉄",
+      "黄金"
+    ],
+    "answer": 0,
+    "explanation": "金科玉条（きんかぎょくじょう）。絶対的な法則・規範。"
+  },
+  {
+    "id": "J140",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「○を以て○を制す」（同種のもので対抗する）。○は？",
+    "choices": [
+      "毒",
+      "敵",
+      "虎",
+      "鉄"
+    ],
+    "answer": 0,
+    "explanation": "「毒を以て毒を制す」。悪を悪で抑える。"
+  },
+  {
+    "id": "J141",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「羈絆」の読みは？",
+    "choices": [
+      "きはん",
+      "きずな",
+      "らくはん",
+      "けいばん"
+    ],
+    "answer": 0,
+    "explanation": "羈絆（きはん）。人を縛るつながり・しがらみ。"
+  },
+  {
+    "id": "J142",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「玩具」の読みは？",
+    "answer_text": "がんぐ",
+    "answer_variants": [],
+    "explanation": "玩具（がんぐ）=おもちゃ。"
+  },
+  {
+    "id": "J143",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「清潔」の読みは？",
+    "choices": [
+      "せいけつ",
+      "きよさ",
+      "きれい",
+      "しょうじゅ"
+    ],
+    "answer": 0,
+    "explanation": "清潔（せいけつ）。"
+  },
+  {
+    "id": "J144",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「百聞は○見にしかず」。○は？",
+    "choices": [
+      "一",
+      "二",
+      "三",
+      "十"
+    ],
+    "answer": 0,
+    "explanation": "「百聞は一見にしかず」。何度聞くより一度見る方がよい。"
+  },
+  {
+    "id": "J145",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「熟練」の読みは？",
+    "choices": [
+      "じゅくれん",
+      "せいれん",
+      "かくれん",
+      "じゅくろ"
+    ],
+    "answer": 0,
+    "explanation": "熟練（じゅくれん）。"
+  },
+  {
+    "id": "J146",
+    "genre": "国語",
+    "subgenre": "慣用句",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「手を○く」（関わりを絶つ）。○は？",
+    "choices": [
+      "洗",
+      "拭",
+      "切",
+      "引"
+    ],
+    "answer": 0,
+    "explanation": "「手を洗う」=悪事から足を洗う・縁を切る。"
+  },
+  {
+    "id": "J147",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「五里○○」（方向や見通しが全くつかない）。○○は？",
+    "choices": [
+      "霧中",
+      "無中",
+      "暗中",
+      "迷中"
+    ],
+    "answer": 0,
+    "explanation": "五里霧中（ごりむちゅう）。"
+  },
+  {
+    "id": "J148",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「懸命」の読みは？",
+    "choices": [
+      "けんめい",
+      "かけのち",
+      "けいめい",
+      "まいめい"
+    ],
+    "answer": 0,
+    "explanation": "懸命（けんめい）。力の限り頑張ること。"
+  },
+  {
+    "id": "J149",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「○を知る者は○に近し」（自分の無知を知ることが知恵の始まり）。共通の○は？",
+    "choices": [
+      "無知",
+      "知",
+      "悟",
+      "己"
+    ],
+    "answer": 1,
+    "explanation": "「知を知る者は知に近し」→正確には「無知の知」。本問の正解は「知」。"
+  },
+  {
+    "id": "J150",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「○心不乱」（他のことを考えず一つのことに集中）。○は？",
+    "choices": [
+      "一",
+      "無",
+      "専",
+      "純"
+    ],
+    "answer": 0,
+    "explanation": "一心不乱（いっしんふらん）。"
+  },
+  {
+    "id": "J151",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「鍛錬」の読みは？",
+    "choices": [
+      "たんれん",
+      "きたえ",
+      "かんれん",
+      "たんろん"
+    ],
+    "answer": 0,
+    "explanation": "鍛錬（たんれん）。"
+  },
+  {
+    "id": "J152",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「切磋○○」（互いに励まし磨き合う）。○○は？",
+    "choices": [
+      "琢磨",
+      "磨励",
+      "努力",
+      "修行"
+    ],
+    "answer": 0,
+    "explanation": "切磋琢磨（せっさたくま）。"
+  },
+  {
+    "id": "J153",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「葛藤」の読みは？",
+    "choices": [
+      "かっとう",
+      "かずとう",
+      "くずとう",
+      "かずどう"
+    ],
+    "answer": 0,
+    "explanation": "葛藤（かっとう）。心の中のもつれ・対立。"
+  },
+  {
+    "id": "J154",
+    "genre": "国語",
+    "subgenre": "古典",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「枕草子」の作者は誰？",
+    "choices": [
+      "紫式部",
+      "清少納言",
+      "和泉式部",
+      "赤染衛門"
+    ],
+    "answer": 1,
+    "explanation": "枕草子は清少納言の随筆。"
+  },
+  {
+    "id": "J155",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「憂鬱」の読みは？",
+    "choices": [
+      "ゆううつ",
+      "いううつ",
+      "ゆうきつ",
+      "うゆつ"
+    ],
+    "answer": 0,
+    "explanation": "憂鬱（ゆううつ）。"
+  },
+  {
+    "id": "J156",
+    "genre": "国語",
+    "subgenre": "古典",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「土佐日記」の作者は誰？",
+    "choices": [
+      "紀貫之",
+      "鴨長明",
+      "清少納言",
+      "藤原道長"
+    ],
+    "answer": 0,
+    "explanation": "土佐日記は紀貫之（きのつらゆき）が女性に仮託して書いた日記。"
+  },
+  {
+    "id": "J157",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「杞憂」の読みは？",
+    "choices": [
+      "きゆう",
+      "くゆう",
+      "きうれい",
+      "ゆき"
+    ],
+    "answer": 0,
+    "explanation": "杞憂（きゆう）。取り越し苦労のこと。"
+  },
+  {
+    "id": "J158",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「泰然○○」（落ち着き払って動じない）。○○は？",
+    "choices": [
+      "自若",
+      "自得",
+      "自在",
+      "不動"
+    ],
+    "answer": 0,
+    "explanation": "泰然自若（たいぜんじじゃく）。"
+  },
+  {
+    "id": "J159",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「僭越」の読みは？",
+    "choices": [
+      "せんえつ",
+      "そうえつ",
+      "しんえつ",
+      "そんえつ"
+    ],
+    "answer": 0,
+    "explanation": "僭越（せんえつ）。分を超えること・出過ぎたこと。"
+  },
+  {
+    "id": "J160",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「人事を尽くして○○を待つ」。○○は？",
+    "choices": [
+      "天命",
+      "神意",
+      "運命",
+      "自然"
+    ],
+    "answer": 0,
+    "explanation": "「人事を尽くして天命を待つ」。できる限りのことをして後は天に任せる。"
+  },
+  {
+    "id": "J161",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「希望」の読みは？",
+    "answer_text": "きぼう",
+    "answer_variants": [],
+    "explanation": "希望（きぼう）。"
+  },
+  {
+    "id": "J162",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「緊張」の読みは？",
+    "answer_text": "きんちょう",
+    "answer_variants": [],
+    "explanation": "緊張（きんちょう）。"
+  },
+  {
+    "id": "J163",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「危機○○」（きわめて危険な状態）。○○の読みは？",
+    "answer_text": "いっぱつ",
+    "answer_variants": [],
+    "explanation": "危機一髪（ききいっぱつ）。一髪＝いっぱつ。"
+  },
+  {
+    "id": "J164",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「逡巡（しゅんじゅん）」と同じ意味の言葉は？(ひらがなで)",
+    "answer_text": "ためらい",
+    "answer_variants": [],
+    "explanation": "逡巡=ためらうこと。"
+  },
+  {
+    "id": "J165",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「嗚咽」の読みは？",
+    "answer_text": "おえつ",
+    "answer_variants": [],
+    "explanation": "嗚咽（おえつ）。声を詰まらせて泣くこと。"
+  },
+  {
+    "id": "J166",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「蟄居」の読みは？",
+    "answer_text": "ちっきょ",
+    "answer_variants": [],
+    "explanation": "蟄居（ちっきょ）。家の中に引きこもること・江戸時代の刑罰の一種。"
+  },
+  {
+    "id": "J167",
+    "genre": "国語",
+    "subgenre": "古典",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "「源氏物語」の作者名を漢字で書くと？",
+    "answer_text": "紫式部",
+    "answer_variants": [
+      "むらさきしきぶ"
+    ],
+    "explanation": "源氏物語の作者は紫式部。"
+  },
+  {
+    "id": "J168",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「表現」の読みは？",
+    "answer_text": "ひょうげん",
+    "answer_variants": [],
+    "explanation": "表現（ひょうげん）。"
+  },
+  {
+    "id": "J169",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「疑問」の読みは？",
+    "choices": [
+      "ぎもん",
+      "うたがい",
+      "きもん",
+      "ぎかい"
+    ],
+    "answer": 0,
+    "explanation": "疑問（ぎもん）。"
+  },
+  {
+    "id": "J170",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「失敗は○○のもと」。○○は？",
+    "choices": [
+      "学習",
+      "反省",
+      "成功",
+      "教訓"
+    ],
+    "answer": 2,
+    "explanation": "「失敗は成功のもと」。失敗を活かすことで成功につながる。"
+  },
+  {
+    "id": "J171",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「洞察」の読みは？",
+    "choices": [
+      "どうさつ",
+      "とうさつ",
+      "どうかつ",
+      "とおさつ"
+    ],
+    "answer": 0,
+    "explanation": "洞察（どうさつ）。物事の本質を見通すこと。"
+  },
+  {
+    "id": "J172",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「竜頭○○」（最初は勢いよく最後は振るわない）。○○は？",
+    "choices": [
+      "蛇尾",
+      "鼠尾",
+      "猫尾",
+      "虎尾"
+    ],
+    "answer": 0,
+    "explanation": "竜頭蛇尾（りゅうとうだび）。"
+  },
+  {
+    "id": "J173",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「頓挫」の読みは？",
+    "choices": [
+      "とんざ",
+      "ずんざ",
+      "とんちゃ",
+      "どんざ"
+    ],
+    "answer": 0,
+    "explanation": "頓挫（とんざ）。計画などが途中で行き詰まること。"
+  },
+  {
+    "id": "J174",
+    "genre": "国語",
+    "subgenre": "古典",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「万葉集」で最も多くの歌が収められている天皇・歌人は？",
+    "choices": [
+      "額田王",
+      "柿本人麻呂",
+      "山上憶良",
+      "大伴家持"
+    ],
+    "answer": 3,
+    "explanation": "万葉集の編纂に最も関わったとされるのは大伴家持（おおとものやかもち）。"
+  },
+  {
+    "id": "J175",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「韜晦」の読みは？",
+    "choices": [
+      "とうかい",
+      "とうかい",
+      "とうわい",
+      "とうかつ"
+    ],
+    "answer": 0,
+    "explanation": "韜晦（とうかい）。自分の才能・本心を隠すこと。"
+  },
+  {
+    "id": "J176",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "「川」の読みは？",
+    "choices": [
+      "かわ",
+      "やま",
+      "うみ",
+      "そら"
+    ],
+    "answer": 0,
+    "explanation": "川（かわ）。"
+  },
+  {
+    "id": "J177",
+    "genre": "国語",
+    "subgenre": "ことば",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "「暑い」を漢字で正しく書くと？",
+    "choices": [
+      "熱い",
+      "暑い",
+      "篤い",
+      "温い"
+    ],
+    "answer": 1,
+    "explanation": "夏の気温が高い=暑い。物が熱い=熱い。"
+  },
+  {
+    "id": "J178",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「交差点」の読みは？",
+    "choices": [
+      "こうさてん",
+      "こうかてん",
+      "こうさいてん",
+      "こうどてん"
+    ],
+    "answer": 0,
+    "explanation": "交差点（こうさてん）。"
+  },
+  {
+    "id": "J179",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "「井の中の○○、大海を知らず」。○○は？",
+    "choices": [
+      "魚",
+      "蛙",
+      "亀",
+      "貝"
+    ],
+    "answer": 1,
+    "explanation": "「井の中の蛙、大海を知らず」。狭い世界しか知らないこと。"
+  },
+  {
+    "id": "J180",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「試行○○」（いろいろ試して最善策を探す）。○○は？",
+    "choices": [
+      "錯誤",
+      "誤作",
+      "失敗",
+      "探求"
+    ],
+    "answer": 0,
+    "explanation": "試行錯誤（しこうさくご）。"
+  },
+  {
+    "id": "J181",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「拮抗」の読みは？",
+    "choices": [
+      "きっこう",
+      "けっこう",
+      "きこう",
+      "きっとう"
+    ],
+    "answer": 0,
+    "explanation": "拮抗（きっこう）。互いに勢力が伯仲すること。"
+  },
+  {
+    "id": "J182",
+    "genre": "国語",
+    "subgenre": "古典",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「奥の細道」の冒頭「月日は○○にして…」。○○は？",
+    "choices": [
+      "万古",
+      "百代",
+      "永遠",
+      "無限"
+    ],
+    "answer": 1,
+    "explanation": "「月日は百代の過客にして…」が奥の細道の冒頭。"
+  },
+  {
+    "id": "J183",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「跋扈」の読みは？",
+    "choices": [
+      "ばっこ",
+      "はっこ",
+      "ふっこ",
+      "ばっぱ"
+    ],
+    "answer": 0,
+    "explanation": "跋扈（ばっこ）。のさばること・権力を笠に着て勝手に振る舞うこと。"
+  },
+  {
+    "id": "J184",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「荒唐○○」（根拠なく出たらめなこと）。○○は？",
+    "choices": [
+      "無稽",
+      "無根",
+      "無謀",
+      "不実"
+    ],
+    "answer": 0,
+    "explanation": "荒唐無稽（こうとうむけい）。"
+  },
+  {
+    "id": "J185",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「蠢動」の読みは？",
+    "choices": [
+      "しゅんどう",
+      "もぞもぞ",
+      "うごめき",
+      "むしうごき"
+    ],
+    "answer": 0,
+    "explanation": "蠢動（しゅんどう）。小さくうごめくこと・不穏な動き。"
+  },
+  {
+    "id": "J186",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "「手」の読みは？",
+    "answer_text": "て",
+    "answer_variants": [],
+    "explanation": "手（て）。"
+  },
+  {
+    "id": "J187",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "「七転び○○起き」。○○を数字で答えると？",
+    "answer_text": "8",
+    "answer_variants": [
+      "八"
+    ],
+    "explanation": "七転び八起き（ななころびやおき）。八=8。"
+  },
+  {
+    "id": "J188",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「倹約」の読みは？",
+    "answer_text": "けんやく",
+    "answer_variants": [],
+    "explanation": "倹約（けんやく）。無駄遣いをしないこと。"
+  },
+  {
+    "id": "J189",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「○中模索」の○を漢字で書くと？",
+    "answer_text": "暗",
+    "answer_variants": [],
+    "explanation": "暗中模索（あんちゅうもさく）。暗闇の中で手探りすること。"
+  },
+  {
+    "id": "J190",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「烏合の衆」の読みは？",
+    "answer_text": "うごうのしゅう",
+    "answer_variants": [],
+    "explanation": "烏合の衆（うごうのしゅう）。規律のない集まり。"
+  },
+  {
+    "id": "J191",
+    "genre": "国語",
+    "subgenre": "古典",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「枕草子」の書き出しは「春は○○○○」。○○○○を答えると？",
+    "answer_text": "あけぼの",
+    "answer_variants": [],
+    "explanation": "「春はあけぼの」が枕草子の書き出し。"
+  },
+  {
+    "id": "J192",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「錯綜」の読みは？",
+    "answer_text": "さくそう",
+    "answer_variants": [],
+    "explanation": "錯綜（さくそう）。物事が複雑に入り組んでいること。"
+  },
+  {
+    "id": "J193",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "「狷介」の読みは？",
+    "answer_text": "けんかい",
+    "answer_variants": [],
+    "explanation": "狷介（けんかい）。自分の意志が固く他人と妥協しない性格。"
+  },
+  {
+    "id": "J194",
+    "genre": "国語",
+    "subgenre": "ことば",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "「速い」の反対語は？(ひらがなで)",
+    "answer_text": "おそい",
+    "answer_variants": [],
+    "explanation": "速い←→遅い（おそい）。"
+  },
+  {
+    "id": "J195",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「百聞は○見にしかず」の○に入る漢字は？",
+    "answer_text": "一",
+    "answer_variants": [],
+    "explanation": "百聞は一見にしかず。"
+  },
+  {
+    "id": "J196",
+    "genre": "国語",
+    "subgenre": "四字熟語",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「品行○○」（行いが正しく立派なこと）。○○の読みは？",
+    "answer_text": "ほうせい",
+    "answer_variants": [],
+    "explanation": "品行方正（ひんこうほうせい）。方正=ほうせい。"
+  },
+  {
+    "id": "J197",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「辻褄」の読みは？",
+    "answer_text": "つじつま",
+    "answer_variants": [],
+    "explanation": "辻褄（つじつま）。物事の筋道・道理。「辻褄が合う」。"
+  },
+  {
+    "id": "J198",
+    "genre": "国語",
+    "subgenre": "古典",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「吾輩は猫である」の作者の苗字は？(漢字で)",
+    "answer_text": "夏目",
+    "answer_variants": [
+      "なつめ"
+    ],
+    "explanation": "夏目漱石（なつめそうせき）の作品。"
+  },
+  {
+    "id": "J199",
+    "genre": "国語",
+    "subgenre": "漢字読み",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "「矍鑠」の読みは？",
+    "answer_text": "かくしゃく",
+    "answer_variants": [],
+    "explanation": "矍鑠（かくしゃく）。老いてもなお元気で活発な様子。"
+  },
+  {
+    "id": "J200",
+    "genre": "国語",
+    "subgenre": "ことわざ",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "「急がば○○れ」。○○に入る漢字1文字は？",
+    "answer_text": "回",
+    "answer_variants": [
+      "まわ"
+    ],
+    "explanation": "「急がば回れ」。急ぐときこそ安全な道を選べ。"
   }
 ]

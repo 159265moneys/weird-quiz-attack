@@ -276,5 +276,1194 @@
     ],
     "answer": 2,
     "explanation": "アサガオは被子植物。残りは裸子植物。"
+  },
+  {
+    "id": "R021",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "人体で血液を全身に送るポンプの役割をする臓器は？(ひらがなで)",
+    "answer_text": "しんぞう",
+    "answer_variants": [],
+    "explanation": "心臓（しんぞう）が血液を全身に送り出すポンプの役割をする。"
+  },
+  {
+    "id": "R022",
+    "genre": "理科",
+    "subgenre": "天体",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "地球から最も近い恒星は何？(ひらがなで)",
+    "answer_text": "たいよう",
+    "answer_variants": [],
+    "explanation": "地球に最も近い恒星は太陽（たいよう）。"
+  },
+  {
+    "id": "R023",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "光と音、速いのはどちら？",
+    "choices": [
+      "音",
+      "光",
+      "同じ",
+      "状況による"
+    ],
+    "answer": 1,
+    "explanation": "光速（約30万km/s）は音速（約340m/s）よりはるかに速い。"
+  },
+  {
+    "id": "R024",
+    "genre": "理科",
+    "subgenre": "天体",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "月が輝いているのはなぜ？",
+    "choices": [
+      "自ら光を出す",
+      "太陽の光を反射する",
+      "地球の光を反射する",
+      "火山活動"
+    ],
+    "answer": 1,
+    "explanation": "月は太陽の光を反射して輝いている（月自体は光を出さない）。"
+  },
+  {
+    "id": "R025",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "電池の＋極から出てくるのは？",
+    "choices": [
+      "電流",
+      "電子",
+      "光",
+      "熱"
+    ],
+    "answer": 0,
+    "explanation": "電池のプラス極から電流が出て、マイナス極に流れ込む（電子は逆向き）。"
+  },
+  {
+    "id": "R026",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "植物が葉で光合成をするとき、吸収する気体は？(英語2文字で)",
+    "answer_text": "CO2",
+    "answer_variants": [
+      "二酸化炭素",
+      "にさんかたんそ"
+    ],
+    "explanation": "光合成では二酸化炭素（CO₂）を吸収し、酸素（O₂）を放出する。"
+  },
+  {
+    "id": "R027",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "豆電球を乾電池2個で直列つなぎにすると、1個のときより明るさは？(ひらがなで)",
+    "answer_text": "あかるくなる",
+    "answer_variants": [
+      "明るい",
+      "あかるい"
+    ],
+    "explanation": "直列つなぎで電池を増やすと電圧が上がり豆電球は明るくなる。"
+  },
+  {
+    "id": "R028",
+    "genre": "理科",
+    "subgenre": "天体",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "地球は1日に何回自転する？",
+    "answer_text": "1",
+    "answer_variants": [],
+    "explanation": "地球は約24時間（1日）で1回自転する。"
+  },
+  {
+    "id": "R029",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "鉄のくぎを磁石に近づけるとどうなる？",
+    "choices": [
+      "引き付けられる",
+      "反発する",
+      "何も起きない",
+      "溶ける"
+    ],
+    "answer": 0,
+    "explanation": "鉄は磁石に引き付けられる（磁性体）。"
+  },
+  {
+    "id": "R030",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "春に花を咲かせる植物はどれ？",
+    "choices": [
+      "ヒマワリ",
+      "コスモス",
+      "チューリップ",
+      "ポインセチア"
+    ],
+    "answer": 2,
+    "explanation": "チューリップは春（3〜4月）に花を咲かせる。"
+  },
+  {
+    "id": "R031",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "水が100℃で沸騰するのはどこで測った温度？",
+    "choices": [
+      "山の上",
+      "海面（1気圧）",
+      "海の底",
+      "宇宙空間"
+    ],
+    "answer": 1,
+    "explanation": "水の沸点100℃は標準大気圧（1気圧、海面付近）での値。高地では沸点が下がる。"
+  },
+  {
+    "id": "R032",
+    "genre": "理科",
+    "subgenre": "天体",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "太陽系で最も大きい惑星は？",
+    "choices": [
+      "土星",
+      "天王星",
+      "木星",
+      "海王星"
+    ],
+    "answer": 2,
+    "explanation": "太陽系で最大の惑星は木星（Jupiter）。"
+  },
+  {
+    "id": "R033",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "水が固体になると体積はどうなる？(ひらがなで)",
+    "answer_text": "ふえる",
+    "answer_variants": [
+      "おおきくなる"
+    ],
+    "explanation": "水は凍ると（固体・氷になると）体積が増える。"
+  },
+  {
+    "id": "R034",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "アゲハチョウの幼虫が食べる植物は？(ひらがなで)",
+    "answer_text": "さんしょう",
+    "answer_variants": [
+      "ミカン",
+      "みかん",
+      "かんきつ"
+    ],
+    "explanation": "アゲハチョウの幼虫はミカン科（サンショウ・ミカンなど）の葉を食べる。"
+  },
+  {
+    "id": "R035",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "水を電気分解すると何と何に分かれる？",
+    "choices": [
+      "水素と窒素",
+      "酸素と窒素",
+      "水素と酸素",
+      "炭素と水素"
+    ],
+    "answer": 2,
+    "explanation": "水（H₂O）を電気分解すると水素（H₂）と酸素（O₂）に分かれる。"
+  },
+  {
+    "id": "R036",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "凸レンズに平行光を当てると光は？",
+    "choices": [
+      "拡散する",
+      "焦点に集まる",
+      "反射する",
+      "そのまま直進する"
+    ],
+    "answer": 1,
+    "explanation": "凸レンズは平行光を焦点（focal point）に集める。"
+  },
+  {
+    "id": "R037",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "カエルの呼吸の仕方は？",
+    "choices": [
+      "えら呼吸のみ",
+      "肺呼吸のみ",
+      "えら呼吸と皮膚呼吸",
+      "肺呼吸と皮膚呼吸"
+    ],
+    "answer": 3,
+    "explanation": "成体のカエルは肺呼吸と皮膚呼吸を行う（幼体はえら呼吸）。"
+  },
+  {
+    "id": "R038",
+    "genre": "理科",
+    "subgenre": "天体",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "月が一番丸く見えるのは何という？",
+    "choices": [
+      "三日月",
+      "上弦の月",
+      "満月",
+      "下弦の月"
+    ],
+    "answer": 2,
+    "explanation": "月が完全に丸く見える状態を満月（まんげつ）という。"
+  },
+  {
+    "id": "R039",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "塩酸と水酸化ナトリウムを混ぜると何ができる？（中和の産物）",
+    "answer_text": "食塩",
+    "answer_variants": [
+      "しょくえん",
+      "塩化ナトリウム",
+      "NaCl"
+    ],
+    "explanation": "HCl + NaOH → NaCl（食塩）+ H₂O。酸とアルカリの中和反応。"
+  },
+  {
+    "id": "R040",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「仕事（J）= 力（N）× ○」の○は？(ひらがなで)",
+    "answer_text": "きょり",
+    "answer_variants": [
+      "距離"
+    ],
+    "explanation": "仕事（J）= 力（N）× 距離（m）。"
+  },
+  {
+    "id": "R041",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "血液中で酸素を運ぶ成分は？",
+    "choices": [
+      "白血球",
+      "血小板",
+      "赤血球",
+      "血漿"
+    ],
+    "answer": 2,
+    "explanation": "赤血球のヘモグロビンが酸素と結びついて全身に運ぶ。"
+  },
+  {
+    "id": "R042",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "電流（A）・電圧（V）・抵抗（Ω）の関係式（オームの法則）は？",
+    "choices": [
+      "V=I+R",
+      "V=I×R",
+      "V=I÷R",
+      "I=V+R"
+    ],
+    "answer": 1,
+    "explanation": "オームの法則：電圧V=電流I×抵抗R（V=IR）。"
+  },
+  {
+    "id": "R043",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "リトマス紙を赤→青に変えるのはどんな液体？",
+    "choices": [
+      "酸性の液",
+      "中性の液",
+      "アルカリ性の液",
+      "無機の液"
+    ],
+    "answer": 2,
+    "explanation": "アルカリ性（塩基性）の液体は赤色リトマス紙を青に変える。"
+  },
+  {
+    "id": "R044",
+    "genre": "理科",
+    "subgenre": "天体",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "月が地球の周りを1周する期間は約何日？",
+    "choices": [
+      "約7日",
+      "約14日",
+      "約28〜30日",
+      "約365日"
+    ],
+    "answer": 2,
+    "explanation": "月の公転周期は約27.3日（恒星月）〜29.5日（朔望月）。"
+  },
+  {
+    "id": "R045",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「速さ=距離÷時間」で表されるとき、秒速10mで5秒走った距離は何m？",
+    "answer_text": "50",
+    "answer_variants": [],
+    "explanation": "10m/s × 5s = 50m。"
+  },
+  {
+    "id": "R046",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "光合成で葉が吸収するエネルギーは何？(ひらがなで)",
+    "answer_text": "ひかり",
+    "answer_variants": [
+      "太陽光",
+      "たいようこう"
+    ],
+    "explanation": "光合成は太陽の光エネルギーを使ってデンプンを合成する。"
+  },
+  {
+    "id": "R047",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "炭酸水素ナトリウム（重曹）を加熱すると何が発生する？",
+    "choices": [
+      "水素",
+      "酸素",
+      "二酸化炭素",
+      "窒素"
+    ],
+    "answer": 2,
+    "explanation": "重曹を加熱すると二酸化炭素・水・炭酸ナトリウムに分解。CO₂が発生。"
+  },
+  {
+    "id": "R048",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "凹レンズを通った光は？",
+    "choices": [
+      "焦点に集まる",
+      "広がって発散する",
+      "直進する",
+      "反射する"
+    ],
+    "answer": 1,
+    "explanation": "凹レンズは光を発散（広げる）させる。"
+  },
+  {
+    "id": "R049",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "植物で光合成が行われる細胞内の器官は？",
+    "choices": [
+      "核",
+      "ミトコンドリア",
+      "葉緑体",
+      "液胞"
+    ],
+    "answer": 2,
+    "explanation": "光合成は葉緑体（クロロプラスト）で行われる。"
+  },
+  {
+    "id": "R050",
+    "genre": "理科",
+    "subgenre": "天体",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "地球から見て太陽が1年で通る見かけの軌道を何という？",
+    "choices": [
+      "赤道",
+      "黄道",
+      "白道",
+      "天の川"
+    ],
+    "answer": 1,
+    "explanation": "地球から見た太陽の見かけの通り道を黄道（こうどう）という。"
+  },
+  {
+    "id": "R051",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "水素の元素記号は？(英字で)",
+    "answer_text": "H",
+    "answer_variants": [],
+    "explanation": "水素の元素記号はH（Hydrogen）。"
+  },
+  {
+    "id": "R052",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "ふりこの周期は何によって決まる？(ひらがなで)",
+    "answer_text": "なわ（ひもの）ながさ",
+    "answer_variants": [
+      "ふりこのながさ",
+      "ながさ"
+    ],
+    "explanation": "振り子の周期はひもの長さのみで決まる（重さや振れ幅には関係しない）。"
+  },
+  {
+    "id": "R053",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "ヒトの消化器官で、たんぱく質の消化が始まる場所は？",
+    "choices": [
+      "口",
+      "食道",
+      "胃",
+      "小腸"
+    ],
+    "answer": 2,
+    "explanation": "たんぱく質の消化は胃（ペプシン）から始まる。"
+  },
+  {
+    "id": "R054",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「慣性の法則」の説明として正しいのは？",
+    "choices": [
+      "力を加えると速度が変わる",
+      "外力がなければ物体は等速直線運動を続ける",
+      "重いほど速く落ちる",
+      "圧力は面積に比例する"
+    ],
+    "answer": 1,
+    "explanation": "慣性の法則（ニュートンの第1法則）：外力がなければ物体は等速直線運動（または静止）を続ける。"
+  },
+  {
+    "id": "R055",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "塩化銅水溶液を電気分解するとき、陰極（マイナス）に析出するのは？",
+    "choices": [
+      "塩素",
+      "酸素",
+      "銅",
+      "水素"
+    ],
+    "answer": 2,
+    "explanation": "塩化銅水溶液の電気分解：陰極にCu（銅）が析出、陽極から塩素（Cl₂）が発生。"
+  },
+  {
+    "id": "R056",
+    "genre": "理科",
+    "subgenre": "天体",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "太陽系の惑星を内側から4番目は？",
+    "choices": [
+      "金星",
+      "地球",
+      "火星",
+      "木星"
+    ],
+    "answer": 2,
+    "explanation": "内側から：水・金・地・火・木・土・天・海。4番目は火星（Mars）。"
+  },
+  {
+    "id": "R057",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "ヒトの血液が心臓から肺に流れ、酸素を受け取って戻ってくる循環を何という？(ひらがなで)",
+    "answer_text": "はいじゅんかん",
+    "answer_variants": [],
+    "explanation": "肺循環（はいじゅんかん）＝右心室→肺動脈→肺→肺静脈→左心房。"
+  },
+  {
+    "id": "R058",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "「物質の3状態」のうち、体積が変化しにくいのは固体と○体。○は？(ひらがなで)",
+    "answer_text": "えき",
+    "answer_variants": [],
+    "explanation": "固体と液体は体積変化が小さい。気体は大きく変化する。"
+  },
+  {
+    "id": "R059",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「滑車」を使った仕事で、動滑車1個を使うと力は何倍になる？",
+    "choices": [
+      "1倍（変わらない）",
+      "1/2倍（半分の力）",
+      "2倍",
+      "4倍"
+    ],
+    "answer": 1,
+    "explanation": "動滑車1個で力は1/2になるが、引く距離は2倍になる（仕事の大きさは同じ）。"
+  },
+  {
+    "id": "R060",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「蒸留」で分離できる混合物の例は？",
+    "choices": [
+      "食塩水から水を取り出す",
+      "鉄とアルミニウムの粉",
+      "砂と金",
+      "塩酸"
+    ],
+    "answer": 0,
+    "explanation": "蒸留は沸点の違いを利用して混合液を分離する方法。食塩水から純粋な水を得るのに使える。"
+  },
+  {
+    "id": "R061",
+    "genre": "理科",
+    "subgenre": "天体",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "「日食」が起きる条件は？",
+    "choices": [
+      "地球が太陽と月の間に入る",
+      "月が地球と太陽の間に入る",
+      "月が地球の影に入る",
+      "太陽が大きくなる"
+    ],
+    "answer": 1,
+    "explanation": "日食は月が太陽と地球の間に入ったとき（月が太陽を隠す）に起きる。"
+  },
+  {
+    "id": "R062",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "ヒトの細胞の中で「エネルギーを作る」器官は？",
+    "choices": [
+      "核",
+      "葉緑体",
+      "ミトコンドリア",
+      "細胞膜"
+    ],
+    "answer": 2,
+    "explanation": "ミトコンドリアが呼吸によりATP（エネルギー）を産生する。"
+  },
+  {
+    "id": "R063",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「圧力（Pa）= 力（N）÷ ○（m²）」。○は？(ひらがなで)",
+    "answer_text": "めんせき",
+    "answer_variants": [
+      "面積"
+    ],
+    "explanation": "圧力（Pa）= 力（N）÷ 面積（m²）。"
+  },
+  {
+    "id": "R064",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「質量保存の法則」は誰が発見した？(カタカナで)",
+    "answer_text": "ラボアジエ",
+    "answer_variants": [],
+    "explanation": "フランスの化学者ラボアジエ（Lavoisier）が質量保存の法則を発見した。"
+  },
+  {
+    "id": "R065",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「被子植物」の特徴として正しいのは？",
+    "choices": [
+      "種子が露出している",
+      "胚珠が子房に包まれている",
+      "胞子で増える",
+      "花びらがない"
+    ],
+    "answer": 1,
+    "explanation": "被子植物は胚珠が子房に包まれている（子房が成熟して果実になる）。"
+  },
+  {
+    "id": "R066",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「電磁誘導」の説明として正しいのは？",
+    "choices": [
+      "電流を流すと磁場が生じる",
+      "磁場の変化で電流が生じる",
+      "磁石が電気を吸収する",
+      "電流が磁石を動かす"
+    ],
+    "answer": 1,
+    "explanation": "電磁誘導はコイルの磁場が変化したとき誘導電流が発生する現象（ファラデーの法則）。"
+  },
+  {
+    "id": "R067",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「アルカリ性」の水溶液を示すものは？",
+    "choices": [
+      "pH<7",
+      "pH=7",
+      "pH>7",
+      "pH=14のみ"
+    ],
+    "answer": 2,
+    "explanation": "アルカリ性（塩基性）はpH>7。pH=7が中性、pH<7が酸性。"
+  },
+  {
+    "id": "R068",
+    "genre": "理科",
+    "subgenre": "天体",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "太陽系の惑星で自転軸がほぼ横倒しになっている惑星は？",
+    "choices": [
+      "火星",
+      "木星",
+      "天王星",
+      "海王星"
+    ],
+    "answer": 2,
+    "explanation": "天王星の自転軸は公転面に対してほぼ横倒し（約98°）になっている。"
+  },
+  {
+    "id": "R069",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「ニュートンの第2法則」を式で表すと F = ○。○は？",
+    "answer_text": "ma",
+    "answer_variants": [
+      "m×a",
+      "質量×加速度"
+    ],
+    "explanation": "F=ma（力=質量×加速度）がニュートンの第2法則。"
+  },
+  {
+    "id": "R070",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「元素の周期表」で原子番号6の元素記号は？(英字で)",
+    "answer_text": "C",
+    "answer_variants": [
+      "炭素"
+    ],
+    "explanation": "原子番号6は炭素（Carbon）で元素記号はC。"
+  },
+  {
+    "id": "R071",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「DNA」を構成する塩基の組み合わせで正しいのは？",
+    "choices": [
+      "アデニン-グアニン",
+      "アデニン-チミン",
+      "グアニン-チミン",
+      "シトシン-アデニン"
+    ],
+    "answer": 1,
+    "explanation": "DNAの塩基ペアはA(アデニン)-T(チミン)、G(グアニン)-C(シトシン）。"
+  },
+  {
+    "id": "R072",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「エネルギー保存の法則」の説明として正しいのは？",
+    "choices": [
+      "摩擦があるとエネルギーは消えない",
+      "エネルギーの総量は変化しない",
+      "運動エネルギーのみ保存される",
+      "熱エネルギーは保存されない"
+    ],
+    "answer": 1,
+    "explanation": "エネルギー保存の法則：エネルギーの形は変わっても総量は一定（保存される）。"
+  },
+  {
+    "id": "R073",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "「共有結合」の説明として正しいのは？",
+    "choices": [
+      "電子を一方が与え一方が受け取る",
+      "電子を共有して結びつく",
+      "イオン同士が結びつく",
+      "金属原子が電子を共有する"
+    ],
+    "answer": 1,
+    "explanation": "共有結合は2つの原子が電子を共有することで形成される結合。"
+  },
+  {
+    "id": "R074",
+    "genre": "理科",
+    "subgenre": "天体",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "太陽の表面の黒い斑点状の部分を何という？",
+    "choices": [
+      "コロナ",
+      "フレア",
+      "黒点",
+      "紅炎（プロミネンス）"
+    ],
+    "answer": 2,
+    "explanation": "太陽表面の黒い斑点は黒点（こくてん）。周囲より温度が低いため黒く見える。"
+  },
+  {
+    "id": "R075",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "「光速」のおよその値は秒速何km？(大まかな整数で)",
+    "answer_text": "300000",
+    "answer_variants": [
+      "30万"
+    ],
+    "explanation": "光速は約30万km/s（正確には299,792,458 m/s）。"
+  },
+  {
+    "id": "R076",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "「光合成」の化学反応式（大まかに）の右辺に含まれる有機物は？(ひらがなで)",
+    "answer_text": "でんぷん",
+    "answer_variants": [
+      "グルコース",
+      "ぶどうとう"
+    ],
+    "explanation": "光合成：CO₂＋H₂O→(CH₂O)n（デンプン/糖）＋O₂。"
+  },
+  {
+    "id": "R077",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「モル（mol）」の定義に含まれる数は？",
+    "choices": [
+      "6.02×10²²",
+      "6.02×10²³",
+      "6.02×10²⁴",
+      "3.14"
+    ],
+    "answer": 1,
+    "explanation": "1mol=6.02×10²³個（アボガドロ数）。"
+  },
+  {
+    "id": "R078",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「相対性理論」によると質量とエネルギーの関係を表す式は？",
+    "choices": [
+      "E=mc",
+      "E=mc²",
+      "E=m/c²",
+      "E=2mc"
+    ],
+    "answer": 1,
+    "explanation": "E=mc²（アインシュタインの質量-エネルギー等価式）。"
+  },
+  {
+    "id": "R079",
+    "genre": "理科",
+    "subgenre": "天体",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「ブラックホール」の説明として正しいのは？",
+    "choices": [
+      "光より速い物体",
+      "重力が強すぎて光も抜け出せない天体",
+      "完全に空虚な空間",
+      "通常の恒星と同じもの"
+    ],
+    "answer": 1,
+    "explanation": "ブラックホールは重力が非常に強く、光さえも脱出できない天体。"
+  },
+  {
+    "id": "R080",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「メンデルの法則」に含まれないのは？",
+    "choices": [
+      "分離の法則",
+      "優性の法則",
+      "独立の法則",
+      "突然変異の法則"
+    ],
+    "answer": 3,
+    "explanation": "メンデルの法則は「優性の法則・分離の法則・独立の法則」の3つ。突然変異の法則は含まない。"
+  },
+  {
+    "id": "R081",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "光合成で植物が放出する気体は？(英字2文字で)",
+    "answer_text": "O2",
+    "answer_variants": [
+      "酸素",
+      "さんそ"
+    ],
+    "explanation": "光合成では酸素（O₂）が放出される。"
+  },
+  {
+    "id": "R082",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "「てこ」の3点のうち、力を加える点を何という？(ひらがなで)",
+    "answer_text": "りきてん",
+    "answer_variants": [
+      "力点"
+    ],
+    "explanation": "てこの3点：支点（軸）・力点（力を加える場所）・作用点（物に力が働く場所）。"
+  },
+  {
+    "id": "R083",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "「pH7」は何性？(ひらがなで)",
+    "answer_text": "ちゅうせい",
+    "answer_variants": [],
+    "explanation": "pH=7は中性（ちゅうせい）。"
+  },
+  {
+    "id": "R084",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 6,
+    "mode": "input",
+    "question": "音の高さを決めるのは何？(ひらがなで)",
+    "answer_text": "しんどうすう",
+    "answer_variants": [
+      "周波数",
+      "しゅうはすう",
+      "ふりどうすう"
+    ],
+    "explanation": "音の高さは振動数（周波数、Hz）によって決まる。振動数が高いほど高音。"
+  },
+  {
+    "id": "R085",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 7,
+    "mode": "input",
+    "question": "ヒトの体内で「インスリン」を分泌する臓器は？(ひらがなで)",
+    "answer_text": "すいぞう",
+    "answer_variants": [],
+    "explanation": "インスリンは膵臓（すいぞう）のランゲルハンス島B細胞から分泌される。"
+  },
+  {
+    "id": "R086",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 8,
+    "mode": "input",
+    "question": "「酸化鉄（赤サビ）」の化学式は？",
+    "answer_text": "Fe2O3",
+    "answer_variants": [
+      "Fe₂O₃"
+    ],
+    "explanation": "赤サビの主成分は酸化鉄（Ⅲ）Fe₂O₃。"
+  },
+  {
+    "id": "R087",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 9,
+    "mode": "input",
+    "question": "「比熱」の単位は？",
+    "answer_text": "J/g℃",
+    "answer_variants": [
+      "J/(g・K)",
+      "じゅーる/ぐらむど"
+    ],
+    "explanation": "比熱の単位はJ/(g·℃）またはJ/(g·K）。"
+  },
+  {
+    "id": "R088",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 10,
+    "mode": "input",
+    "question": "「細胞分裂」のとき最初に複製されるのは何？(ひらがなで)",
+    "answer_text": "DNA",
+    "answer_variants": [
+      "でぃーえぬえー",
+      "ゲノム",
+      "染色体"
+    ],
+    "explanation": "細胞分裂の前にDNA（染色体）が複製され、2つの娘細胞に分配される。"
+  },
+  {
+    "id": "R089",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "植物の根の役割は？",
+    "choices": [
+      "光合成",
+      "水と養分を吸収する",
+      "種を作る",
+      "空気を吸う"
+    ],
+    "answer": 1,
+    "explanation": "根は土から水と養分を吸収する役割がある。"
+  },
+  {
+    "id": "R090",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "鉄が「さびる」現象は何？",
+    "choices": [
+      "溶解",
+      "燃焼",
+      "酸化",
+      "蒸発"
+    ],
+    "answer": 2,
+    "explanation": "さびは鉄が酸素と反応する酸化反応（酸化鉄ができる）。"
+  },
+  {
+    "id": "R091",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "「鏡」に映った自分の像は？",
+    "choices": [
+      "実像",
+      "虚像",
+      "正立実像",
+      "倒立実像"
+    ],
+    "answer": 1,
+    "explanation": "鏡に映る像は実際に光が集まるわけではない虚像（きょぞう）。"
+  },
+  {
+    "id": "R092",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "タンポポは何植物？",
+    "choices": [
+      "裸子植物",
+      "シダ植物",
+      "被子植物",
+      "コケ植物"
+    ],
+    "answer": 2,
+    "explanation": "タンポポは花が咲き種子を作る被子植物。"
+  },
+  {
+    "id": "R093",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「塩素」の元素記号は？",
+    "choices": [
+      "Cl",
+      "Cr",
+      "Ca",
+      "Co"
+    ],
+    "answer": 0,
+    "explanation": "塩素の元素記号はCl（Chlorine）。"
+  },
+  {
+    "id": "R094",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「直列回路」で抵抗を増やすと全体の電流は？",
+    "choices": [
+      "増える",
+      "変わらない",
+      "減る",
+      "0になる"
+    ],
+    "answer": 2,
+    "explanation": "直列回路では抵抗が増えると全体の抵抗値が上がり電流が減る（V=IR）。"
+  },
+  {
+    "id": "R095",
+    "genre": "理科",
+    "subgenre": "天体",
+    "difficulty": 7,
+    "mode": "choice",
+    "question": "月食が起きる条件は？",
+    "choices": [
+      "月が太陽を隠す",
+      "地球の影に月が入る",
+      "太陽が月を隠す",
+      "月が地球に最接近する"
+    ],
+    "answer": 1,
+    "explanation": "月食は地球の影に月が入ったときに起きる。"
+  },
+  {
+    "id": "R096",
+    "genre": "理科",
+    "subgenre": "化学",
+    "difficulty": 8,
+    "mode": "choice",
+    "question": "「電池」のエネルギー変換は？",
+    "choices": [
+      "熱→電気",
+      "光→電気",
+      "化学→電気",
+      "運動→電気"
+    ],
+    "answer": 2,
+    "explanation": "電池は化学エネルギーを電気エネルギーに変換する。"
+  },
+  {
+    "id": "R097",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 9,
+    "mode": "choice",
+    "question": "ヒトの「染色体」の数は何本？",
+    "choices": [
+      "23本",
+      "46本",
+      "48本",
+      "92本"
+    ],
+    "answer": 1,
+    "explanation": "ヒトの染色体は体細胞中に46本（23対）ある。"
+  },
+  {
+    "id": "R098",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 10,
+    "mode": "choice",
+    "question": "「波の回折（かいせつ）」とは？",
+    "choices": [
+      "波が反射する現象",
+      "波が障害物の後ろに回り込む現象",
+      "波が屈折する現象",
+      "波が干渉する現象"
+    ],
+    "answer": 1,
+    "explanation": "回折は波が障害物の端や隙間を通り抜けて後ろに回り込む現象。"
+  },
+  {
+    "id": "R099",
+    "genre": "理科",
+    "subgenre": "生物",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "「有性生殖」で新しい個体を作るときに必要なものは？",
+    "choices": [
+      "1種類の細胞のみ",
+      "雌雄2種類の生殖細胞",
+      "3種類の細胞",
+      "温度のみ"
+    ],
+    "answer": 1,
+    "explanation": "有性生殖は卵（雌）と精子（雄）の2種類の生殖細胞が受精して新個体を作る。"
+  },
+  {
+    "id": "R100",
+    "genre": "理科",
+    "subgenre": "物理",
+    "difficulty": 6,
+    "mode": "choice",
+    "question": "「重力加速度」の値（地球上の標準）は約何m/s²？",
+    "choices": [
+      "5",
+      "9.8",
+      "12",
+      "20"
+    ],
+    "answer": 1,
+    "explanation": "地球上の重力加速度は約9.8m/s²（≒10m/s²と近似することもある）。"
   }
 ]
