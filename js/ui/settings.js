@@ -63,6 +63,14 @@
                     </label>
                 </div>
 
+                <div class="settings-row settings-row-mute" id="settingsVibRow">
+                    <label class="settings-mute">
+                        <input type="checkbox" id="settingsVib">
+                        <span class="settings-mute-box"></span>
+                        <span class="settings-mute-label">VIBRATION</span>
+                    </label>
+                </div>
+
                 <div class="settings-hint">タップ: スライダー調整 / ボタンで全消音</div>
             </div>
         `;
@@ -118,6 +126,25 @@
             if (!m) window.SE?.fire?.('confirm');
         });
 
+        // 振動 (端末がサポートしない場合はチェックボックスを無効化)
+        const vib    = overlay.querySelector('#settingsVib');
+        const vibRow = overlay.querySelector('#settingsVibRow');
+        const vibSupported = window.Haptics?.isSupported?.() ?? false;
+        if (!vibSupported) {
+            vib.disabled = true;
+            vibRow.classList.add('is-disabled');
+            // iOS Safari 等では Web の vibrate は効かないので、ラベルを
+            // "N/A" にしてユーザーが混乱しないようにする。
+            const lbl = vibRow.querySelector('.settings-mute-label');
+            if (lbl) lbl.textContent = 'VIBRATION (N/A)';
+        }
+        vib.addEventListener('change', () => {
+            const v = vib.checked;
+            window.Haptics?.setEnabled?.(v);
+            // ON にした時だけフィードバック (OFF 直後に鳴らすと矛盾する)
+            if (v) window.Haptics?.vibrate?.(30);
+        });
+
         return overlay;
     }
 
@@ -128,12 +155,14 @@
         const se  = overlay.querySelector('#settingsSe');
         const seVal  = overlay.querySelector('#settingsSeVal');
         const mute = overlay.querySelector('#settingsMute');
+        const vib  = overlay.querySelector('#settingsVib');
 
         const bgmPct = Math.round(s.bgmVolume * 100);
         const sePct  = Math.round(s.seVolume  * 100);
         bgm.value = bgmPct; bgmVal.textContent = bgmPct;
         se.value  = sePct;  seVal.textContent  = sePct;
         mute.checked = !!s.muted;
+        if (vib) vib.checked = s.vibration !== false;   // default ON
         bgm.style.setProperty('--pct', `${bgmPct}%`);
         se.style.setProperty('--pct', `${sePct}%`);
     }

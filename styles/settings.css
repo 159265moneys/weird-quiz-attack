@@ -279,6 +279,36 @@
     text-shadow: 0 0 8px rgba(255,46,94,0.55);
 }
 
+/* VIBRATION トグルは MUTE と異なり "ON=有効 (シアン)" の色運用で区別する */
+#settingsVibRow .settings-mute input:checked + .settings-mute-box {
+    background: rgba(0,255,240,0.28);
+    border-color: var(--accent-cyan, #00fff0);
+}
+#settingsVibRow .settings-mute input:checked + .settings-mute-box::after {
+    background: var(--accent-cyan, #00fff0);
+}
+#settingsVibRow .settings-mute input:checked ~ .settings-mute-label {
+    color: var(--accent-cyan, #00fff0);
+    text-shadow: 0 0 8px rgba(0,255,240,0.5);
+}
+
+/* 非対応端末での VIBRATION トグル (disabled) の見た目 */
+.settings-row-mute.is-disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+.settings-row-mute.is-disabled .settings-mute-label::after {
+    content: '';
+}
+
+/* 2 段目以降の mute 系 row はヘッダの dashed 枠を薄くして重複感を減らす */
+.settings-row-mute + .settings-row-mute {
+    margin-top: 4px;
+    padding-top: 14px;
+    border-top-style: dotted;
+    border-top-color: rgba(255,255,255,0.08);
+}
+
 /* ---- ヒント行 ---- */
 .settings-hint {
     margin-top: 14px;

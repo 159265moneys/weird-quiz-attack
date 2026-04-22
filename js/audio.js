@@ -485,6 +485,11 @@
     };
 
     function fire(name) {
+        // ハプティクスは SE の音が null (無音マッピング) でも発火したい場合がある
+        // (例: keyTap は音を廃止したが、打鍵の感触だけは残したい)。
+        // → まず Haptics を呼んでから SE を処理する。
+        try { window.Haptics?.fire?.(name); } catch (_) {}
+
         const spec = SE_SPEC[name];
         if (!spec) return null;           // null = 無音マッピング (仕様的にミュート)
         if (spec.loop) return playLoop(spec.path, spec.volume, spec.playbackRate || 1.0);
