@@ -297,7 +297,7 @@
    CSSはtransitionとベース指定のみ。 */
 .gk-b25-char {
     position: absolute;
-    height: 360px;   /* 16:9 → 表示幅 ≈ 640px (width:auto で自動計算) */
+    height: 540px;   /* 1.5x (360→540) / 16:9 → 表示幅 ≈ 960px (width:auto) */
     width: auto;
     left: 0;
     top: 0;

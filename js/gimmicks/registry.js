@@ -58,7 +58,6 @@
 
             const beams = Array.from(host.querySelectorAll('.gk-b11-beam'));
             const timers = new Set();
-            let firing = false;   // 発射中フラグ (排他制御: 同時発射させない)
             let alive = true;
 
             // チャージ+発射+フェード で1本あたり合計 1.2 秒。
@@ -73,28 +72,22 @@
                 timers.add(t);
             }
 
+            // 2026-04 調整: 発射間隔 1.5x (休憩 1800〜3500ms → 1200〜2333ms)。
+            // 排他発射 (firing フラグ) を廃止 → 複数ビームが被って撃ってよい。
             function fire(beam) {
                 if (!alive) return;
-                if (firing) {
-                    // 他ビーム発射中 → 少し待って再挑戦 (重なり回避)
-                    schedule(() => fire(beam), 200 + Math.random() * 400);
-                    return;
-                }
-                firing = true;
-                // チャージ音 (CSS アニメ前半がチャージ相)、0.6s 後に発射音
                 window.SE?.fire('gB11Charge');
                 beam.classList.add('is-fire');
                 schedule(() => window.SE?.fire('gB11Fire'), 600);
                 schedule(() => {
                     beam.classList.remove('is-fire');
-                    firing = false;
-                    // 休憩 1.8〜3.5秒
-                    schedule(() => fire(beam), 1800 + Math.random() * 1700);
+                    schedule(() => fire(beam), 1200 + Math.random() * 1133);
                 }, FIRE_DURATION);
             }
 
+            // 初期ずらしも 1.5x テンポに (i*800 → i*530)
             beams.forEach((beam, i) => {
-                schedule(() => fire(beam), 300 + i * 800 + Math.random() * 600);
+                schedule(() => fire(beam), 300 + i * 530 + Math.random() * 600);
             });
 
             return () => {
@@ -380,10 +373,11 @@
                 'sprite/girl/basic.png', 'sprite/girl/happy.png',
                 'sprite/girl/hi.png', 'sprite/girl/think.png', 'sprite/girl/think_light.png',
             ];
-            const CHAR_H   = 360;   // 画像高さ (px, 仮想座標) ※ height:360px; width:auto 表示
-            const CHAR_W   = 640;   // 画像幅 (960×540→高さ360表示時: 360/540*960=640)
-            const PEEK     = 300;   // 頭が覗き込む量 (px)
-            const PAD      = 80;    // 退場時の追加オフセット
+            // 2026-04 調整: キャラ 1.5x スケール (360→540, 640→960 ほか全係数を1.5倍)
+            const CHAR_H   = 540;   // 画像高さ (px, 仮想座標) ※ CSS height:540px; width:auto
+            const CHAR_W   = 960;   // 画像幅 (1920×1080→高さ540表示時: 540/1080*1920=960)
+            const PEEK     = 450;   // 頭が覗き込む量 (px)
+            const PAD      = 120;   // 退場時の追加オフセット
             const SCREEN_W = 1080;
             const CX0 = CHAR_W / 2; // 320
             const CY0 = CHAR_H / 2; // 180
