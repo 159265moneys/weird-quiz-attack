@@ -871,28 +871,56 @@
         },
     };
 
+    // --- W07: 入力1文字消失 (表示から落とすだけ) ---
+    // 【重要】buffer は触らない。droppedIdx に入れた index を "表示上" 抜いて渡す。
+    // プレイヤーは「売ったはずの文字が消えた」と錯覚するが、
+    // 実際には buffer には残っており、OK を押せば判定は通る。
     const W07_CHAR_DROP = {
         id: 'W07', name: '入力1文字消失', supports: 'input', introducedAt: 6, difficulty: 7,
+        conflicts: ['W04', 'W05', 'W09', 'W10'],
         apply(ctx) {
-            const tick = () => {
-                const kb = window.Keyboard;
-                if (!kb || typeof kb.getValue !== 'function') return;
-                const v = kb.getValue();
-                if (!v || v.length === 0) return;
-                const arr = Array.from(v);
-                const idx = Math.floor(Math.random() * arr.length);
-                arr.splice(idx, 1);
-                kb.setValue(arr.join(''));
-            };
-            // 1.6〜2.4秒ごとに1文字消す
+            const droppedIdx = new Set();
+            let currentBuffer = '';
+            let origHandler = null;
+
+            function refresh() {
+                const arr = Array.from(currentBuffer);
+                const out = arr.filter((_, i) => !droppedIdx.has(i));
+                if (origHandler) origHandler(out.join(''));
+            }
+
+            const unwrap = wrapOnChange((orig) => {
+                origHandler = orig;
+                return (val) => {
+                    currentBuffer = val;
+                    // 範囲外になった index は除去 (backspace で buffer が縮んだ場合)
+                    for (const i of [...droppedIdx]) {
+                        if (i >= val.length) droppedIdx.delete(i);
+                    }
+                    refresh();
+                };
+            });
+
             const schedule = () => {
                 return setTimeout(() => {
-                    tick();
+                    const available = [];
+                    for (let i = 0; i < currentBuffer.length; i++) {
+                        if (!droppedIdx.has(i)) available.push(i);
+                    }
+                    if (available.length > 0) {
+                        const pick = available[Math.floor(Math.random() * available.length)];
+                        droppedIdx.add(pick);
+                        refresh();
+                    }
                     timer = schedule();
                 }, 1600 + Math.random() * 800);
             };
             let timer = schedule();
-            return () => clearTimeout(timer);
+
+            return () => {
+                clearTimeout(timer);
+                unwrap();
+            };
         },
     };
 
@@ -919,41 +947,53 @@
         };
     }
 
+    // --- W05: カーソル暴走 (表示だけスクランブル) ---
+    // 【重要】buffer (= ユーザが実際に売った文字列) は絶対に触らない。
+    //   onSubmit は keyboard 本体が buffer をそのまま渡すので、
+    //   判定は常に「売った順」で行われる。
+    //   本ギミックは onChange に流す "表示用文字列" だけを
+    //   displayOrder (buffer index の並べ替え) で作って差し替える。
+    // → プレイヤーは見た目上順番が狂うが、自分の入力を信じて OK すれば正解する。
     const W05_CURSOR_WILD = {
         id: 'W05', name: 'カーソル暴走', supports: 'input', introducedAt: 7, difficulty: 7,
-        // 同じく buffer を捻るギミックとは干渉
-        conflicts: ['W07', 'W10'],
+        // onChange ラップ + 演出の重複回避 (表示系ギミックが 1 問に 1 個まで)
+        conflicts: ['W04', 'W06', 'W07', 'W09', 'W10'],
         apply(ctx) {
-            let prev = window.Keyboard?.getValue() || '';
-            let bypass = false;
+            // displayOrder[表示位置] = buffer の index
+            let displayOrder = [];
+            let lastLen = 0;
             const unwrap = wrapOnChange((orig) => (val) => {
-                if (bypass) { bypass = false; prev = val; if (orig) orig(val); return; }
-                // 末尾に1文字だけ追加された場合 → ランダムな位置に挿入し直す
-                if (val.length === prev.length + 1 && val.startsWith(prev)) {
-                    const ch = val[val.length - 1];
-                    const base = prev;
-                    if (base.length === 0) {
-                        // 最初の1文字はそのまま
-                        prev = val; if (orig) orig(val); return;
-                    }
-                    let pos = Math.floor(Math.random() * (base.length + 1));
-                    // 本当の末尾は避ける(必ず「ズレた」感を出す)
-                    if (pos === base.length) pos = Math.max(0, base.length - 1);
-                    const mutated = base.slice(0, pos) + ch + base.slice(pos);
-                    bypass = true;
-                    window.Keyboard.setValue(mutated);
-                    return;
+                const n = val.length;
+                // 縮んだ (backspace など): 範囲外の index を除去
+                if (n < lastLen) {
+                    displayOrder = displayOrder.filter(i => i < n);
                 }
-                prev = val;
-                if (orig) orig(val);
+                // 伸びた: 新しく付いた index をランダム位置に差し込む
+                while (displayOrder.length < n) {
+                    const newIdx = displayOrder.length;
+                    if (displayOrder.length < 2) {
+                        // 最初の 1, 2 文字はそのまま (入力直後の期待を裏切りすぎない)
+                        displayOrder.push(newIdx);
+                    } else {
+                        // 末尾以外にランダム差し込み → 必ず「ズレた」見た目を作る
+                        const pos = Math.floor(Math.random() * displayOrder.length);
+                        displayOrder.splice(pos, 0, newIdx);
+                    }
+                }
+                lastLen = n;
+                const display = displayOrder.map(i => val[i]).join('');
+                if (orig) orig(display);
             });
             return unwrap;
         },
     };
 
+    // W10: 入力遅延 (onChange を 2 秒遅らせるだけ。buffer は即時更新されており、
+    //      onSubmit は同期的に buffer を返すので OK 判定は売った順で即通る)。
     const W10_INPUT_DELAY = {
         id: 'W10', name: '入力遅延', supports: 'input', introducedAt: 7, difficulty: 7,
-        conflicts: ['W05', 'W07'],
+        // onChange ラップ重複回避 + 表示変形系と重ねると遅延中の表示がますます解読不能
+        conflicts: ['W04', 'W05', 'W06', 'W07', 'W09'],
         apply(ctx) {
             const DELAY = 2000;
             const timers = new Set();
@@ -1050,46 +1090,32 @@
         return isKata ? L.hiraToKata(mapped) : mapped;
     }
 
+    // --- W04: 入力ズレ (表示上だけ 1 段ずらす) ---
+    // 【重要】buffer は触らない。onChange の表示文字列だけ各文字を w04ShiftChar で
+    // 1 段ずらす。OK 判定は buffer (= 売った順) で行われるので、プレイヤーは
+    // 自分の入力を信じて OK するのが正攻法。見た目上は全く違う文字列に見える。
     const W04_INPUT_SHIFT = {
         id: 'W04', name: '入力ズレ', supports: 'input', introducedAt: 8, difficulty: 9,
-        // buffer を捻る系 + フリック方向を弄る系 と排他。
-        // W19/W20 が重なると「1段ずれ × ランダム方向」 = プレイヤーが1文字に
-        // 2重の変換を暗算しないといけなくなり、実質解けないので外す。
+        // onChange ラップの重複回避 + フリック方向弄り系とは別軸なので併用不可
+        // (フリックで既に狂ってる文字がさらに見た目上ずれると解法が成立しない)
         conflicts: ['W05', 'W06', 'W07', 'W09', 'W10', 'W19', 'W20'],
         apply(ctx) {
-            const kb = window.Keyboard;
-            if (!kb) return () => {};
-            let prev = kb.getValue() || '';
-            let bypass = false;
             const unwrap = wrapOnChange((orig) => (val) => {
-                if (bypass) { bypass = false; prev = val; if (orig) orig(val); return; }
-                if (val.length === prev.length + 1 && val.startsWith(prev)) {
-                    const ch = val[val.length - 1];
-                    const shifted = w04ShiftChar(ch);
-                    if (shifted === ch) {
-                        prev = val; if (orig) orig(val); return;
-                    }
-                    const mutated = prev + shifted;
-                    bypass = true;
-                    kb.setValue(mutated);
-                    return;
-                }
-                prev = val;
-                if (orig) orig(val);
+                const shifted = Array.from(val).map(ch => w04ShiftChar(ch)).join('');
+                if (orig) orig(shifted);
             });
             return unwrap;
         },
     };
 
+    // --- W06: 文字順逆転 (表示だけ反転) ---
+    // buffer は触らず、onChange に流す表示用値だけ reverse。
+    // OK 判定は buffer (= 売った順) で行われるので「自分の入力を信じる」ゲーム。
+    // 他の表示変形系 (W04/W05/W07/W09/W10) とは重ねると意味不明なので排他。
     const W06_REVERSE_TEXT = {
         id: 'W06', name: '文字順逆転', supports: 'input', introducedAt: 8, difficulty: 8,
-        // これは表示のみ反転 (buffer はそのまま) なので buffer 系との併用は許容
-        // だが W05/W09 等と組むとどっちが先に見えているのか混乱するので排他にしておく
-        conflicts: ['W05', 'W04', 'W09', 'W10'],
+        conflicts: ['W04', 'W05', 'W07', 'W09', 'W10'],
         apply(ctx) {
-            // buffer は触らず、onChange に流す「表示用値」だけ反転する
-            // → OK 判定時の onSubmit は本物の buffer を受け取るので
-            //   「見えている文字列を正しく並べて入力する」ゲームになる
             const unwrap = wrapOnChange((orig) => (val) => {
                 const reversed = Array.from(val).reverse().join('');
                 if (orig) orig(reversed);
@@ -1098,39 +1124,63 @@
         },
     };
 
+    // --- W09: ゴースト入力 (表示にだけノイズ文字を挿入) ---
+    // 【重要】buffer は触らない。ghosts 配列に {pos, ch} を溜めて、
+    // onChange の表示文字列にだけ挿入する。OK 時は buffer (= 売った順) で判定。
+    // プレイヤーは「勝手に変な文字が混ざる」と感じるが、自分の入力を信じて
+    // OK すれば正解になる。
     const W09_GHOST_INPUT = {
         id: 'W09', name: 'ゴースト入力', supports: 'input', introducedAt: 8, difficulty: 8,
         conflicts: ['W04', 'W05', 'W06', 'W07', 'W10'],
         apply(ctx) {
-            const kb = window.Keyboard;
-            if (!kb) return () => {};
             const NOISE = 'がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゃゅょっゞゟヰヱヶ';
             const noiseCh = () => NOISE[Math.floor(Math.random() * NOISE.length)];
 
-            let bypass = false;
-            // setValue 経由で挿入すると wrapOnChange の他ギミックと競合するが、
-            // 排他設定してあるので単独起動のはず。
-            function inject() {
-                const cur = kb.getValue() || '';
-                if (cur.length >= 19) return; // max 直前は挿入しない (溢れ防止)
-                bypass = true;
-                kb.setValue(cur + noiseCh());
+            // ghosts[k] = { pos, ch } — pos は buffer 配列内での挿入位置 (0..buffer.length)
+            let ghosts = [];
+            let currentBuffer = '';
+            let origHandler = null;
+
+            function buildDisplay() {
+                const arr = Array.from(currentBuffer);
+                // pos 降順で挿入して index ずれを回避
+                const sorted = ghosts.slice().sort((a, b) => b.pos - a.pos);
+                const out = arr.slice();
+                for (const g of sorted) {
+                    const p = Math.min(Math.max(g.pos, 0), out.length);
+                    out.splice(p, 0, g.ch);
+                }
+                return out.join('');
             }
-            // 4〜6 秒に1回、ランダムにゴミを足す
-            function scheduleNext() {
-                return setTimeout(() => {
-                    inject();
-                    timer = scheduleNext();
-                }, 4000 + Math.random() * 2000);
+            function refresh() {
+                if (origHandler) origHandler(buildDisplay());
             }
 
-            // onChange を素通しさせる薄いラップ (bypass リセットのため)
-            const unwrap = wrapOnChange((orig) => (val) => {
-                bypass = false;
-                if (orig) orig(val);
+            const unwrap = wrapOnChange((orig) => {
+                origHandler = orig;
+                return (val) => {
+                    currentBuffer = val;
+                    // buffer が縮んだ場合 ghost の pos が範囲外になるので繋ぎ止める
+                    ghosts.forEach(g => {
+                        if (g.pos > val.length) g.pos = val.length;
+                    });
+                    refresh();
+                };
             });
 
-            let timer = scheduleNext();
+            // 4〜6 秒に1回、ゴーストを1個足す (表示が 20 字超えないよう制限)
+            const schedule = () => {
+                return setTimeout(() => {
+                    if (currentBuffer.length + ghosts.length < 20) {
+                        const pos = Math.floor(Math.random() * (currentBuffer.length + 1));
+                        ghosts.push({ pos, ch: noiseCh() });
+                        refresh();
+                    }
+                    timer = schedule();
+                }, 4000 + Math.random() * 2000);
+            };
+            let timer = schedule();
+
             return () => {
                 clearTimeout(timer);
                 unwrap();
