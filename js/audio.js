@@ -457,10 +457,13 @@
         gB04Zoom:      { path: 'se/gimmick/b04_zoom.mp3',   volume: 0.8 },
         // B05 ミラー: シャキーン差し替え → b17_glitch 短縮
         gB05Mirror:    { path: 'se/gimmick/b17_glitch.mp3', volume: 0.7, clipMs: 600 },
-        // B11 連射: 複数ビームを時間差で撃つためチャージ/発射音が多重化し得る。
-        //           同 SE の重ね鳴りは濁るだけなので exclusive で直列化する。
-        gB11Charge:    { path: 'se/gimmick/b11_charge.mp3', volume: 0.7, exclusive: true },
-        gB11Fire:      { path: 'se/gimmick/b11_fire.mp3',   volume: 0.9, exclusive: true },
+        // B11 連射: 2026-04 仕様変更で「被ってもOK」としたため exclusive を廃止。
+        //           複数ビームが同時にチャージ/発射した時に音も重なって鳴る。
+        //           Web Audio の多重再生を素直に使うので自然に濁ってもそれが狙い。
+        //           代わりに volume を 0.55/0.7 に少し下げて、同時鳴りしても
+        //           破綻しない音量にしておく。
+        gB11Charge:    { path: 'se/gimmick/b11_charge.mp3', volume: 0.55 },
+        gB11Fire:      { path: 'se/gimmick/b11_fire.mp3',   volume: 0.7 },
         // B16 偽カウントダウン: 以前は 300ms ごとに tick を叩きまくって途切れ感が出ていた。
         // 改修: 単一ループ SE を 3x 倍速で流し続ける方式に変更 (registry.js 側でも連打停止)。
         //       これで途切れなく「ザーッ」と時計が走る感じになる。
