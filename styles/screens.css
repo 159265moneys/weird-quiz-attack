@@ -629,13 +629,13 @@
 .q-abort-btn {
     position: absolute;
     top: 24px;
-    left: 24px;
+    right: 24px;
     z-index: 2500;             /* あらゆるギミック/崩壊より上 */
     height: 52px;
     padding: 0 22px;
     background: rgba(0, 0, 0, 0.45);
-    color: rgba(230, 241, 255, 0.38);
-    border: 1px solid rgba(230, 241, 255, 0.18);
+    color: rgba(255, 46, 94, 0.7);
+    border: 1px solid rgba(255, 46, 94, 0.35);
     border-radius: 26px;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);

@@ -39,7 +39,7 @@
     // ------- 設定 -------
     const CROSSFADE_MS   = 3000;   // 尻尾クロスフェード長
     const SWITCH_FADE_MS = 800;    // 別 BGM 切替時のフェード長
-    const DEFAULT_VOL    = 0.35;   // モバイルゲー標準、空気感担当
+    const DEFAULT_VOL    = 0.2;    // BGM は空気感担当 (SE よりはっきり小さく)
 
     // ------- 状態 -------
     let currentName = null;
@@ -50,6 +50,10 @@
     let watchRAF    = 0;
     let pendingName = null;        // unlock 前に play() されたやつを覚えておく
     let unlocked    = false;
+
+    // preload 用の Audio 要素保持 (GC 防止 + ブラウザキャッシュ温め)。
+    // script 読込時点で fetch を走らせて、最初の play() で一瞬遅延するのを防ぐ。
+    const _preloadRefs = [];
 
     // ------- ユーティリティ -------
     function clampVol(v) { return Math.max(0, Math.min(1, Number(v))); }
@@ -208,6 +212,28 @@
 
     function isMuted() { return muted; }
 
+    // ------- プリロード -------
+    // script 読込時点で各 BGM ファイルを fetch してキャッシュを温めておく。
+    // iOS でも `el.src = ...; el.load()` は user-gesture 無しで fetch を
+    // キックする (play() のみが gesture 必須)。
+    // ※ 参照を保持しないとフェッチ中に GC されて取り消される可能性があるので
+    //   _preloadRefs に残す。
+    function preloadAll() {
+        const seen = new Set();
+        for (const name in BGM_SPEC) {
+            const path = BGM_SPEC[name];
+            if (!path || seen.has(path)) continue;
+            seen.add(path);
+            try {
+                const el = new Audio();
+                el.preload = 'auto';
+                el.src = BASE + encodeURIComponent(path);
+                el.load();
+                _preloadRefs.push(el);
+            } catch (_) { /* noop */ }
+        }
+    }
+
     // ------- unlock 連動 -------
     // 最初のユーザー操作で unlocked フラグを立て、pendingName があれば再生。
     function installUnlock() {
@@ -229,6 +255,8 @@
     }
 
     installUnlock();
+    // スクリプト読込直後にキャッシュ温め開始 (鳴り始めの遅延対策)
+    try { preloadAll(); } catch (_) {}
 
     window.BGM = {
         play,

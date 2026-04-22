@@ -53,32 +53,37 @@
     to   { opacity: 1; }
 }
 
-/* --- デフォルト (mode-tutorial): 2倍サイズでほぼ画面下フラッシュ --- */
+/* --- デフォルト (mode-tutorial) ---
+   girl*.png の実寸は 960x540 (landscape 16:9)。以前はコンテナを 1120x1440
+   (portrait) にして object-fit:contain に任せていたが、そうすると画像は
+   幅フィットで 1120x630 に潰され、さらに object-position:bottom でコンテナ
+   下辺寄せ → 実描画位置が y=1370〜1940 の細い帯になっていた。その上にある
+   空白 (y=560〜1370) に吹き出しを置くので、見た目「キャラの遥か上空で
+   喋ってる」状態になっていた (これが位置調整が効かなかった根本原因)。
+   修正: コンテナを PNG と同じ 16:9 にして無駄な空白を排除し、座標を素直に。 */
 .nav-figure {
     position: absolute;
     left: 50%;
-    bottom: -80px;
-    width: 1120px;   /* 560 * 2 */
-    height: 1440px;  /* 720 * 2 */
+    bottom: -20px;              /* 下辺をほんの少しだけ画面外に (隙間埋め) */
+    width: 1120px;
+    height: 630px;              /* 1120 × (540/960) = 630 (PNG と同アスペクト) */
     margin-left: -560px;
     pointer-events: none;
     transform-origin: 50% 100%;
 }
 
-/* --- mode-result: キャラを小さめ (1.5x) にして画面下部に配置。
-   上部はリザルトのボタン/スコア領域、下部にキャラ+吹き出しが並ぶ構成。
-   以前は bottom:-800 で figure を画面外に押し出していたため、
-   object-position:bottom で下寄せされたキャラ本体がごっそり画面外に
-   消える不具合があった。スケールを落として bottom 付近に正しく置く。 */
+/* --- mode-result: キャラを小さめ (tutorial の 0.75x) にして画面下部に配置 ---
+   tutorial と同じく PNG と同アスペクト 16:9 にすることで object-fit 起因の
+   空白を排除。bubble はキャラの上辺 (y≒1467) の少し上に来るよう固定。 */
 .nav-overlay.mode-result .nav-figure {
-    width: 840px;         /* 1.5x 相当 (tutorial は 2x) */
-    height: 1080px;
+    width: 840px;                 /* tutorial 1120 × 0.75 */
+    height: 473px;                /* 840 × (540/960) */
     margin-left: -420px;
-    bottom: -40px;        /* 下辺をほんの少しだけはみ出す */
+    bottom: -20px;
 }
 .nav-overlay.mode-result .nav-bubble {
     top: auto;
-    bottom: 700px;        /* キャラ頭上 (y ≈ 1020-1220 辺り) */
+    bottom: 510px;                /* figure 上辺 y=1467 の ~60px 上 */
     min-height: 180px;
     padding: 32px 44px 56px;
     font-size: 38px;
@@ -101,17 +106,16 @@
     100% { transform: translateY(0)    scale(1);    }
 }
 
-/* 吹き出し (共通 = デフォルト = tutorial): キャラの頭の真上に配置。
-   girl.png は PNG 上部に透過余白が多く、object-position:bottom で下寄せ
-   しているため、実際の頭頂は PNG コンテナ上辺 (y≒560) ではなく y≒1060
-   付近。コンテナ上辺基準で配置すると吹き出しがキャラからかけ離れるので、
-   頭頂から 40px 上 (y≒1020) に吹き出し底辺が来るよう bottom:900 とする。 */
+/* 吹き出し (共通 = デフォルト = tutorial): キャラコンテナの真上に配置。
+   figure は y=1310〜1940 に描画される (bottom:-20 + height:630)。
+   吹き出し底辺がその上辺 (y=1310) から 50px 上にくるよう bottom:660px。
+   (= 1920 - 1310 + 50 = 660) */
 .nav-bubble {
     position: absolute;
     left: 140px;
     right: 140px;
     top: auto;
-    bottom: 900px;
+    bottom: 660px;
     min-height: 140px;
     padding: 28px 40px 52px;
     background: var(--box-bg, #151519);

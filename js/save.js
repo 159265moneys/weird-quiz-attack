@@ -26,7 +26,7 @@
             },
             settings: {
                 seVolume: 0.8,    // SE マスター音量 (0〜1)
-                bgmVolume: 0.35,  // BGM 音量 (0〜1)
+                bgmVolume: 0.2,   // BGM 音量 (0〜1) — 空気感担当で控えめ
                 muted: false,     // 全体ミュート (SE+BGM)
                 vibration: true,
             },
@@ -52,6 +52,17 @@
                     return this.data;
                 }
                 this.data = parsed;
+                // 設定ブロックの後方互換 & 旧デフォルト値の移行
+                //   旧 bgmVolume デフォルト 0.35 は実機でうるさいので、
+                //   未調整のまま 0.35 が残っているセーブは 0.2 に寄せる。
+                //   (ユーザーが自分で 0.35 に設定してた場合も巻き込まれるが、
+                //    新デフォルトが正解なので許容)
+                if (!this.data.settings) this.data.settings = {};
+                const s = this.data.settings;
+                if (s.seVolume == null) s.seVolume = 0.8;
+                if (s.bgmVolume == null || s.bgmVolume === 0.35) s.bgmVolume = 0.2;
+                if (s.muted == null) s.muted = false;
+                this.persist();
                 return this.data;
             } catch (e) {
                 console.error('load failed, resetting', e);
