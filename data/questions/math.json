@@ -14,7 +14,7 @@
     "id": "M02",
     "genre": "算数",
     "subgenre": "かけ算",
-    "difficulty": 1,
+    "difficulty": 2,
     "mode": "input",
     "question": "9 × 6 = ?",
     "answer_text": "54",
@@ -25,7 +25,7 @@
     "id": "M03",
     "genre": "算数",
     "subgenre": "ひき算",
-    "difficulty": 1,
+    "difficulty": 2,
     "mode": "input",
     "question": "100 − 37 = ?",
     "answer_text": "63",
@@ -36,7 +36,7 @@
     "id": "M04",
     "genre": "算数",
     "subgenre": "四則混合",
-    "difficulty": 1,
+    "difficulty": 3,
     "mode": "input",
     "question": "3 × 4 + 2 = ?",
     "answer_text": "14",
@@ -69,7 +69,7 @@
     "id": "M07",
     "genre": "算数",
     "subgenre": "分数",
-    "difficulty": 2,
+    "difficulty": 6,
     "mode": "choice",
     "question": "1/2 + 1/3 = ?",
     "choices": [
@@ -85,7 +85,7 @@
     "id": "M08",
     "genre": "算数",
     "subgenre": "小数",
-    "difficulty": 2,
+    "difficulty": 4,
     "mode": "choice",
     "question": "0.25 × 8 = ?",
     "choices": [
@@ -101,7 +101,7 @@
     "id": "M09",
     "genre": "算数",
     "subgenre": "図形",
-    "difficulty": 2,
+    "difficulty": 5,
     "mode": "input",
     "question": "三角形の内角の和は何度？",
     "answer_text": "180",
@@ -112,7 +112,7 @@
     "id": "M10",
     "genre": "算数",
     "subgenre": "図形",
-    "difficulty": 2,
+    "difficulty": 6,
     "mode": "choice",
     "question": "半径3cmの円の面積は何cm²？(円周率=3.14)",
     "choices": [
@@ -128,7 +128,7 @@
     "id": "M11",
     "genre": "算数",
     "subgenre": "速さ",
-    "difficulty": 2,
+    "difficulty": 6,
     "mode": "choice",
     "question": "時速60kmで2時間30分走ると何km進む？",
     "choices": [
@@ -144,7 +144,7 @@
     "id": "M12",
     "genre": "算数",
     "subgenre": "数の性質",
-    "difficulty": 2,
+    "difficulty": 4,
     "mode": "choice",
     "question": "次のうち素数はどれ？",
     "choices": [
@@ -160,7 +160,7 @@
     "id": "M13",
     "genre": "算数",
     "subgenre": "図形",
-    "difficulty": 2,
+    "difficulty": 4,
     "mode": "choice",
     "question": "平行四辺形の面積は『底辺 × ○○』。○○は？",
     "choices": [
@@ -176,7 +176,7 @@
     "id": "M14",
     "genre": "算数",
     "subgenre": "単位",
-    "difficulty": 2,
+    "difficulty": 3,
     "mode": "input",
     "question": "1時間は何秒？",
     "answer_text": "3600",
@@ -187,7 +187,7 @@
     "id": "M15",
     "genre": "算数",
     "subgenre": "数列",
-    "difficulty": 3,
+    "difficulty": 9,
     "mode": "input",
     "question": "1+2+3+…+100 = ?",
     "answer_text": "5050",
@@ -198,7 +198,7 @@
     "id": "M16",
     "genre": "算数",
     "subgenre": "図形",
-    "difficulty": 3,
+    "difficulty": 5,
     "mode": "choice",
     "question": "直径10cmの円の円周は何cm？(円周率=3.14)",
     "choices": [
@@ -214,7 +214,7 @@
     "id": "M17",
     "genre": "算数",
     "subgenre": "鶴亀算",
-    "difficulty": 3,
+    "difficulty": 8,
     "mode": "input",
     "question": "鶴と亀が合わせて10匹、足の合計が28本。亀は何匹？",
     "answer_text": "4",
@@ -225,7 +225,7 @@
     "id": "M18",
     "genre": "算数",
     "subgenre": "割合",
-    "difficulty": 3,
+    "difficulty": 7,
     "mode": "choice",
     "question": "濃度3%の食塩水200gに含まれる食塩は何g？",
     "choices": [
@@ -241,7 +241,7 @@
     "id": "M19",
     "genre": "算数",
     "subgenre": "小数と分数",
-    "difficulty": 3,
+    "difficulty": 7,
     "mode": "choice",
     "question": "0.125 は何分の1？",
     "choices": [
@@ -257,7 +257,7 @@
     "id": "M20",
     "genre": "算数",
     "subgenre": "比",
-    "difficulty": 3,
+    "difficulty": 7,
     "mode": "choice",
     "question": "男子と女子の人数の比が 3:5 で合計40人。男子は何人？",
     "choices": [
@@ -284,7 +284,7 @@
     "id": "M22",
     "genre": "算数",
     "subgenre": "かけ算",
-    "difficulty": 1,
+    "difficulty": 2,
     "mode": "input",
     "question": "8 × 7 = ?",
     "answer_text": "56",
@@ -295,7 +295,7 @@
     "id": "M23",
     "genre": "算数",
     "subgenre": "わり算",
-    "difficulty": 1,
+    "difficulty": 3,
     "mode": "input",
     "question": "72 ÷ 8 = ?",
     "answer_text": "9",
@@ -306,7 +306,7 @@
     "id": "M24",
     "genre": "算数",
     "subgenre": "ひき算",
-    "difficulty": 1,
+    "difficulty": 2,
     "mode": "choice",
     "question": "50 − 23 = ?",
     "choices": [
@@ -322,7 +322,7 @@
     "id": "M25",
     "genre": "算数",
     "subgenre": "かけ算",
-    "difficulty": 1,
+    "difficulty": 3,
     "mode": "choice",
     "question": "2 × 3 × 4 = ?",
     "choices": [
@@ -338,7 +338,7 @@
     "id": "M26",
     "genre": "算数",
     "subgenre": "数の性質",
-    "difficulty": 1,
+    "difficulty": 2,
     "mode": "choice",
     "question": "偶数はどれ？",
     "choices": [
@@ -354,7 +354,7 @@
     "id": "M27",
     "genre": "算数",
     "subgenre": "分数",
-    "difficulty": 2,
+    "difficulty": 3,
     "mode": "choice",
     "question": "3/4 + 1/4 = ?",
     "choices": [
@@ -370,7 +370,7 @@
     "id": "M28",
     "genre": "算数",
     "subgenre": "図形",
-    "difficulty": 2,
+    "difficulty": 3,
     "mode": "input",
     "question": "たて5cm、よこ8cmの長方形の面積は何cm²？",
     "answer_text": "40",
@@ -381,7 +381,7 @@
     "id": "M29",
     "genre": "算数",
     "subgenre": "図形",
-    "difficulty": 2,
+    "difficulty": 4,
     "mode": "choice",
     "question": "3辺の長さが全て等しい三角形を何という？",
     "choices": [
@@ -397,7 +397,7 @@
     "id": "M30",
     "genre": "算数",
     "subgenre": "数の性質",
-    "difficulty": 2,
+    "difficulty": 6,
     "mode": "input",
     "question": "12と18の最大公約数は？",
     "answer_text": "6",
@@ -419,7 +419,7 @@
     "id": "M32",
     "genre": "算数",
     "subgenre": "小数",
-    "difficulty": 2,
+    "difficulty": 3,
     "mode": "input",
     "question": "2.5 × 4 = ?",
     "answer_text": "10",
@@ -430,7 +430,7 @@
     "id": "M33",
     "genre": "算数",
     "subgenre": "図形",
-    "difficulty": 2,
+    "difficulty": 3,
     "mode": "input",
     "question": "立方体の面の数は？",
     "answer_text": "6",
@@ -441,7 +441,7 @@
     "id": "M34",
     "genre": "算数",
     "subgenre": "平均",
-    "difficulty": 2,
+    "difficulty": 5,
     "mode": "input",
     "question": "80, 70, 90, 60 の平均は？",
     "answer_text": "75",
@@ -452,7 +452,7 @@
     "id": "M35",
     "genre": "算数",
     "subgenre": "図形",
-    "difficulty": 3,
+    "difficulty": 8,
     "mode": "choice",
     "question": "正六角形の内角の和は何度？",
     "choices": [
@@ -468,7 +468,7 @@
     "id": "M36",
     "genre": "算数",
     "subgenre": "割合",
-    "difficulty": 3,
+    "difficulty": 8,
     "mode": "choice",
     "question": "12%引きで8800円になった品物の元の値段は？",
     "choices": [
@@ -484,7 +484,7 @@
     "id": "M37",
     "genre": "算数",
     "subgenre": "図形",
-    "difficulty": 3,
+    "difficulty": 8,
     "mode": "choice",
     "question": "辺の長さが3,4,5の三角形はどんな三角形？",
     "choices": [
@@ -500,7 +500,7 @@
     "id": "M38",
     "genre": "算数",
     "subgenre": "速さ",
-    "difficulty": 3,
+    "difficulty": 4,
     "mode": "choice",
     "question": "距離 = 速さ × ○○。○○は？",
     "choices": [
@@ -516,7 +516,7 @@
     "id": "M39",
     "genre": "算数",
     "subgenre": "かけ算",
-    "difficulty": 3,
+    "difficulty": 7,
     "mode": "choice",
     "question": "25 × 24 = ?",
     "choices": [
@@ -532,11 +532,1199 @@
     "id": "M40",
     "genre": "算数",
     "subgenre": "数の性質",
-    "difficulty": 3,
+    "difficulty": 6,
     "mode": "input",
     "question": "12の約数は何個ある？",
     "answer_text": "6",
     "answer_variants": [],
     "explanation": "1,2,3,4,6,12の6個。"
+  },
+  {
+    "id": "M041",
+    "genre": "算数",
+    "subgenre": "かけ算",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "4 × 7 = ?",
+    "answer_text": "28",
+    "answer_variants": [],
+    "explanation": "4×7=28。"
+  },
+  {
+    "id": "M042",
+    "genre": "算数",
+    "subgenre": "わり算",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "63 ÷ 7 = ?",
+    "answer_text": "9",
+    "answer_variants": [],
+    "explanation": "63÷7=9。"
+  },
+  {
+    "id": "M043",
+    "genre": "算数",
+    "subgenre": "たし算",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "30 + 45 = ?",
+    "answer_text": "75",
+    "answer_variants": [],
+    "explanation": "30+45=75。"
+  },
+  {
+    "id": "M044",
+    "genre": "算数",
+    "subgenre": "ひき算",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "80 − 24 = ?",
+    "answer_text": "56",
+    "answer_variants": [],
+    "explanation": "80-24=56。"
+  },
+  {
+    "id": "M045",
+    "genre": "算数",
+    "subgenre": "かけ算",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "5 × 9 = ?",
+    "answer_text": "45",
+    "answer_variants": [],
+    "explanation": "5×9=45。"
+  },
+  {
+    "id": "M046",
+    "genre": "算数",
+    "subgenre": "わり算",
+    "difficulty": 1,
+    "mode": "input",
+    "question": "48 ÷ 6 = ?",
+    "answer_text": "8",
+    "answer_variants": [],
+    "explanation": "48÷6=8。"
+  },
+  {
+    "id": "M047",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "三角形の角は何個？",
+    "choices": [
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "answer": 1,
+    "explanation": "三角形は3つの角を持つ。"
+  },
+  {
+    "id": "M048",
+    "genre": "算数",
+    "subgenre": "かけ算",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "0 × 999 = ?",
+    "choices": [
+      "0",
+      "1",
+      "999",
+      "1000"
+    ],
+    "answer": 0,
+    "explanation": "0×何でも0。"
+  },
+  {
+    "id": "M049",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "次のうち3の倍数はどれ？",
+    "choices": [
+      "7",
+      "10",
+      "12",
+      "14"
+    ],
+    "answer": 2,
+    "explanation": "12=3×4で3の倍数。"
+  },
+  {
+    "id": "M050",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "いちばん大きい一桁の数は？",
+    "choices": [
+      "7",
+      "8",
+      "9",
+      "10"
+    ],
+    "answer": 2,
+    "explanation": "一桁は0〜9。最大は9。"
+  },
+  {
+    "id": "M051",
+    "genre": "算数",
+    "subgenre": "たし算",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "1 + 2 + 3 + 4 + 5 = ?",
+    "choices": [
+      "13",
+      "14",
+      "15",
+      "16"
+    ],
+    "answer": 2,
+    "explanation": "1+2+3+4+5=15。"
+  },
+  {
+    "id": "M052",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 1,
+    "mode": "choice",
+    "question": "正方形の辺は何本？",
+    "choices": [
+      "2",
+      "3",
+      "4",
+      "6"
+    ],
+    "answer": 2,
+    "explanation": "正方形は4本の等しい辺を持つ。"
+  },
+  {
+    "id": "M053",
+    "genre": "算数",
+    "subgenre": "たし算",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "123 + 456 = ?",
+    "answer_text": "579",
+    "answer_variants": [],
+    "explanation": "123+456=579。"
+  },
+  {
+    "id": "M054",
+    "genre": "算数",
+    "subgenre": "ひき算",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "700 − 263 = ?",
+    "answer_text": "437",
+    "answer_variants": [],
+    "explanation": "700-263=437。"
+  },
+  {
+    "id": "M055",
+    "genre": "算数",
+    "subgenre": "かけ算",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "8 × 9 = ?",
+    "answer_text": "72",
+    "answer_variants": [],
+    "explanation": "8×9=72。"
+  },
+  {
+    "id": "M056",
+    "genre": "算数",
+    "subgenre": "わり算",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "81 ÷ 9 = ?",
+    "answer_text": "9",
+    "answer_variants": [],
+    "explanation": "81÷9=9。"
+  },
+  {
+    "id": "M057",
+    "genre": "算数",
+    "subgenre": "単位",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "1km は何m？",
+    "answer_text": "1000",
+    "answer_variants": [],
+    "explanation": "1km=1000m。"
+  },
+  {
+    "id": "M058",
+    "genre": "算数",
+    "subgenre": "単位",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "1日は何時間？",
+    "answer_text": "24",
+    "answer_variants": [],
+    "explanation": "1日=24時間。"
+  },
+  {
+    "id": "M059",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "たて4cm、よこ9cmの長方形の面積は何cm²？",
+    "answer_text": "36",
+    "answer_variants": [],
+    "explanation": "4×9=36。"
+  },
+  {
+    "id": "M060",
+    "genre": "算数",
+    "subgenre": "かけ算",
+    "difficulty": 2,
+    "mode": "input",
+    "question": "50 × 8 = ?",
+    "answer_text": "400",
+    "answer_variants": [],
+    "explanation": "50×8=400。"
+  },
+  {
+    "id": "M061",
+    "genre": "算数",
+    "subgenre": "単位",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "100cm は何m？",
+    "choices": [
+      "0.01",
+      "0.1",
+      "1",
+      "10"
+    ],
+    "answer": 2,
+    "explanation": "100cm=1m。"
+  },
+  {
+    "id": "M062",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "正三角形の1つの角は何度？",
+    "choices": [
+      "30°",
+      "45°",
+      "60°",
+      "90°"
+    ],
+    "answer": 2,
+    "explanation": "正三角形は3つの角が等しく180÷3=60°。"
+  },
+  {
+    "id": "M063",
+    "genre": "算数",
+    "subgenre": "かけ算",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "9 × 9 = ?",
+    "choices": [
+      "72",
+      "81",
+      "90",
+      "99"
+    ],
+    "answer": 1,
+    "explanation": "9×9=81。"
+  },
+  {
+    "id": "M064",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "四角形の内角の和は何度？",
+    "choices": [
+      "270°",
+      "360°",
+      "450°",
+      "540°"
+    ],
+    "answer": 1,
+    "explanation": "四角形=(4-2)×180=360°。"
+  },
+  {
+    "id": "M065",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "次のうち奇数はどれ？",
+    "choices": [
+      "4",
+      "6",
+      "9",
+      "10"
+    ],
+    "answer": 2,
+    "explanation": "奇数は2で割り切れない整数。9は奇数。"
+  },
+  {
+    "id": "M066",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "次のうち4の倍数はどれ？",
+    "choices": [
+      "9",
+      "14",
+      "20",
+      "22"
+    ],
+    "answer": 2,
+    "explanation": "20=4×5で4の倍数。"
+  },
+  {
+    "id": "M067",
+    "genre": "算数",
+    "subgenre": "単位",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "1週間は何日？",
+    "choices": [
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "answer": 2,
+    "explanation": "1週間=7日。"
+  },
+  {
+    "id": "M068",
+    "genre": "算数",
+    "subgenre": "単位",
+    "difficulty": 2,
+    "mode": "choice",
+    "question": "1年は何ヶ月？",
+    "choices": [
+      "10",
+      "11",
+      "12",
+      "13"
+    ],
+    "answer": 2,
+    "explanation": "1年=12ヶ月。"
+  },
+  {
+    "id": "M069",
+    "genre": "算数",
+    "subgenre": "四則混合",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "(4 + 6) × 5 = ?",
+    "answer_text": "50",
+    "answer_variants": [],
+    "explanation": "かっこ内を先に。10×5=50。"
+  },
+  {
+    "id": "M070",
+    "genre": "算数",
+    "subgenre": "四則混合",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "36 ÷ (3 + 3) = ?",
+    "answer_text": "6",
+    "answer_variants": [],
+    "explanation": "かっこ内を先に。36÷6=6。"
+  },
+  {
+    "id": "M071",
+    "genre": "算数",
+    "subgenre": "単位",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "1L は何mL？",
+    "answer_text": "1000",
+    "answer_variants": [],
+    "explanation": "1L=1000mL。"
+  },
+  {
+    "id": "M072",
+    "genre": "算数",
+    "subgenre": "単位",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "1kg は何g？",
+    "answer_text": "1000",
+    "answer_variants": [],
+    "explanation": "1kg=1000g。"
+  },
+  {
+    "id": "M073",
+    "genre": "算数",
+    "subgenre": "単位",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "1m は何cm？",
+    "answer_text": "100",
+    "answer_variants": [],
+    "explanation": "1m=100cm。"
+  },
+  {
+    "id": "M074",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "たて3cm、よこ5cmの長方形の周の長さは何cm？",
+    "answer_text": "16",
+    "answer_variants": [],
+    "explanation": "(3+5)×2=16cm。"
+  },
+  {
+    "id": "M075",
+    "genre": "算数",
+    "subgenre": "かけ算",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "2 × 2 × 2 = ?",
+    "answer_text": "8",
+    "answer_variants": [],
+    "explanation": "2の3乗=8。"
+  },
+  {
+    "id": "M076",
+    "genre": "算数",
+    "subgenre": "四則混合",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "1時間30分は何分？",
+    "answer_text": "90",
+    "answer_variants": [],
+    "explanation": "60+30=90分。"
+  },
+  {
+    "id": "M077",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "面積が36cm²の正方形の1辺は何cm？",
+    "answer_text": "6",
+    "answer_variants": [],
+    "explanation": "6×6=36。"
+  },
+  {
+    "id": "M078",
+    "genre": "算数",
+    "subgenre": "たし算",
+    "difficulty": 3,
+    "mode": "input",
+    "question": "1.5 + 2.5 = ?",
+    "answer_text": "4",
+    "answer_variants": [],
+    "explanation": "1.5+2.5=4。"
+  },
+  {
+    "id": "M079",
+    "genre": "算数",
+    "subgenre": "分数",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "3/6 を約分すると？",
+    "choices": [
+      "1/2",
+      "1/3",
+      "2/3",
+      "3/4"
+    ],
+    "answer": 0,
+    "explanation": "3/6=1/2。"
+  },
+  {
+    "id": "M080",
+    "genre": "算数",
+    "subgenre": "小数と分数",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "0.5 と等しい分数は？",
+    "choices": [
+      "1/3",
+      "1/4",
+      "1/2",
+      "2/3"
+    ],
+    "answer": 2,
+    "explanation": "0.5=5/10=1/2。"
+  },
+  {
+    "id": "M081",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "次のうち4の倍数でないのはどれ？",
+    "choices": [
+      "12",
+      "18",
+      "20",
+      "28"
+    ],
+    "answer": 1,
+    "explanation": "18=4×4+2なので4の倍数でない。"
+  },
+  {
+    "id": "M082",
+    "genre": "算数",
+    "subgenre": "わり算",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "10 ÷ 4 の商はいくつ？",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "answer": 1,
+    "explanation": "10÷4=2余り2。商は2。"
+  },
+  {
+    "id": "M083",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "十の位が3の2桁の整数は何個？",
+    "choices": [
+      "8個",
+      "9個",
+      "10個",
+      "11個"
+    ],
+    "answer": 2,
+    "explanation": "30〜39の10個。"
+  },
+  {
+    "id": "M084",
+    "genre": "算数",
+    "subgenre": "単位",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "100mL は何L？",
+    "choices": [
+      "0.001",
+      "0.01",
+      "0.1",
+      "1"
+    ],
+    "answer": 2,
+    "explanation": "100mL=0.1L。"
+  },
+  {
+    "id": "M085",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "次のうち2の倍数かつ3の倍数はどれ？",
+    "choices": [
+      "4",
+      "6",
+      "8",
+      "9"
+    ],
+    "answer": 1,
+    "explanation": "6は2の倍数(6=2×3)かつ3の倍数(6=3×2)。"
+  },
+  {
+    "id": "M086",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "円の直径と半径の関係は？",
+    "choices": [
+      "半径=直径×2",
+      "半径=直径÷2",
+      "半径=直径+2",
+      "直径=半径÷2"
+    ],
+    "answer": 1,
+    "explanation": "直径=半径×2なので半径=直径÷2。"
+  },
+  {
+    "id": "M087",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "長さ12cmのひもを4等分すると1本は何cm？",
+    "choices": [
+      "2cm",
+      "3cm",
+      "4cm",
+      "5cm"
+    ],
+    "answer": 1,
+    "explanation": "12÷4=3cm。"
+  },
+  {
+    "id": "M088",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 3,
+    "mode": "choice",
+    "question": "次のうち素数でないのはどれ？",
+    "choices": [
+      "2",
+      "7",
+      "11",
+      "9"
+    ],
+    "answer": 3,
+    "explanation": "9=3×3なので素数でない。"
+  },
+  {
+    "id": "M089",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "底辺6cm、高さ8cmの三角形の面積は何cm²？",
+    "answer_text": "24",
+    "answer_variants": [],
+    "explanation": "三角形の面積=底辺×高さ÷2=6×8÷2=24。"
+  },
+  {
+    "id": "M090",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "12 と 18 の最小公倍数は？",
+    "answer_text": "36",
+    "answer_variants": [],
+    "explanation": "12=2²×3, 18=2×3²。最小公倍数=2²×3²=36。"
+  },
+  {
+    "id": "M091",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "120 の 25% は？",
+    "answer_text": "30",
+    "answer_variants": [],
+    "explanation": "120×0.25=30。"
+  },
+  {
+    "id": "M092",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "底辺10cm、高さ4cmの三角形の面積は何cm²？",
+    "answer_text": "20",
+    "answer_variants": [],
+    "explanation": "10×4÷2=20。"
+  },
+  {
+    "id": "M093",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "3 と 5 の最小公倍数は？",
+    "answer_text": "15",
+    "answer_variants": [],
+    "explanation": "3と5の最小公倍数は15。"
+  },
+  {
+    "id": "M094",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "6 と 9 の最大公約数は？",
+    "answer_text": "3",
+    "answer_variants": [],
+    "explanation": "6=2×3, 9=3²。最大公約数=3。"
+  },
+  {
+    "id": "M095",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "時速3km で4時間歩くと何km進む？",
+    "answer_text": "12",
+    "answer_variants": [],
+    "explanation": "3×4=12km。"
+  },
+  {
+    "id": "M096",
+    "genre": "算数",
+    "subgenre": "平均",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "3、5、7、9 の平均は？",
+    "answer_text": "6",
+    "answer_variants": [],
+    "explanation": "(3+5+7+9)÷4=24÷4=6。"
+  },
+  {
+    "id": "M097",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "1辺7cmの正方形の面積は何cm²？",
+    "answer_text": "49",
+    "answer_variants": [],
+    "explanation": "7×7=49。"
+  },
+  {
+    "id": "M098",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 4,
+    "mode": "input",
+    "question": "500 の 20% は？",
+    "answer_text": "100",
+    "answer_variants": [],
+    "explanation": "500×0.20=100。"
+  },
+  {
+    "id": "M099",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "二等辺三角形の説明として正しいのは？",
+    "choices": [
+      "2辺の長さが等しい",
+      "3辺の長さが等しい",
+      "必ず直角がある",
+      "必ず鈍角がある"
+    ],
+    "answer": 0,
+    "explanation": "二等辺三角形=2辺が等しい三角形。"
+  },
+  {
+    "id": "M100",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "次のうち素数でないのはどれ？",
+    "choices": [
+      "2",
+      "7",
+      "11",
+      "15"
+    ],
+    "answer": 3,
+    "explanation": "15=3×5なので素数でない。"
+  },
+  {
+    "id": "M101",
+    "genre": "算数",
+    "subgenre": "分数",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "1/3 + 1/3 = ?",
+    "choices": [
+      "2/3",
+      "2/6",
+      "1/3",
+      "1/6"
+    ],
+    "answer": 0,
+    "explanation": "分母が同じなので分子だけたす。2/3。"
+  },
+  {
+    "id": "M102",
+    "genre": "算数",
+    "subgenre": "小数",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "0.7 × 10 = ?",
+    "choices": [
+      "0.07",
+      "0.7",
+      "7",
+      "70"
+    ],
+    "answer": 2,
+    "explanation": "小数点が1つ右に移動して7。"
+  },
+  {
+    "id": "M103",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "時速6kmで30分歩くと何km？",
+    "choices": [
+      "2km",
+      "3km",
+      "4km",
+      "6km"
+    ],
+    "answer": 1,
+    "explanation": "30分=0.5時間。6×0.5=3km。"
+  },
+  {
+    "id": "M104",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "平行四辺形の面積の求め方は？",
+    "choices": [
+      "底辺÷高さ",
+      "底辺×高さ",
+      "底辺+高さ×2",
+      "底辺×高さ÷2"
+    ],
+    "answer": 1,
+    "explanation": "平行四辺形の面積=底辺×高さ。"
+  },
+  {
+    "id": "M105",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "10の倍数でないのはどれ？",
+    "choices": [
+      "10",
+      "20",
+      "35",
+      "100"
+    ],
+    "answer": 2,
+    "explanation": "35=10×3+5なので10の倍数でない。"
+  },
+  {
+    "id": "M106",
+    "genre": "算数",
+    "subgenre": "分数",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "6/8 を約分すると？",
+    "choices": [
+      "1/2",
+      "2/3",
+      "3/4",
+      "4/6"
+    ],
+    "answer": 2,
+    "explanation": "6÷2=3, 8÷2=4。6/8=3/4。"
+  },
+  {
+    "id": "M107",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "直角三角形の直角は何個？",
+    "choices": [
+      "1個",
+      "2個",
+      "3個",
+      "0個"
+    ],
+    "answer": 0,
+    "explanation": "直角三角形には直角が1個ある。"
+  },
+  {
+    "id": "M108",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 4,
+    "mode": "choice",
+    "question": "次のうち素数はどれ？",
+    "choices": [
+      "15",
+      "17",
+      "21",
+      "25"
+    ],
+    "answer": 1,
+    "explanation": "17は1と17以外で割り切れない素数。"
+  },
+  {
+    "id": "M109",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "4 と 6 の最小公倍数は？",
+    "answer_text": "12",
+    "answer_variants": [],
+    "explanation": "4=2², 6=2×3。最小公倍数=2²×3=12。"
+  },
+  {
+    "id": "M110",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "8 と 12 の最大公約数は？",
+    "answer_text": "4",
+    "answer_variants": [],
+    "explanation": "8=2³, 12=2²×3。最大公約数=2²=4。"
+  },
+  {
+    "id": "M111",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "底辺5cm、高さ6cmの三角形の面積は何cm²？",
+    "answer_text": "15",
+    "answer_variants": [],
+    "explanation": "5×6÷2=15。"
+  },
+  {
+    "id": "M112",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "150 の 40% は？",
+    "answer_text": "60",
+    "answer_variants": [],
+    "explanation": "150×0.4=60。"
+  },
+  {
+    "id": "M113",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "時速60km で45分走ると何km進む？",
+    "answer_text": "45",
+    "answer_variants": [],
+    "explanation": "45分=3/4時間。60×3/4=45km。"
+  },
+  {
+    "id": "M114",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "正六角形の1つの内角は何度？",
+    "answer_text": "120",
+    "answer_variants": [],
+    "explanation": "内角の和=(6-2)×180=720°。1つ=720÷6=120°。"
+  },
+  {
+    "id": "M115",
+    "genre": "算数",
+    "subgenre": "数の性質",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "2、3、5 の最小公倍数は？",
+    "answer_text": "30",
+    "answer_variants": [],
+    "explanation": "2×3×5=30（互いに素な3数）。"
+  },
+  {
+    "id": "M116",
+    "genre": "算数",
+    "subgenre": "比",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "兄と弟の所持金の比が 3:2 で合計2500円。兄の金額は？",
+    "answer_text": "1500",
+    "answer_variants": [],
+    "explanation": "2500×(3/5)=1500円。"
+  },
+  {
+    "id": "M117",
+    "genre": "算数",
+    "subgenre": "比",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "りんご3個が240円のとき、5個では何円？",
+    "answer_text": "400",
+    "answer_variants": [],
+    "explanation": "1個=80円。5×80=400円。"
+  },
+  {
+    "id": "M118",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 5,
+    "mode": "input",
+    "question": "人口1000人の村が5%増えると何人になる？",
+    "answer_text": "1050",
+    "answer_variants": [],
+    "explanation": "1000×1.05=1050人。"
+  },
+  {
+    "id": "M119",
+    "genre": "算数",
+    "subgenre": "分数",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "2/3 ÷ 4 = ?",
+    "choices": [
+      "1/6",
+      "1/3",
+      "2/3",
+      "8/3"
+    ],
+    "answer": 0,
+    "explanation": "2/3÷4=2/3×1/4=2/12=1/6。"
+  },
+  {
+    "id": "M120",
+    "genre": "算数",
+    "subgenre": "分数",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "1/2 × 1/2 = ?",
+    "choices": [
+      "1/2",
+      "1/4",
+      "1/8",
+      "2/4"
+    ],
+    "answer": 1,
+    "explanation": "1/2×1/2=1/4。"
+  },
+  {
+    "id": "M121",
+    "genre": "算数",
+    "subgenre": "分数",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "5/6 と等しい分数はどれ？",
+    "choices": [
+      "5/12",
+      "10/12",
+      "5/3",
+      "10/6"
+    ],
+    "answer": 1,
+    "explanation": "5/6=10/12（分母分子を×2）。"
+  },
+  {
+    "id": "M122",
+    "genre": "算数",
+    "subgenre": "小数",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "0.3 × 0.3 = ?",
+    "choices": [
+      "0.09",
+      "0.3",
+      "0.9",
+      "3"
+    ],
+    "answer": 0,
+    "explanation": "0.3×0.3=0.09。"
+  },
+  {
+    "id": "M123",
+    "genre": "算数",
+    "subgenre": "比",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "2:3 = 4:□ のとき□は？",
+    "choices": [
+      "3",
+      "5",
+      "6",
+      "9"
+    ],
+    "answer": 2,
+    "explanation": "2×□=3×4=12。□=6。"
+  },
+  {
+    "id": "M124",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "たて4m、よこ6mの長方形の面積は？",
+    "choices": [
+      "10m²",
+      "20m²",
+      "24m²",
+      "48m²"
+    ],
+    "answer": 2,
+    "explanation": "4×6=24m²。"
+  },
+  {
+    "id": "M125",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "100個の25%は？",
+    "choices": [
+      "20個",
+      "25個",
+      "30個",
+      "40個"
+    ],
+    "answer": 1,
+    "explanation": "100×0.25=25個。"
+  },
+  {
+    "id": "M126",
+    "genre": "算数",
+    "subgenre": "速さ",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "時速60km は分速何km？",
+    "choices": [
+      "0.5km",
+      "1km",
+      "5km",
+      "6km"
+    ],
+    "answer": 1,
+    "explanation": "60÷60=1km/分。"
+  },
+  {
+    "id": "M127",
+    "genre": "算数",
+    "subgenre": "図形",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "正五角形の内角の和は何度？",
+    "choices": [
+      "360°",
+      "450°",
+      "540°",
+      "720°"
+    ],
+    "answer": 2,
+    "explanation": "(5-2)×180=540°。"
+  },
+  {
+    "id": "M128",
+    "genre": "算数",
+    "subgenre": "割合",
+    "difficulty": 5,
+    "mode": "choice",
+    "question": "定価の20%引きで800円。元の定価は？",
+    "choices": [
+      "800円",
+      "900円",
+      "1000円",
+      "1200円"
+    ],
+    "answer": 2,
+    "explanation": "定価×0.8=800。定価=1000円。"
   }
 ]

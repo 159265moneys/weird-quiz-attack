@@ -49,7 +49,7 @@
     "id": "J05",
     "genre": "国語",
     "subgenre": "五十音",
-    "difficulty": 1,
+    "difficulty": 2,
     "mode": "choice",
     "question": "ひらがな「さ」の次の文字は？",
     "choices": [
@@ -76,7 +76,7 @@
     "id": "J07",
     "genre": "国語",
     "subgenre": "漢字の読み",
-    "difficulty": 2,
+    "difficulty": 3,
     "mode": "input",
     "question": "「発表」の読みは？",
     "answer_text": "はっぴょう",
@@ -87,7 +87,7 @@
     "id": "J08",
     "genre": "国語",
     "subgenre": "ことわざ",
-    "difficulty": 2,
+    "difficulty": 4,
     "mode": "choice",
     "question": "「猿も木から○○」。○○は？",
     "choices": [
@@ -103,7 +103,7 @@
     "id": "J09",
     "genre": "国語",
     "subgenre": "ことわざ",
-    "difficulty": 2,
+    "difficulty": 5,
     "mode": "choice",
     "question": "「急がば○○」。○○は？",
     "choices": [
@@ -119,7 +119,7 @@
     "id": "J10",
     "genre": "国語",
     "subgenre": "四字熟語",
-    "difficulty": 2,
+    "difficulty": 6,
     "mode": "choice",
     "question": "「一石二○」。○に入るのは？",
     "choices": [
@@ -135,7 +135,7 @@
     "id": "J11",
     "genre": "国語",
     "subgenre": "ことわざ",
-    "difficulty": 2,
+    "difficulty": 5,
     "mode": "choice",
     "question": "「○の耳に念仏」。○に入るのは？",
     "choices": [
@@ -151,7 +151,7 @@
     "id": "J12",
     "genre": "国語",
     "subgenre": "文法",
-    "difficulty": 2,
+    "difficulty": 4,
     "mode": "choice",
     "question": "「花が咲いた。」の主語は？",
     "choices": [
@@ -167,7 +167,7 @@
     "id": "J13",
     "genre": "国語",
     "subgenre": "文法",
-    "difficulty": 2,
+    "difficulty": 5,
     "mode": "choice",
     "question": "「美しい」の品詞は？",
     "choices": [
@@ -194,7 +194,7 @@
     "id": "J15",
     "genre": "国語",
     "subgenre": "古典文学",
-    "difficulty": 3,
+    "difficulty": 10,
     "mode": "choice",
     "question": "『枕草子』の作者は？",
     "choices": [
@@ -210,7 +210,7 @@
     "id": "J16",
     "genre": "国語",
     "subgenre": "四字熟語",
-    "difficulty": 3,
+    "difficulty": 7,
     "mode": "choice",
     "question": "「五十歩百歩」の意味は？",
     "choices": [
@@ -226,7 +226,7 @@
     "id": "J17",
     "genre": "国語",
     "subgenre": "部首",
-    "difficulty": 3,
+    "difficulty": 9,
     "mode": "choice",
     "question": "「寂」の部首は？",
     "choices": [
@@ -242,7 +242,7 @@
     "id": "J18",
     "genre": "国語",
     "subgenre": "古典文学",
-    "difficulty": 3,
+    "difficulty": 9,
     "mode": "choice",
     "question": "「つれづれなるままに」で始まる作品は？",
     "choices": [
@@ -258,7 +258,7 @@
     "id": "J19",
     "genre": "国語",
     "subgenre": "四字熟語",
-    "difficulty": 3,
+    "difficulty": 8,
     "mode": "input",
     "question": "「呉越同舟」の読みは？",
     "answer_text": "ごえつどうしゅう",
@@ -269,7 +269,7 @@
     "id": "J20",
     "genre": "国語",
     "subgenre": "部首",
-    "difficulty": 3,
+    "difficulty": 8,
     "mode": "choice",
     "question": "「雷」の部首は？",
     "choices": [
@@ -334,7 +334,7 @@
     "id": "J25",
     "genre": "国語",
     "subgenre": "漢字の読み",
-    "difficulty": 1,
+    "difficulty": 3,
     "mode": "choice",
     "question": "「月」の音読みは？",
     "choices": [
@@ -350,7 +350,7 @@
     "id": "J26",
     "genre": "国語",
     "subgenre": "五十音",
-    "difficulty": 1,
+    "difficulty": 2,
     "mode": "choice",
     "question": "ひらがな「あ」から数えて6番目は？",
     "choices": [
@@ -388,7 +388,7 @@
     "id": "J29",
     "genre": "国語",
     "subgenre": "ことわざ",
-    "difficulty": 2,
+    "difficulty": 4,
     "mode": "choice",
     "question": "「犬も歩けば○○に当たる」。○○は？",
     "choices": [
@@ -404,7 +404,7 @@
     "id": "J30",
     "genre": "国語",
     "subgenre": "ことわざ",
-    "difficulty": 2,
+    "difficulty": 6,
     "mode": "choice",
     "question": "「人の振り見て○が振り直せ」。○は？",
     "choices": [
@@ -420,7 +420,7 @@
     "id": "J31",
     "genre": "国語",
     "subgenre": "文法",
-    "difficulty": 2,
+    "difficulty": 5,
     "mode": "choice",
     "question": "「走る」の品詞は？",
     "choices": [
@@ -436,7 +436,7 @@
     "id": "J32",
     "genre": "国語",
     "subgenre": "文法",
-    "difficulty": 2,
+    "difficulty": 5,
     "mode": "choice",
     "question": "「赤い」の品詞は？",
     "choices": [
@@ -463,7 +463,7 @@
     "id": "J34",
     "genre": "国語",
     "subgenre": "文法",
-    "difficulty": 2,
+    "difficulty": 3,
     "mode": "choice",
     "question": "文末の「。」を何と呼ぶ？",
     "choices": [
@@ -479,7 +479,7 @@
     "id": "J35",
     "genre": "国語",
     "subgenre": "四字熟語",
-    "difficulty": 3,
+    "difficulty": 8,
     "mode": "input",
     "question": "「我田引水」の読みは？",
     "answer_text": "がでんいんすい",
@@ -490,7 +490,7 @@
     "id": "J36",
     "genre": "国語",
     "subgenre": "古典文学",
-    "difficulty": 3,
+    "difficulty": 8,
     "mode": "choice",
     "question": "『源氏物語』の作者は？",
     "choices": [
@@ -506,7 +506,7 @@
     "id": "J37",
     "genre": "国語",
     "subgenre": "四字熟語",
-    "difficulty": 3,
+    "difficulty": 9,
     "mode": "input",
     "question": "「臥薪嘗胆」の読みは？",
     "answer_text": "がしんしょうたん",
@@ -517,7 +517,7 @@
     "id": "J38",
     "genre": "国語",
     "subgenre": "古典文学",
-    "difficulty": 3,
+    "difficulty": 9,
     "mode": "choice",
     "question": "『徒然草』の作者は？",
     "choices": [
@@ -533,7 +533,7 @@
     "id": "J39",
     "genre": "国語",
     "subgenre": "ことわざ",
-    "difficulty": 3,
+    "difficulty": 6,
     "mode": "choice",
     "question": "「朱に交われば○○なる」。○○は？",
     "choices": [
@@ -549,7 +549,7 @@
     "id": "J40",
     "genre": "国語",
     "subgenre": "ことわざ",
-    "difficulty": 3,
+    "difficulty": 6,
     "mode": "choice",
     "question": "「百聞は一○にしかず」。○は？",
     "choices": [

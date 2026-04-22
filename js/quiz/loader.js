@@ -49,42 +49,56 @@
         const stageCfg = window.CONFIG.STAGES.find(s => s.no === stageNo);
         const diff = stageCfg?.diff || [1 / 3, 1 / 3, 1 / 3];
 
-        // level ±1 でプールをハードフィルタ。
-        // level=1 → diff 1-2、level=2 → diff 1-3、level=3 → diff 2-3。
-        const level   = stageCfg?.level ?? 2;
-        const minDiff = Math.max(1, level - 1);
-        const maxDiff = Math.min(3, level + 1);
+        // difficulty は 1〜10 の10段階。ステージ level N は [N-1, N, N+1] だけ引く。
+        // diff[0/1/2] は [level-1, level, level+1] への相対比率。
+        // 端ステージ (level=1 or 10) では存在しない難度の比率を mid に吸収。
+        const level  = stageCfg?.level ?? stageNo;
+        const dLow   = Math.max(1,  level - 1);
+        const dMid   = level;
+        const dHigh  = Math.min(10, level + 1);
+
         const eligible = all.filter(q => {
             const d = q.difficulty || 1;
-            return d >= minDiff && d <= maxDiff;
+            return d >= dLow && d <= dHigh;
         });
 
-        // 各難度で何問取るか (端数丸めで合計が count になるよう調整)
-        const c1 = Math.round(count * diff[0]);
-        const c2 = Math.round(count * diff[1]);
-        const c3 = Math.max(0, count - c1 - c2);
-        const want = { 1: c1, 2: c2, 3: c3 };
+        // 端ステージで dLow==dMid or dMid==dHigh になる場合は比率を吸収
+        const ratioMap = { [dLow]: 0, [dMid]: 0, [dHigh]: 0 };
+        ratioMap[dLow]  += diff[0];
+        ratioMap[dMid]  += diff[1];
+        ratioMap[dHigh] += diff[2];
+        const tiers = [...new Set([dLow, dMid, dHigh])];  // 重複除去
+
+        // 各難度の目標問題数 (端数丸め、最後の tier で帳尻)
+        const wantMap = {};
+        let assigned = 0;
+        tiers.slice(0, -1).forEach(d => {
+            wantMap[d] = Math.round(count * ratioMap[d]);
+            assigned += wantMap[d];
+        });
+        wantMap[tiers[tiers.length - 1]] = Math.max(0, count - assigned);
 
         // 難度別プール (シャッフル済み)
-        const pools = { 1: [], 2: [], 3: [] };
+        const pools = {};
+        tiers.forEach(d => { pools[d] = []; });
         eligible.forEach(q => {
-            const d = q.difficulty || 1;
-            (pools[d] || pools[1]).push(q);
+            const d = q.difficulty;
+            if (pools[d] !== undefined) pools[d].push(q);
         });
-        for (const d of [1, 2, 3]) pools[d] = shuffle(pools[d]);
+        tiers.forEach(d => { pools[d] = shuffle(pools[d]); });
 
         // 第1パス: 各難度から want 件取る
         const picked = [];
         const usedIds = new Set();
-        for (const d of [1, 2, 3]) {
-            const take = pools[d].splice(0, want[d]);
+        tiers.forEach(d => {
+            const take = pools[d].splice(0, wantMap[d]);
             take.forEach(q => { picked.push(q); usedIds.add(q.id); });
-        }
+        });
 
         // 第2パス: 不足があれば他難度から補填
         if (picked.length < count) {
             const rest = shuffle(
-                [...pools[1], ...pools[2], ...pools[3]].filter(q => !usedIds.has(q.id))
+                tiers.flatMap(d => pools[d]).filter(q => !usedIds.has(q.id))
             );
             picked.push(...rest.slice(0, count - picked.length));
         }
