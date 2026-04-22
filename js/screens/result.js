@@ -145,12 +145,14 @@
                     const stageDef = window.CONFIG.STAGES.find(x => x.no === stageNo) || {};
                     const stageInfo = { no: stageNo, name: stageDef.name || '', stress: stageDef.stress };
 
+                    const labelSeed = `${s.startAt}_${result.rank}`;
                     const canvas = window.ShareCard.render(result, stageInfo, {
                         timeouts,
                         deathEnd: !!s.deathEnd,
+                        labelSeed,
                     });
                     const blob = await window.ShareCard.toBlob(canvas);
-                    const text = window.ShareCard.buildText(result, stageInfo);
+                    const text = window.ShareCard.buildText(result, stageInfo, { labelSeed });
 
                     const filename = `weirdquiz_stage${String(stageNo).padStart(2, '0')}_${result.rank}.png`;
                     const r = await window.ShareSheet.share({ blob, text, filename });

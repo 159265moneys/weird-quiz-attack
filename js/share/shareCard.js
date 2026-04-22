@@ -158,18 +158,40 @@
         ctx.lineTo(SIZE - 240, 720);
         ctx.stroke();
 
-        // 5. SCORE
-        drawText(ctx, 'SCORE', SIZE / 2, 770, {
-            font: `bold 40px ${FONT_MONO}`,
+        // 5. 上位% / 現実換算ラベル (仕様書 8-4)
+        //    ランク文字の直下に 1 行、その下に 1 行
+        const meta = window.Ranks?.META?.[result.rank];
+        const pctText = window.Ranks?.percentileText(result.rank) || '';
+        const realLabel = window.Ranks?.pickLabel(result.rank, extras.labelSeed) || '';
+        const pctColor = (meta && meta.positive) ? rc : COLOR.accentRed;
+
+        if (pctText) {
+            drawText(ctx, pctText, SIZE / 2, 760, {
+                font: `900 60px ${FONT_MONO}`,
+                color: pctColor,
+                letterSpacing: 6,
+            });
+        }
+        if (realLabel) {
+            drawText(ctx, `≒ ${realLabel}`, SIZE / 2, 820, {
+                font: `28px ${FONT_JP}`,
+                color: COLOR.line,
+                letterSpacing: 2,
+            });
+        }
+
+        // 6. SCORE
+        drawText(ctx, 'SCORE', SIZE / 2, 880, {
+            font: `bold 32px ${FONT_MONO}`,
             color: COLOR.textDim,
-            letterSpacing: 14,
+            letterSpacing: 12,
         });
-        drawText(ctx, result.score.toLocaleString(), SIZE / 2, 850, {
-            font: `900 96px ${FONT_MONO}`,
+        drawText(ctx, result.score.toLocaleString(), SIZE / 2, 930, {
+            font: `900 72px ${FONT_MONO}`,
             color: COLOR.line,
         });
 
-        // 6. ステータス行
+        // 7. ステータス行
         const parts = [
             { text: `正解 ${result.correct}/${result.total}`, color: COLOR.line },
             { text: `TIME ${formatTime(result.totalTimeSec)}`, color: COLOR.line },
@@ -179,12 +201,12 @@
             parts.push({ text: `TIMEOUT×${timeouts}`, color: COLOR.accentRed });
         }
 
-        ctx.font = `bold 36px ${FONT_JP}`;
+        ctx.font = `bold 30px ${FONT_JP}`;
         ctx.textBaseline = 'middle';
         const widths = parts.map(p => ctx.measureText(p.text).width);
         const totalW = widths.reduce((a, b) => a + b, 0);
-        const spacing = Math.max(48, (SIZE - 280 - totalW) / Math.max(1, parts.length - 1));
-        const rowY = 940;
+        const spacing = Math.max(36, (SIZE - 280 - totalW) / Math.max(1, parts.length - 1));
+        const rowY = 985;
         let cx = (SIZE - (totalW + spacing * (parts.length - 1))) / 2;
         parts.forEach((p, i) => {
             ctx.fillStyle = p.color;
@@ -193,14 +215,14 @@
             cx += widths[i] + spacing;
         });
 
-        // 7. フッタ: タイトル + ハッシュタグ
-        drawText(ctx, 'WEIRD QUIZ ATTACK', SIZE / 2, 1010, {
-            font: `bold 36px ${FONT_MONO}`,
+        // 8. フッタ: タイトル + ハッシュタグ
+        drawText(ctx, 'WEIRD QUIZ ATTACK', SIZE / 2, 1030, {
+            font: `bold 30px ${FONT_MONO}`,
             color: COLOR.accentCyan,
             letterSpacing: 10,
         });
-        drawText(ctx, '#変なクイズ  #WEIRDQUIZ', SIZE / 2, 1050, {
-            font: `24px ${FONT_JP}`,
+        drawText(ctx, '#変なクイズ  #WEIRDQUIZ', SIZE / 2, 1060, {
+            font: `20px ${FONT_JP}`,
             color: COLOR.textDim,
             letterSpacing: 2,
         });
@@ -232,10 +254,16 @@
     }
 
     // シェア用テキスト生成
-    function buildText(result, stageInfo) {
+    function buildText(result, stageInfo, extras = {}) {
         const rankLine = `Rank ${result.rank}  Score ${result.score.toLocaleString()}`;
         const stageLine = `Stage ${stageInfo.no} 「${stageInfo.name || ''}」`;
-        return `${rankLine}\n${stageLine}\n正解 ${result.correct}/${result.total}\n\n#変なクイズ #WEIRDQUIZ`;
+        const pct = window.Ranks?.percentileText(result.rank) || '';
+        const label = window.Ranks?.pickLabel(result.rank, extras.labelSeed) || '';
+        const pctLine = pct ? `${pct}${label ? `  ≒ ${label}` : ''}` : '';
+        const lines = [rankLine, stageLine, `正解 ${result.correct}/${result.total}`];
+        if (pctLine) lines.push(pctLine);
+        lines.push('', '#変なクイズ #WEIRDQUIZ');
+        return lines.join('\n');
     }
 
     window.ShareCard = { render, toBlob, buildText, SIZE };
