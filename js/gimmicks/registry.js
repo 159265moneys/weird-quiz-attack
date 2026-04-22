@@ -485,8 +485,8 @@
             const stem = q(ctx.screen, '.q-stem');
             if (!stem) return () => {};
             const prev = stem.style.filter;
-            // 3px → 12px (+ 3段階)
-            stem.style.filter = `${prev ? prev + ' ' : ''}blur(12px)`;
+            // 12px は強すぎて読めなくなるので 9px に。
+            stem.style.filter = `${prev ? prev + ' ' : ''}blur(9px)`;
             return () => { stem.style.filter = prev; };
         },
     };
@@ -580,7 +580,7 @@
             const prevClasses = stem.className;
 
             const CHARS = 'あかさたなはまやらわいきしちにひみりうくすつぬふむゆるえけせてねへめれおこそとのほもよろをがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽアカサタナハマヤラワ日本国語数字漢記号線点';
-            function randLine(minLen, maxLen) {
+            function randStr(minLen, maxLen) {
                 const len = minLen + Math.floor(Math.random() * (maxLen - minLen + 1));
                 let s = '';
                 for (let i = 0; i < len; i++) s += CHARS[Math.floor(Math.random() * CHARS.length)];
@@ -591,14 +591,25 @@
                     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
                 }[c]));
             }
-            const LINES = 14;
-            const realLineIdx = 1 + Math.floor(Math.random() * (LINES - 2)); // 両端は避ける
+            // 本物の行にもノイズを前後・内部に混ぜて紛れ込ませる:
+            // 「本物行だけ左端から始まる/予測可能な位置」の手掛かりを潰す。
+            // 行数も増やし、インデントをランダム化。本物は任意の行に配置。
+            const LINES = 16;
+            const realLineIdx = Math.floor(Math.random() * LINES);
+
+            function realLine() {
+                const pre = randStr(2, 6);
+                const post = randStr(2, 6);
+                return `${pre}${originalText}${post}`;
+            }
             const out = [];
             for (let i = 0; i < LINES; i++) {
+                const indent = Math.floor(Math.random() * 140);  // 0..140px
+                const style = `padding-left:${indent}px;`;
                 if (i === realLineIdx) {
-                    out.push(`<span class="gk-b17-line gk-b17-real">${esc(originalText)}</span>`);
+                    out.push(`<span class="gk-b17-line gk-b17-real" style="${style}">${esc(realLine())}</span>`);
                 } else {
-                    out.push(`<span class="gk-b17-line">${esc(randLine(6, 22))}</span>`);
+                    out.push(`<span class="gk-b17-line" style="${style}">${esc(randStr(8, 26))}</span>`);
                 }
             }
             stem.classList.add('gk-b17-noise');
