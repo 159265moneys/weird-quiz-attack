@@ -1,0 +1,11 @@
+{
+    "_comment": "プリセットアバター一覧。新しい PNG を sprite/avatars/ に入れたら、下の items に追加するだけで PROFILE パネルのピッカーに出る。",
+    "_spec": "PNG 推奨。正方形 (256x256 or 128x128) / 背景は透過推奨。ファイル名は英小文字 + _ + 数字が安全 (日本語やスペースは URL エンコードが必要なので推奨しない)。",
+    "items": [
+        { "id": "butterfly",  "file": "butterfly.png",  "label": "BUTTERFLY" },
+        { "id": "jellyfish",  "file": "jellyfish.png",  "label": "JELLYFISH" },
+        { "id": "tv",         "file": "tv.png",         "label": "TV" },
+        { "id": "puzzle",     "file": "puzzle.png",     "label": "PUZZLE" },
+        { "id": "phonograph", "file": "phonograph.png", "label": "PHONOGRAPH" }
+    ]
+}

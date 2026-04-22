@@ -9,6 +9,25 @@
 (function () {
     const LOGO_TEXT = '変なクイズ';
 
+    // 表示名に不正な HTML が含まれても崩れないようエスケープ
+    function escapeHTML(s) {
+        return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // フッター左端のアバター小アイコン (manifest 読込前 / 未選択なら空)
+    function renderFooterAvatar() {
+        const id = window.Save?.getPlayerIcon?.();
+        if (!id) return '';
+        const path = window.Avatars?.pathOf?.(id);
+        if (!path) return '';
+        return `<img class="title-footer-av" src="${escapeHTML(path)}" alt="" onerror="this.remove();">`;
+    }
+
     const Screen = {
         render() {
             // 背景に散らす浮遊文字 (英数字+記号)
@@ -47,7 +66,10 @@
 
                     <div class="title-footer">
                         <span>v${window.CONFIG.VERSION}</span>
-                        <span>${window.Save.data?.player?.name || 'PLAYER'}</span>
+                        <span class="title-footer-me" id="titleFooterMe">
+                            ${renderFooterAvatar()}
+                            <span>${escapeHTML(window.Save.getPlayerDisplayName?.() || 'PLAYER')}</span>
+                        </span>
                     </div>
                 </div>
             `;
@@ -62,6 +84,24 @@
 
             // タイトル BGM を試行 (iOS autoplay ブロック時は初回タップで後追い)
             window.BGM?.play('title');
+
+            // アバター manifest が描画タイミングに間に合わなかった場合は
+            // 読み込みが終わった時点でフッター部分を差し替える。
+            const me = document.getElementById('titleFooterMe');
+            if (me && window.Avatars?.load) {
+                window.Avatars.load().then(() => {
+                    const id = window.Save?.getPlayerIcon?.();
+                    const path = id ? window.Avatars.pathOf(id) : null;
+                    if (!path) return;
+                    if (me.querySelector('.title-footer-av')) return;
+                    const img = document.createElement('img');
+                    img.className = 'title-footer-av';
+                    img.src = path;
+                    img.alt = '';
+                    img.onerror = () => img.remove();
+                    me.insertBefore(img, me.firstElementChild);
+                });
+            }
 
             // 設定はホーム (ステ選択) のハンバーガーメニューに集約したのでタイトルには置かない
 

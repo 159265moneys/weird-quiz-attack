@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1520, initial-scale=1">
+<title>X Header — 変なゲーム</title>
+<style>
+    /* =========================================================
+       X (Twitter) Header: 1500 × 500 (公式 3:1)
+       スクショ専用。機能は一切なし、見た目のみ。
+       タイトル画面の世界観 (明るい紙ベース + クロマティックシャドウ
+       + VHS 走査線 + 浮遊英数字) を踏襲。
+       ========================================================= */
+
+    :root {
+        --bg:          #f4f0e8;          /* 紙色っぽい明るめ BG (title と一致) */
+        --ink:         #0a0a0a;
+        --accent-red:  #ff3340;
+        --accent-cyan: #00e5ff;
+        --mute:        rgba(0, 0, 0, 0.22);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        background: #222;                /* ページ余白は暗めにして画像枠を際立たせる */
+        font-family: "Helvetica Neue", "Hiragino Kaku Gothic ProN",
+                     "Yu Gothic", sans-serif;
+    }
+
+    body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        gap: 20px;
+    }
+
+    .meta {
+        color: #ccc;
+        font-size: 13px;
+        letter-spacing: 0.1em;
+        text-align: center;
+        line-height: 1.6;
+    }
+    .meta code {
+        color: #00e5ff;
+        background: rgba(0,0,0,0.35);
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+
+    /* =========================================================
+       ヘッダー本体 (1500 × 500 固定)
+       スクショ時は #header-card のみを切り取る。
+       ========================================================= */
+    .header-card {
+        position: relative;
+        width: 1500px;
+        height: 500px;
+        overflow: hidden;
+        background: var(--bg);
+        box-shadow: 0 0 60px rgba(0,0,0,0.5);
+        outline: 1px solid #000;         /* スクショ時のガイド (要らなければ削除) */
+    }
+
+    /* 走査線 (スキャンライン) — 紙の上に TV ノイズが乗ってる感 */
+    .scanlines {
+        position: absolute; inset: 0;
+        background-image: repeating-linear-gradient(
+            to bottom,
+            transparent 0 3px,
+            rgba(0, 0, 0, 0.035) 3px 4px
+        );
+        pointer-events: none;
+    }
+
+    /* 粗いノイズ (SVG Turbulence で 1 枚だけ生成) */
+    .grain {
+        position: absolute; inset: 0;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.42'/></svg>");
+        mix-blend-mode: multiply;
+        opacity: 0.22;
+        pointer-events: none;
+    }
+
+    /* 横長のトラッキング帯 (VHS 切れ) */
+    .tracking {
+        position: absolute;
+        left: 0; right: 0;
+        height: 4px;
+        background: rgba(0,0,0,0.14);
+        mix-blend-mode: multiply;
+        pointer-events: none;
+    }
+    .tracking.t1 { top: 60px;  }
+    .tracking.t2 { top: 380px; }
+    .tracking.t3 { top: 210px; height: 2px; background: rgba(0,0,0,0.08); }
+
+    /* 浮遊英数字 (title 画面のそれを縮小版で散らす) */
+    .floaters {
+        position: absolute; inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        color: var(--mute);
+        font-family: "Courier New", monospace;
+        letter-spacing: 0.2em;
+    }
+    .floaters span {
+        position: absolute;
+        white-space: nowrap;
+        opacity: 0.7;
+    }
+
+    /* =========================================================
+       メインロゴ (大きく真ん中)
+       title-logo と同じ "ブラック + 右下赤/左上シアン" のクロマ系
+       ========================================================= */
+    .logo-wrap {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+    }
+
+    .logo {
+        font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+        font-weight: 900;
+        font-size: 190px;
+        line-height: 1;
+        letter-spacing: 18px;
+        color: var(--ink);
+        /* タイトルと同じクロマティックシャドウ。ヘッダー向けに少し強めに */
+        text-shadow:
+            10px 10px 0 var(--accent-red),
+            -8px -8px 0 var(--accent-cyan);
+        padding-right: 18px;              /* 最後の字の右側に余白を確保 (letter-spacing ぶん) */
+    }
+    .logo span {
+        display: inline-block;
+        /* 1 文字だけ微妙に角度/ズレさせて "崩壊中" 感を足す */
+    }
+    .logo span:nth-child(2) { transform: translateY(-6px) rotate(-1.2deg); }
+    .logo span:nth-child(4) { transform: translateY(4px)  rotate(0.8deg); }
+
+    /* サブコピー */
+    .sub {
+        margin-top: 34px;
+        font-family: "Courier New", monospace;
+        font-size: 26px;
+        letter-spacing: 0.5em;
+        color: var(--accent-cyan);
+        text-shadow:
+            0 0 10px rgba(0, 229, 255, 0.55),
+            2px 0 0 rgba(255, 51, 64, 0.25);
+        padding-left: 0.5em; /* letter-spacing のぶん中央補正 */
+    }
+
+    /* 右上と左下のコーナーラベル (VHS 表示風) */
+    .corner {
+        position: absolute;
+        font-family: "Courier New", monospace;
+        font-weight: 700;
+        font-size: 16px;
+        letter-spacing: 0.25em;
+        color: rgba(0,0,0,0.55);
+        z-index: 6;
+    }
+    .corner.tl { top: 22px;  left: 28px;  }
+    .corner.tr { top: 22px;  right: 28px; text-align: right; }
+    .corner.bl { bottom: 20px; left: 28px; }
+    .corner.br { bottom: 20px; right: 28px; text-align: right; }
+    .corner .cy { color: var(--accent-cyan); text-shadow: 0 0 8px rgba(0,229,255,0.5); }
+    .corner .rd { color: var(--accent-red);  text-shadow: 0 0 8px rgba(255,51,64,0.4); }
+
+    /* REC ドット */
+    .rec-dot {
+        display: inline-block;
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        background: var(--accent-red);
+        vertical-align: middle;
+        margin-right: 6px;
+        box-shadow: 0 0 10px rgba(255,51,64,0.8);
+    }
+
+    /* バーコード的な細ストライプ (装飾) */
+    .barcode {
+        position: absolute;
+        bottom: 52px;
+        left: 28px;
+        width: 140px;
+        height: 22px;
+        background-image: repeating-linear-gradient(
+            to right,
+            #0a0a0a 0 2px,
+            transparent 2px 4px,
+            #0a0a0a 4px 5px,
+            transparent 5px 9px,
+            #0a0a0a 9px 11px,
+            transparent 11px 13px
+        );
+        opacity: 0.85;
+        z-index: 6;
+    }
+
+    /* X のプロフィール画像が左下で重なるゾーンを示すガイド (スクショ前に非表示推奨) */
+    .safe-guide {
+        position: absolute;
+        left: 36px;
+        bottom: 36px;
+        width: 200px;
+        height: 200px;
+        border: 2px dashed rgba(255, 51, 64, 0.35);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 10;
+        display: none;                    /* ← 表示したい時は "block" に */
+    }
+
+    /* ツールバー (ページ上の操作ボタン。画像には映らない) */
+    .toolbar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        background: #111;
+        padding: 8px 12px;
+        border-radius: 8px;
+    }
+    .toolbar button {
+        background: #222;
+        color: #eee;
+        border: 1px solid #444;
+        padding: 8px 14px;
+        font-size: 13px;
+        letter-spacing: 0.1em;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: inherit;
+    }
+    .toolbar button:hover { background: #333; border-color: #00e5ff; color: #00e5ff; }
+</style>
+</head>
+<body>
+
+    <div class="meta">
+        X (Twitter) header — <code>1500 × 500</code> ・スクショ推奨倍率 100%<br>
+        ブラウザは Chrome / Safari 推奨。DevTools のエレメント右クリック → <code>Capture node screenshot</code> で正寸PNG取得可。
+    </div>
+
+    <div class="toolbar">
+        <button id="toggleSafe">PROFILE 重なりガイド ON/OFF</button>
+        <button id="toggleOutline">アウトライン ON/OFF</button>
+    </div>
+
+    <div class="header-card" id="headerCard">
+        <!-- 背景レイヤ -->
+        <div class="scanlines"></div>
+        <div class="grain"></div>
+        <div class="tracking t1"></div>
+        <div class="tracking t2"></div>
+        <div class="tracking t3"></div>
+
+        <!-- 浮遊英数字 (JS で散らす) -->
+        <div class="floaters" id="floaters"></div>
+
+        <!-- コーナーラベル (VHS 表示風) -->
+        <div class="corner tl">
+            <span class="rec-dot"></span><span class="rd">REC</span>
+            &nbsp;&nbsp;<span class="cy">CH-03</span>
+        </div>
+        <div class="corner tr">
+            WEIRD QUIZ ATTACK<br>
+            <span class="cy">v ∞</span>
+        </div>
+        <div class="corner bl">
+            <span class="rd">△ NO SIGNAL</span>
+        </div>
+        <div class="corner br">
+            <span class="cy">00:00:00</span><br>
+            <span class="rd">SP MODE</span>
+        </div>
+
+        <!-- バーコード装飾 -->
+        <div class="barcode"></div>
+
+        <!-- メインロゴ -->
+        <div class="logo-wrap">
+            <div class="logo" aria-label="変なゲーム">
+                <span>変</span><span>な</span><span>ゲ</span><span>ー</span><span>ム</span>
+            </div>
+            <div class="sub">WEIRD&nbsp;GAME</div>
+        </div>
+
+        <!-- プロフィール画像重なりゾーン (任意表示) -->
+        <div class="safe-guide" id="safeGuide"></div>
+    </div>
+
+<script>
+    // --- 浮遊英数字を散りばめる ---
+    (function () {
+        const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@!?*+=/\\>_<';
+        const host = document.getElementById('floaters');
+        const FRAG = document.createDocumentFragment();
+        for (let i = 0; i < 34; i++) {
+            const c = pool[Math.floor(Math.random() * pool.length)];
+            const top  = Math.random() * 96;
+            const left = Math.random() * 96;
+            const size = 18 + Math.floor(Math.random() * 28);
+            const op   = (0.25 + Math.random() * 0.5).toFixed(2);
+            const rot  = (-12 + Math.random() * 24).toFixed(1);
+            const s = document.createElement('span');
+            s.textContent = c;
+            s.style.cssText = `top:${top}%;left:${left}%;font-size:${size}px;opacity:${op};transform:rotate(${rot}deg);`;
+            FRAG.appendChild(s);
+        }
+        host.appendChild(FRAG);
+    })();
+
+    // --- ツールバー操作 ---
+    document.getElementById('toggleSafe').addEventListener('click', () => {
+        const g = document.getElementById('safeGuide');
+        g.style.display = (g.style.display === 'block') ? 'none' : 'block';
+    });
+    document.getElementById('toggleOutline').addEventListener('click', () => {
+        const card = document.getElementById('headerCard');
+        card.style.outline = card.style.outline ? '' : '1px solid #000';
+    });
+</script>
+
+</body>
+</html>

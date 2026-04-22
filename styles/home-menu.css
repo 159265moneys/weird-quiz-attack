@@ -354,3 +354,209 @@
     color: rgba(230,241,255,0.45);
     line-height: 1.6;
 }
+
+/* ---- PROFILE (プレイヤー ID / 名前編集) ---- */
+.hm-profile {
+    padding: 6px 2px 2px;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+.hm-pf-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.hm-pf-lbl {
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    color: rgba(230,241,255,0.5);
+    font-weight: 700;
+}
+.hm-pf-id {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 8px 18px;
+    font-size: clamp(20px, 5vw, 26px);
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    color: var(--accent-cyan, #00fff0);
+    background: rgba(0, 255, 240, 0.06);
+    border: 1.5px solid rgba(0, 255, 240, 0.55);
+    border-radius: 8px;
+    text-shadow: 0 0 10px rgba(0, 255, 240, 0.4);
+    user-select: all;
+    -webkit-user-select: all;
+}
+.hm-pf-current {
+    font-size: clamp(16px, 4vw, 20px);
+    font-weight: 700;
+    color: #fff;
+    padding: 6px 2px 4px;
+    letter-spacing: 0.04em;
+    word-break: break-all;
+}
+.hm-pf-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    font-size: 16px; /* 16px 以上にしないと iOS がズームする */
+    font-family: inherit;
+    letter-spacing: 0.05em;
+    color: #fff;
+    background: rgba(0,0,0,0.45);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.hm-pf-input:focus {
+    border-color: var(--accent-cyan, #00fff0);
+    box-shadow: 0 0 0 2px rgba(0,255,240,0.18);
+}
+.hm-pf-hint {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: rgba(230,241,255,0.4);
+}
+.hm-pf-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+}
+.hm-pf-btn {
+    flex: 1;
+    padding: 12px 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    color: #fff;
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.hm-pf-btn:active { transform: scale(0.96); }
+.hm-pf-save {
+    border-color: var(--accent-cyan, #00fff0);
+    color: var(--accent-cyan, #00fff0);
+    background: rgba(0,255,240,0.08);
+}
+.hm-pf-save:active { background: rgba(0,255,240,0.18); }
+.hm-pf-reset {
+    border-color: rgba(255,255,255,0.25);
+    color: rgba(230,241,255,0.75);
+}
+
+/* --- PROFILE 上部: アイコンプレビュー + ID 横並び --- */
+.hm-pf-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 4px 0 6px;
+}
+.hm-pf-avpreview {
+    width: 88px;
+    height: 88px;
+    border-radius: 14px;
+    border: 2px solid var(--accent-cyan, #00fff0);
+    background: rgba(0,255,240,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    box-shadow: 0 0 14px rgba(0,255,240,0.18);
+}
+.hm-pf-avpreview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.hm-pf-avpreview-none {
+    font-size: 32px;
+    font-weight: 900;
+    color: rgba(0,255,240,0.5);
+    letter-spacing: 0;
+}
+.hm-pf-topinfo {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* --- アイコン選択グリッド --- */
+.hm-pf-avwrap { width: 100%; }
+.hm-pf-av-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    gap: 10px;
+    padding: 8px 0 2px;
+}
+.hm-pf-av {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    padding: 0;
+    border: 2px solid rgba(255,255,255,0.18);
+    background: rgba(0,0,0,0.4);
+    border-radius: 10px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hm-pf-av:active { transform: scale(0.94); }
+.hm-pf-av img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+}
+.hm-pf-av.is-sel {
+    border-color: var(--accent-cyan, #00fff0);
+    box-shadow:
+        0 0 0 2px rgba(0,255,240,0.18),
+        0 0 12px rgba(0,255,240,0.35);
+}
+.hm-pf-av.is-sel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 2px solid rgba(0,255,240,0.35);
+    border-radius: 8px;
+    pointer-events: none;
+}
+.hm-pf-av-none {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 26px;
+    font-weight: 900;
+    color: rgba(230,241,255,0.5);
+}
+.hm-pf-av.is-broken {
+    /* 画像読込失敗: バッテンで可視化 */
+    background:
+        linear-gradient(45deg, transparent 46%, rgba(255,51,64,0.5) 48% 52%, transparent 54%),
+        linear-gradient(-45deg, transparent 46%, rgba(255,51,64,0.5) 48% 52%, transparent 54%),
+        rgba(0,0,0,0.6);
+    border-color: rgba(255,51,64,0.4);
+}
+.hm-pf-av-empty {
+    padding: 14px 10px;
+    background: rgba(0,0,0,0.4);
+    border: 1px dashed rgba(255,255,255,0.18);
+    border-radius: 8px;
+    color: rgba(230,241,255,0.55);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+    text-align: center;
+}

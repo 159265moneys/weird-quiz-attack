@@ -6,13 +6,29 @@
     const KEY = window.CONFIG.SAVE_KEY;
     const VERSION = window.CONFIG.SAVE_VERSION;
 
+    // プレイヤー ID は "混同しにくい英数字" 32 文字プールから 6 桁ランダム。
+    //   (0/O/1/I/L/l 等の紛らわしいのは除外)
+    // 初回起動時に発行し、以後は不変。表示名 (name) が未設定なら ID を
+    // そのまま表示名に使う (= デフォルトで "固有の ID = その人の名前")。
+    const ID_POOL = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    function generatePlayerId(len) {
+        if (!len) len = 6;
+        let s = '';
+        for (let i = 0; i < len; i++) {
+            s += ID_POOL[Math.floor(Math.random() * ID_POOL.length)];
+        }
+        return s;
+    }
+
     function defaultData() {
         return {
             version: VERSION,
             createdAt: Date.now(),
             updatedAt: Date.now(),
             player: {
-                name: 'PLAYER',
+                id: generatePlayerId(),
+                name: null,       // null = "ID をそのまま表示名にする"
+                icon: null,       // null = アイコン未選択 (PROFILE で選ばせる。sprite/avatars/manifest.json の id)
             },
             progress: {
                 unlockedStage: 1, // stage 1だけ最初から解放
@@ -62,6 +78,15 @@
                 if (s.seVolume == null) s.seVolume = 0.8;
                 if (s.bgmVolume == null || s.bgmVolume === 0.35) s.bgmVolume = 0.2;
                 if (s.muted == null) s.muted = false;
+                if (s.vibration == null) s.vibration = true;
+                // プレイヤーブロックの後方互換:
+                //   - id が無ければ発行する
+                //   - 旧デフォルト name='PLAYER' は "未設定" 扱いにして ID 表示へ
+                if (!this.data.player) this.data.player = {};
+                const pl = this.data.player;
+                if (!pl.id) pl.id = generatePlayerId();
+                if (pl.name === 'PLAYER' || pl.name === undefined) pl.name = null;
+                if (pl.icon === undefined) pl.icon = null;
                 this.persist();
                 return this.data;
             } catch (e) {
@@ -143,6 +168,46 @@
             if (!this.data) return;
             if (!this.data.settings) this.data.settings = {};
             this.data.settings[key] = value;
+            this.persist();
+        },
+
+        // --- プレイヤー情報 ---
+        // 表示用の名前: name が未設定 (null/empty) なら ID をそのまま使う
+        getPlayerDisplayName() {
+            if (!this.data) return '';
+            const pl = this.data.player || {};
+            const nm = (typeof pl.name === 'string') ? pl.name.trim() : '';
+            return nm || pl.id || 'PLAYER';
+        },
+        getPlayerId() {
+            return this.data?.player?.id || '';
+        },
+        // 名前の保存。空文字/null で "未設定" 扱い (= ID を名前として使う) に戻す。
+        // 最大 16 文字に丸める (シェア画像等で崩れないように)。
+        setPlayerName(name) {
+            if (!this.data) return;
+            if (!this.data.player) this.data.player = {};
+            if (typeof name === 'string') {
+                const trimmed = name.trim().slice(0, 16);
+                this.data.player.name = trimmed || null;
+            } else {
+                this.data.player.name = null;
+            }
+            this.persist();
+        },
+
+        // プレイヤーアイコン (プリセット id)。null で "未選択" に戻す。
+        getPlayerIcon() {
+            return this.data?.player?.icon || null;
+        },
+        setPlayerIcon(iconId) {
+            if (!this.data) return;
+            if (!this.data.player) this.data.player = {};
+            if (typeof iconId === 'string' && iconId.length > 0) {
+                this.data.player.icon = iconId.slice(0, 32);
+            } else {
+                this.data.player.icon = null;
+            }
             this.persist();
         },
     };

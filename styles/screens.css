@@ -204,11 +204,26 @@
     margin-top: auto;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
     font-size: 28px;
     color: var(--text-mute);
     letter-spacing: 2px;
     opacity: 0.7;
+}
+.title-footer-me {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+}
+.title-footer-av {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid var(--accent-cyan, #00e5ff);
+    box-shadow: 0 0 10px rgba(0,229,255,0.4);
+    background: rgba(0,0,0,0.15);
 }
 
 /* 遷移中は背景の浮遊文字もフェードアウト */

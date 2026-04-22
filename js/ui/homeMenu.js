@@ -10,9 +10,10 @@
    ============================================================ */
 
 (function () {
-    let menuOverlay  = null;
-    let scoreOverlay = null;
-    let aboutOverlay = null;
+    let menuOverlay    = null;
+    let scoreOverlay   = null;
+    let aboutOverlay   = null;
+    let profileOverlay = null;
     let menuOpen = false;
 
     // ---------- Lucide 風 SVG (MIT) ----------
@@ -21,10 +22,20 @@
         trophy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`,
         reset:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 10 9 10"/></svg>`,
         info:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>`,
+        user:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
         chevron:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
         close:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
         menu:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6"  x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`,
     };
+
+    function escapeHTML(s) {
+        return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
 
     // ---------- メインメニュー ----------
     function ensureMenuDom() {
@@ -38,6 +49,11 @@
                     <button class="hm-close" aria-label="閉じる">${ICONS.close}</button>
                 </div>
                 <ul class="hm-list">
+                    <li><button class="hm-item" data-act="profile">
+                        <span class="hm-ic">${ICONS.user}</span>
+                        <span class="hm-lbl"><span class="hm-lbl-main">PROFILE</span><span class="hm-lbl-sub">プレイヤー ID / 名前</span></span>
+                        <span class="hm-chv">${ICONS.chevron}</span>
+                    </button></li>
                     <li><button class="hm-item" data-act="sound">
                         <span class="hm-ic">${ICONS.volume}</span>
                         <span class="hm-lbl"><span class="hm-lbl-main">SOUND</span><span class="hm-lbl-sub">音量・ミュート</span></span>
@@ -80,6 +96,9 @@
                 } else if (act === 'scores') {
                     closeMenu();
                     setTimeout(openScores, 120);
+                } else if (act === 'profile') {
+                    closeMenu();
+                    setTimeout(openProfile, 120);
                 } else if (act === 'reset') {
                     openResetConfirm();
                 } else if (act === 'about') {
@@ -173,6 +192,168 @@
         if (scoreOverlay) scoreOverlay.classList.remove('is-open');
     }
 
+    // ---------- PROFILE パネル (プレイヤー ID / 名前 / アイコン編集) ----------
+    function buildAvatarGridHTML(selectedId) {
+        const items = window.Avatars?.getList?.() || [];
+        // 先頭に "NONE" (アイコン未選択) 枠を固定で置く
+        const cells = [
+            `<button class="hm-pf-av ${!selectedId ? 'is-sel' : ''}" data-av-id="" type="button" aria-label="NONE">
+                <span class="hm-pf-av-none">—</span>
+            </button>`
+        ];
+        for (const it of items) {
+            const path = window.Avatars?.pathOf?.(it.id) || `sprite/avatars/${encodeURIComponent(it.file)}`;
+            const sel = it.id === selectedId ? 'is-sel' : '';
+            cells.push(`
+                <button class="hm-pf-av ${sel}" data-av-id="${escapeHTML(it.id)}" type="button" aria-label="${escapeHTML(it.label)}">
+                    <img src="${escapeHTML(path)}" alt="${escapeHTML(it.label)}" onerror="this.parentElement.classList.add('is-broken');">
+                </button>
+            `);
+        }
+        if (items.length === 0) {
+            return `<div class="hm-pf-av-empty">sprite/avatars/ に画像と manifest.json のエントリを追加してください</div>`;
+        }
+        return `<div class="hm-pf-av-grid">${cells.join('')}</div>`;
+    }
+
+    function buildProfileHTML() {
+        const id   = window.Save?.getPlayerId?.() || '??????';
+        const disp = window.Save?.getPlayerDisplayName?.() || id;
+        const raw  = window.Save?.data?.player?.name || '';
+        const iconId = window.Save?.getPlayerIcon?.() || null;
+        // name が null の場合は ID と表示名が一致するので入力欄は空
+        const inputVal = raw ? escapeHTML(raw) : '';
+
+        // 選択中アイコンのプレビュー
+        const selPath = iconId ? window.Avatars?.pathOf?.(iconId) : null;
+        const previewHTML = selPath
+            ? `<img class="hm-pf-avpreview-img" src="${escapeHTML(selPath)}" alt="">`
+            : `<span class="hm-pf-avpreview-none">—</span>`;
+
+        return `
+            <div class="hm-panel" role="dialog" aria-label="PROFILE">
+                <div class="hm-head">
+                    <div class="hm-title">PROFILE</div>
+                    <button class="hm-close" aria-label="閉じる">${ICONS.close}</button>
+                </div>
+                <div class="hm-profile">
+                    <div class="hm-pf-top">
+                        <div class="hm-pf-avpreview">${previewHTML}</div>
+                        <div class="hm-pf-topinfo">
+                            <div class="hm-pf-lbl">PLAYER ID</div>
+                            <div class="hm-pf-id">${escapeHTML(id)}</div>
+                        </div>
+                    </div>
+
+                    <div class="hm-pf-row">
+                        <div class="hm-pf-lbl">DISPLAY NAME</div>
+                        <div class="hm-pf-current">${escapeHTML(disp)}</div>
+                        <input
+                            type="text"
+                            class="hm-pf-input"
+                            maxlength="16"
+                            autocomplete="off"
+                            autocapitalize="off"
+                            spellcheck="false"
+                            placeholder="(未設定なら ID をそのまま表示)"
+                            value="${inputVal}">
+                        <div class="hm-pf-hint">空にすると ID 表示に戻ります (最大 16 文字)</div>
+                    </div>
+
+                    <div class="hm-pf-row">
+                        <div class="hm-pf-lbl">ICON</div>
+                        <div class="hm-pf-avwrap">${buildAvatarGridHTML(iconId)}</div>
+                        <div class="hm-pf-hint">タップで即反映。左端の "—" は未選択に戻す</div>
+                    </div>
+
+                    <div class="hm-pf-actions">
+                        <button class="hm-pf-btn hm-pf-save"  type="button">SAVE NAME</button>
+                        <button class="hm-pf-btn hm-pf-reset" type="button">RESET NAME</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function bindProfileHandlers() {
+        profileOverlay.querySelector('.hm-close').addEventListener('click', () => {
+            window.SE?.fire?.('cancel');
+            closeProfile();
+        });
+        const input = profileOverlay.querySelector('.hm-pf-input');
+        profileOverlay.querySelector('.hm-pf-save').addEventListener('click', () => {
+            const v = input ? input.value : '';
+            window.Save?.setPlayerName?.(v);
+            window.SE?.fire?.('confirm');
+            const curEl = profileOverlay.querySelector('.hm-pf-current');
+            if (curEl) curEl.textContent = window.Save?.getPlayerDisplayName?.() || '';
+        });
+        profileOverlay.querySelector('.hm-pf-reset').addEventListener('click', () => {
+            if (input) input.value = '';
+            window.Save?.setPlayerName?.(null);
+            window.SE?.fire?.('cancel');
+            const curEl = profileOverlay.querySelector('.hm-pf-current');
+            if (curEl) curEl.textContent = window.Save?.getPlayerDisplayName?.() || '';
+        });
+
+        // アイコングリッド: 各セルタップで即保存・プレビュー更新
+        const grid = profileOverlay.querySelector('.hm-pf-av-grid');
+        if (grid) {
+            grid.querySelectorAll('.hm-pf-av').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const id = btn.dataset.avId || '';
+                    window.Save?.setPlayerIcon?.(id || null);
+                    window.SE?.fire?.('select');
+                    // 選択ハイライトを付け替え
+                    grid.querySelectorAll('.hm-pf-av.is-sel').forEach(el => el.classList.remove('is-sel'));
+                    btn.classList.add('is-sel');
+                    // プレビューを差し替え
+                    const pv = profileOverlay.querySelector('.hm-pf-avpreview');
+                    if (pv) {
+                        const path = id ? window.Avatars?.pathOf?.(id) : null;
+                        pv.innerHTML = path
+                            ? `<img class="hm-pf-avpreview-img" src="${escapeHTML(path)}" alt="">`
+                            : `<span class="hm-pf-avpreview-none">—</span>`;
+                    }
+                });
+            });
+        }
+    }
+
+    function openProfile() {
+        if (!profileOverlay) {
+            profileOverlay = document.createElement('div');
+            profileOverlay.className = 'hm-overlay';
+            document.body.appendChild(profileOverlay);
+        }
+        // manifest を先にロードしてからレンダリング (既に cache 済みなら即時)
+        const render = () => {
+            profileOverlay.innerHTML = buildProfileHTML();
+            profileOverlay.classList.add('is-open');
+            bindProfileHandlers();
+        };
+        // 一度も読んだことが無い時はローディング表示、読んだら再レンダ
+        if (window.Avatars) {
+            window.Avatars.load().then(() => {
+                // 参照中のアイコン id がマニフェストに無い (ファイル削除されたケース)
+                // なら null に戻しておく (壊れ画像表示の予防)
+                const saved = window.Save?.getPlayerIcon?.();
+                if (saved && !window.Avatars.getById(saved)) {
+                    window.Save?.setPlayerIcon?.(null);
+                }
+                render();
+            });
+        } else {
+            render();
+        }
+
+        window.SE?.fire?.('confirm');
+    }
+
+    function closeProfile() {
+        if (profileOverlay) profileOverlay.classList.remove('is-open');
+    }
+
     // ---------- ABOUT パネル ----------
     function buildAboutHTML() {
         const ver = window.CONFIG?.VERSION || '?';
@@ -225,11 +406,19 @@
         const ok2 = confirm('本当にリセットします。この操作は取り消せません。');
         if (!ok2) return;
         try {
-            // 設定 (音量/ミュート) は保持して進捗だけ消す
+            // 設定 (音量/ミュート) とプレイヤー ID / 名前 / アイコンは保持して
+            // 進捗 (クリア状況/スコア/プレイ回数) だけ消す。identity は引き継ぎ。
             const settings = window.Save?.getSettings?.();
+            const prevId   = window.Save?.getPlayerId?.();
+            const prevName = window.Save?.data?.player?.name ?? null;
+            const prevIcon = window.Save?.data?.player?.icon ?? null;
             window.Save?.reset?.();
             if (settings) {
                 Object.keys(settings).forEach(k => window.Save?.setSetting?.(k, settings[k]));
+            }
+            if (window.Save?.data && prevId) {
+                window.Save.data.player = { id: prevId, name: prevName, icon: prevIcon };
+                window.Save.persist?.();
             }
             window.SE?.fire?.('confirm');
             closeMenu();
