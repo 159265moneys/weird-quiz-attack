@@ -1,29 +1,33 @@
 /* ============================================================
    scoring.js — スコア計算 & ランク判定
    ------------------------------------------------------------
-   設計: 1問あたり
+   スコア計算 (1問あたり)
      正答ベース: 1000点 (不正解なら 0点)
      時間ボーナス: max(0, 残り時間) / 制限時間 * 1000 点
      → 1問最大 2000 点 / 20問で最大 40,000 点
-   ランク (8段階, 仕様書 8-2 準拠):
-     SS: 全問正解 AND 平均 <= 15秒   上位 0.01% (神)
-     S : 正答率 >= 0.95              上位 1%
-     A : 正答率 >= 0.85              上位 3%
-     B : 正答率 >= 0.70              上位 10%
-     C : 正答率 >= 0.50              下位 30%
-     D : 正答率 >= 0.30              下位 60%
-     E : 正答率 >= 0.10              下位 90%
-     F : それ未満 / 即死(B21)終了     下位 99%+
 
-   B21 で即死終了したセッションは session.deathEnd = true。
-   deathEnd が立っている場合、正答率に関係なく強制 F。
+   ランク判定 (2026-04 改訂):
+     SS: 全問正解 AND 合計 <= 2:30 (150s) — 鬼仕様・激レア
+     S : 全問正解 AND 合計 <= 3:30 (210s)
+     A : 正答率 >= 95% (≤1ミス) AND 合計 <= 4:00 (240s)
+     B : 正答率 >= 70%                (時間不問)
+     C : 正答率 >= 50%
+     D : 正答率 >= 30%
+     E : 正答率 >= 10%
+     F : それ未満 / 即死(B21/G1)終了
+
+   注意: "100% 正解でも遅いと B 落ち" は意図通りの鬼仕様。
+   B21/G1 即死で session.deathEnd = true → 強制 F。
    ============================================================ */
 
 (function () {
     const Q_TIME_LIMIT_MS = 60 * 1000; // 1問あたり60秒
     const BASE_POINT = 1000;
     const TIME_BONUS_MAX = 1000;
-    const SS_AVG_TIME_SEC = 15;
+    // 合計時間制限 (20問 total)
+    const SS_TOTAL_TIME_SEC = 150;  // 2:30
+    const S_TOTAL_TIME_SEC  = 210;  // 3:30
+    const A_TOTAL_TIME_SEC  = 240;  // 4:00
 
     function computeQuestionScore(answer) {
         if (!answer || !answer.correct) return { base: 0, timeBonus: 0, total: 0 };
@@ -52,13 +56,13 @@
 
         let rank;
         if (session.deathEnd) {
-            // B21 即死終了は強制 F。演出・ネタ枠。
+            // B21/G1 即死終了は強制 F
             rank = 'F';
-        } else if (accuracy >= 1.0 && avgTimeSec <= SS_AVG_TIME_SEC && total > 0) {
+        } else if (total > 0 && accuracy >= 1.0 && totalTimeSec <= SS_TOTAL_TIME_SEC) {
             rank = 'SS';
-        } else if (accuracy >= 0.95) {
+        } else if (total > 0 && accuracy >= 1.0 && totalTimeSec <= S_TOTAL_TIME_SEC) {
             rank = 'S';
-        } else if (accuracy >= 0.85) {
+        } else if (accuracy >= 0.95 && totalTimeSec <= A_TOTAL_TIME_SEC) {
             rank = 'A';
         } else if (accuracy >= 0.70) {
             rank = 'B';

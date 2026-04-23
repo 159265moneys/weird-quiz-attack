@@ -23,8 +23,7 @@
 
             // 上位 % / 現実換算ラベル (ランダムだが session 内で固定)
             const meta = window.Ranks?.META?.[result.rank] || {};
-            const stageNo = window.GameState.currentStage;
-            const percentileText = window.Ranks?.percentileText(result.rank, stageNo) || '';
+            const percentileText = window.Ranks?.percentileText(result.rank) || '';
             const seed = `${s.startAt}_${result.rank}`;
             const realLabel = window.Ranks?.pickLabel(result.rank, seed) || '';
             const isPositive = !!meta.positive;
@@ -201,143 +200,168 @@
         },
     };
 
-    // ---------- ナビゲーターによるランク別コメント ----------
-    // 2026-04 セリフレパートリー 5 倍増量 (女性カジュアル口調に統一)。
-    //   - 各ランクに 5 パターンの variants を用意し、session seed で安定抽選
-    //   - deathLines も 5 パターンに増量
-    //   - 抽選は session.startAt + rank をハッシュして決めるので、同一結果画面内で
-    //     リロードしない限り固定 (毎回バラバラにならず落ち着いて読める)
+    // ---------- ナビゲーターによる tier 別コメント ----------
+    // セリフ選択ルール:
+    //   - 基本は rank → tier の固定 1:1 マップ (RANK_META 参照)
+    //   - F のみ例外で 2 分岐:
+    //     * Stage 10 死亡 → 慰め系 (最終ステージは仕方ない枠)
+    //     * それ以外の F (Stage 1-9 死亡 / 非死亡 F) → DOOMED 固定 (伝説のアホ)
+    //   - 口調は女性カジュアル統一
     // TODO (future phase): プロフィールアイコン (クラゲ和装/TVロリ/蓄音機白衣) に
-    //   応じてキャラ口調と立ち絵を切り替える。アス比問題 (現ナビ画像は長方形、
-    //   プロフキャラは正方形) の吸収処理も合わせて実装。
+    //   応じてキャラ口調と立ち絵を切り替える。
     function speakResultComment(result, deathEnd) {
         if (!window.Navigator) return;
         const rank = result.rank;
-        const pct = window.Ranks?.percentileText(rank, window.GameState.currentStage) || '';
-        const meta = window.Ranks?.META?.[rank] || {};
-        const label = meta.labels?.[0] || '';
-        const seed = `${window.GameState?.session?.startAt || 0}_${rank}_${deathEnd ? 'd' : 'n'}`;
+        const stageNo = window.GameState.currentStage;
+        const pct = window.Ranks?.percentileText(rank) || '';
+        const seed = `${window.GameState?.session?.startAt || 0}_${rank}_${stageNo}_${deathEnd ? 'd' : 'n'}`;
 
-        // ランク別 variants (各 5 パターン)
+        // F ランク特別扱い (Stage 10 死亡 = 慰め / その他 F = DOOMED 固定)
+        const isF = rank === 'F';
+        const isStage10Death = isF && deathEnd && stageNo === 10;
+        const dialogueTier = isStage10Death
+            ? null
+            : (window.Ranks?.tierOf(rank) || 'DOOMED');
+
+        // ラベル (セリフ内 ${label} に埋め込み)
+        let label = '';
+        if (dialogueTier) {
+            const labelBank = window.Ranks?.TIER_LABELS?.[dialogueTier] || [];
+            if (labelBank.length) {
+                label = labelBank[hashSeed(seed + '_label') % labelBank.length];
+            }
+        }
+
+        // tier 別 variants (各 5 パターン / 女性カジュアル)
+        // 固定マッピング: SS→GODLIKE / S→ELITE / A→STRONG / B→DECENT
+        //                 C→NORMAL_DOWN / D→WEAK / E→TERRIBLE / F→DOOMED
         const DIALOGS = {
-            SS: {
+            // SS (上位 0.3%) — 神扱い・疑念
+            GODLIKE: {
                 poses: ['happy', 'hi'],
                 variants: [
-                    ['嘘でしょ…！全問正解、しかも早い！',             `${pct}…${label}級です。もう、人類の域じゃない。`],
-                    ['ちょっと、やば…マジで神じゃん。',                 `${pct} って、${label} のあれだよ？`],
-                    ['ねえ、ちょっと、チートじゃないよね…？',           `${pct}。${label} って頭脳、何食べたら育つの。`],
-                    ['こんなの、見たことないんですけど…。',              `${pct}。異次元すぎ。${label}、くらいじゃない？`],
-                    ['…一応聞くけど、あなた人間？',                    `${pct}…${label}、だってさ。ホンモノかも。`],
+                    ['嘘でしょ…！全問、しかもこのスピード。',          `${pct}。${label} のあれだよ？人類の域じゃない。`],
+                    ['ちょっと、やば。マジで神じゃん。',                 `${pct}。${label}、って出てる。ホンモノかも。`],
+                    ['ねえ、一応聞くけど、あなた人間？',                 `${pct}。${label} って頭脳、何食べたら育つの。`],
+                    ['こんなの、見たことないんですけど…。',              `${pct}。異次元すぎ、${label} レベル。`],
+                    ['…チートじゃないよね？ほんとに？',                  `${pct}。${label}、って。引いた、さすがに。`],
                 ],
             },
-            S: {
+            // S (上位 2%) — ベタ褒め
+            ELITE: {
                 poses: ['happy', 'hi'],
                 variants: [
-                    ['すごい。かなり上手いね。',                        `${pct} は、${label} レベルだよ。`],
-                    ['あと一問だったのに〜、惜しい！',                  `${pct}。それでも ${label} に匹敵する。`],
-                    ['ほぼ満点じゃない？次は SS いけるかも。',           `${pct}。${label} より、やや上の立ち位置。`],
-                    ['えーすごい。私には無理かも、これ。',              `${pct}。${label} 級です。`],
-                    ['マジか…本気出したね、それ。',                    `${pct} は ${label} の水準。`],
+                    ['すごい、普通にすごい。',                          `${pct} は ${label} の水準だよ。`],
+                    ['全問正解、ってだけで普通に上位。',                 `${pct}。${label} 級、って思っていい。`],
+                    ['マジか…本気出したね、それ。',                     `${pct}。${label} に匹敵する結果。`],
+                    ['えーすごい。私には無理かも、これ。',               `${pct}。${label}、って出てる。`],
+                    ['これはちょっと、自慢していいやつ。',               `${pct} は ${label} レベル。`],
                 ],
             },
-            A: {
+            // A (上位 8%) — 普通に褒め
+            STRONG: {
                 poses: ['hi', 'basic'],
                 variants: [
-                    [`${pct}。かなり強いほうだと思う。`,                `${label} くらいの頭脳って感じ。`],
+                    ['うん、上手。ちゃんと読めてる。',                   `${pct} は ${label} クラス。`],
+                    ['かなり強いほう、だと思うよ。',                     `${pct}。${label} くらいの立ち位置。`],
+                    ['いい感じ。自信持っていいと思う。',                 `${pct} は ${label} 相当。`],
                     ['惜しい問題いくつかあったね、おしい。',             `${pct}、${label} クラスだよ。`],
-                    ['うん、上手。ちゃんと読めてる。',                   `${pct} は ${label} 並み、って出てる。`],
-                    ['えー、あの問題取ってほしかったかも…。',            `でも ${pct}。${label} 相当の頭脳。`],
-                    ['いい感じ。自信持っていいと思う。',                 `${pct} は ${label} クラス。`],
+                    ['普通にえらい。ここまでくれば。',                   `${pct}。${label} に並ぶ結果。`],
                 ],
             },
-            B: {
-                poses: ['basic'],
+            // B (上位 25%) — いい感じ
+            DECENT: {
+                poses: ['basic', 'hi'],
                 variants: [
-                    [`${pct}。悪くないじゃない。`,                      `${label}、くらいの位置。`],
-                    ['普通に上手いと思うよ、これ。',                    `${pct}。${label} と同格。`],
-                    ['もうちょい取れたかもね、惜しい。',                 `${pct}、${label} あたり。`],
+                    ['悪くないじゃない。',                               `${pct}。${label}、くらいの位置。`],
+                    ['普通に上手いと思うよ、これ。',                     `${pct} は ${label} と同格。`],
                     ['平均より、ちょっと上ってところ。',                 `${pct}。${label} クラスです。`],
-                    ['ギリギリ合格ライン、みたいな？',                  `${pct}、${label} レベル。`],
+                    ['ギリギリ合格ライン、みたいな?',                    `${pct}、${label} レベル。`],
+                    ['もうちょい取れたかもね、惜しい。',                 `${pct}、${label} あたり。`],
                 ],
             },
-            C: {
+            // C (下位 50% = 中央値) — 並・凡人
+            NORMAL_DOWN: {
                 poses: ['basic', 'think'],
                 variants: [
-                    [`${pct}…まあ、${label} だね。`,                    '崩壊 UI に惑わされすぎ、かも？'],
-                    ['もっといけたんじゃない？ほんとに。',                `${pct}。${label} と同等。`],
-                    ['ふつうに並、だね。',                               `${pct} は ${label} のゾーン。`],
-                    ['ギミックにやられたね、これは。',                   `${pct}、${label} くらいの位置。`],
-                    [`${pct}。${label}、って結果。`,                    'ま、こんな日もあるよ。'],
+                    ['ふつうに並、だね。',                               `${pct}。${label} あたり。`],
+                    ['ギミックにやられた、って感じ?',                    `${pct}、${label}。切り替えていこ。`],
+                    ['まあまあ、こういう日もあるよ。',                   `${pct}。${label} ってとこ。`],
+                    ['崩壊 UI に惑わされすぎ、かも?',                   `${pct} は ${label} のゾーン。`],
+                    ['次いこ、次。集中すればまだ行けるって。',           `${pct}、${label}。`],
                 ],
             },
-            D: {
+            // D (下位 20%) — 要練習
+            WEAK: {
                 poses: ['think'],
                 variants: [
-                    [`${pct}。あと一歩、って感じ。`,                    `ラベルは「${label}」。もうちょい。`],
-                    ['もうちょっと頑張れそう、だよ？',                   `${pct}、${label}。`],
-                    ['惜しい答えが多かったかも。',                       `${pct} は ${label} ゾーン。`],
-                    ['うーん、これは練習が必要かな。',                   `${pct}。${label} って結果。`],
-                    ['次いこ、次！集中すればまだ行けるって。',           `${pct}、${label}。`],
+                    ['うーん、もうちょっと取れたんじゃない?',            `${pct}。${label}、って結果。`],
+                    ['集中、してた?ほんとに。',                          `${pct} は ${label} 相当。`],
+                    ['これは練習が必要、かもね。',                       `${pct}、${label}。`],
+                    ['もったいない。惜しい答えが多かった。',             `${pct}。${label} ってとこ。`],
+                    ['次、本気出そ?いける、まだ。',                     `${pct} は ${label}。`],
                 ],
             },
-            E: {
+            // E (下位 5%) — ぴえん
+            TERRIBLE: {
                 poses: ['think_light'],
                 variants: [
-                    [`${pct}…「${label}」と出ました。`,                 'UI 崩壊に呑まれてしまったね。'],
-                    ['なんか、集中できなかった感じ？',                   `${pct}、${label}。`],
-                    ['問題、ちゃんと読めてる？',                         `${pct} は ${label} 相当。`],
+                    ['なんか、集中できなかった感じ?',                    `${pct}、${label}。`],
+                    ['問題、ちゃんと読めてる?',                          `${pct} は ${label} 相当。`],
                     ['ギミックに完全に負けてるよ、これ。',               `${pct}。${label}、だって。`],
-                    ['まあ、のびしろだよ、のびしろ。',                   `${pct}、${label} 認定。`],
+                    ['…うん、練習、しよっか。',                          `${pct}、${label} 認定。`],
+                    ['のびしろだよ、のびしろ。たぶん。',                 `${pct}、${label}。`],
                 ],
             },
-            F: {
+            // F (下位 0.5%) — 伝説のアホ
+            // Stage 10 死亡は別枠 (STAGE10_DEATH_COMFORT) で処理、ここには来ない
+            DOOMED: {
                 poses: ['think_light'],
                 variants: [
-                    [`${pct}。「${label}」。`,                          'これは、再挑戦が必要かも。'],
-                    ['…なんて言ったらいいんだろう。',                    `${pct}。「${label}」だよ？`],
-                    ['あの…大丈夫？体調悪いとか？',                     `${pct}、${label}。ちょっと休もっか？`],
-                    ['うん、これはやばいよ普通に。',                     `${pct}。${label} の称号、ゲット。`],
-                    ['えっと…自信、持ってくれていいよ。逆の意味で。',      `${pct}、${label}。`],
+                    ['…なんて言ったらいいんだろう。',                    `${pct}。「${label}」、だってさ。`],
+                    ['あの…大丈夫?体調悪いとか?',                      `${pct}、${label} 認定。ちょっと休もっか?`],
+                    ['うん、これはやばいよ普通に。',                     `${pct}。「${label}」の称号、ゲット。`],
+                    ['自信、持ってくれていいよ。逆の意味で。',           `${pct}、${label}。`],
+                    ['これ、なかなか見ないやつ。',                       `${pct}。「${label}」、レジェンド。`],
                 ],
             },
         };
 
-        // deathEnd 用 (即死 B21/G1 終了) も 5 パターン
-        const DEATH_VARIANTS = [
+        // Stage 10 死亡専用 (慰め系) — Stage 10 まで到達したこと自体は評価する
+        const STAGE10_DEATH_COMFORT = [
             {
                 poses: ['think_light', 'think'],
                 lines: [
-                    'あ、死んだ。',
-                    'あのギミックはもう、避けようが無い場合もあるから。',
-                    '次はうまく切り抜けて。',
-                ],
-            },
-            {
-                poses: ['think_light'],
-                lines: [
-                    'UI に殺された、って顔してる。',
-                    'ドンマイ、こういう日もあるよ。',
+                    'Stage 10 で死亡、って。まあ、運もあるから。',
+                    'ドンマイ、気にしないで。',
                 ],
             },
             {
                 poses: ['think'],
                 lines: [
-                    '突然、死ぬよね、このゲーム。',
-                    '次は気をつけて、って言っても無理かもだけど。',
-                ],
-            },
-            {
-                poses: ['think_light', 'basic'],
-                lines: [
-                    'それ、避けられる即死じゃなかった気も…しないかな。',
-                    '再挑戦、どうぞ。',
+                    'ここまで来てそれはキツいね。',
+                    'でも Stage 10 は仕方ない部分もあるから。',
                 ],
             },
             {
                 poses: ['basic', 'think'],
                 lines: [
-                    'あら〜、即死ですか。',
-                    '慣れだよ、慣れ。次いこ。',
+                    'あそこまで行っただけ、普通にすごいよ。',
+                    '死因は、気にしないでよし。たぶん。',
+                ],
+            },
+            {
+                poses: ['think_light'],
+                lines: [
+                    '最終ステージで死亡、これは切ない。',
+                    'また挑戦してみて、次こそ。',
+                ],
+            },
+            {
+                poses: ['basic'],
+                lines: [
+                    'Stage 10 は死ぬ前提、くらいに考えていいから。',
+                    '切り替えて、また来てね。',
                 ],
             },
         ];
@@ -350,12 +374,14 @@
         }
 
         let poses, lines;
-        if (deathEnd) {
-            const pick = DEATH_VARIANTS[hashSeed(seed) % DEATH_VARIANTS.length];
+        if (isStage10Death) {
+            // Stage 10 死亡 → 慰め専用
+            const pick = STAGE10_DEATH_COMFORT[hashSeed(seed) % STAGE10_DEATH_COMFORT.length];
             poses = pick.poses;
             lines = pick.lines;
         } else {
-            const bank = DIALOGS[rank] || DIALOGS.C;
+            // それ以外: tier ベース (F は forcedDoomed により 'DOOMED' 固定)
+            const bank = DIALOGS[dialogueTier] || DIALOGS.NORMAL_DOWN;
             const variants = bank.variants;
             lines = variants[hashSeed(seed) % variants.length];
             poses = bank.poses;
