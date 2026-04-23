@@ -50,5 +50,9 @@ android/app/src/main/assets/capacitor.plugins.json
 .env
 .env.local
 
+# Python venv (tools/*.py 用)
+.venv-icon/
+.venv/
+
 # Backup files (created before destructive rewrites; keep locally)
 *.bak

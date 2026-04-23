@@ -9,6 +9,7 @@
     "cap:open:ios": "npx cap open ios",
     "cap:open:android": "npx cap open android",
     "cap:run:ios": "npm run build && npx cap sync ios && npx cap run ios",
+    "assets:generate": "npx @capacitor/assets generate --iconBackgroundColor \"#ffffff\" --iconBackgroundColorDark \"#0a0a0a\" --splashBackgroundColor \"#0a0a0a\" --splashBackgroundColorDark \"#0a0a0a\"",
     "seed:ranking": "node tools/seed_ranking.js"
   },
   "dependencies": {

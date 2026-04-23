@@ -27,7 +27,17 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const OUT  = path.join(ROOT, 'www');
 
-const INCLUDE_FILES = ['index.html'];
+const INCLUDE_FILES = [
+    'index.html',
+    // favicon / apple-touch-icon 類 (Web 版 / PWA 用。ネイティブアプリの
+    // アイコンは @capacitor/assets で別系統に生成されるのでここには不要だが、
+    // Capacitor の WebView 内でもタブ/ショートカット用に参照されるので含める)
+    'apple-touch-icon.png',
+    'icon-192.png',
+    'icon-512.png',
+    'favicon-32.png',
+    'favicon-16.png',
+];
 const INCLUDE_DIRS  = ['audio', 'data', 'js', 'sprite', 'styles'];
 
 function rmrf(p) {

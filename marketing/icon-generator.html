@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024, initial-scale=1">
+<title>App Icon — 変なクイズ (1024×1024)</title>
+<style>
+    /* =========================================================
+       App Icon (1024 × 1024)
+       ベース: icon.png (パズル女 + クロマ影 込み)
+       上に動的に VHS 帯 + 浮遊文字だけ乗せる。
+       使い方: DevTools で #icon を右クリック → Capture node screenshot
+       ========================================================= */
+    * { box-sizing: border-box; }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        background: #222;
+        font-family: "Helvetica Neue", "Hiragino Kaku Gothic ProN",
+                     "Yu Gothic", sans-serif;
+    }
+    body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        gap: 20px;
+    }
+    .meta {
+        color: #ccc;
+        font-size: 13px;
+        letter-spacing: 0.1em;
+        text-align: center;
+        line-height: 1.6;
+    }
+    .meta code {
+        color: #00e5ff;
+        background: rgba(0,0,0,0.35);
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+
+    /* --- アイコン本体 --- */
+    #icon {
+        position: relative;
+        width: 1024px;
+        height: 1024px;
+        overflow: hidden;
+        background: #ffffff;
+        box-shadow: 0 0 60px rgba(0,0,0,0.5);
+        outline: 1px solid #000;
+    }
+
+    /* ベース画像: パズル女 + クロマ影ずれ入りの完成絵 */
+    #iconBase {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+        z-index: 5;
+    }
+
+    /* --- 浮遊英数字 (ベースより奥の z-index 4) --- */
+    .floaters {
+        position: absolute; inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        color: rgba(0, 0, 0, 0.55);
+        font-family: "Courier New", monospace;
+        letter-spacing: 0.2em;
+        z-index: 4;
+    }
+    .floaters span {
+        position: absolute;
+        white-space: nowrap;
+        opacity: 0.7;
+    }
+
+    /* --- VHS ランダム横帯 (ベースより手前の z-index 10) --- */
+    .tracks {
+        position: absolute; inset: 0;
+        pointer-events: none;
+        z-index: 10;
+    }
+    .tracks .trk {
+        position: absolute;
+        left: 0; right: 0;
+        mix-blend-mode: multiply;
+    }
+
+    /* --- ツールバー (スクショに映らない) --- */
+    .toolbar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        background: #111;
+        padding: 8px 12px;
+        border-radius: 8px;
+    }
+    .toolbar button {
+        background: #222;
+        color: #eee;
+        border: 1px solid #444;
+        padding: 8px 14px;
+        font-size: 13px;
+        letter-spacing: 0.1em;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: inherit;
+    }
+    .toolbar button:hover { background: #333; border-color: #00e5ff; color: #00e5ff; }
+</style>
+</head>
+<body>
+
+<div class="meta">
+    App Icon — <code>1024 × 1024</code><br>
+    Chrome/Safari 推奨・DevTools の <code>#icon</code> を右クリック → Capture node screenshot
+</div>
+
+<div class="toolbar">
+    <button id="reshuffle">再抽選 (VHS + 浮遊文字)</button>
+    <button id="toggleOutline">アウトライン ON/OFF</button>
+</div>
+
+<div id="icon">
+    <!-- 浮遊文字 (ベースより奥) -->
+    <div class="floaters" id="floaters"></div>
+
+    <!-- ベース画像 (パズル女 + クロマ影ずれ入り) -->
+    <img id="iconBase" src="./icon.png" alt="">
+
+    <!-- VHS 帯 (ベースより手前) -->
+    <div class="tracks" id="tracks"></div>
+</div>
+
+<script>
+    const rand  = (a, b) => a + Math.random() * (b - a);
+    const randi = (a, b) => Math.floor(rand(a, b));
+
+    // --- 散らす文字 ---
+    // 女は中央 ~80% を占有するので、70% 程度の文字が外周 (上下端+左右マージン)
+    // に落ちるように偏らせる。
+    const POOL = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#@!?*+=/\\><_';
+    const WORDS = ['WEIRD', 'ERROR', 'GLITCH', 'SIGNAL', '!?!?', 'CH-03',
+                   'NO-DATA', '0x00FF', 'ver.∞', 'BOOT', 'SYNC'];
+    function pickPos() {
+        const r = Math.random();
+        if (r < 0.25) return { top: rand(-2, 16),  left: rand(-2, 98)  };   // 上
+        if (r < 0.50) return { top: rand(84, 102), left: rand(-2, 98)  };   // 下
+        if (r < 0.70) return { top: rand(10, 90),  left: rand(-3, 15)  };   // 左
+        if (r < 0.90) return { top: rand(10, 90),  left: rand(84, 102) };   // 右
+        return { top: rand(0, 100), left: rand(0, 100) };                   // 全域
+    }
+    function scatterText() {
+        const host = document.getElementById('floaters');
+        host.innerHTML = '';
+        const FRAG = document.createDocumentFragment();
+        for (let i = 0; i < 54; i++) {
+            const c = POOL[randi(0, POOL.length)];
+            const p = pickPos();
+            const s = document.createElement('span');
+            s.textContent = c;
+            s.style.cssText = `
+                top:${p.top}%;
+                left:${p.left}%;
+                font-size:${randi(42, 140)}px;
+                opacity:${rand(0.30, 0.78).toFixed(2)};
+                transform:rotate(${rand(-18, 18).toFixed(1)}deg);
+            `;
+            FRAG.appendChild(s);
+        }
+        for (let i = 0; i < 16; i++) {
+            const w = WORDS[randi(0, WORDS.length)];
+            const p = pickPos();
+            const s = document.createElement('span');
+            s.textContent = w;
+            s.style.cssText = `
+                top:${p.top}%;
+                left:${Math.min(p.left, 80)}%;
+                font-size:${randi(30, 72)}px;
+                opacity:${rand(0.25, 0.65).toFixed(2)};
+                transform:rotate(${rand(-20, 20).toFixed(1)}deg);
+            `;
+            FRAG.appendChild(s);
+        }
+        host.appendChild(FRAG);
+    }
+
+    // --- VHS ランダム帯 ---
+    function scatterTracks() {
+        const host = document.getElementById('tracks');
+        host.innerHTML = '';
+        const FRAG = document.createDocumentFragment();
+        const n = randi(12, 18);
+        for (let i = 0; i < n; i++) {
+            const t = document.createElement('div');
+            t.className = 'trk';
+            const top    = rand(2, 97);
+            const heavy  = Math.random() < 0.15;
+            const height = heavy ? rand(10, 18) : rand(1.2, 9);
+            const alpha  = heavy ? rand(0.18, 0.32) : rand(0.05, 0.22);
+            t.style.cssText = `
+                top:${top}%;
+                height:${height.toFixed(1)}px;
+                background: rgba(0,0,0,${alpha.toFixed(3)});
+            `;
+            FRAG.appendChild(t);
+        }
+        host.appendChild(FRAG);
+    }
+
+    function reshuffle() {
+        scatterText();
+        scatterTracks();
+    }
+    reshuffle();
+
+    document.getElementById('reshuffle').addEventListener('click', reshuffle);
+    document.getElementById('toggleOutline').addEventListener('click', () => {
+        const el = document.getElementById('icon');
+        el.style.outline = el.style.outline ? '' : '1px solid #000';
+    });
+</script>
+
+</body>
+</html>
