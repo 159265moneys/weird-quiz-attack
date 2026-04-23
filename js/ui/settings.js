@@ -72,8 +72,6 @@
                         <span class="settings-mute-label">VIBRATION</span>
                     </label>
                 </div>
-
-                <div class="settings-hint">スライダー: 音量 5〜100% / 完全消音は MUTE ALL</div>
             </div>
         `;
         document.body.appendChild(overlay);

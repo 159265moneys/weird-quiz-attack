@@ -210,9 +210,9 @@
                 </button>
             `);
         }
-        if (items.length === 0) {
-            return `<div class="hm-pf-av-empty">sprite/avatars/ に画像と manifest.json のエントリを追加してください</div>`;
-        }
+        // items が空 (manifest 未ロード/空) でも「—」セル単独のグリッドを返す。
+        //   ここに開発者向けの警告文を出していた過去があるが、プロダクション UI に
+        //   漏れる懸念があるため削除 (2026-04)。
         return `<div class="hm-pf-av-grid">${cells.join('')}</div>`;
     }
 
@@ -255,15 +255,12 @@
                             autocomplete="off"
                             autocapitalize="off"
                             spellcheck="false"
-                            placeholder="(未設定なら ID をそのまま表示)"
                             value="${inputVal}">
-                        <div class="hm-pf-hint">空にすると ID 表示に戻ります (最大 16 文字)</div>
                     </div>
 
                     <div class="hm-pf-row">
                         <div class="hm-pf-lbl">ICON</div>
                         <div class="hm-pf-avwrap">${buildAvatarGridHTML(iconId)}</div>
-                        <div class="hm-pf-hint">タップで即反映。左端の "—" は未選択に戻す</div>
                     </div>
 
                     <div class="hm-pf-actions">
@@ -367,10 +364,6 @@
                     <div class="hm-about-logo">変なクイズ</div>
                     <div class="hm-about-sub">WEIRD QUIZ ATTACK</div>
                     <div class="hm-about-ver">v${ver}</div>
-                    <p class="hm-about-desc">
-                        UI が崩壊していく中で正解を掴むスコアアタック型クイズ。<br>
-                        世界観: モノクロ + シアン/レッド の VHS 風ディストピア。
-                    </p>
                     <div class="hm-about-credit">
                         Icons: Lucide (MIT)<br>
                     </div>

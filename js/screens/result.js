@@ -202,6 +202,10 @@
     };
 
     // ---------- ナビゲーターによるランク別コメント ----------
+    // TODO (next phase): ランク毎のセリフを現状の ~5 倍にレパートリー拡張する。
+    //   - 各ランクに複数パターン (3〜5個) を用意して Math.random() で抽選
+    //   - deathLines も 5 倍程度に増量 (即死パターンは煽りの幅が効く)
+    //   - 本項は「余計な UI 文字を削る」整理の一環で一時凍結 (2026-04)。
     function speakResultComment(result, deathEnd) {
         if (!window.Navigator) return;
         const rank = result.rank;
