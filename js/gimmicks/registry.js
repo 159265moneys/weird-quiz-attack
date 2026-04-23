@@ -118,21 +118,20 @@
                 timers.add(t);
             }
 
-            // 2026-04 調整: 発射間隔 1.5x (休憩 1800〜3500ms → 1200〜2333ms)。
-            // 排他発射の厳格ルールは廃止しつつ、同時発射数を 2 本まで cap する。
-            // 理由: .gk-b11-core は box-shadow 3 重 + mix-blend-mode + will-change の
-            //      GPU 重量級レイヤー。4 本全部が同時に is-fire になると WKWebView の
-            //      GPU メモリ枠を超えて iOS がプロセスを kill する
-            //      (= 実機で「ビーム連射中に落ちてタイトルに戻る」 症状の原因)。
-            //      2 本までなら「被ってもOK」の仕様も満たしつつ安全。
-            const MAX_CONCURRENT = 2;
+            // 2026-04 再調整 v2 (実機クラッシュ報告を受けて):
+            //   CSS 側で box-shadow / mix-blend-mode / will-change(常時) を全廃したので
+            //   1 本あたりの GPU コストは ~15% に。ただし「2本同時」でもまだ iOS 実機で
+            //   落ちるケースが残るため、保険として同時発射数は 1 に厳格化。
+            //   連射感は「1本の発射 → ほぼ間髪入れず次の本が発射」で維持できるよう
+            //   他ビームは発射終了 100〜400ms で次の発射チャンスを得る。
+            const MAX_CONCURRENT = 1;
             let concurrentFires = 0;
 
             function fire(beam) {
                 if (!alive) return;
-                // 既に 2 本撃ってる場合は少し待って再挑戦 (重なり自体は許容)
+                // 既に上限撃ってる場合は短期リトライ (互いに順番待ち)
                 if (concurrentFires >= MAX_CONCURRENT) {
-                    schedule(() => fire(beam), 200 + Math.random() * 400);
+                    schedule(() => fire(beam), 120 + Math.random() * 280);
                     return;
                 }
                 concurrentFires++;
@@ -142,13 +141,14 @@
                 schedule(() => {
                     beam.classList.remove('is-fire');
                     concurrentFires = Math.max(0, concurrentFires - 1);
-                    schedule(() => fire(beam), 1200 + Math.random() * 1133);
+                    // 休憩は 600〜1400ms (同時1本制約下でも"連射感"を保つ短めレンジ)
+                    schedule(() => fire(beam), 600 + Math.random() * 800);
                 }, FIRE_DURATION);
             }
 
-            // 初期ずらしも 1.5x テンポに (i*800 → i*530)
+            // 4本を順番に起動 (初期ずらし 400ms 刻み)
             beams.forEach((beam, i) => {
-                schedule(() => fire(beam), 300 + i * 530 + Math.random() * 600);
+                schedule(() => fire(beam), 300 + i * 400 + Math.random() * 300);
             });
 
             return () => {
@@ -627,6 +627,11 @@
 
     // --- B26 問題文カラーバラ ---
     // 各文字をランダムな色に。読めるが目がチカチカする視覚疲労系。
+    // 注意: .q-stem は display:flex なので <span> を直に並べると各 span が
+    // 別々の flex item になって折り返さず、長文で横にはみ出る。
+    // → 単一のインラインラッパ <span class="gk-b26-inner"> に全文字 span を
+    //   格納して、それを 1 個の flex item として扱う。ラッパ内部は通常の
+    //   インラインフロー + word-break で改行する。
     const B26_COLOR_RANDOM = {
         id: 'B26', name: '問題文カラーバラ', supports: 'both', introducedAt: 4, difficulty: 4,
         conflicts: stemConflictsExcept('B26'),
@@ -636,13 +641,13 @@
             const originalHTML = stem.innerHTML;
             const original = stem.textContent;
             const PALETTE = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#c780ff', '#ff9f43', '#7ef9ff'];
-            const html = Array.from(original).map(ch => {
+            const inner = Array.from(original).map(ch => {
                 if (/\s/.test(ch)) return ch;
                 const c = PALETTE[Math.floor(Math.random() * PALETTE.length)];
                 return `<span style="color:${c}">${esc(ch)}</span>`;
             }).join('');
             stem.classList.add('gk-b26-color');
-            stem.innerHTML = html;
+            stem.innerHTML = `<span class="gk-b26-inner">${inner}</span>`;
             return () => {
                 stem.classList.remove('gk-b26-color');
                 stem.innerHTML = originalHTML;
@@ -688,13 +693,15 @@
             const original = stem.textContent;
             // 読める範囲の最小 24px 〜 クソでかの最大 64px
             const SIZES = [24, 28, 32, 38, 46, 52, 58, 64];
-            const html = Array.from(original).map(ch => {
+            const inner = Array.from(original).map(ch => {
                 if (/\s/.test(ch)) return ch;
                 const s = SIZES[Math.floor(Math.random() * SIZES.length)];
                 return `<span style="font-size:${s}px;line-height:1;vertical-align:middle">${esc(ch)}</span>`;
             }).join('');
             stem.classList.add('gk-b28-size');
-            stem.innerHTML = html;
+            // B26 と同じ理由 (.q-stem が flex で char span が個別 flex item 化するのを
+            // 避けるため) インラインラッパに包んでから挿入。
+            stem.innerHTML = `<span class="gk-b28-inner">${inner}</span>`;
             return () => {
                 stem.classList.remove('gk-b28-size');
                 stem.innerHTML = originalHTML;
@@ -799,7 +806,11 @@
     // 化け確率: 70% (前: 30%) → 半分以上の時間は読めない状態に。
     const B07_GLITCH = {
         id: 'B07', name: 'グリッチ', supports: 'both', introducedAt: 2, difficulty: 3,
-        conflicts: ['B12', 'B13'],
+        // 2026-04: B09 (画面縮小) を追加。
+        //   60% スケール + 120ms の "読める瞬間" が極小になる → Stage10 Q2 の
+        //   「意味不明で解けない」スクショ報告の根本原因。読む窓が確保できる
+        //   組み合わせだけ許可する。
+        conflicts: ['B09', 'B12', 'B13'],
         apply(ctx) {
             const stem = q(ctx.screen, '.q-stem');
             if (!stem) return () => {};

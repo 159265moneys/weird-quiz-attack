@@ -44,7 +44,9 @@
                         <span class="settings-label">BGM</span>
                         <span class="settings-value" id="settingsBgmVal">35</span>
                     </div>
-                    <input type="range" class="settings-slider" id="settingsBgm" min="0" max="100" step="1" value="35">
+                    <!-- min=5: 誤操作で 0 まで下げて "SE だけ鳴らない" 状態に詰むのを防止。
+                         完全消音は下の MUTE ALL を使う。 -->
+                    <input type="range" class="settings-slider" id="settingsBgm" min="5" max="100" step="1" value="35">
                 </div>
 
                 <div class="settings-row">
@@ -52,7 +54,7 @@
                         <span class="settings-label">SE</span>
                         <span class="settings-value" id="settingsSeVal">80</span>
                     </div>
-                    <input type="range" class="settings-slider" id="settingsSe" min="0" max="100" step="1" value="80">
+                    <input type="range" class="settings-slider" id="settingsSe" min="5" max="100" step="1" value="80">
                 </div>
 
                 <div class="settings-row settings-row-mute">
@@ -71,7 +73,7 @@
                     </label>
                 </div>
 
-                <div class="settings-hint">タップ: スライダー調整 / ボタンで全消音</div>
+                <div class="settings-hint">スライダー: 音量 5〜100% / 完全消音は MUTE ALL</div>
             </div>
         `;
         document.body.appendChild(overlay);

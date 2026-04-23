@@ -47,7 +47,7 @@ REGISTRY: List[Gimmick] = [
     Gimmick('B18', '偽エラー表示',           'both', 1, 2, exclude_from_pool=True),
     # Stage 2
     Gimmick('B03', '問題文逆さ',             'both', 2, 3),
-    Gimmick('B07', 'グリッチ',               'both', 2, 3, conflicts=['B12', 'B13']),
+    Gimmick('B07', 'グリッチ',               'both', 2, 3, conflicts=['B09', 'B12', 'B13']),
     # Stage 3 (Batch 2)
     Gimmick('B02', '問題文1文字ずつ',        'both', 3, 4, conflicts=['B07', 'B08', 'B17']),
     Gimmick('B08', 'フェードアウト',         'both', 3, 4, conflicts=['B02', 'B12']),

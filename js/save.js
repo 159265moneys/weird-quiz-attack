@@ -79,6 +79,13 @@
                 if (s.bgmVolume == null || s.bgmVolume === 0.35) s.bgmVolume = 0.2;
                 if (s.muted == null) s.muted = false;
                 if (s.vibration == null) s.vibration = true;
+                // 2026-04 回復処理: 旧スライダーは min=0 まで下げられたため、
+                //   ユーザーが誤操作で SE/BGM 音量を 0 に張り付かせたまま保存 →
+                //   "SE だけ鳴らない" 状態で詰むケースがあった。
+                //   ごく小さい値 (< 0.02) は誤操作とみなしてデフォルトに戻す。
+                //   真の消音は MUTE ALL トグルを使う想定。
+                if (typeof s.seVolume === 'number' && s.seVolume < 0.02) s.seVolume = 0.8;
+                if (typeof s.bgmVolume === 'number' && s.bgmVolume < 0.02) s.bgmVolume = 0.2;
                 // プレイヤーブロックの後方互換:
                 //   - id が無ければ発行する
                 //   - 旧デフォルト name='PLAYER' は "未設定" 扱いにして ID 表示へ

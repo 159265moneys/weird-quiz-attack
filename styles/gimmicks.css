@@ -44,23 +44,36 @@
    外側 .gk-b11-beam: 角からの位置決めと回転のみ。
    内側 .gk-b11-core: 実際の光・グラデ・scaleX アニメ (ビビビ→ビー)。
    発射は scaleX(0→1) を4段階フリッカーで立ち上げる "gaster blaster" 風。
-   グラデ: 中心60% = pure white, 白→シアン 20%, シアン→透明 20%。
-   色はテーマカラー #00e5ff (var(--accent-cyan)) 統一。 */
+
+   2026-04 軽量化 v2 (iOS WKWebView OOM クラッシュ対策):
+     旧実装の重さの主因は以下:
+       - box-shadow 80/200px blur  (2600×320 要素で最大 2.16MP の shadow bitmap)
+       - mix-blend-mode: screen   (毎フレーム画面全体と合成パス)
+       - will-change 常時 ON       (待機中もレイヤ化)
+     これらを全廃し、グラデーションだけでコア光 + 周縁グローを表現する。
+     2本同時だと iOS でクラッシュしていたので MAX_CONCURRENT=1 も JS 側で設定。
+     box-shadow ラスタライズ無し + blend pass 無しで、GPU 負荷を元の ~15% に圧縮。 */
 .gk-b11-host {
     position: absolute;
     inset: 0;
     z-index: 80;
     pointer-events: none;
     overflow: hidden;
+    /* 子ビームを下に別レイヤ化してもホストは compositor 任せに。
+       contain で repaint/relayout 領域をこの要素内に閉じ込める */
+    contain: layout paint;
 }
 .gk-b11-beam {
     position: absolute;
-    width: 2600px;              /* 画面対角 (≈2200px) より十分長く */
-    height: 320px;              /* 極太ビーム */
-    margin-top: -160px;          /* 縦中央を基準点 (corner) に合わせる */
+    width: 2300px;              /* 1080×1920 の画面対角 ≈2203px を僅かに上回る長さ */
+    height: 200px;              /* 320→200 に縮小 (見た目のインパクトは確保) */
+    margin-top: -100px;          /* 縦中央を基準点 (corner) に合わせる */
     transform-origin: 0 50%;     /* 左端中央を回転軸 = 各corner */
     pointer-events: none;
 }
+/* core: コア光だけを描画。box-shadow は廃止してグラデに"にじみ"を内包。
+   縦 200px のうち、中央 ~60% を白熱芯、両脇に広いシアン減衰域を敷くことで
+   box-shadow 80px と同等の"ふわっと光ってる" 見た目を純グラデで再現する。 */
 .gk-b11-core {
     position: absolute;
     inset: 0;
@@ -68,33 +81,26 @@
     transform: scaleX(0);
     opacity: 0;
     background: linear-gradient(to bottom,
-        /* 下側 20% : 透明 → シアン (エッジ) */
         transparent                  0%,
-        rgba(0, 229, 255, 0.25)      5%,
-        rgba(0, 229, 255, 1.0)      10%,
-        /* 下側 20% : シアン → 白 */
-        #ffffff                     20%,
-        /* 中心 60% : 純白 */
-        #ffffff                     80%,
-        /* 上側 20% : 白 → シアン */
-        rgba(0, 229, 255, 1.0)      90%,
-        /* 上側 20% : シアン → 透明 */
-        rgba(0, 229, 255, 0.25)     95%,
+        rgba(0, 229, 255, 0.15)     10%,
+        rgba(0, 229, 255, 0.55)     22%,
+        rgba(120, 245, 255, 0.95)   32%,
+        #ffffff                     42%,
+        #ffffff                     58%,
+        rgba(120, 245, 255, 0.95)   68%,
+        rgba(0, 229, 255, 0.55)     78%,
+        rgba(0, 229, 255, 0.15)     90%,
         transparent                100%);
-    /* box-shadow は GPU ラスタライズ負荷が極端に重い。
-       一番外の 360px ブラー層だけ削って負荷 ~40% 削減。見た目的な光芒は
-       80/200 の 2 層で十分確保できる。2 本同時発射 + 他ギミック同居時の
-       WKWebView クラッシュ (OOM) 対策。 */
-    box-shadow:
-        0 0 80px  rgba(0, 229, 255, 0.95),
-        0 0 200px rgba(0, 229, 255, 0.55);
-    mix-blend-mode: screen;
-    will-change: opacity, transform;
+    /* mix-blend-mode, box-shadow, will-change すべて撤廃。
+       will-change は is-fire 時のみ JS 的に付けないことで、待機レイヤを非昇格に。
+       これにより 4 本 (待機3 + 発射1) が常時 GPU 層化する状況を避ける。 */
 }
 
-/* is-fire で 1.2 秒の発射アニメを開始 (forwards で終端保持) */
+/* is-fire 時のみ animation + レイヤ昇格ヒント。
+   終了後に class が外れて will-change も解ける → GPU メモリ解放。 */
 .gk-b11-beam.is-fire .gk-b11-core {
     animation: gkB11Fire 1.2s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+    will-change: transform, opacity;
 }
 
 /* チャージ (0-36%) = ビビビビビー, サステイン (36-88%), フェード (88-100%)
@@ -480,8 +486,9 @@
 }
 
 /* 血だれ:
-   複数本 (5本) の縦ストリークを background-image に積む。各本は
-     width: 14〜28px / 濃度/減衰/目標到達長が全部バラバラ
+   2026-04 改修: 5本→7本に増量 + 22s→12s でスピードアップ。
+   速さは「じわじわ」より「ぽたぽた → ぐじゅっ」寄り。
+   各本は width: 14〜28px / 濃度/減衰/目標到達長が全部バラバラ
    → 「雑に滴った血が少しずつ広がってる」リアル感。
    アニメは background-size の Y 値をキーフレームで個別に伸ばす形。
    transform/opacity ではなく "描画サイズ" が増えるだけなので画面は揺れない。
@@ -499,31 +506,37 @@
         linear-gradient(to bottom, rgba(145, 0, 0, 0.88) 0%, rgba(100, 0, 0, 0.50) 30%, transparent 65%),
         linear-gradient(to bottom, rgba(100, 0, 0, 0.85) 0%, rgba( 70, 0, 0, 0.40) 40%, transparent 75%),
         linear-gradient(to bottom, rgba(130, 0, 0, 0.85) 0%, rgba( 90, 0, 0, 0.45) 30%, transparent 60%),
-        linear-gradient(to bottom, rgba(110, 0, 0, 0.78) 0%, rgba( 75, 0, 0, 0.35) 35%, transparent 55%);
+        linear-gradient(to bottom, rgba(110, 0, 0, 0.78) 0%, rgba( 75, 0, 0, 0.35) 35%, transparent 55%),
+        linear-gradient(to bottom, rgba(135, 0, 0, 0.90) 0%, rgba( 95, 0, 0, 0.52) 32%, transparent 70%),
+        linear-gradient(to bottom, rgba(115, 0, 0, 0.82) 0%, rgba( 80, 0, 0, 0.40) 36%, transparent 62%);
     background-position:
-         7%  0%,
-        24%  0%,
-        44%  0%,
-        67%  0%,
-        88%  0%;
+         5%  0%,
+        18%  0%,
+        31%  0%,
+        45%  0%,
+        59%  0%,
+        74%  0%,
+        91%  0%;
     /* 初期は Y=0% で見えず、keyframes で伸びていく */
     background-size:
         18px 0%,
         28px 0%,
         14px 0%,
         22px 0%,
-        16px 0%;
-    /* ease-in でゆっくり始まって後半加速 (上から垂れてくる感) */
-    animation: gkDeathBlood 22s cubic-bezier(0.45, 0, 0.7, 0.55) forwards;
+        16px 0%,
+        20px 0%,
+        24px 0%;
+    /* 12s + ease-out 寄りでテンポ良く垂れ落ちる感 */
+    animation: gkDeathBlood 12s cubic-bezier(0.35, 0.05, 0.55, 0.45) forwards;
 }
 /* 各本を少しずつ違うタイミングで伸ばす → 不均一な垂れ方 */
 @keyframes gkDeathBlood {
-    0%   { background-size: 18px  0%, 28px  0%, 14px  0%, 22px  0%, 16px  0%; }
-    10%  { background-size: 18px  5%, 28px  1%, 14px  0%, 22px  0%, 16px  0%; }
-    25%  { background-size: 18px 18%, 28px  9%, 14px  6%, 22px  2%, 16px  1%; }
-    45%  { background-size: 18px 34%, 28px 22%, 14px 26%, 22px 13%, 16px 14%; }
-    70%  { background-size: 18px 50%, 28px 32%, 14px 52%, 22px 25%, 16px 30%; }
-    100% { background-size: 18px 62%, 28px 40%, 14px 72%, 22px 35%, 16px 48%; }
+    0%   { background-size: 18px  0%, 28px  0%, 14px  0%, 22px  0%, 16px  0%, 20px  0%, 24px  0%; }
+    10%  { background-size: 18px  8%, 28px  2%, 14px  0%, 22px  3%, 16px  0%, 20px  6%, 24px  1%; }
+    25%  { background-size: 18px 22%, 28px 12%, 14px  9%, 22px 14%, 16px  4%, 20px 18%, 24px  8%; }
+    45%  { background-size: 18px 40%, 28px 28%, 14px 30%, 22px 28%, 16px 18%, 20px 36%, 24px 22%; }
+    70%  { background-size: 18px 58%, 28px 42%, 14px 58%, 22px 42%, 16px 36%, 20px 54%, 24px 38%; }
+    100% { background-size: 18px 72%, 28px 52%, 14px 80%, 22px 50%, 16px 56%, 20px 68%, 24px 56%; }
 }
 
 /* 周縁グロー: 周期を 0.95s → 2.4s にスローダウン、opacity 振幅も抑制 */
@@ -727,17 +740,34 @@
 }
 
 /* ---------- B26 問題文カラーバラ ----------
-   文字毎の color は style= でインライン指定されるのでここでは装飾のみ。 */
+   文字毎の color は style= でインライン指定される。
+   .q-stem は display:flex なので各 <span> を直並びにすると flex item が横に
+   並んで折り返さず、長文で問題文エリアから横にはみ出てしまう。
+   → JS 側で <span class="gk-b26-inner"> に全文字 span を格納し、そのラッパ
+     1 個だけを flex item として扱う。ラッパ内部はインラインフローのまま
+     word-break:break-all で改行させる。 */
 .q-stem.gk-b26-color {
-    /* 若干の文字間を空けて見やすく */
     letter-spacing: 0.02em;
+}
+.q-stem.gk-b26-color .gk-b26-inner {
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-all;
+    overflow-wrap: anywhere;
 }
 
 /* ---------- B28 問題文サイズ崩壊 ----------
-   インライン font-size で各文字サイズ設定済み。エリア内に収める調整。 */
+   インライン font-size で各文字サイズ設定済み。
+   B26 と同じく .q-stem の flex レイアウトで各 <span> が個別 flex item 化して
+   はみ出るので、インラインラッパ .gk-b28-inner を経由させてから wrap する。 */
 .q-stem.gk-b28-size {
     line-height: 1.1;
+}
+.q-stem.gk-b28-size .gk-b28-inner {
+    display: inline-block;
+    max-width: 100%;
     word-break: break-all;
+    overflow-wrap: anywhere;
 }
 
 /* ---------- B29 問題文バウンド ----------
