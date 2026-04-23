@@ -17,7 +17,8 @@ from PIL import Image
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SRC  = ROOT / 'marketing' / 'icon.png'
+# VHS/浮遊文字込みの完成版を原版として使う
+SRC  = ROOT / 'marketing' / 'icon完成.png'
 
 TARGETS = [
     ('apple-touch-icon.png', 180, (255, 255, 255)),
