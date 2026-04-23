@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">変なクイズ</string>
+    <string name="title_activity_main">変なクイズ</string>
+    <string name="package_name">com.odd.quiz</string>
+    <string name="custom_url_scheme">com.odd.quiz</string>
+</resources>

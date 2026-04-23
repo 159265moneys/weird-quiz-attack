@@ -15,18 +15,35 @@
 *.log
 npm-debug.log*
 
-# Node (for future Capacitor)
+# Node
 node_modules/
 dist/
 build/
 
-# Capacitor (将来用)
+# Capacitor: www は npm run build で毎回再生成されるので追わない
+www/
+
+# Capacitor iOS — 生成物のみ除外 (プロジェクト本体はコミット)
 ios/App/Pods/
 ios/App/build/
+ios/App/App/public/
+ios/DerivedData/
+ios/App/App/capacitor.config.json
+
+# Capacitor Android
 android/app/build/
 android/build/
 android/.gradle/
 android/local.properties
+android/captures/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+
+# Xcode / IntelliJ 生成物
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+*.iml
 .capacitor/
 
 # Env

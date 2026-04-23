@@ -1,0 +1,28 @@
+{
+  "name": "weird-quiz",
+  "version": "0.9.0",
+  "private": true,
+  "description": "変なクイズ — 崩壊UIクイズゲーム (Capacitor 版)",
+  "scripts": {
+    "build": "node scripts/build-www.js",
+    "cap:sync": "npm run build && npx cap sync",
+    "cap:open:ios": "npx cap open ios",
+    "cap:open:android": "npx cap open android",
+    "cap:run:ios": "npm run build && npx cap sync ios && npx cap run ios",
+    "seed:ranking": "node tools/seed_ranking.js"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.3.1",
+    "@capacitor/app": "^8.1.0",
+    "@capacitor/cli": "^8.3.1",
+    "@capacitor/core": "^8.3.1",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/ios": "^8.3.1",
+    "@capacitor/screen-orientation": "^8.0.1",
+    "@capacitor/splash-screen": "^8.0.1",
+    "@capacitor/status-bar": "^8.0.2"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}
