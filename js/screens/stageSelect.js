@@ -39,9 +39,10 @@
                 // ランクバッジ: 未クリア / ロック / クリア済みで分岐
                 let rankBadge;
                 if (locked) {
+                    // 鍵アイコンは SVG (.cursor/rules/no-emoji.mdc: 絵文字不可)
                     rankBadge = `
                         <div class="stage-rank-badge is-locked">
-                            <div class="rank-icon">🔒</div>
+                            <div class="rank-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
                             <div class="rank-sub">LOCKED</div>
                         </div>`;
                 } else if (rank) {

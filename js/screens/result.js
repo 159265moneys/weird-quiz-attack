@@ -12,6 +12,22 @@
             if (window.GameState.currentStage && !s._saved) {
                 window.Save.recordStageClear(window.GameState.currentStage, result.score, result.rank);
                 s._saved = true;
+
+                // ランキング送信 (α Prep モードでは localStorage のみ)
+                //   参加 OFF / Ranking モジュール未ロード時は no-op。
+                //   死亡エンドも送信する (F も並ぶ方が賑わって見える)。
+                try {
+                    window.Ranking?.submit?.({
+                        stageNo: window.GameState.currentStage,
+                        score: result.score,
+                        correct: result.correct,
+                        total: result.total,
+                        totalTimeMs: Math.round((result.totalTimeSec || 0) * 1000),
+                        rank: result.rank,
+                        deathEnd: !!s.deathEnd,
+                        sessionId: s.sessionId,
+                    });
+                } catch (_) { /* ランキングの失敗はゲーム進行に影響させない */ }
             }
 
             // タイムアウト回数
@@ -200,15 +216,23 @@
         },
     };
 
-    // ---------- ナビゲーターによる tier 別コメント ----------
+    // seed から安定した非負整数ハッシュ (同一セッション内で抽選を固定する用)
+    function hashSeed(s) {
+        let h = 0;
+        const str = String(s);
+        for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0;
+        return Math.abs(h);
+    }
+
+    // ---------- ナビゲーター / サブキャラによるコメント ----------
     // セリフ選択ルール:
-    //   - 基本は rank → tier の固定 1:1 マップ (RANK_META 参照)
-    //   - F のみ例外で 2 分岐:
-    //     * Stage 10 死亡 → 慰め系 (最終ステージは仕方ない枠)
-    //     * それ以外の F (Stage 1-9 死亡 / 非死亡 F) → DOOMED 固定 (伝説のアホ)
-    //   - 口調は女性カジュアル統一
-    // TODO (future phase): プロフィールアイコン (クラゲ和装/TVロリ/蓄音機白衣) に
-    //   応じてキャラ口調と立ち絵を切り替える。
+    //   1. Stage 10 死亡 (F) → Dialogs.stage10Death (慰め枠)
+    //   2. 対象 stage/rank にサブキャラ定義あり:
+    //      - 未アンロックなら必ずサブキャラ登場 (= 初回確定で解放する体験)
+    //      - 既にアンロック済みなら 50% 抽選でパズルナビとサブキャラを分岐
+    //   3. 上記以外 → rank → tier の固定 1:1 マップで Dialogs.main を参照
+    // セリフ中の {pct} / {label} は Dialogs.interpolate で差し替える。
+    // サブキャラ初登場時はセリフ完了後に showIconUnlockPopup を遅延呼び出し。
     function speakResultComment(result, deathEnd) {
         if (!window.Navigator) return;
         const rank = result.rank;
@@ -216,186 +240,130 @@
         const pct = window.Ranks?.percentileText(rank) || '';
         const seed = `${window.GameState?.session?.startAt || 0}_${rank}_${stageNo}_${deathEnd ? 'd' : 'n'}`;
 
-        // F ランク特別扱い (Stage 10 死亡 = 慰め / その他 F = DOOMED 固定)
-        const isF = rank === 'F';
-        const isStage10Death = isF && deathEnd && stageNo === 10;
-        const dialogueTier = isStage10Death
-            ? null
-            : (window.Ranks?.tierOf(rank) || 'DOOMED');
+        const run = () => {
+            const isF = rank === 'F';
+            const isStage10Death = isF && deathEnd && stageNo === 10;
 
-        // ラベル (セリフ内 ${label} に埋め込み)
-        let label = '';
-        if (dialogueTier) {
-            const labelBank = window.Ranks?.TIER_LABELS?.[dialogueTier] || [];
-            if (labelBank.length) {
-                label = labelBank[hashSeed(seed + '_label') % labelBank.length];
+            // サブキャラ判定 (死亡エンドは対象外 = F は stages/ranks に含まれないので自動的に除外される)
+            const subChar = (!deathEnd)
+                ? (window.Dialogs?.getSubCharFor?.(stageNo, rank) || null)
+                : null;
+            const subUnlocked = subChar
+                ? !!window.Save?.isIconUnlocked?.(subChar.iconId)
+                : true;
+            // 初回は確定。2 回目以降は 50/50 抽選。
+            let useSub = false;
+            if (subChar) {
+                useSub = !subUnlocked
+                    ? true
+                    : (hashSeed(seed + '_lottery') % 2 === 0);
             }
-        }
 
-        // tier 別 variants (各 5 パターン / 女性カジュアル)
-        // 固定マッピング: SS→GODLIKE / S→ELITE / A→STRONG / B→DECENT
-        //                 C→NORMAL_DOWN / D→WEAK / E→TERRIBLE / F→DOOMED
-        const DIALOGS = {
-            // SS (上位 0.3%) — 神扱い・疑念
-            GODLIKE: {
-                poses: ['happy', 'hi'],
-                variants: [
-                    ['嘘でしょ…！全問、しかもこのスピード。',          `${pct}。${label} のあれだよ？人類の域じゃない。`],
-                    ['ちょっと、やば。マジで神じゃん。',                 `${pct}。${label}、って出てる。ホンモノかも。`],
-                    ['ねえ、一応聞くけど、あなた人間？',                 `${pct}。${label} って頭脳、何食べたら育つの。`],
-                    ['こんなの、見たことないんですけど…。',              `${pct}。異次元すぎ、${label} レベル。`],
-                    ['…チートじゃないよね？ほんとに？',                  `${pct}。${label}、って。引いた、さすがに。`],
-                ],
-            },
-            // S (上位 2%) — ベタ褒め
-            ELITE: {
-                poses: ['happy', 'hi'],
-                variants: [
-                    ['すごい、普通にすごい。',                          `${pct} は ${label} の水準だよ。`],
-                    ['全問正解、ってだけで普通に上位。',                 `${pct}。${label} 級、って思っていい。`],
-                    ['マジか…本気出したね、それ。',                     `${pct}。${label} に匹敵する結果。`],
-                    ['えーすごい。私には無理かも、これ。',               `${pct}。${label}、って出てる。`],
-                    ['これはちょっと、自慢していいやつ。',               `${pct} は ${label} レベル。`],
-                ],
-            },
-            // A (上位 8%) — 普通に褒め
-            STRONG: {
-                poses: ['hi', 'basic'],
-                variants: [
-                    ['うん、上手。ちゃんと読めてる。',                   `${pct} は ${label} クラス。`],
-                    ['かなり強いほう、だと思うよ。',                     `${pct}。${label} くらいの立ち位置。`],
-                    ['いい感じ。自信持っていいと思う。',                 `${pct} は ${label} 相当。`],
-                    ['惜しい問題いくつかあったね、おしい。',             `${pct}、${label} クラスだよ。`],
-                    ['普通にえらい。ここまでくれば。',                   `${pct}。${label} に並ぶ結果。`],
-                ],
-            },
-            // B (上位 25%) — いい感じ
-            DECENT: {
-                poses: ['basic', 'hi'],
-                variants: [
-                    ['悪くないじゃない。',                               `${pct}。${label}、くらいの位置。`],
-                    ['普通に上手いと思うよ、これ。',                     `${pct} は ${label} と同格。`],
-                    ['平均より、ちょっと上ってところ。',                 `${pct}。${label} クラスです。`],
-                    ['ギリギリ合格ライン、みたいな?',                    `${pct}、${label} レベル。`],
-                    ['もうちょい取れたかもね、惜しい。',                 `${pct}、${label} あたり。`],
-                ],
-            },
-            // C (下位 50% = 中央値) — 並・凡人
-            NORMAL_DOWN: {
-                poses: ['basic', 'think'],
-                variants: [
-                    ['ふつうに並、だね。',                               `${pct}。${label} あたり。`],
-                    ['ギミックにやられた、って感じ?',                    `${pct}、${label}。切り替えていこ。`],
-                    ['まあまあ、こういう日もあるよ。',                   `${pct}。${label} ってとこ。`],
-                    ['崩壊 UI に惑わされすぎ、かも?',                   `${pct} は ${label} のゾーン。`],
-                    ['次いこ、次。集中すればまだ行けるって。',           `${pct}、${label}。`],
-                ],
-            },
-            // D (下位 20%) — 要練習
-            WEAK: {
-                poses: ['think'],
-                variants: [
-                    ['うーん、もうちょっと取れたんじゃない?',            `${pct}。${label}、って結果。`],
-                    ['集中、してた?ほんとに。',                          `${pct} は ${label} 相当。`],
-                    ['これは練習が必要、かもね。',                       `${pct}、${label}。`],
-                    ['もったいない。惜しい答えが多かった。',             `${pct}。${label} ってとこ。`],
-                    ['次、本気出そ?いける、まだ。',                     `${pct} は ${label}。`],
-                ],
-            },
-            // E (下位 5%) — ぴえん
-            TERRIBLE: {
-                poses: ['think_light'],
-                variants: [
-                    ['なんか、集中できなかった感じ?',                    `${pct}、${label}。`],
-                    ['問題、ちゃんと読めてる?',                          `${pct} は ${label} 相当。`],
-                    ['ギミックに完全に負けてるよ、これ。',               `${pct}。${label}、だって。`],
-                    ['…うん、練習、しよっか。',                          `${pct}、${label} 認定。`],
-                    ['のびしろだよ、のびしろ。たぶん。',                 `${pct}、${label}。`],
-                ],
-            },
-            // F (下位 0.5%) — 伝説のアホ
-            // Stage 10 死亡は別枠 (STAGE10_DEATH_COMFORT) で処理、ここには来ない
-            DOOMED: {
-                poses: ['think_light'],
-                variants: [
-                    ['…なんて言ったらいいんだろう。',                    `${pct}。「${label}」、だってさ。`],
-                    ['あの…大丈夫?体調悪いとか?',                      `${pct}、${label} 認定。ちょっと休もっか?`],
-                    ['うん、これはやばいよ普通に。',                     `${pct}。「${label}」の称号、ゲット。`],
-                    ['自信、持ってくれていいよ。逆の意味で。',           `${pct}、${label}。`],
-                    ['これ、なかなか見ないやつ。',                       `${pct}。「${label}」、レジェンド。`],
-                ],
-            },
+            let lines = null;
+            let poses = null;
+            let customImage = null;
+            let unlockTarget = null;  // セリフ後に解放 popup を出すキャラ
+
+            if (useSub && subChar) {
+                const vs = subChar.variants || [];
+                if (vs.length) {
+                    const pick = vs[hashSeed(seed) % vs.length] || [];
+                    lines = pick.map(l => window.Dialogs.interpolate(l, { pct, label: subChar.label }));
+                    poses = subChar.poses;
+                    customImage = subChar.image;
+                    if (!subUnlocked) unlockTarget = subChar;
+                }
+            } else if (isStage10Death) {
+                const arr = window.Dialogs?.getStage10Death?.() || [];
+                if (arr.length) {
+                    const pick = arr[hashSeed(seed) % arr.length] || {};
+                    lines = pick.lines;
+                    poses = pick.poses;
+                }
+            } else {
+                // rank → tier (F は DOOMED 固定にフォールバック)
+                const tier = window.Ranks?.tierOf(rank) || 'DOOMED';
+                const bank = window.Dialogs?.getMain?.(tier);
+                const labelBank = window.Ranks?.TIER_LABELS?.[tier] || [];
+                const label = labelBank.length
+                    ? labelBank[hashSeed(seed + '_label') % labelBank.length]
+                    : '';
+                if (bank) {
+                    const pick = bank.variants[hashSeed(seed) % bank.variants.length] || [];
+                    lines = pick.map(l => window.Dialogs.interpolate(l, { pct, label }));
+                    poses = bank.poses;
+                }
+            }
+
+            if (!lines || !lines.length) return;
+
+            window.Navigator.speak(lines, {
+                poses,
+                mode: 'result',
+                oneShot: true,
+                persist: true,
+                customImage,
+            });
+
+            // 初回サブキャラ登場 → セリフの「読み時間」を確保してから popup
+            if (unlockTarget) {
+                const newly = window.Save?.unlockIcon?.(unlockTarget.iconId);
+                if (newly) {
+                    setTimeout(() => showIconUnlockPopup(unlockTarget), 3200);
+                }
+            }
         };
 
-        // Stage 10 死亡専用 (慰め系) — Stage 10 まで到達したこと自体は評価する
-        const STAGE10_DEATH_COMFORT = [
-            {
-                poses: ['think_light', 'think'],
-                lines: [
-                    'Stage 10 で死亡、って。まあ、運もあるから。',
-                    'ドンマイ、気にしないで。',
-                ],
-            },
-            {
-                poses: ['think'],
-                lines: [
-                    'ここまで来てそれはキツいね。',
-                    'でも Stage 10 は仕方ない部分もあるから。',
-                ],
-            },
-            {
-                poses: ['basic', 'think'],
-                lines: [
-                    'あそこまで行っただけ、普通にすごいよ。',
-                    '死因は、気にしないでよし。たぶん。',
-                ],
-            },
-            {
-                poses: ['think_light'],
-                lines: [
-                    '最終ステージで死亡、これは切ない。',
-                    'また挑戦してみて、次こそ。',
-                ],
-            },
-            {
-                poses: ['basic'],
-                lines: [
-                    'Stage 10 は死ぬ前提、くらいに考えていいから。',
-                    '切り替えて、また来てね。',
-                ],
-            },
-        ];
-
-        // seed を使った安定ランダム抽選 (画面内で固定)
-        function hashSeed(s) {
-            let h = 0;
-            for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-            return Math.abs(h);
-        }
-
-        let poses, lines;
-        if (isStage10Death) {
-            // Stage 10 死亡 → 慰め専用
-            const pick = STAGE10_DEATH_COMFORT[hashSeed(seed) % STAGE10_DEATH_COMFORT.length];
-            poses = pick.poses;
-            lines = pick.lines;
+        // Dialogs JSON 未ロードの場合は 1 回だけロードを待ってから発話
+        if (window.Dialogs?.load) {
+            window.Dialogs.load().then(run).catch(run);
         } else {
-            // それ以外: tier ベース (F は forcedDoomed により 'DOOMED' 固定)
-            const bank = DIALOGS[dialogueTier] || DIALOGS.NORMAL_DOWN;
-            const variants = bank.variants;
-            lines = variants[hashSeed(seed) % variants.length];
-            poses = bank.poses;
+            run();
         }
+    }
 
-        // 結果画面は「タップ文字送り」せず、全部 1 吹き出しで一気に表示。
-        // mode:'result' で下寄せ & 小さめ構成に切り替え。
-        // persist:true でタップでは閉じず、ボタン操作を妨げないよう貫通。
-        window.Navigator.speak(lines, {
-            poses,
-            mode: 'result',
-            oneShot: true,
-            persist: true,
-        });
+    // ---------- NEW ICON 獲得 popup ----------
+    // 表示条件: サブキャラが初めて登場した (= unlockIcon が true を返した) 時。
+    // z-index は nav-overlay (1500) より上、B18 (9999) より下で 1800。
+    // タップで即閉じ / 5 秒で自動フェード。
+    function showIconUnlockPopup(subChar) {
+        const stage = document.getElementById('stage');
+        if (!stage || !subChar) return;
+        const img = subChar.image || '';
+        const label = subChar.label || '';
+        const el = document.createElement('div');
+        el.className = 'icon-unlock';
+        el.innerHTML = `
+            <div class="icon-unlock-card">
+                <div class="icon-unlock-eyebrow">NEW ICON</div>
+                <div class="icon-unlock-frame">
+                    <img src="${img}" alt="">
+                </div>
+                <div class="icon-unlock-label">${escapeHTML(label)}</div>
+                <div class="icon-unlock-hint">PROFILE から設定できるよ</div>
+            </div>
+        `;
+        stage.appendChild(el);
+
+        const dismiss = () => {
+            if (!el.parentNode) return;
+            el.classList.add('is-hide');
+            setTimeout(() => { if (el.parentNode) el.remove(); }, 320);
+        };
+        el.addEventListener('pointerdown', dismiss);
+
+        requestAnimationFrame(() => el.classList.add('is-show'));
+        window.SE?.fire?.('rankReveal');
+        setTimeout(dismiss, 5000);
+    }
+
+    function escapeHTML(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 
     // ---------- 上位ランク専用: 蝶バースト ----------

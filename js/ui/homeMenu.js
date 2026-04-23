@@ -26,6 +26,7 @@
         chevron:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
         close:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
         menu:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6"  x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`,
+        ranking:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>`,
     };
 
     function escapeHTML(s) {
@@ -64,6 +65,11 @@
                         <span class="hm-lbl"><span class="hm-lbl-main">SCORES</span><span class="hm-lbl-sub">ステージ別ベスト</span></span>
                         <span class="hm-chv">${ICONS.chevron}</span>
                     </button></li>
+                    <li><button class="hm-item" data-act="ranking">
+                        <span class="hm-ic">${ICONS.ranking}</span>
+                        <span class="hm-lbl"><span class="hm-lbl-main">RANKING</span><span class="hm-lbl-sub">オンライン TOP100</span></span>
+                        <span class="hm-chv">${ICONS.chevron}</span>
+                    </button></li>
                     <li><button class="hm-item" data-act="reset">
                         <span class="hm-ic">${ICONS.reset}</span>
                         <span class="hm-lbl"><span class="hm-lbl-main">RESET</span><span class="hm-lbl-sub">進捗をリセット</span></span>
@@ -96,6 +102,9 @@
                 } else if (act === 'scores') {
                     closeMenu();
                     setTimeout(openScores, 120);
+                } else if (act === 'ranking') {
+                    closeMenu();
+                    setTimeout(() => window.Router?.show?.('ranking'), 120);
                 } else if (act === 'profile') {
                     closeMenu();
                     setTimeout(openProfile, 120);
@@ -204,9 +213,21 @@
         for (const it of items) {
             const path = window.Avatars?.pathOf?.(it.id) || `sprite/avatars/${encodeURIComponent(it.file)}`;
             const sel = it.id === selectedId ? 'is-sel' : '';
+            const unlocked = window.Save?.isIconUnlocked?.(it.id) !== false;
+            const lockCls = unlocked ? '' : 'is-locked';
+            // ロック時はアイコン自体は見せつつ、鍵マークとグレーアウトで未解放を示す。
+            // 獲得条件はゲーム内 popup/セリフから学ぶ設計なのでここでは明示しない。
+            // 鍵アイコンは SVG (.cursor/rules/no-emoji.mdc: 絵文字不可)
+            const lockBadge = unlocked ? '' : `<span class="hm-pf-av-lockbadge" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+            </span>`;
             cells.push(`
-                <button class="hm-pf-av ${sel}" data-av-id="${escapeHTML(it.id)}" type="button" aria-label="${escapeHTML(it.label)}">
+                <button class="hm-pf-av ${sel} ${lockCls}" data-av-id="${escapeHTML(it.id)}" data-locked="${unlocked ? '0' : '1'}" type="button" aria-label="${escapeHTML(it.label)}${unlocked ? '' : ' (未解放)'}">
                     <img src="${escapeHTML(path)}" alt="${escapeHTML(it.label)}" onerror="this.parentElement.classList.add('is-broken');">
+                    ${lockBadge}
                 </button>
             `);
         }
@@ -263,6 +284,15 @@
                         <div class="hm-pf-avwrap">${buildAvatarGridHTML(iconId)}</div>
                     </div>
 
+                    <div class="hm-pf-row hm-pf-row-toggle">
+                        <div class="hm-pf-lbl">RANKING</div>
+                        <label class="hm-pf-toggle">
+                            <input type="checkbox" class="hm-pf-rank" ${(window.Ranking?.isEnabled?.() ?? true) ? 'checked' : ''}>
+                            <span class="hm-pf-toggle-box"></span>
+                            <span class="hm-pf-toggle-label">オンライン TOP100 に参加</span>
+                        </label>
+                    </div>
+
                     <div class="hm-pf-actions">
                         <button class="hm-pf-btn hm-pf-save"  type="button">SAVE NAME</button>
                         <button class="hm-pf-btn hm-pf-reset" type="button">RESET NAME</button>
@@ -285,6 +315,16 @@
             const curEl = profileOverlay.querySelector('.hm-pf-current');
             if (curEl) curEl.textContent = window.Save?.getPlayerDisplayName?.() || '';
         });
+        // ランキング参加 ON/OFF トグル (即時反映)
+        const rankToggle = profileOverlay.querySelector('.hm-pf-rank');
+        if (rankToggle) {
+            rankToggle.addEventListener('change', () => {
+                const v = rankToggle.checked;
+                window.Ranking?.setEnabled?.(v);
+                window.SE?.fire?.(v ? 'confirm' : 'cancel');
+            });
+        }
+
         profileOverlay.querySelector('.hm-pf-reset').addEventListener('click', () => {
             if (input) input.value = '';
             window.Save?.setPlayerName?.(null);
@@ -298,6 +338,14 @@
         if (grid) {
             grid.querySelectorAll('.hm-pf-av').forEach((btn) => {
                 btn.addEventListener('click', () => {
+                    // ロック中アイコンは選択不可 (拒否音 + シェイクのみ)
+                    if (btn.dataset.locked === '1') {
+                        window.SE?.fire?.('wrong');
+                        btn.classList.remove('is-shake');
+                        void btn.offsetWidth;
+                        btn.classList.add('is-shake');
+                        return;
+                    }
                     const id = btn.dataset.avId || '';
                     window.Save?.setPlayerIcon?.(id || null);
                     window.SE?.fire?.('select');

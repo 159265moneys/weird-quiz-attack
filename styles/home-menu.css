@@ -420,6 +420,50 @@
     letter-spacing: 0.08em;
     color: rgba(230,241,255,0.4);
 }
+/* --- ランキング参加トグル (iOS 風スイッチ) --- */
+.hm-pf-row-toggle { gap: 4px; }
+.hm-pf-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 4px;
+    cursor: pointer;
+    user-select: none;
+}
+.hm-pf-toggle input { display: none; }
+.hm-pf-toggle-box {
+    position: relative;
+    width: 48px;
+    height: 28px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.12);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    transition: background 0.15s ease, border-color 0.15s ease;
+    flex-shrink: 0;
+}
+.hm-pf-toggle-box::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: #e6e6ec;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+.hm-pf-toggle input:checked + .hm-pf-toggle-box {
+    background: rgba(0,255,240,0.35);
+    border-color: var(--accent-cyan, #00fff0);
+}
+.hm-pf-toggle input:checked + .hm-pf-toggle-box::after {
+    transform: translateX(20px);
+    background: var(--accent-cyan, #00fff0);
+}
+.hm-pf-toggle-label {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: rgba(230,241,255,0.75);
+}
+
 .hm-pf-actions {
     display: flex;
     gap: 10px;
@@ -559,4 +603,50 @@
     letter-spacing: 0.05em;
     line-height: 1.6;
     text-align: center;
+}
+
+/* --- ロック状態 (未解放アイコン) -------------------------------
+   画像はグレーアウト + 彩度ゼロで "まだ取ってない" 感を出し、
+   右上にシンプルな鍵マーク (CSS のみで描画) を重ねる。 */
+.hm-pf-av.is-locked img {
+    filter: grayscale(1) brightness(0.45) contrast(0.8);
+    opacity: 0.55;
+}
+.hm-pf-av.is-locked {
+    border-color: rgba(255,255,255,0.08);
+    background: rgba(0,0,0,0.55);
+}
+/* 鍵アイコン (SVG)。右上に小さな丸バッジ + 中に SVG を配置。
+   以前は疑似要素で描画してたが、デザイン統一のため SVG (Lucide 準拠) に
+   差し替え (絵文字禁止方針に準拠)。 */
+.hm-pf-av-lockbadge {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.8);
+    border: 1.5px solid rgba(230,241,255,0.85);
+    color: rgba(230,241,255,0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+.hm-pf-av-lockbadge svg {
+    width: 13px;
+    height: 13px;
+    display: block;
+}
+/* クリック拒否時のシェイク (ロック時) */
+.hm-pf-av.is-shake {
+    animation: hmPfAvShake 0.35s ease;
+}
+@keyframes hmPfAvShake {
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-4px); }
+    40%      { transform: translateX(4px); }
+    60%      { transform: translateX(-3px); }
+    80%      { transform: translateX(3px); }
 }

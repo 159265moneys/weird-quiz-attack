@@ -178,5 +178,20 @@
     50%      { opacity: 0.35; }
 }
 
+/* --- サブキャラ (クラゲ/TV/蓄音機) 差し替え時の微調整 ---------
+   girl スプライトは 960×540 の 16:9 PNG、サブキャラは 256×256 の
+   正方形アバター。ベースのコンテナは 840×473 (result mode) のままだと
+   素材が小さく見えて存在感不足なので、正方形を縦中心にスケールアップ
+   して見せる。object-fit:contain で縦はみ出ししない範囲でやる。 */
+.nav-overlay.is-subchar .nav-girl {
+    object-fit: contain;
+    object-position: bottom center;
+    /* 正方形を下辺基準で拡大。473px の縦を使い切るサイズ感に。
+       アバター自体が透過 PNG 前提。 */
+    transform: scale(1.25);
+    transform-origin: 50% 100%;
+    filter: drop-shadow(8px 8px 0 rgba(0, 0, 0, 0.35));
+}
+
 /* #stage は常に 1080x1920 論理解像度で scale されるので
    メディアクエリは不要。 */

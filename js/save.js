@@ -33,6 +33,11 @@
             progress: {
                 unlockedStage: 1, // stage 1だけ最初から解放
                 clearedStages: [], // clearしたstage番号
+                // プリセットアイコンの解放状況。
+                //   butterfly / puzzle: 最初から選択可 (デフォルト顔)
+                //   jellyfish / tv / phonograph: ゲーム内でアンロックして初めて
+                //   選べるようになる (初回アンロック時に result 画面で popup)。
+                unlockedIcons: ['butterfly', 'puzzle'],
             },
             scores: {
                 // 'stage-1': { best: 12000, bestRank: 'B', plays: 4 }
@@ -45,6 +50,7 @@
                 bgmVolume: 0.2,   // BGM 音量 (0〜1) — 空気感担当で控えめ
                 muted: false,     // 全体ミュート (SE+BGM)
                 vibration: true,
+                rankingEnabled: true, // オンラインランキング参加 (クリア時自動送信)
             },
         };
     }
@@ -79,6 +85,7 @@
                 if (s.bgmVolume == null || s.bgmVolume === 0.35) s.bgmVolume = 0.2;
                 if (s.muted == null) s.muted = false;
                 if (s.vibration == null) s.vibration = true;
+                if (s.rankingEnabled == null) s.rankingEnabled = true;
                 // 2026-04 回復処理: 旧スライダーは min=0 まで下げられたため、
                 //   ユーザーが誤操作で SE/BGM 音量を 0 に張り付かせたまま保存 →
                 //   "SE だけ鳴らない" 状態で詰むケースがあった。
@@ -94,6 +101,19 @@
                 if (!pl.id) pl.id = generatePlayerId();
                 if (pl.name === 'PLAYER' || pl.name === undefined) pl.name = null;
                 if (pl.icon === undefined) pl.icon = null;
+                // progress ブロックの後方互換 (unlockedIcons は 2026-04 追加)
+                if (!this.data.progress) this.data.progress = { unlockedStage: 1, clearedStages: [], unlockedIcons: [] };
+                const prog = this.data.progress;
+                if (!Array.isArray(prog.unlockedIcons)) prog.unlockedIcons = [];
+                // butterfly / puzzle は常に持っているものとして保証
+                for (const baseId of ['butterfly', 'puzzle']) {
+                    if (!prog.unlockedIcons.includes(baseId)) prog.unlockedIcons.push(baseId);
+                }
+                // 旧セーブで既に jellyfish/tv/phonograph を選択してた人は
+                //   "没収しない" ポリシー: 選択中アイコンを所持扱いにする
+                if (pl.icon && !prog.unlockedIcons.includes(pl.icon)) {
+                    prog.unlockedIcons.push(pl.icon);
+                }
                 this.persist();
                 return this.data;
             } catch (e) {
@@ -216,6 +236,29 @@
                 this.data.player.icon = null;
             }
             this.persist();
+        },
+
+        // --- アイコン解放 ---
+        // 所持チェック。id が空/null の場合は "NONE 選択" として常に true。
+        isIconUnlocked(iconId) {
+            if (!iconId) return true;
+            const list = this.data?.progress?.unlockedIcons || [];
+            return list.includes(iconId);
+        },
+        getUnlockedIcons() {
+            return (this.data?.progress?.unlockedIcons || []).slice();
+        },
+        // iconId を解放。新規解放なら true を返す (呼び出し側で popup 演出に利用)。
+        unlockIcon(iconId) {
+            if (!this.data) return false;
+            if (typeof iconId !== 'string' || iconId.length === 0) return false;
+            if (!this.data.progress) this.data.progress = { unlockedStage: 1, clearedStages: [], unlockedIcons: [] };
+            if (!Array.isArray(this.data.progress.unlockedIcons)) this.data.progress.unlockedIcons = [];
+            const list = this.data.progress.unlockedIcons;
+            if (list.includes(iconId)) return false;
+            list.push(iconId);
+            this.persist();
+            return true;
         },
     };
 

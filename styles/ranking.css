@@ -1,0 +1,270 @@
+/* ============================================================
+   ranking.css — ランキング画面
+   ============================================================ */
+
+.ranking-screen {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: var(--text-on-dark);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.ranking-screen .screen-header {
+    margin-bottom: 16px;
+}
+.ranking-screen .btn-back {
+    min-height: 70px;
+    padding: 14px 18px;
+    background: var(--box-bg);
+    border: 2px solid var(--line);
+    color: var(--text-on-dark);
+    font-family: inherit;
+    font-size: 20px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--line);
+}
+.ranking-screen .btn-back:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--line);
+}
+.rk-title {
+    font-size: 44px;
+    letter-spacing: 6px;
+    color: var(--accent-cyan);
+    font-weight: 700;
+}
+
+/* --- ステージタブ (横スクロール) --- */
+.rk-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 4px 2px 10px 2px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-bottom: 1px solid var(--line-dim);
+    margin-bottom: 12px;
+}
+.rk-tabs::-webkit-scrollbar { height: 6px; }
+.rk-tabs::-webkit-scrollbar-thumb { background: var(--line-dim); }
+.rk-tab {
+    flex: 0 0 auto;
+    min-width: 56px;
+    padding: 10px 14px;
+    background: var(--box-bg);
+    border: 2px solid var(--line-dim);
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: 20px;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+.rk-tab.is-dim { opacity: 0.45; }
+.rk-tab.is-active {
+    background: var(--accent-cyan);
+    color: var(--bg-panel);
+    border-color: var(--accent-cyan);
+    box-shadow: 3px 3px 0 var(--accent-cyan-dim);
+}
+.rk-tab:active {
+    transform: translate(1px, 1px);
+}
+
+/* --- 参加 OFF バナー --- */
+.rk-banner {
+    margin: 4px 0 12px 0;
+    padding: 14px 16px;
+    background: var(--bg-elevated);
+    border-left: 4px solid var(--accent-warn);
+    color: var(--text-on-dark);
+    font-size: 16px;
+    line-height: 1.5;
+}
+.rk-banner-title {
+    font-size: 20px;
+    color: var(--accent-warn);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+}
+.rk-banner-desc {
+    color: var(--text-faint);
+    font-size: 14px;
+}
+
+/* --- ステージ見出し --- */
+.rk-stage-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 8px 2px;
+    border-bottom: 1px solid var(--line-dim);
+    margin-bottom: 6px;
+}
+.rk-stage-no {
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--accent-cyan);
+}
+.rk-stage-name {
+    font-size: 18px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+}
+
+/* --- カラムヘッダ --- */
+.rk-colhead, .rk-row {
+    display: grid;
+    grid-template-columns: 56px 44px 1fr 40px 110px 66px;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+}
+.rk-colhead {
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    border-bottom: 1px dashed var(--line-dim);
+    margin-bottom: 4px;
+}
+
+/* --- リスト --- */
+.rk-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.rk-row {
+    border-bottom: 1px solid var(--line-dim);
+    font-size: 17px;
+    color: var(--text-on-dark);
+    min-height: 48px;
+}
+.rk-row:nth-child(odd) {
+    background: rgba(255,255,255,0.02);
+}
+.rk-pos {
+    font-family: inherit;
+    font-size: 17px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-align: left;
+}
+.rk-row.rk-medal-1 .rk-pos { color: var(--accent-warn); font-weight: 700; }
+.rk-row.rk-medal-2 .rk-pos { color: #d7d7e8; font-weight: 700; }
+.rk-row.rk-medal-3 .rk-pos { color: #e39a5b; font-weight: 700; }
+
+.rk-avatar {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--box-bg) center/cover no-repeat;
+    border: 1.5px solid var(--line-dim);
+}
+.rk-avatar-none {
+    background: repeating-linear-gradient(45deg,
+        var(--box-bg) 0, var(--box-bg) 4px,
+        var(--box-bg-deep) 4px, var(--box-bg-deep) 8px);
+}
+
+.rk-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    letter-spacing: 1px;
+}
+.rk-death {
+    display: inline-block;
+    margin-left: 6px;
+    color: var(--accent-red);
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.rk-rank {
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.rk-rank.rank-SS { color: var(--accent-warn); }
+.rk-rank.rank-S  { color: var(--accent-cyan); }
+.rk-rank.rank-A  { color: var(--accent-cyan); }
+.rk-rank.rank-B  { color: var(--text-on-dark); }
+.rk-rank.rank-C  { color: var(--text-faint); }
+.rk-rank.rank-D  { color: var(--text-dim); }
+.rk-rank.rank-E  { color: var(--accent-red-dim); }
+.rk-rank.rank-F  { color: var(--accent-red); }
+
+.rk-score {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 1px;
+}
+.rk-time {
+    text-align: right;
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
+    font-size: 15px;
+}
+
+/* --- 自分のエントリ強調 --- */
+.rk-row.is-self {
+    background: rgba(0, 229, 255, 0.12);
+    border-left: 3px solid var(--accent-cyan);
+    padding-left: 5px;
+    animation: rkSelfGlow 2.4s ease-in-out infinite;
+}
+@keyframes rkSelfGlow {
+    0%, 100% { box-shadow: inset 0 0 0 0 rgba(0, 229, 255, 0); }
+    50%      { box-shadow: inset 0 0 24px 0 rgba(0, 229, 255, 0.25); }
+}
+
+/* --- 100 位圏外 pin --- */
+.rk-selfpin { padding: 0 0 6px 0; }
+.rk-selfpin-inner {
+    margin-top: 14px;
+    padding: 10px 0 0 0;
+    border-top: 2px dashed var(--accent-cyan);
+}
+.rk-selfpin-label {
+    font-size: 14px;
+    color: var(--accent-cyan);
+    letter-spacing: 3px;
+    padding: 4px 8px;
+}
+.rk-selfpin-hint {
+    font-size: 14px;
+    color: var(--text-dim);
+    padding: 10px 8px;
+    text-align: center;
+}
+.rk-list--pinned { padding: 0; }
+
+/* --- フッタ注記 --- */
+.rk-footer-hint {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align: center;
+    padding: 14px 8px 18px 8px;
+    letter-spacing: 1px;
+}
+
+.rk-loading, .rk-empty {
+    list-style: none;
+    text-align: center;
+    padding: 40px 0;
+    color: var(--text-dim);
+    letter-spacing: 4px;
+}
+
+/* 狭幅 (横 380px 未満) での最適化 */
+@media (max-width: 420px) {
+    .rk-colhead, .rk-row {
+        grid-template-columns: 44px 32px 1fr 36px 82px 56px;
+        gap: 6px;
+        font-size: 15px;
+    }
+    .rk-avatar { width: 28px; height: 28px; }
+    .rk-time { font-size: 13px; }
+}

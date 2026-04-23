@@ -1,0 +1,55 @@
+---
+description: 変なクイズ — 絵文字使用禁止 (アイコンは SVG で実装)
+alwaysApply: true
+---
+
+# 絵文字 (Emoji) 使用禁止
+
+このゲームでは **ユーザーに描画される絵文字 (Emoji pictograph) を一切使用しない**。
+プラットフォーム (iOS / Android / Web) ごとに絵文字の字形が大きく異なり、
+世界観・デザインの一貫性を壊すため。
+
+## NG: Emoji pictograph
+- 錠マーク (鍵)
+- 蝶
+- スマイル
+- 火・矢・星 (絵文字版)
+- その他 Unicode の `1F000`–`1FAFF` 範囲全般
+
+**ユーザー描画部分では使用禁止** (`innerHTML` / `textContent` / CSS `content` / JSON 文字列など)。
+
+## OK: 記号文字 (Symbol glyph)
+以下は **グラフィック記号として意図的に使う分には許容**:
+- `⚠` (警告 — INPUT DRIFT などのギミックバッジ)
+- `◯` `✕` (正解・不正解マーク)
+- `♩ ♪ ♫ ♯ ♭` (音楽記号 — 問題文で使用)
+- `★ ☆ ■ □ ● ○ ◆ ◇` (ギミック B07 のグリッチ文字プール)
+- `▓ ▒ ░ █` (グリッチの塗り記号)
+
+※ docs (`*.md`) と `ランキング機能仕様書v1.0.md` 等の内部ドキュメント内の絵文字は
+   ゲーム本体に出ないので **対象外** (🧑 🤖 ⚠ ✅ 等はそのまま OK)。
+
+## アイコンが必要なとき
+
+**SVG で実装する**。インライン SVG でも外部 `.svg` ファイルでもよい。
+- 既存の ICONS パターン (`js/ui/homeMenu.js` の `const ICONS = {...}`) を真似る
+- ストローク系 (`stroke="currentColor"` + `fill="none"`) で統一してモノクロ世界観に合わせる
+- 共通アイコン置き場: `sprite/icons/*.svg`
+
+## 具体例
+
+```javascript
+// ❌ BAD: 絵文字
+body = `<div class="rank-icon">🔒</div>`;
+
+// ✅ GOOD: インライン SVG
+body = `<div class="rank-icon"><svg viewBox="0 0 24 24" fill="none"
+  stroke="currentColor" stroke-width="2" stroke-linecap="round"
+  stroke-linejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2"/>
+    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+</svg></div>`;
+
+// ✅ GOOD: 共通アセット参照
+body = `<img src="sprite/icons/lock.svg" alt="LOCKED" class="rank-icon">`;
+```

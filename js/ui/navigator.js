@@ -4,10 +4,14 @@
    画面下部に girl スプライトを置いて吹き出しで会話させる。
    チュートリアル / リザルトコメント等で使い回す汎用 UI。
 
-   API:
+     API:
      Navigator.speak(lines[, opts])
        lines: string[]      発言 (1要素 = 1吹き出し)
        opts.poses: string[] 各発言に対応するポーズ (省略時は自動ローテ)
+       opts.customImage: string
+                            指定時は sprite/girl/*.png ではなくこのパスの
+                            静止画を使う (= サブキャラ立ち絵 1 枚用)。
+                            ポーズローテも無効化される。
        opts.onDone: fn      最後まで送った後のコールバック
        opts.autoStart: bool true なら最初の行を即表示 (default true)
      Navigator.close()
@@ -71,9 +75,11 @@
         const figure = overlay.querySelector('.nav-figure');
 
         // ポーズ切替: src 変更 (load 失敗は黙って隠す)
+        //   customImage 指定時はポーズ機構をバイパスして 1 枚絵を使う
+        //   (サブキャラはアバター PNG をそのまま流用する想定)。
         imgEl.onerror = () => { imgEl.style.opacity = '0'; };
         imgEl.onload  = () => { imgEl.style.opacity = '1'; };
-        imgEl.src = `sprite/girl/${pose}.png`;
+        imgEl.src = state.customImage || `sprite/girl/${pose}.png`;
 
         // bubble を一瞬オフにして再度ポップさせる
         bubble.classList.remove('is-pop');
@@ -122,6 +128,7 @@
             overlay.classList.remove('is-open');
             overlay.classList.remove('is-persist');
             overlay.classList.remove('is-last');
+            overlay.classList.remove('is-subchar');
             // persist モードでも強制的に閉じられるよう表示状態を完全リセット
             const bubble = overlay.querySelector('.nav-bubble');
             const figure = overlay.querySelector('.nav-figure');
@@ -155,8 +162,12 @@
             // persist: true → タップで閉じない。キャラと吹き出しが画面に残り続ける。
             // (リザルト画面で「ずっと話しかけてる」体裁を作りたい時に使う)
             persist: !!opts.persist,
+            // customImage: サブキャラ 1 枚絵差し替え用 (nullable)
+            customImage: (typeof opts.customImage === 'string' && opts.customImage) ? opts.customImage : null,
         };
         applyMode(state.mode);
+        // サブキャラ時は CSS 調整フックを立てる (正方形画像を綺麗に見せる等)
+        if (overlay) overlay.classList.toggle('is-subchar', !!state.customImage);
         open();
         show(0);
     }
