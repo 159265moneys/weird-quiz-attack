@@ -113,19 +113,21 @@
 }
 
 /* --- カラムヘッダ --- */
+/* 2026-04: モバイル端末で細かすぎて読めなかったので全体を大幅スケールアップ。
+            スクロール増えてでも可読性優先 (1行に情報詰めすぎない)。 */
 .rk-colhead, .rk-row {
     display: grid;
-    grid-template-columns: 56px 44px 1fr 40px 110px 66px;
+    grid-template-columns: 80px 76px 1fr 64px 160px 100px;
     align-items: center;
-    gap: 8px;
-    padding: 4px 8px;
+    gap: 14px;
+    padding: 10px 14px;
 }
 .rk-colhead {
-    font-size: 13px;
-    letter-spacing: 2px;
+    font-size: 18px;
+    letter-spacing: 3px;
     color: var(--text-dim);
     border-bottom: 1px dashed var(--line-dim);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 
 /* --- リスト --- */
@@ -136,31 +138,32 @@
 }
 .rk-row {
     border-bottom: 1px solid var(--line-dim);
-    font-size: 17px;
+    font-size: 28px;
     color: var(--text-on-dark);
-    min-height: 48px;
+    min-height: 88px;
 }
 .rk-row:nth-child(odd) {
     background: rgba(255,255,255,0.02);
 }
 .rk-pos {
     font-family: inherit;
-    font-size: 17px;
+    font-size: 28px;
     color: var(--text-dim);
     letter-spacing: 1px;
     text-align: left;
+    font-weight: 600;
 }
-.rk-row.rk-medal-1 .rk-pos { color: var(--accent-warn); font-weight: 700; }
-.rk-row.rk-medal-2 .rk-pos { color: #d7d7e8; font-weight: 700; }
-.rk-row.rk-medal-3 .rk-pos { color: #e39a5b; font-weight: 700; }
+.rk-row.rk-medal-1 .rk-pos { color: var(--accent-warn); font-weight: 800; font-size: 32px; }
+.rk-row.rk-medal-2 .rk-pos { color: #d7d7e8;           font-weight: 800; font-size: 32px; }
+.rk-row.rk-medal-3 .rk-pos { color: #e39a5b;           font-weight: 800; font-size: 32px; }
 
 .rk-avatar {
     display: inline-block;
-    width: 36px;
-    height: 36px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
     background: var(--box-bg) center/cover no-repeat;
-    border: 1.5px solid var(--line-dim);
+    border: 2px solid var(--line-dim);
 }
 .rk-avatar-none {
     background: repeating-linear-gradient(45deg,
@@ -172,20 +175,22 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    font-size: 26px;
 }
 .rk-death {
     display: inline-block;
-    margin-left: 6px;
+    margin-left: 8px;
     color: var(--accent-red);
-    font-size: 14px;
-    opacity: 0.8;
+    font-size: 22px;
+    opacity: 0.85;
 }
 
 .rk-rank {
     text-align: center;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 1px;
+    font-size: 30px;
 }
 .rk-rank.rank-SS { color: var(--accent-warn); }
 .rk-rank.rank-S  { color: var(--accent-cyan); }
@@ -199,13 +204,15 @@
 .rk-score {
     text-align: right;
     font-variant-numeric: tabular-nums;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    font-size: 28px;
+    font-weight: 600;
 }
 .rk-time {
     text-align: right;
     color: var(--text-faint);
     font-variant-numeric: tabular-nums;
-    font-size: 15px;
+    font-size: 22px;
 }
 
 /* --- 自分のエントリ強調 --- */
@@ -221,50 +228,45 @@
 }
 
 /* --- 100 位圏外 pin --- */
-.rk-selfpin { padding: 0 0 6px 0; }
+.rk-selfpin { padding: 0 0 10px 0; }
 .rk-selfpin-inner {
-    margin-top: 14px;
-    padding: 10px 0 0 0;
+    margin-top: 20px;
+    padding: 14px 0 0 0;
     border-top: 2px dashed var(--accent-cyan);
 }
 .rk-selfpin-label {
-    font-size: 14px;
+    font-size: 20px;
     color: var(--accent-cyan);
-    letter-spacing: 3px;
-    padding: 4px 8px;
+    letter-spacing: 4px;
+    padding: 6px 10px;
+    font-weight: 700;
 }
 .rk-selfpin-hint {
-    font-size: 14px;
+    font-size: 20px;
     color: var(--text-dim);
-    padding: 10px 8px;
+    padding: 16px 10px;
     text-align: center;
 }
 .rk-list--pinned { padding: 0; }
 
 /* --- フッタ注記 --- */
 .rk-footer-hint {
-    font-size: 12px;
+    font-size: 18px;
     color: var(--text-dim);
     text-align: center;
-    padding: 14px 8px 18px 8px;
+    padding: 20px 10px 24px 10px;
     letter-spacing: 1px;
 }
 
 .rk-loading, .rk-empty {
     list-style: none;
     text-align: center;
-    padding: 40px 0;
+    padding: 60px 0;
     color: var(--text-dim);
     letter-spacing: 4px;
+    font-size: 24px;
 }
 
-/* 狭幅 (横 380px 未満) での最適化 */
-@media (max-width: 420px) {
-    .rk-colhead, .rk-row {
-        grid-template-columns: 44px 32px 1fr 36px 82px 56px;
-        gap: 6px;
-        font-size: 15px;
-    }
-    .rk-avatar { width: 28px; height: 28px; }
-    .rk-time { font-size: 13px; }
-}
+/* ※ 旧 "@media (max-width: 420px)" 縮小ルールは削除。
+      main.js の --scale で画面全体を 1080×1920 基準にフィットさせているため、
+      実デバイス幅で px を縮めると逆に小さくなりすぎて読めない。 */
