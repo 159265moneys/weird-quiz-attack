@@ -618,7 +618,7 @@
     "subgenre": "単語",
     "difficulty": 1,
     "mode": "input",
-    "question": "「sun（太陽）」を日本語で言うと？(ひらがなで)",
+    "question": "「sun」を日本語で言うと？(ひらがなで)",
     "answer_text": "たいよう",
     "answer_variants": [],
     "explanation": "sun=太陽（たいよう）。"
@@ -629,7 +629,7 @@
     "subgenre": "単語",
     "difficulty": 1,
     "mode": "input",
-    "question": "「bird（鳥）」を日本語で言うと？(ひらがなで)",
+    "question": "「bird」を日本語で言うと？(ひらがなで)",
     "answer_text": "とり",
     "answer_variants": [],
     "explanation": "bird=鳥（とり）。"
@@ -662,15 +662,15 @@
     "subgenre": "単語",
     "difficulty": 1,
     "mode": "choice",
-    "question": "「fish（魚）」の複数形は？",
+    "question": "「child（子ども）」の複数形は？",
     "choices": [
-      "fishs",
-      "fishes",
-      "fish",
-      "fishies"
+      "childs",
+      "childes",
+      "children",
+      "child"
     ],
     "answer": 2,
-    "explanation": "fishの複数形は変化なしでfish（または魚の種類ならfishes）。一般的にはfish。"
+    "explanation": "childの複数形は不規則変化でchildren（子どもたち）。"
   },
   {
     "id": "E048",
@@ -846,15 +846,15 @@
     "subgenre": "文法",
     "difficulty": 2,
     "mode": "choice",
-    "question": "「I ___ a student.」の空欄は？",
+    "question": "「We ___ good friends.」の空欄は？",
     "choices": [
       "am",
       "is",
       "are",
       "be"
     ],
-    "answer": 0,
-    "explanation": "Iの後にはam。"
+    "answer": 2,
+    "explanation": "Weは複数の主語なのでare。"
   },
   {
     "id": "E062",
@@ -878,15 +878,15 @@
     "subgenre": "文法",
     "difficulty": 2,
     "mode": "choice",
-    "question": "「dog」の複数形は？",
+    "question": "「box」の複数形は？",
     "choices": [
-      "dog",
-      "dogs",
-      "doge",
-      "doges"
+      "boxs",
+      "boxies",
+      "boxes",
+      "box"
     ],
-    "answer": 1,
-    "explanation": "dog→dogs（sをつける）。"
+    "answer": 2,
+    "explanation": "x・s・sh・ch・oで終わる名詞はesをつける。boxes。"
   },
   {
     "id": "E064",
@@ -1077,7 +1077,7 @@
     "subgenre": "単語",
     "difficulty": 3,
     "mode": "choice",
-    "question": "「Tuesday」の正しいスペルは？",
+    "question": "火曜日を英語で書くと？",
     "choices": [
       "Tewsday",
       "Tuseday",
@@ -1195,7 +1195,7 @@
     "subgenre": "単語",
     "difficulty": 4,
     "mode": "input",
-    "question": "「museum（博物館）」の意味を日本語で書くと？(ひらがなで)",
+    "question": "「museum」の意味は？(ひらがなで)",
     "answer_text": "はくぶつかん",
     "answer_variants": [
       "びじゅつかん"
@@ -1360,7 +1360,7 @@
     "subgenre": "単語",
     "difficulty": 5,
     "mode": "input",
-    "question": "「dictionary（辞書）」を日本語で？(ひらがなで)",
+    "question": "「dictionary」の意味は？(ひらがなで)",
     "answer_text": "じしょ",
     "answer_variants": [],
     "explanation": "dictionary=辞書（じしょ）。"
@@ -1472,7 +1472,7 @@
       "could",
       "canned",
       "cans",
-      "canned"
+      "would"
     ],
     "answer": 0,
     "explanation": "canの過去形はcould。"
@@ -1483,15 +1483,15 @@
     "subgenre": "単語",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「February」の正しいスペルは？",
+    "question": "「重要な」を表す英語の正しいスペルはどれ？",
     "choices": [
-      "Febuary",
-      "February",
-      "Feburary",
-      "Februray"
+      "inportant",
+      "importent",
+      "imporant",
+      "important"
     ],
-    "answer": 1,
-    "explanation": "February=2月。rが2つある。"
+    "answer": 3,
+    "explanation": "important=重要な。im-por-tant。"
   },
   {
     "id": "E105",
@@ -1553,7 +1553,7 @@
     "subgenre": "単語",
     "difficulty": 6,
     "mode": "input",
-    "question": "「calendar（カレンダー）」のスペルを英語で書くと？",
+    "question": "カレンダーを英語で書くと？",
     "answer_text": "calendar",
     "answer_variants": [],
     "explanation": "calendar。正しいスペル。"
@@ -1644,15 +1644,15 @@
     "subgenre": "単語",
     "difficulty": 6,
     "mode": "choice",
-    "question": "「November」は何月？",
+    "question": "「concentrate」の意味は？",
     "choices": [
-      "9月",
-      "10月",
-      "11月",
-      "12月"
+      "集中する",
+      "拡散する",
+      "整理する",
+      "無視する"
     ],
-    "answer": 2,
-    "explanation": "November=11月。"
+    "answer": 0,
+    "explanation": "concentrate=集中する・専念する。"
   },
   {
     "id": "E116",
@@ -1698,7 +1698,7 @@
     "subgenre": "単語",
     "difficulty": 7,
     "mode": "choice",
-    "question": "「schedule」の正しいスペルは？",
+    "question": "予定・計画を表す英単語のスペルで正しいのはどれ？",
     "choices": [
       "shedule",
       "scedule",
@@ -1837,7 +1837,7 @@
       "wants",
       "hopes",
       "wishes",
-      "wants"
+      "needs"
     ],
     "answer": 0,
     "explanation": "want to do=～したい。He wants to be a doctor."
@@ -1896,7 +1896,7 @@
     "subgenre": "文法",
     "difficulty": 8,
     "mode": "choice",
-    "question": "「He ___ there for five years.」（ずっといた）の空欄は？",
+    "question": "「He ___ there for five years.」（今もそこに住んでいる）の空欄は？",
     "choices": [
       "lived",
       "has lived",
@@ -1904,7 +1904,7 @@
       "was living"
     ],
     "answer": 1,
-    "explanation": "現在完了（継続）：has lived。"
+    "explanation": "現在完了（継続）：has lived。今もまだ住んでいる状態。"
   },
   {
     "id": "E133",
@@ -1912,7 +1912,7 @@
     "subgenre": "単語",
     "difficulty": 9,
     "mode": "input",
-    "question": "「Wednesday（水曜日）」の正しいスペルを書くと？",
+    "question": "水曜日を英語で書くと？",
     "answer_text": "Wednesday",
     "answer_variants": [],
     "explanation": "Wednesday。dが2つ入り、真ん中のdは発音しない。"
@@ -1955,15 +1955,15 @@
     "subgenre": "単語",
     "difficulty": 9,
     "mode": "choice",
-    "question": "「February」のスペルで正しいものは？",
+    "question": "9月を英語で書くと？",
     "choices": [
-      "Febuary",
-      "Februrary",
-      "February",
-      "Febraury"
+      "Septmber",
+      "Septembar",
+      "September",
+      "Sepetmber"
     ],
     "answer": 2,
-    "explanation": "February=2月。r が2つ入る。"
+    "explanation": "September=9月。Sep-tem-berと3音節。"
   },
   {
     "id": "E137",
@@ -2067,7 +2067,7 @@
     "subgenre": "単語",
     "difficulty": 3,
     "mode": "input",
-    "question": "「soccer（サッカー）」を日本語で？(ひらがなで)",
+    "question": "「soccer」を日本語で？(ひらがなで)",
     "answer_text": "さっかー",
     "answer_variants": [],
     "explanation": "soccer=サッカー（さっかー）。"
@@ -2078,7 +2078,7 @@
     "subgenre": "単語",
     "difficulty": 4,
     "mode": "input",
-    "question": "「rainbow（虹）」を日本語で？(ひらがなで)",
+    "question": "「rainbow」を日本語で？(ひらがなで)",
     "answer_text": "にじ",
     "answer_variants": [],
     "explanation": "rainbow=虹（にじ）。"
@@ -2390,7 +2390,7 @@
     "subgenre": "単語",
     "difficulty": 8,
     "mode": "input",
-    "question": "「achievement（達成）」のスペルを書くと？",
+    "question": "『達成』を英語で書くと？",
     "answer_text": "achievement",
     "answer_variants": [],
     "explanation": "achievement=達成。"
@@ -2401,7 +2401,7 @@
     "subgenre": "単語",
     "difficulty": 9,
     "mode": "input",
-    "question": "「temperature（気温・温度）」のスペルを書くと？",
+    "question": "気温・温度を英語で書くと？",
     "answer_text": "temperature",
     "answer_variants": [],
     "explanation": "temperature=温度・気温。"
@@ -2772,18 +2772,18 @@
   {
     "id": "E191",
     "genre": "英語",
-    "subgenre": "単語",
+    "subgenre": "月",
     "difficulty": 5,
     "mode": "choice",
-    "question": "「October」は何月？",
+    "question": "「February」は何月？",
     "choices": [
-      "8月",
-      "9月",
-      "10月",
-      "11月"
+      "1月",
+      "2月",
+      "3月",
+      "4月"
     ],
-    "answer": 2,
-    "explanation": "October=10月。"
+    "answer": 1,
+    "explanation": "February=2月。"
   },
   {
     "id": "E192",

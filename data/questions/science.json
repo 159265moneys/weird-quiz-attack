@@ -741,10 +741,11 @@
     "difficulty": 6,
     "mode": "input",
     "question": "ふりこの周期は何によって決まる？(ひらがなで)",
-    "answer_text": "なわ（ひもの）ながさ",
+    "answer_text": "ひものながさ",
     "answer_variants": [
       "ふりこのながさ",
-      "ながさ"
+      "ながさ",
+      "なわのながさ"
     ],
     "explanation": "振り子の周期はひもの長さのみで決まる（重さや振れ幅には関係しない）。"
   },
@@ -1265,7 +1266,7 @@
     "subgenre": "生物",
     "difficulty": 10,
     "mode": "input",
-    "question": "「細胞分裂」のとき最初に複製されるのは何？(ひらがなで)",
+    "question": "「細胞分裂」のとき最初に複製されるのは何？",
     "answer_text": "DNA",
     "answer_variants": [
       "でぃーえぬえー",

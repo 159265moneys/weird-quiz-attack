@@ -636,13 +636,12 @@
     "subgenre": "生活",
     "difficulty": 1,
     "mode": "input",
-    "question": "調味料「さしすせそ」の「す」は？(ひらがなで)",
-    "answer_text": "す",
+    "question": "「豆腐」は何から作られる？(ひらがなで)",
+    "answer_text": "だいず",
     "answer_variants": [
-      "すず",
-      "酢"
+      "大豆"
     ],
-    "explanation": "さ=砂糖、し=塩、す=酢（す）、せ=醤油、そ=味噌。"
+    "explanation": "豆腐は大豆（だいず）を原料として作られる。"
   },
   {
     "id": "O045",
@@ -682,15 +681,15 @@
     "subgenre": "生活",
     "difficulty": 1,
     "mode": "choice",
-    "question": "米を炊くときに使う調理器具は？",
+    "question": "次のうち「発酵食品」はどれ？",
     "choices": [
-      "フライパン",
-      "炊飯器",
-      "鍋だけ",
-      "電子レンジ"
+      "バター",
+      "ヨーグルト",
+      "牛乳",
+      "砂糖"
     ],
     "answer": 1,
-    "explanation": "一般的に炊飯器を使って米を炊く。"
+    "explanation": "ヨーグルトは乳酸菌で発酵させた発酵食品。バター・牛乳は発酵食品ではない。"
   },
   {
     "id": "O048",
@@ -762,15 +761,15 @@
     "subgenre": "生活",
     "difficulty": 1,
     "mode": "choice",
-    "question": "正月に食べる料理は？",
+    "question": "「節分」で行う伝統的な行事は？",
     "choices": [
-      "おでん",
-      "おせち",
-      "すき焼き",
-      "ケーキ"
+      "餅つき",
+      "豆まき",
+      "花見",
+      "お月見"
     ],
     "answer": 1,
-    "explanation": "正月にはおせち料理を食べる習慣がある。"
+    "explanation": "節分（2月3日頃）では「鬼は外、福は内」と豆まきをして邪気を払う。"
   },
   {
     "id": "O053",
@@ -814,14 +813,21 @@
     "genre": "その他",
     "subgenre": "家庭",
     "difficulty": 2,
-    "mode": "input",
-    "question": "玉ねぎを切ると目が◯◯なる。◯◯は？(ひらがなで)",
+    "mode": "choice",
+    "question": "「蒸す」調理法で作る料理はどれ？",
     "answer_text": "しみる",
     "answer_variants": [
       "いたく",
       "からく"
     ],
-    "explanation": "玉ねぎに含まれる硫化アリルが目にしみる。"
+    "explanation": "茶わん蒸しは蒸し器を使って蒸す料理。唐揚げ・天ぷらは揚げ物。",
+    "choices": [
+      "唐揚げ",
+      "肉じゃが",
+      "茶わん蒸し",
+      "天ぷら"
+    ],
+    "answer": 2
   },
   {
     "id": "O057",
@@ -1233,7 +1239,7 @@
     "subgenre": "家庭",
     "difficulty": 4,
     "mode": "choice",
-    "question": "「たて縫い」と「なみ縫い」の違いは？",
+    "question": "「本返し縫い」と「なみ縫い」の違いは？",
     "choices": [
       "糸の色が違う",
       "縫い目の大きさが違う",
@@ -1241,7 +1247,7 @@
       "使用目的が全く同じ"
     ],
     "answer": 1,
-    "explanation": "なみ縫いは等間隔の縫い目、本返し縫いはつながった縫い目。縫い目の形が違う。"
+    "explanation": "本返し縫いは縫い目が連続してつながるため丈夫。なみ縫いは等間隔に表裏交互で縫う。縫い目の形が違う。"
   },
   {
     "id": "O084",
@@ -1678,7 +1684,7 @@
     "difficulty": 7,
     "mode": "input",
     "question": "オリンピックの陸上競技「十種競技」の英語名は？(カタカナで)",
-    "answer_text": "でかすろん",
+    "answer_text": "デカスロン",
     "answer_variants": [
       "デカスロン"
     ],
@@ -1785,11 +1791,16 @@
     "genre": "その他",
     "subgenre": "音楽",
     "difficulty": 8,
-    "mode": "input",
-    "question": "「♩=120」のテンポ表記は1分間に4分音符が何回？",
-    "answer_text": "120",
-    "answer_variants": [],
-    "explanation": "♩=120は1分間に4分音符が120回=BPM120。"
+    "mode": "choice",
+    "question": "音楽の速度記号『Andante（アンダンテ）』はどんな速さ？",
+    "explanation": "Andante（アンダンテ）は『歩くような速さ』を意味する速度記号。",
+    "choices": [
+      "とても速く",
+      "歩くような速さ",
+      "とてもゆっくり",
+      "速く・快速に"
+    ],
+    "answer": 1
   },
   {
     "id": "O120",
@@ -2061,11 +2072,10 @@
     "subgenre": "スポーツ",
     "difficulty": 5,
     "mode": "input",
-    "question": "体操競技で床・鉄棒・あん馬などをまとめて何という？(カタカナで)",
-    "answer_text": "きぐたいそう",
+    "question": "体操競技で床・鉄棒・あん馬などをまとめて何という？(ひらがなで)",
+    "answer_text": "きかいたいそう",
     "answer_variants": [
-      "器具体操",
-      "きぐたいそう"
+      "器械体操"
     ],
     "explanation": "鉄棒・平行棒・あん馬等を使った体操=器械体操（きかいたいそう）。"
   },
@@ -2102,7 +2112,7 @@
     "subgenre": "スポーツ",
     "difficulty": 8,
     "mode": "input",
-    "question": "オリンピックで使われる「ルービックキューブ型の競技」の正式名は？(スポーツスタッキング以外で)…誤問。代替：陸上競技の「ハンマー投げ」の器具の重さ(男子)は何kg？",
+    "question": "陸上競技「ハンマー投げ」の器具の重さ（男子）は何kg？",
     "answer_text": "7.26",
     "answer_variants": [],
     "explanation": "ハンマー投げ（男子）の器具は7.26kg（砲丸投げと同じ重さ）。"
@@ -2127,7 +2137,7 @@
     "difficulty": 10,
     "mode": "input",
     "question": "「テンペラ画」の絵具の主な媒材（つなぎ）は何？(ひらがなで)",
-    "answer_text": "たまごのき み",
+    "answer_text": "たまごのきみ",
     "answer_variants": [
       "卵黄",
       "たまごのきみ",
@@ -2296,7 +2306,7 @@
     "subgenre": "スポーツ",
     "difficulty": 6,
     "mode": "input",
-    "question": "陸上の「ハードル走」で使う障害物を何という？(カタカナで)",
+    "question": "陸上競技で、走りながら跳び越える障害物を何という？（カタカナで）",
     "answer_text": "ハードル",
     "answer_variants": [
       "はーどる"
@@ -2310,7 +2320,7 @@
     "difficulty": 7,
     "mode": "input",
     "question": "「フラット3つの調号」の短調は何調？(ひらがなで)",
-    "answer_text": "ハ短調",
+    "answer_text": "はたんちょう",
     "answer_variants": [
       "はたんちょう",
       "c minor"
@@ -2360,11 +2370,16 @@
     "genre": "その他",
     "subgenre": "音楽",
     "difficulty": 4,
-    "mode": "input",
-    "question": "「ファミレ」はある曲の冒頭。その曲は「◯◯◯◯の歌」。◯◯◯◯は？(ひらがなで)",
-    "answer_text": "み",
-    "answer_variants": [],
-    "explanation": "「ちょうちょう（蝶々）」の歌の冒頭はミミレファミレ…。正確には「ミミレファミレド」。代替：「ドレミの歌」の3番目の音は？"
+    "mode": "choice",
+    "question": "音楽の速度記号「Largo（ラルゴ）」はどんな速さ？",
+    "explanation": "Largo（ラルゴ）は『とてもゆっくりと』を意味する速度記号。最も遅い部類に入る。",
+    "choices": [
+      "とても速く",
+      "普通の速さ",
+      "とてもゆっくり",
+      "歩くような速さ"
+    ],
+    "answer": 2
   },
   {
     "id": "O160",
@@ -2720,7 +2735,7 @@
     "subgenre": "美術",
     "difficulty": 6,
     "mode": "input",
-    "question": "「遠近法」のうち視点を1つとする技法の名称は？(カタカナで)",
+    "question": "「遠近法」のうち視点を1つとする技法の名称は？(ひらがなで)",
     "answer_text": "いってんとうしずほう",
     "answer_variants": [
       "一点透視図法"
@@ -2935,13 +2950,20 @@
     "genre": "その他",
     "subgenre": "生活",
     "difficulty": 3,
-    "mode": "input",
-    "question": "「調味料のさしすせそ」を全部ひらがなで言うと？（順番に5つ）",
+    "mode": "choice",
+    "question": "「七夕」は何月何日？",
     "answer_text": "さとう しお す しょうゆ みそ",
     "answer_variants": [
       "さとう、しお、す、しょうゆ、みそ"
     ],
-    "explanation": "砂糖・塩・酢・醤油・味噌。"
+    "explanation": "七夕は7月7日（旧暦では8月頃）。短冊に願いを書いて笹に飾る。",
+    "choices": [
+      "6月6日",
+      "7月7日",
+      "8月8日",
+      "9月9日"
+    ],
+    "answer": 1
   },
   {
     "id": "O198",
