@@ -202,90 +202,170 @@
     };
 
     // ---------- ナビゲーターによるランク別コメント ----------
-    // TODO (next phase): ランク毎のセリフを現状の ~5 倍にレパートリー拡張する。
-    //   - 各ランクに複数パターン (3〜5個) を用意して Math.random() で抽選
-    //   - deathLines も 5 倍程度に増量 (即死パターンは煽りの幅が効く)
-    //   - 本項は「余計な UI 文字を削る」整理の一環で一時凍結 (2026-04)。
+    // 2026-04 セリフレパートリー 5 倍増量 (女性カジュアル口調に統一)。
+    //   - 各ランクに 5 パターンの variants を用意し、session seed で安定抽選
+    //   - deathLines も 5 パターンに増量
+    //   - 抽選は session.startAt + rank をハッシュして決めるので、同一結果画面内で
+    //     リロードしない限り固定 (毎回バラバラにならず落ち着いて読める)
+    // TODO (future phase): プロフィールアイコン (クラゲ和装/TVロリ/蓄音機白衣) に
+    //   応じてキャラ口調と立ち絵を切り替える。アス比問題 (現ナビ画像は長方形、
+    //   プロフキャラは正方形) の吸収処理も合わせて実装。
     function speakResultComment(result, deathEnd) {
         if (!window.Navigator) return;
         const rank = result.rank;
         const pct = window.Ranks?.percentileText(rank, window.GameState.currentStage) || '';
         const meta = window.Ranks?.META?.[rank] || {};
         const label = meta.labels?.[0] || '';
+        const seed = `${window.GameState?.session?.startAt || 0}_${rank}_${deathEnd ? 'd' : 'n'}`;
 
+        // ランク別 variants (各 5 パターン)
         const DIALOGS = {
             SS: {
                 poses: ['happy', 'hi'],
-                lines: [
-                    '嘘でしょ…！全問正解、しかも早い！',
-                    `${pct}…${label}級です。もう、人類の域じゃない。`,
+                variants: [
+                    ['嘘でしょ…！全問正解、しかも早い！',             `${pct}…${label}級です。もう、人類の域じゃない。`],
+                    ['ちょっと、やば…マジで神じゃん。',                 `${pct} って、${label} のあれだよ？`],
+                    ['ねえ、ちょっと、チートじゃないよね…？',           `${pct}。${label} って頭脳、何食べたら育つの。`],
+                    ['こんなの、見たことないんですけど…。',              `${pct}。異次元すぎ。${label}、くらいじゃない？`],
+                    ['…一応聞くけど、あなた人間？',                    `${pct}…${label}、だってさ。ホンモノかも。`],
                 ],
             },
             S: {
                 poses: ['happy', 'hi'],
-                lines: [
-                    'すごい。${pct} だよ、それ。'.replace('${pct}', pct),
-                    `${label}に匹敵するレベル。`,
+                variants: [
+                    ['すごい。かなり上手いね。',                        `${pct} は、${label} レベルだよ。`],
+                    ['あと一問だったのに〜、惜しい！',                  `${pct}。それでも ${label} に匹敵する。`],
+                    ['ほぼ満点じゃない？次は SS いけるかも。',           `${pct}。${label} より、やや上の立ち位置。`],
+                    ['えーすごい。私には無理かも、これ。',              `${pct}。${label} 級です。`],
+                    ['マジか…本気出したね、それ。',                    `${pct} は ${label} の水準。`],
                 ],
             },
             A: {
                 poses: ['hi', 'basic'],
-                lines: [
-                    `${pct}。かなり強いほうだと思う。`,
-                    `${label}くらいの頭脳って感じ。`,
+                variants: [
+                    [`${pct}。かなり強いほうだと思う。`,                `${label} くらいの頭脳って感じ。`],
+                    ['惜しい問題いくつかあったね、おしい。',             `${pct}、${label} クラスだよ。`],
+                    ['うん、上手。ちゃんと読めてる。',                   `${pct} は ${label} 並み、って出てる。`],
+                    ['えー、あの問題取ってほしかったかも…。',            `でも ${pct}。${label} 相当の頭脳。`],
+                    ['いい感じ。自信持っていいと思う。',                 `${pct} は ${label} クラス。`],
                 ],
             },
             B: {
                 poses: ['basic'],
-                lines: [
-                    `${pct}。悪くないじゃない。`,
-                    `${label}、くらいの位置。`,
+                variants: [
+                    [`${pct}。悪くないじゃない。`,                      `${label}、くらいの位置。`],
+                    ['普通に上手いと思うよ、これ。',                    `${pct}。${label} と同格。`],
+                    ['もうちょい取れたかもね、惜しい。',                 `${pct}、${label} あたり。`],
+                    ['平均より、ちょっと上ってところ。',                 `${pct}。${label} クラスです。`],
+                    ['ギリギリ合格ライン、みたいな？',                  `${pct}、${label} レベル。`],
                 ],
             },
             C: {
                 poses: ['basic', 'think'],
-                lines: [
-                    `${pct}…まあ、${label}だね。`,
-                    '崩壊 UI に惑わされすぎ、かも？',
+                variants: [
+                    [`${pct}…まあ、${label} だね。`,                    '崩壊 UI に惑わされすぎ、かも？'],
+                    ['もっといけたんじゃない？ほんとに。',                `${pct}。${label} と同等。`],
+                    ['ふつうに並、だね。',                               `${pct} は ${label} のゾーン。`],
+                    ['ギミックにやられたね、これは。',                   `${pct}、${label} くらいの位置。`],
+                    [`${pct}。${label}、って結果。`,                    'ま、こんな日もあるよ。'],
                 ],
             },
             D: {
                 poses: ['think'],
-                lines: [
-                    `${pct}。`,
-                    `ラベルは「${label}」。あと一歩、って感じ。`,
+                variants: [
+                    [`${pct}。あと一歩、って感じ。`,                    `ラベルは「${label}」。もうちょい。`],
+                    ['もうちょっと頑張れそう、だよ？',                   `${pct}、${label}。`],
+                    ['惜しい答えが多かったかも。',                       `${pct} は ${label} ゾーン。`],
+                    ['うーん、これは練習が必要かな。',                   `${pct}。${label} って結果。`],
+                    ['次いこ、次！集中すればまだ行けるって。',           `${pct}、${label}。`],
                 ],
             },
             E: {
                 poses: ['think_light'],
-                lines: [
-                    `${pct}…「${label}」と出ました。`,
-                    'UI 崩壊に呑まれてしまったね。',
+                variants: [
+                    [`${pct}…「${label}」と出ました。`,                 'UI 崩壊に呑まれてしまったね。'],
+                    ['なんか、集中できなかった感じ？',                   `${pct}、${label}。`],
+                    ['問題、ちゃんと読めてる？',                         `${pct} は ${label} 相当。`],
+                    ['ギミックに完全に負けてるよ、これ。',               `${pct}。${label}、だって。`],
+                    ['まあ、のびしろだよ、のびしろ。',                   `${pct}、${label} 認定。`],
                 ],
             },
             F: {
                 poses: ['think_light'],
-                lines: [
-                    `${pct}。「${label}」。`,
-                    'これは、再挑戦が必要かも。',
+                variants: [
+                    [`${pct}。「${label}」。`,                          'これは、再挑戦が必要かも。'],
+                    ['…なんて言ったらいいんだろう。',                    `${pct}。「${label}」だよ？`],
+                    ['あの…大丈夫？体調悪いとか？',                     `${pct}、${label}。ちょっと休もっか？`],
+                    ['うん、これはやばいよ普通に。',                     `${pct}。${label} の称号、ゲット。`],
+                    ['えっと…自信、持ってくれていいよ。逆の意味で。',      `${pct}、${label}。`],
                 ],
             },
         };
-        const deathLines = {
-            poses: ['think_light', 'think'],
-            lines: [
-                'あ、死んだ。',
-                'あのギミックはもう、避けようが無い場合もあるから。',
-                '次はうまく切り抜けて。',
-            ],
-        };
 
-        const dlg = deathEnd ? deathLines : (DIALOGS[rank] || DIALOGS.C);
+        // deathEnd 用 (即死 B21/G1 終了) も 5 パターン
+        const DEATH_VARIANTS = [
+            {
+                poses: ['think_light', 'think'],
+                lines: [
+                    'あ、死んだ。',
+                    'あのギミックはもう、避けようが無い場合もあるから。',
+                    '次はうまく切り抜けて。',
+                ],
+            },
+            {
+                poses: ['think_light'],
+                lines: [
+                    'UI に殺された、って顔してる。',
+                    'ドンマイ、こういう日もあるよ。',
+                ],
+            },
+            {
+                poses: ['think'],
+                lines: [
+                    '突然、死ぬよね、このゲーム。',
+                    '次は気をつけて、って言っても無理かもだけど。',
+                ],
+            },
+            {
+                poses: ['think_light', 'basic'],
+                lines: [
+                    'それ、避けられる即死じゃなかった気も…しないかな。',
+                    '再挑戦、どうぞ。',
+                ],
+            },
+            {
+                poses: ['basic', 'think'],
+                lines: [
+                    'あら〜、即死ですか。',
+                    '慣れだよ、慣れ。次いこ。',
+                ],
+            },
+        ];
+
+        // seed を使った安定ランダム抽選 (画面内で固定)
+        function hashSeed(s) {
+            let h = 0;
+            for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+            return Math.abs(h);
+        }
+
+        let poses, lines;
+        if (deathEnd) {
+            const pick = DEATH_VARIANTS[hashSeed(seed) % DEATH_VARIANTS.length];
+            poses = pick.poses;
+            lines = pick.lines;
+        } else {
+            const bank = DIALOGS[rank] || DIALOGS.C;
+            const variants = bank.variants;
+            lines = variants[hashSeed(seed) % variants.length];
+            poses = bank.poses;
+        }
+
         // 結果画面は「タップ文字送り」せず、全部 1 吹き出しで一気に表示。
         // mode:'result' で下寄せ & 小さめ構成に切り替え。
         // persist:true でタップでは閉じず、ボタン操作を妨げないよう貫通。
-        window.Navigator.speak(dlg.lines, {
-            poses: dlg.poses,
+        window.Navigator.speak(lines, {
+            poses,
             mode: 'result',
             oneShot: true,
             persist: true,
