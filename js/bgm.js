@@ -14,6 +14,13 @@
        BGM_SPEC で "gain" を指定して個別に補正する。
        特に game 中の BGM は小さめに絞って SE を前に出す。
 
+   iOS バックグラウンド復帰対策 (2026-04):
+     - 他アプリ → 戻ってきた時 HTMLAudioElement は強制 pause されるため、
+       visibilitychange / pageshow を監視して paused 検知 → 再生再開。
+     - フェードは setInterval ではなく requestAnimationFrame で回し、
+       visibility hidden になったら即完了させる (throttle でフェードが
+       中途半端に残るのを防ぐ)。
+
    API:
      BGM.play(name, opts?)     — name にマッピングされたトラックを再生/切替
                                   opts.sequential=true で "前BGMを完全消してから再生"
@@ -63,6 +70,9 @@
 
     // path -> Audio 要素 (preload 済みで未使用のもの)。最初の spawnAudio で
     // 取り出して再生に使うことで "fetch → 再生開始" の遅延をゼロにする。
+    // 2026-04: メモリ圧迫対策で "title のみ" preload する方針に変更。
+    // その他の BGM は play() 時に素直に new Audio() する (数百 ms 遅延は
+    // 画面遷移 fade で隠れるので体感しない)。
     const _preloadByPath = new Map();
 
     // ------- ユーティリティ -------
@@ -84,47 +94,102 @@
     }
 
     function cancelFade(el) {
-        if (el && el._fade) {
+        if (!el) return;
+        if (el._fadeRaf) {
+            cancelAnimationFrame(el._fadeRaf);
+            el._fadeRaf = null;
+        }
+        // 旧 setInterval ベースの残骸ガード (後方互換)
+        if (el._fade) {
             clearInterval(el._fade);
             el._fade = null;
         }
+        el._fadeDone = null;
+        el._fadeTarget = null;
     }
 
-    // durationMs かけて targetVol にフェード。完了時に onDone。
+    // durationMs かけて targetVol にフェード (rAF ベース)。
+    //   - visibility hidden になったら throttle で進まないため、visibility 復帰
+    //     時に即完了させる処理を別途持つ (installVisibilityHandler 側)。
+    //   - onDone は完了 or キャンセル時に呼ばれる (retireEl で早期 disposal される
+    //     際に残留 interval を GC 可能にするため)。
     function fadeTo(el, targetVol, durationMs, onDone) {
         if (!el) return;
         cancelFade(el);
-        const startVol = el.volume;
-        const steps = Math.max(10, Math.floor(durationMs / 50));
-        const dt = Math.floor(durationMs / steps);
-        let i = 0;
-        el._fade = setInterval(() => {
-            i++;
-            const v = startVol + (targetVol - startVol) * (i / steps);
-            try { el.volume = clampVol(v); } catch (_) {}
-            if (i >= steps) {
-                try { el.volume = clampVol(targetVol); } catch (_) {}
-                cancelFade(el);
-                if (onDone) onDone();
+        const startVol = clampVol(el.volume);
+        const finalVol = clampVol(targetVol);
+        const delta    = finalVol - startVol;
+        el._fadeTarget = finalVol;   // flushFade で使う最終音量 (fade in の onDone が無い場合用)
+        el._fadeDone   = onDone || null;
+        if (durationMs <= 0 || Math.abs(delta) < 0.001) {
+            try { el.volume = finalVol; } catch (_) {}
+            const cb = el._fadeDone;
+            el._fadeDone = null;
+            el._fadeTarget = null;
+            if (cb) cb();
+            return;
+        }
+        const startAt  = performance.now();
+        const endAt    = startAt + durationMs;
+
+        const step = (now) => {
+            if (!el._fadeRaf) return; // 途中キャンセル
+            const t = now >= endAt ? 1 : (now - startAt) / durationMs;
+            try { el.volume = clampVol(startVol + delta * t); } catch (_) {}
+            if (t >= 1) {
+                el._fadeRaf = null;
+                el._fadeTarget = null;
+                const cb = el._fadeDone;
+                el._fadeDone = null;
+                if (cb) cb();
+            } else {
+                el._fadeRaf = requestAnimationFrame(step);
             }
-        }, dt);
+        };
+        el._fadeRaf = requestAnimationFrame(step);
+    }
+
+    // fade を "今すぐ targetVol まで到達" に早回しする (visibility 復帰時用)。
+    //   バックグラウンド中 rAF が throttle され、fade が中途半端な volume で
+    //   止まっているので、最終音量まで即代入 → onDone 呼び出しで決着させる。
+    function flushFade(el) {
+        if (!el || !el._fadeRaf) return;
+        const target = (typeof el._fadeTarget === 'number') ? el._fadeTarget : null;
+        const cb = el._fadeDone;
+        cancelFade(el);
+        if (target != null) {
+            try { el.volume = target; } catch (_) {}
+        }
+        if (cb) cb();
     }
 
     // 新規 Audio を生成 (or preload 済みを掠め取る) して再生開始 (volume=0 から fadeIn)
     function spawnAudio(path, targetVol, fadeInMs) {
         let el = _preloadByPath.get(path);
+        let usedPreload = false;
         if (el) {
             // preload 済みの要素を "初回だけ" 再利用する (Map から外す → 2回目以降は new)。
             // これにより初回再生時の fetch 待ちが消える (iOS で特に効く)。
             _preloadByPath.delete(path);
-            try { el.currentTime = 0; } catch (_) {}
-        } else {
+            usedPreload = true;
+            // currentTime=0 が設定できなかった場合 (Safari で partial stream 時に
+            // 発生することがある) は preload 要素を捨てて新規に作り直す。
+            let ok = false;
+            try { el.currentTime = 0; ok = (el.currentTime < 0.2); } catch (_) { ok = false; }
+            if (!ok) {
+                try { el.pause(); } catch (_) {}
+                el = null;
+                usedPreload = false;
+            }
+        }
+        if (!el) {
             el = new Audio(BASE + encodeURIComponent(path));
             el.preload = 'auto';
         }
         el.loop = false;
         el.volume = 0;
         el._loopTriggered = false;
+        el._path = path;
 
         // ---- ループ検知: timeupdate + ended 二段構え ----
         // 旧実装は requestAnimationFrame で尻尾を監視していたが、iOS Safari / WKWebView
@@ -175,8 +240,10 @@
     // 注: 呼び出し時点で currentEl から外して fadingEls に移していることが前提。
     function retireEl(el) {
         if (!el) return;
+        cancelFade(el);                     // fade interval/RAF を確実に止める
         try { el._detachLoopListeners?.(); } catch (_) {}
         try { el.pause(); } catch (_) {}
+        try { el.volume = 0; } catch (_) {}
         fadingEls.delete(el);
     }
 
@@ -220,7 +287,8 @@
         if (!BGM_SPEC[name]) return;
 
         // 同一 BGM を再リクエスト → 何もしない (idempotent)。
-        // 再生が止まってる場合 (unlock 前など) はそのまま通して再試行。
+        // 再生が止まってる場合 (unlock 前 / バックグラウンド復帰直後) は
+        // 下の再開ロジックで拾うのでここでは return しない。
         if (currentName === name && currentEl && !currentEl.paused) return;
 
         // unlock 前はリクエストだけ覚えて待つ
@@ -229,6 +297,18 @@
             pendingOpts = opts;
             currentName = name;  // 画面側から見える名前は先に確定
             return;
+        }
+
+        // 同一 BGM で、既存 el が paused 状態ならそれを再開するだけ
+        // (バックグラウンド復帰時のヒーラー)。currentEl ごと作り直すと
+        // その都度冒頭から再生されてしまうので、可能なら継続優先。
+        if (currentName === name && currentEl && currentEl.paused) {
+            try {
+                currentEl.volume = targetVolumeFor(name);
+                const p = currentEl.play();
+                if (p && p.catch) p.catch(() => {});
+                return;
+            } catch (_) { /* 落ちたら下の普通の切替へ流す */ }
         }
 
         const sp = specOf(name);
@@ -281,24 +361,61 @@
     function isMuted() { return muted; }
 
     // ------- プリロード -------
-    // script 読込時点で各 BGM ファイルを fetch してキャッシュを温めておく。
-    // さらにここで作った Audio 要素は spawnAudio 内で "初回再生" にそのまま
-    // 再利用する (Map から取り出して使う) ので、ユーザーの最初のタップで
-    // 即座に音が出る (fetch 待ちゼロ)。
-    function preloadAll() {
-        const seen = new Set();
-        for (const name in BGM_SPEC) {
-            const sp = specOf(name);
-            if (!sp || !sp.path || seen.has(sp.path)) continue;
-            seen.add(sp.path);
-            try {
-                const el = new Audio();
-                el.preload = 'auto';
-                el.src = BASE + encodeURIComponent(sp.path);
-                el.load();
-                _preloadByPath.set(sp.path, el);
-            } catch (_) { /* noop */ }
+    // 2026-04 方針変更: title のみ preload (メモリ圧迫回避)。
+    //   旧実装は 10 以上の stage BGM を全部 new Audio() しており、
+    //   使われない要素がブラウザのデコードバッファ保持で WebView メモリを
+    //   累積圧迫 → B11 等重ギミック時に OOM で kill される懸念があった。
+    //   title は "最初のタップで即音" が体感的に重要なので残す。
+    //   stage/result BGM の "数百 ms 遅延" は画面遷移 fade に隠れて気付かない。
+    function preloadTitle() {
+        const sp = specOf('title');
+        if (!sp) return;
+        try {
+            const el = new Audio();
+            el.preload = 'auto';
+            el.src = BASE + encodeURIComponent(sp.path);
+            el.load();
+            _preloadByPath.set(sp.path, el);
+        } catch (_) { /* noop */ }
+    }
+
+    // ------- visibilitychange / pageshow 対策 (iOS バックグラウンド復帰) -------
+    //   他アプリから戻ってきた時 HTMLAudioElement は強制 pause された状態
+    //   になる。ここで paused 検知 → 現在の name で play() を再発火する。
+    //   pageshow (bfcache 復帰) も同様。
+    //   併せて: フェード中だった el は rAF が throttle で止まっていて中途半端
+    //   な volume で固まっているので flushFade() で完了まで早回し。
+    function resumeFromBackground() {
+        // rAF throttle で途中停止した fade を強制完了
+        if (currentEl) flushFade(currentEl);
+        fadingEls.forEach(flushFade);
+
+        if (muted) return;   // ミュート中は何もしない
+        if (!currentName) return;
+
+        // currentEl が null / paused なら play() 再発火で復旧
+        if (!currentEl || currentEl.paused) {
+            const cn = currentName;
+            currentName = null;    // play() の idempotent チェックを通すため
+            play(cn);
         }
+    }
+    function installVisibilityHandler() {
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                // resume を次フレームに遅延 (visible イベントと同期で Audio API
+                // を叩くと iOS で失敗することがあるため)
+                setTimeout(resumeFromBackground, 60);
+            }
+        });
+        // pageshow: bfcache から復帰したケース (iOS Safari でよくある)
+        window.addEventListener('pageshow', (ev) => {
+            if (ev.persisted) setTimeout(resumeFromBackground, 60);
+        });
+        // focus: PWA として起動した場合の保険
+        window.addEventListener('focus', () => {
+            setTimeout(resumeFromBackground, 60);
+        });
     }
 
     // ------- unlock 連動 -------
@@ -329,8 +446,9 @@
     }
 
     installUnlock();
-    // スクリプト読込直後にキャッシュ温め開始 (鳴り始めの遅延対策)
-    try { preloadAll(); } catch (_) {}
+    installVisibilityHandler();
+    // スクリプト読込直後に title だけキャッシュ温め開始
+    try { preloadTitle(); } catch (_) {}
 
     window.BGM = {
         play,

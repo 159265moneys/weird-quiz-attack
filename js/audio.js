@@ -357,17 +357,25 @@
     // ====== ミュート / 音量 ======
     function mute(flag) {
         muted = !!flag;
-        // masterGain を実ゲインでも 0 にする (将来スケジュール済みの音にも効く)。
         if (masterGain && audioCtx) {
-            const now = audioCtx.currentTime;
+            const target = muted ? 0 : masterVolume;
+            // ramp だけだと AudioContext が suspended 状態の時にスケジュール
+            // が貯まって、resume 直後に「短い一瞬大きく鳴ってから 0 に落ちる」
+            // スパイクになる。value を即値でも上書きしておき、ctx が running
+            // なら滑らかに ramp、suspended ならそのまま即値で反映。
             try {
-                masterGain.gain.cancelScheduledValues(now);
-                masterGain.gain.setValueAtTime(masterGain.gain.value, now);
-                masterGain.gain.linearRampToValueAtTime(
-                    muted ? 0 : masterVolume,
-                    now + 0.12
-                );
-            } catch (_) {}
+                if (audioCtx.state === 'running') {
+                    const now = audioCtx.currentTime;
+                    masterGain.gain.cancelScheduledValues(now);
+                    masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+                    masterGain.gain.linearRampToValueAtTime(target, now + 0.12);
+                } else {
+                    masterGain.gain.cancelScheduledValues(0);
+                    masterGain.gain.value = target;
+                }
+            } catch (_) {
+                try { masterGain.gain.value = target; } catch (_) {}
+            }
         }
         // 鳴っている音も全停止 (persist 音含めて ユーザー操作を尊重)
         if (muted) abortAll(200, true);
@@ -377,12 +385,20 @@
     function setMasterVolume(v) {
         masterVolume = clampVol(v);
         if (masterGain && audioCtx && !muted) {
-            const now = audioCtx.currentTime;
+            // mute と同じく suspended の時は即値で確定させる (ramp の積み残し防止)
             try {
-                masterGain.gain.cancelScheduledValues(now);
-                masterGain.gain.setValueAtTime(masterGain.gain.value, now);
-                masterGain.gain.linearRampToValueAtTime(masterVolume, now + 0.05);
-            } catch (_) {}
+                if (audioCtx.state === 'running') {
+                    const now = audioCtx.currentTime;
+                    masterGain.gain.cancelScheduledValues(now);
+                    masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+                    masterGain.gain.linearRampToValueAtTime(masterVolume, now + 0.05);
+                } else {
+                    masterGain.gain.cancelScheduledValues(0);
+                    masterGain.gain.value = masterVolume;
+                }
+            } catch (_) {
+                try { masterGain.gain.value = masterVolume; } catch (_) {}
+            }
         }
     }
     function getMasterVolume() { return masterVolume; }
