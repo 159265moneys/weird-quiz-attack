@@ -92,6 +92,17 @@
 
         textEl.textContent = line;
         const isLast = idx >= state.lines.length - 1;
+        // holdLast: 最後の行に到達したらそれ以降 persist 状態にラッチする。
+        //   = 吹き出しは残したまま、タップで閉じず・下の UI (ステ1カード等) へ
+        //     クリックを透過させる。外部 (stageSelect) が Navigator.close() を
+        //     明示的に呼ぶまで表示し続ける。
+        //   同時に body[data-nav-mode=tutorial] を外す: これを残すと CSS が
+        //   全 stage-card を pointer-events:none にしてしまい、ステ1 のタップも
+        //   拾えなくなる。is-tutorial-lock (stage1 以外ロック) だけに切り替える。
+        if (isLast && state.holdLast) {
+            state.persist = true;
+            delete document.body.dataset.navMode;
+        }
         // persist: タップで閉じないので "次へ" ヒントそのものを隠す。
         // oneShot: 吹き出しタップで閉じる (最終行と同じ)
         if (state.persist) {
@@ -166,6 +177,10 @@
             // persist: true → タップで閉じない。キャラと吹き出しが画面に残り続ける。
             // (リザルト画面で「ずっと話しかけてる」体裁を作りたい時に使う)
             persist: !!opts.persist,
+            // holdLast: true → 最終行に到達したら自動で persist 状態にラッチ。
+            //   「最後のセリフを出したまま、ユーザが特定のカードを押すのを待つ」
+            //    使い方。チュートリアルの最後から Stage 1 タップへのブリッジで使用。
+            holdLast: !!opts.holdLast,
             // customImage: サブキャラ 1 枚絵差し替え用 (nullable)
             customImage: (typeof opts.customImage === 'string' && opts.customImage) ? opts.customImage : null,
         };

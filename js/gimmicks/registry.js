@@ -134,7 +134,7 @@
                 if (!alive) return;
                 // 既に上限撃ってる場合は短期リトライ (互いに順番待ち)
                 if (concurrentFires >= MAX_CONCURRENT) {
-                    schedule(() => fire(beam), 120 + Math.random() * 280);
+                    schedule(() => fire(beam), 40 + Math.random() * 80);
                     return;
                 }
                 // ±20° ランダム角度を毎発射適用 (始点・終点は60px外出しで常に画面外)
@@ -147,8 +147,8 @@
                 schedule(() => {
                     beam.classList.remove('is-fire');
                     concurrentFires = Math.max(0, concurrentFires - 1);
-                    // 200〜600ms (旧: 600〜1400ms) — 頻度アップで妨害力を向上
-                    schedule(() => fire(beam), 200 + Math.random() * 400);
+                    // 即座に再キュー。MAX_CONCURRENT=1 がクラッシュ防護なのでインターバルは関係なし
+                    schedule(() => fire(beam), 20 + Math.random() * 60);
                 }, FIRE_DURATION);
             }
 

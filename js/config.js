@@ -24,14 +24,14 @@ window.CONFIG = Object.freeze({
     // level: difficulty の中心値 (1〜10)。Stage N = level N。
     //        各ステージは difficulty ∈ [level-1, level+1] の問題のみ引く (1/10 でクランプ)。
     STAGES: [
-        { no: 1,  name: 'TUTORIAL ZONE',     stress: 'E', slots: 4,  kDist: [[1, 4]],            diff: [0.00, 0.75, 0.25], level: 1  },
-        { no: 2,  name: 'WARMUP',            stress: 'E', slots: 5,  kDist: [[1, 5]],            diff: [0.25, 0.55, 0.20], level: 2  },
-        { no: 3,  name: 'GENTLE GLITCH',     stress: 'E', slots: 7,  kDist: [[1, 7]],            diff: [0.25, 0.50, 0.25], level: 3  },
-        { no: 4,  name: 'SOFT CHAOS',        stress: 'E', slots: 10, kDist: [[1, 10]],           diff: [0.25, 0.50, 0.25], level: 4  },
-        { no: 5,  name: 'NOISE FLOOR',       stress: 'E', slots: 12, kDist: [[1, 12]],           diff: [0.25, 0.50, 0.25], level: 5  },
-        { no: 6,  name: 'FRAGMENTED',        stress: 'M', slots: 15, kDist: [[1, 15]],           diff: [0.25, 0.50, 0.25], level: 6  },
-        { no: 7,  name: 'DISTORTED',         stress: 'M', slots: 19, kDist: [[1, 19]],           diff: [0.20, 0.50, 0.30], level: 7  },
-        { no: 8,  name: 'COLLAPSE',          stress: 'X', slots: 20, kDist: [[1, 13], [2, 7]],   diff: [0.20, 0.45, 0.35], level: 8  },
+        { no: 1,  name: 'TUTORIAL ZONE',     stress: 'E', slots: 7,  kDist: [[1, 7]],            diff: [0.00, 0.75, 0.25], level: 1  },
+        { no: 2,  name: 'WARMUP',            stress: 'E', slots: 9,  kDist: [[1, 9]],            diff: [0.25, 0.55, 0.20], level: 2  },
+        { no: 3,  name: 'GENTLE GLITCH',     stress: 'E', slots: 12, kDist: [[1, 12]],           diff: [0.25, 0.50, 0.25], level: 3  },
+        { no: 4,  name: 'SOFT CHAOS',        stress: 'E', slots: 15, kDist: [[1, 15]],           diff: [0.25, 0.50, 0.25], level: 4  },
+        { no: 5,  name: 'NOISE FLOOR',       stress: 'E', slots: 17, kDist: [[1, 17]],           diff: [0.25, 0.50, 0.25], level: 5  },
+        { no: 6,  name: 'FRAGMENTED',        stress: 'M', slots: 18, kDist: [[1, 18]],           diff: [0.25, 0.50, 0.25], level: 6  },
+        { no: 7,  name: 'DISTORTED',         stress: 'M', slots: 20, kDist: [[1, 20]],           diff: [0.20, 0.50, 0.30], level: 7  },
+        { no: 8,  name: 'COLLAPSE',          stress: 'X', slots: 20, kDist: [[2, 20]],           diff: [0.20, 0.45, 0.35], level: 8  },
         { no: 9,  name: 'HELL',              stress: 'X', slots: 20, kDist: [[2, 20]],           diff: [0.20, 0.45, 0.35], level: 9  },
         { no: 10, name: 'ABYSS',             stress: 'X', slots: 20, kDist: [[2, 13], [3, 7]],   diff: [0.30, 0.70, 0.00], level: 10 },
     ],

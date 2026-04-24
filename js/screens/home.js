@@ -41,22 +41,42 @@
         return DIALOGUES[Math.floor(Math.random() * DIALOGUES.length)];
     }
 
-    // 所持 (解放済み) キャラからランダム 1 体の画像パス。
-    // Avatars manifest 未ロード時は null を返し、init() 側で load 後に差し替える。
-    // ホーム画面ではキャラクター (パズル/蓄音機/TV/クラゲ) のみを選び、butterfly は
-    // 除外する。butterfly は装飾アイコン枠なので「ゲームのキャラ」として前面に
-    // 出すには向かない。
-    const HOME_EXCLUDE = new Set(['butterfly']);
-    function pickAvatarPath() {
-        const list = window.Avatars?.getList?.() || [];
-        if (!list.length) return null;
-        // 装飾枠除外 + 解放済みだけに絞る
-        const chars = list.filter(it => !HOME_EXCLUDE.has(it.id));
-        const ok = chars.filter(it => window.Save?.isIconUnlocked?.(it.id) !== false);
-        const pool = ok.length > 0 ? ok : chars;
+    // ------------------------------------------------------------------
+    // HOME に立たせるキャラ絵プール (1000×1000 透過 PNG / sprite/chars/)
+    // ------------------------------------------------------------------
+    // 各キャラは複数ポーズを持つ。PROFILE で表示するアイコン (160×160 前後) と
+    // 別に、HOME 用の大きい立ち絵として使う。butterfly は装飾専用 (ルール:
+    // .cursor/rules/butterfly-is-decoration-only.mdc) なので HOME には出さない。
+    //
+    // プール仕様:
+    //   - 初期解放時点では puzzle だけ → puzzle の 4 ポーズからランダム
+    //   - サブキャラ (jellyfish / tv / phonograph) が解放されるたびに、
+    //     そのキャラの全ポーズが抽選プールに追加される
+    //   - 最終的に最大 13 ポーズから毎回ランダム表示
+    // ------------------------------------------------------------------
+    const CHARS_BASE = 'sprite/chars/';
+    const HOME_POSES = {
+        puzzle:     ['puzzle_normal.png', 'puzzle_hmm.png', 'puzzle_one_hand_up.png', 'puzzle_thinking.png'],
+        jellyfish:  ['jellyfish_1.png', 'jellyfish_2.png', 'jellyfish_sitting.png'],
+        tv:         ['tv_1.png', 'tv_dark.png', 'tv_thinking.png'],
+        phonograph: ['phonograph_1.png', 'phonograph_discover.png', 'phonograph_idea.png'],
+    };
+
+    function pickHomeCharPath() {
+        // 解放済み (HOME 候補) の char id を集める
+        const unlockedIds = Object.keys(HOME_POSES)
+            .filter(id => window.Save?.isIconUnlocked?.(id) !== false);
+        const ids = unlockedIds.length ? unlockedIds : ['puzzle'];
+
+        // 全ポーズを一つのプールに結合してランダム抽選 (= キャラ解放が多いほど
+        // そのキャラが出る確率が上がる。ポーズ単位で一様抽選)
+        const pool = [];
+        for (const id of ids) {
+            for (const f of (HOME_POSES[id] || [])) pool.push(f);
+        }
         if (!pool.length) return null;
         const pick = pool[Math.floor(Math.random() * pool.length)];
-        return window.Avatars?.pathOf?.(pick.id) || null;
+        return CHARS_BASE + encodeURIComponent(pick);
     }
 
     const Screen = {
@@ -65,7 +85,7 @@
             const unlocked = progress.unlockedStage || 1;
             const stageName = window.CONFIG.STAGES?.[unlocked - 1]?.name || '';
             const dialogue = pickDialogue();
-            const avPath = pickAvatarPath();
+            const avPath = pickHomeCharPath();
 
             const charHtml = avPath
                 ? `<img class="home-char" src="${escapeHTML(avPath)}" alt="" id="homeChar" onerror="this.remove();">`
@@ -91,6 +111,10 @@
                         <p class="home-dialog-text">${escapeHTML(dialogue)}</p>
                     </div>
 
+                    <!-- キャラを flex 伸長領域で描画。dialog とボタンの間を埋める。
+                         画像はこの領域一杯に object-fit:contain でフィットする。 -->
+                    <div class="home-char-area">${charHtml}</div>
+
                     <div class="home-actions">
                         <button class="home-btn home-btn-start" type="button" data-action="start">
                             <span class="home-btn-main">GAME START</span>
@@ -101,8 +125,6 @@
                             <span class="home-btn-sub">全ステージ一覧</span>
                         </button>
                     </div>
-
-                    <div class="home-char-area">${charHtml}</div>
                 </div>
             `;
         },
@@ -116,23 +138,9 @@
             const seq = (prev === 'question' || prev === 'result');
             window.BGM?.play('title', { sequential: seq });
 
-            // Avatars manifest が render 時に未ロードだった場合、load 完了後に差し替え
-            if (window.Avatars?.load) {
-                window.Avatars.load().then(() => {
-                    const cur = document.getElementById('homeChar');
-                    if (!cur) return;
-                    if (cur.tagName === 'IMG' && cur.getAttribute('src')) return;  // 既に ok
-                    const path = pickAvatarPath();
-                    if (!path) return;
-                    const img = document.createElement('img');
-                    img.className = 'home-char';
-                    img.id = 'homeChar';
-                    img.src = path;
-                    img.alt = '';
-                    img.onerror = () => img.remove();
-                    cur.replaceWith(img);
-                }).catch(() => {});
-            }
+            // HOME のキャラ絵プール (sprite/chars/*) は manifest に依存せず静的。
+            // render() 時点で確定できるので load 待ちの差し替え処理は不要。
+            // (manifest はプロフィール画面のアイコンピッカー用途にのみ使う)
 
             document.querySelector('[data-action="settings"]')?.addEventListener('click', () => {
                 window.SE?.fire?.('menuCursor');

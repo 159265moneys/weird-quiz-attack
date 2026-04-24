@@ -8,8 +8,12 @@
    ============================================================ */
 
 (function () {
+    // manifest は sprite/avatars/ に置くが、実ファイルは sprite/chars/ にも
+    // 分散しているので (butterfly は avatars/、キャラ本体ポーズ画像は chars/)、
+    // BASE_PATH は sprite/ 直下に揃えて manifest の file 側で chars/xxx.png 等の
+    // サブパスを書く方針に変更。
     const MANIFEST_URL = 'sprite/avatars/manifest.json';
-    const BASE_PATH    = 'sprite/avatars/';
+    const BASE_PATH    = 'sprite/';
 
     let cache = null;      // { items: [{id,file,label}, ...] }
     let loading = null;    // in-flight Promise
@@ -47,11 +51,17 @@
     }
 
     // id を解決して <img src> に渡せるパスを返す。未登録/null なら null。
-    // 日本語・スペース等を含むファイル名でも安全に扱うため URL エンコードする。
+    // file は "chars/puzzle_new_avatar.png" のようにサブディレクトリを含み得るので
+    // segment 毎に encodeURIComponent して '/' を温存する (全体 encode だと '/'
+    // が '%2F' になって壊れる)。
     function pathOf(id) {
         const item = getById(id);
         if (!item) return null;
-        return BASE_PATH + encodeURIComponent(item.file);
+        const safe = String(item.file)
+            .split('/')
+            .map(seg => encodeURIComponent(seg))
+            .join('/');
+        return BASE_PATH + safe;
     }
 
     window.Avatars = {

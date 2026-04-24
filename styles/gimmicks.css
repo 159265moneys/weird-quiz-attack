@@ -66,14 +66,13 @@
 .gk-b11-beam {
     position: absolute;
     width: 2500px;              /* pivot を60px外出しした分 + ±20°余裕 */
-    height: 270px;              /* 200→270 (妨害力向上。グラデのみなのでコストゼロ) */
-    margin-top: -135px;         /* 縦中央を pivot に合わせる */
+    height: 312px;              /* 青グロー片側113px × 2 + 白芯86px (白を倍に拡張) */
+    margin-top: -156px;         /* 縦中央を pivot に合わせる */
     transform-origin: 0 50%;    /* 左端中央を回転軸 = pivot point */
     pointer-events: none;
 }
-/* core: コア光だけを描画。box-shadow は廃止してグラデに"にじみ"を内包。
-   縦 200px のうち、中央 ~60% を白熱芯、両脇に広いシアン減衰域を敷くことで
-   box-shadow 80px と同等の"ふわっと光ってる" 見た目を純グラデで再現する。 */
+/* core: px 指定でグロー幅(各113px)を固定し、白芯だけ 43→86px に拡張。
+   青い部分のサイズは変えず白熱芯だけ倍になる。グラデのみなのでコストゼロ。 */
 .gk-b11-core {
     position: absolute;
     inset: 0;
@@ -81,16 +80,16 @@
     transform: scaleX(0);
     opacity: 0;
     background: linear-gradient(to bottom,
-        transparent                  0%,
-        rgba(0, 229, 255, 0.15)     10%,
-        rgba(0, 229, 255, 0.55)     22%,
-        rgba(120, 245, 255, 0.95)   32%,
-        #ffffff                     42%,
-        #ffffff                     58%,
-        rgba(120, 245, 255, 0.95)   68%,
-        rgba(0, 229, 255, 0.55)     78%,
-        rgba(0, 229, 255, 0.15)     90%,
-        transparent                100%);
+        transparent                   0px,
+        rgba(0, 229, 255, 0.15)      27px,
+        rgba(0, 229, 255, 0.55)      59px,
+        rgba(120, 245, 255, 0.95)    86px,
+        #ffffff                     113px,
+        #ffffff                     199px,
+        rgba(120, 245, 255, 0.95)   226px,
+        rgba(0, 229, 255, 0.55)     253px,
+        rgba(0, 229, 255, 0.15)     285px,
+        transparent                 312px);
     /* mix-blend-mode, box-shadow, will-change すべて撤廃。
        will-change は is-fire 時のみ JS 的に付けないことで、待機レイヤを非昇格に。
        これにより 4 本 (待機3 + 発射1) が常時 GPU 層化する状況を避ける。 */

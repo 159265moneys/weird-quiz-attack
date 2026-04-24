@@ -22,9 +22,13 @@
        body.touch-action:none を継承するので追加設定は不要。 */
     overflow: hidden;
 
-    padding: 60px 60px 0;
-    /* position: relative; でキャラ画像 (absolute) の基準点にする */
+    /* flex column で「header → dialog → char(伸長) → actions」を下まで敷き詰める。
+       padding-bottom は TabBar 実高さ分を canvas-px に戻して確保。 */
+    padding: 60px 60px calc((56px + env(safe-area-inset-bottom, 0px)) / var(--scale, 1) + 24px);
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 /* --- ヘッダー --- */
@@ -83,11 +87,13 @@
 /* --- 吹き出し (nav-bubble と同じ見た目。TAP 送りは無いので next ランプ無し) --- */
 .home-dialog {
     position: relative;
+    align-self: center;
+    flex: 0 0 auto;
     width: 100%;
     max-width: 920px;
     min-height: 180px;
     padding: 40px 48px 44px;
-    margin: 0 auto 24px;  /* キャラ頭上の余白。アクションボタンを少し上げるため 48→24 に */
+    margin: 0 auto 16px;
     background: var(--box-bg, #151519);
     border: 4px solid var(--line, #ffffff);
     box-shadow:
@@ -133,33 +139,24 @@
     border-top: 30px solid var(--box-bg, #151519);
 }
 
-/* --- キャラ (画面下端にピン、最大限大きく) ---
-   .home-screen 内に position:absolute で配置。下端は TabBar 上端より
-   1 canvas-px だけ上 (ピッタリ隣接)。幅は canvas 幅いっぱい (1080)、
-   高さは画面内で最大限取れる範囲に自動調整 (object-fit: contain で
-   アスペクト保持)。
-   透過 PNG 前提なので矩形影は出ない。 */
+/* --- キャラ (dialog と actions の間を flex 伸長で埋める) ---
+   ポーズ PNG は 1000×1000 透過。object-fit:contain で領域 (1080×残り高さ) に
+   フィット。object-position:bottom でキャラの足元を actions 直上に揃える。 */
 .home-char-area {
-    position: absolute;
-    left: 0;
-    right: 0;
-    /* 下端: TabBar 実高さ + 1canvas-px の真上
-       (TabBar 自体は position:fixed でビューポート下端に固定) */
-    bottom: calc((56px + env(safe-area-inset-bottom, 0px)) / var(--scale, 1) + 1px);
-    /* 上端: ヘッダと吹き出しの下からスタートさせる。画面の ~40% を
-       吹き出しエリアに譲り、残り ~60% をキャラに使う。 */
-    top: 620px;
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;          /* flex で確実に縮退できるように */
+    width: 100%;
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    pointer-events: none;        /* キャラは装飾、ボタン類をブロックしない */
-    z-index: 1;                   /* 吹き出し/ヘッダの下 */
+    pointer-events: none;   /* キャラは装飾、ボタン類をブロックしない */
+    z-index: 1;
+    overflow: hidden;
 }
 .home-char {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
     object-position: bottom center;
     /* 柔らかい影 + 微弱な cyan ハイライト */
@@ -181,15 +178,16 @@
     50%      { transform: translateY(-6px) scale(1.01); }
 }
 
-/* --- アクション (2 ボタン横並び) ---
+/* --- アクション (2 ボタン横並び、下端に密着) ---
    z-index: 10 でキャラ画像 (.home-char-area / z-index:1) より確実に手前に。
-   margin-top を 32 → 8 に詰めて位置を少し上げる。 */
+   flex 下端なので margin-top は不要、代わりに margin-bottom で tabbar 上の
+   余白を微調整する。 */
 .home-actions {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 28px;
-    margin-top: 8px;
+    margin-top: 0;
     flex: 0 0 auto;
     position: relative;
     z-index: 10;
@@ -277,11 +275,6 @@
     transform: translate(-50%, -50%) scale(1);
 }
 
-/* --- タブバーが居るので下側の padding を足す (tab-bar.css 側でも重ねて定義) ---
-   home は .home-char-area を position:absolute で下端にピンするので、
-   追加の下側 padding は不要 (0 扱い)。ヘッダ〜アクションは flex フローの
-   上から順に積み上がり、キャラ (absolute) は z-index:1 で背面、ボタンは
-   z-index:4 で前面に重ねる。 */
-body.has-tabbar .screen.home-screen {
-    padding-bottom: 0;
-}
+/* --- タブバー下余白 ---
+   .home-screen 自体の padding-bottom で TabBar 実高さ分を予め確保済み
+   (上の .screen.home-screen 定義を参照)。ここではあえて上書きしない。 */

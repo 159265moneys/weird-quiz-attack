@@ -131,10 +131,19 @@
 
             document.querySelectorAll('.stage-card').forEach((card) => {
                 card.addEventListener('click', () => {
-                    // 初回強制フロー中は一切のカードタップを黙殺
+                    const no = parseInt(card.dataset.stage, 10);
+                    // 初回強制フロー中: ステ 1 のカード以外は一切黙殺 (視覚的にも
+                    // 暗転 + pointer-events:none でタップ不能 = CSS 側で担保)
                     if (document.body.classList.contains('is-tutorial-lock')) {
-                        window.SE?.fire('cancel');
-                        return;
+                        if (no !== 1) {
+                            window.SE?.fire('cancel');
+                            return;
+                        }
+                        // ステ 1 を正しく選ばれた = チュートリアル完了扱い。
+                        // holdLast で残っている Navigator 吹き出しをここで閉じる。
+                        window.Save?.setFlag?.('tutorialDone', true);
+                        if (window.Navigator?.isOpen?.()) window.Navigator.close();
+                        // 以降、startStage 側で is-tutorial-lock は剥がされる
                     }
                     if (card.classList.contains('is-locked')) {
                         window.SE?.fire('cancel');
@@ -143,7 +152,6 @@
                     // ここで confirm を鳴らすと直後の stageStart (b20_in) と
                     // 重なって画面遷移 fade で切れるだけなので menuCursor の1音に絞る
                     window.SE?.fire('menuCursor');
-                    const no = parseInt(card.dataset.stage, 10);
                     startStage(no);
                 });
             });
@@ -174,40 +182,33 @@
                 }, { passive: false });
             }
 
-            // 初回のみナビゲーターで簡易チュートリアル → 終わったら強制でステ1
+            // 初回は簡易チュートリアル → 閉じた時点でステ1 カードだけタップ可能に。
+            //   自動で startStage(1) はしない (「強制で選ばされている感」を
+            //   避けるため、最後のアクションはユーザ自身にやってもらう方針)。
             if (forceTutorial) {
-                runTutorial({
-                    onFinish: () => {
-                        window.Save.setFlag('tutorialDone', true);
-                        // ロック解除は startStage 側で画面遷移と同時に行う
-                        startStage(1);
-                    },
-                });
+                runTutorial();
             }
         },
     };
 
-    function runTutorial(opts = {}) {
-        if (!window.Navigator) {
-            // Navigator が無い異常時でもフローは止めない
-            opts.onFinish && opts.onFinish();
-            return;
-        }
+    function runTutorial() {
+        if (!window.Navigator) return;
         const lines = [
             'ようこそ、変なクイズへ。',
             'ルールはシンプル。クイズに答えてステージをクリアする。',
             '…のはずが、進むほど UI が壊れていく。',
             '文字が崩れ、ボタンが動き、キーボードが入れ替わる。',
-            '慌てないで。冷静に読めば、たいてい答えは見えるはず。',
-            'じゃあ、始めよう。まずはステージ 1 から。',
+            'じゃあ、まずは Stage 1 からやってみよう♪',
         ];
-        const poses = ['hi', 'basic', 'think', 'think_light', 'basic', 'happy'];
+        const poses = ['hi', 'basic', 'think', 'think_light', 'happy'];
         window.Navigator.speak(lines, {
             poses,
             mode: 'tutorial',
-            onDone: () => {
-                opts.onFinish && opts.onFinish();
-            },
+            // holdLast: 最後の行 (「まずは Stage 1 〜」) まで進んだら、そこで
+            //   タップ送りを止めて吹き出しを残したままにする。タブ/他カードは
+            //   is-tutorial-lock CSS で引き続きロック、ステ 1 だけシアン発光で
+            //   タップ可能 (= ここで Navigator.close() が呼ばれる)。
+            holdLast: true,
         });
     }
 

@@ -1,11 +1,11 @@
 {
-    "_comment": "プリセットアバター一覧。新しい PNG を sprite/avatars/ に入れたら、下の items に追加するだけで PROFILE パネルのピッカーに出る。",
-    "_spec": "PNG 推奨。正方形 (256x256 or 128x128) / 背景は透過推奨。ファイル名は英小文字 + _ + 数字が安全 (日本語やスペースは URL エンコードが必要なので推奨しない)。",
+    "_comment": "プリセットアバター (= PROFILE のアイコンピッカー & ランキング行頭表示). 320x320 の透過 PNG。本体キャラ絵 (1000x1000 / 複数ポーズ) は sprite/chars/ に置く。ここに出すのはアバター用の 1 枚絵のみ。",
+    "_note": "file パスは sprite/ からの相対。butterfly だけ装飾専用 (HOME 背景キャラには出さない: .cursor/rules/butterfly-is-decoration-only.mdc 参照)。",
     "items": [
-        { "id": "butterfly",  "file": "butterfly.png",  "label": "BUTTERFLY" },
-        { "id": "jellyfish",  "file": "jellyfish.png",  "label": "JELLYFISH" },
-        { "id": "tv",         "file": "tv.png",         "label": "TV" },
-        { "id": "puzzle",     "file": "puzzle.png",     "label": "PUZZLE" },
-        { "id": "phonograph", "file": "phonograph.png", "label": "PHONOGRAPH" }
+        { "id": "butterfly",  "file": "avatars/butterfly.png",               "label": "BUTTERFLY" },
+        { "id": "puzzle",     "file": "chars/puzzle_new_avatar.png",         "label": "PUZZLE" },
+        { "id": "jellyfish",  "file": "chars/jellyfish_new_avatar.png",      "label": "JELLYFISH" },
+        { "id": "tv",         "file": "chars/tv_new_avatar.png",             "label": "TV" },
+        { "id": "phonograph", "file": "chars/phonograph_new_avatar.png",     "label": "PHONOGRAPH" }
     ]
 }

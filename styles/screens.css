@@ -267,15 +267,53 @@
     padding-bottom: 80px;
 }
 
-/* --- 初回強制フロー (チュートリアル → ステ1 自動) 中はステ選択を完全ロック ---
-   body[data-nav-mode=tutorial] : Navigator 発話中
-   body.is-tutorial-lock        : stageSelect 側で張る「全体ロック」
-   タップされてもカードが反応しないように pointer-events:none で遮断。
-   スクロールも効かせない。 */
-body[data-nav-mode="tutorial"] .stage-select-screen .stage-card,
-body.is-tutorial-lock .stage-select-screen .stage-card {
+/* --- 初回強制フロー中のロック ---
+   body[data-nav-mode=tutorial] : Navigator 発話中。全カード pointer-events:none
+   body.is-tutorial-lock        : 発話終了後、Stage 1 のカードだけ生かして誘導
+   両者ともスクロールは禁止。 */
+
+/* 発話中は全カード操作不能 */
+body[data-nav-mode="tutorial"] .stage-select-screen .stage-card {
     pointer-events: none;
 }
+
+/* 発話終了後: ステ 1 以外は暗転 + 操作不能 */
+body.is-tutorial-lock .stage-select-screen .stage-card {
+    pointer-events: none;
+    opacity: 0.28;
+    filter: grayscale(0.4);
+    transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+/* ステ 1 だけはタップ可能 + シアン発光アニメで誘導 */
+body.is-tutorial-lock .stage-select-screen .stage-card[data-stage="1"] {
+    pointer-events: auto;
+    opacity: 1;
+    filter: none;
+    border-color: var(--accent-cyan);
+    box-shadow:
+        10px 10px 0 var(--accent-cyan),
+        0 0 24px rgba(0, 229, 255, 0.45),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    animation: tutorialStageGlow 1.6s ease-in-out infinite;
+    position: relative;
+    z-index: 2;
+}
+@keyframes tutorialStageGlow {
+    0%, 100% {
+        box-shadow:
+            10px 10px 0 var(--accent-cyan),
+            0 0 20px rgba(0, 229, 255, 0.35),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+    50% {
+        box-shadow:
+            10px 10px 0 var(--accent-cyan),
+            0 0 56px rgba(0, 229, 255, 0.75),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    }
+}
+
 body[data-nav-mode="tutorial"] .stage-select-screen .scroll-area,
 body.is-tutorial-lock .stage-select-screen .scroll-area {
     overflow: hidden !important;
