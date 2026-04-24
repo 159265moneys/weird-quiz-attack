@@ -8,7 +8,15 @@
    ============================================================ */
 
 (function () {
-    const SHOW_ON = new Set(['title', 'stageSelect', 'result', 'home']);
+    const SHOW_ON = new Set([
+        'title', 'stageSelect', 'result', 'home',
+        // 暗背景タブ (プロフ / ランキング / スコア) でも
+        // 薄い白文字がふわふわ流れる演出を出す
+        'profile', 'ranking', 'scores',
+    ]);
+
+    // 暗背景タブでは色付きは浮きすぎるので白系のみ使う
+    const WHITE_ONLY_ON = new Set(['profile', 'ranking', 'scores']);
 
     const CAPACITY = 14; // 同時に浮かぶ最大文字数
 
@@ -27,6 +35,19 @@
         'rgba(255,51,64,0.06)',    // red
         'rgba(255,204,0,0.06)',    // warn
     ];
+    // 暗背景タブ用: 白系のみ、薄めに
+    const WHITE_COLORS = [
+        'rgba(255,255,255,0.05)',
+        'rgba(255,255,255,0.07)',
+        'rgba(255,255,255,0.09)',
+        'rgba(255,255,255,0.04)',
+    ];
+
+    function pickColorForCurrentScreen() {
+        const screen = document.body.dataset.screen;
+        const src = WHITE_ONLY_ON.has(screen) ? WHITE_COLORS : COLORS;
+        return src[Math.floor(Math.random() * src.length)];
+    }
 
     // 論理座標 (1080x1920) で動かす — #stage 内に入れて transform: scale と一緒に拡縮される
     const LOGICAL_W = 1080;
@@ -67,7 +88,7 @@
         const el = document.createElement('div');
         el.className = 'fx-floating-item';
         el.textContent = pick(WORDS);
-        el.style.color = pick(COLORS);
+        el.style.color = pickColorForCurrentScreen();
         const size = rand(64, 220);
         el.style.fontSize = `${size}px`;
 
@@ -114,6 +135,11 @@
     function onScreenChange(name) {
         if (!wrap) return;
         wrap.classList.toggle('is-hidden', !SHOW_ON.has(name));
+        // 画面切替時に既存アイテムの色を新画面用 (白のみ or カラー) に更新
+        const src = WHITE_ONLY_ON.has(name) ? WHITE_COLORS : COLORS;
+        for (const it of items) {
+            it.el.style.color = src[Math.floor(Math.random() * src.length)];
+        }
     }
 
     window.FloatingTextFX = { mount, unmount, onScreenChange };

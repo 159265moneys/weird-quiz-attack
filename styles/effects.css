@@ -65,7 +65,10 @@
 
 /* ダーク画面では multiply だと沈むので blend 切替 */
 body[data-screen="question"] .fx-floating-item,
-body[data-screen="result"] .fx-floating-item {
+body[data-screen="result"] .fx-floating-item,
+body[data-screen="profile"] .fx-floating-item,
+body[data-screen="ranking"] .fx-floating-item,
+body[data-screen="scores"] .fx-floating-item {
     mix-blend-mode: screen;
 }
 

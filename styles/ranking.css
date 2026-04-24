@@ -222,11 +222,48 @@
     border-radius: 50%;
     background: var(--box-bg) center/cover no-repeat;
     border: 2px solid var(--line-dim);
+    position: relative;
 }
 .rk-avatar-none {
     background: repeating-linear-gradient(45deg,
         var(--box-bg) 0, var(--box-bg) 4px,
         var(--box-bg-deep) 4px, var(--box-bg-deep) 8px);
+}
+
+/* 1-3 位のアバターを「なんとなく光ってる」程度にグロー。
+   ギラギラを避けるため、外側に柔らかい box-shadow と縁の色変更のみ。 */
+.rk-row.rk-medal-1 .rk-avatar {
+    border-color: rgba(255, 204, 0, 0.85);           /* gold */
+    box-shadow:
+        0 0 10px rgba(255, 204, 0, 0.35),
+        0 0 22px rgba(255, 204, 0, 0.18);
+}
+.rk-row.rk-medal-2 .rk-avatar {
+    border-color: rgba(215, 215, 232, 0.85);         /* silver */
+    box-shadow:
+        0 0 10px rgba(215, 215, 232, 0.32),
+        0 0 22px rgba(215, 215, 232, 0.15);
+}
+.rk-row.rk-medal-3 .rk-avatar {
+    border-color: rgba(227, 154, 91, 0.85);          /* bronze */
+    box-shadow:
+        0 0 10px rgba(227, 154, 91, 0.32),
+        0 0 22px rgba(227, 154, 91, 0.15);
+}
+.rk-row.is-jumbo.rk-medal-1 .rk-avatar {
+    box-shadow:
+        0 0 14px rgba(255, 204, 0, 0.38),
+        0 0 30px rgba(255, 204, 0, 0.20);
+}
+.rk-row.is-jumbo.rk-medal-2 .rk-avatar {
+    box-shadow:
+        0 0 14px rgba(215, 215, 232, 0.35),
+        0 0 30px rgba(215, 215, 232, 0.17);
+}
+.rk-row.is-jumbo.rk-medal-3 .rk-avatar {
+    box-shadow:
+        0 0 14px rgba(227, 154, 91, 0.35),
+        0 0 30px rgba(227, 154, 91, 0.17);
 }
 
 .rk-name {

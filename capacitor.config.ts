@@ -36,10 +36,13 @@ const config: CapacitorConfig = {
             splashImmersive: true,
         },
         StatusBar: {
-            // 真っ黒背景のゲームに合わせてダーク側で統一
-            backgroundColor: '#000000',
+            // 真っ黒背景のゲームに合わせてダーク側で統一。
+            // overlaysWebView: true にしないと iOS セーフエリア上部が
+            // 「白い細い隙間」として見えてしまうため、WebView を画面全体に
+            // 広げてコンテンツをステータスバーの下まで敷く。
+            backgroundColor: '#111116',
             style: 'DARK',
-            overlaysWebView: false,
+            overlaysWebView: true,
         },
     },
 

@@ -7,7 +7,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // セーフエリア (ステータスバー / ホームインジケータ) の下に
+        // 見える window 背景を暗色 (#111116) に揃える。WKWebView が
+        // overlaysWebView:true で全面に乗るが、一瞬の描画ラグ等で
+        // window 自体の色が透ける時に白くチラつかないようにする。
+        let bg = UIColor(red: 0x11/255.0, green: 0x11/255.0, blue: 0x16/255.0, alpha: 1.0)
+        window?.backgroundColor = bg
+        for scene in application.connectedScenes {
+            if let ws = scene as? UIWindowScene {
+                for w in ws.windows {
+                    w.backgroundColor = bg
+                }
+            }
+        }
         return true
     }
 
