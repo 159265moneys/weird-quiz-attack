@@ -269,10 +269,13 @@
             const root = document.querySelector('.ranking-screen');
             if (!root) return;
 
-            // BACK
+            // 下部タブバー: ranking タブがアクティブ
+            window.TabBar?.mount?.('ranking');
+
+            // BACK (TabBar 導入後も残す: モーダル動線慣れ対応)
             root.querySelector('[data-action="back"]')?.addEventListener('click', () => {
                 window.SE?.fire?.('menuCursor');
-                window.Router.show('stageSelect');
+                window.Router.show('home');
             });
 
             // ステージ矢印

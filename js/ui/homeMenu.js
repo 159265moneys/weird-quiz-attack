@@ -493,5 +493,10 @@
         open: openMenu,
         close: closeMenu,
         mountTrigger,
+        // TabBar (5タブ UI) からモーダル直行用に公開。
+        // ACCOUNT タブ -> openProfile、SCORES タブ -> openScores。
+        openProfile,
+        openScores,
+        openAbout,
     };
 })();

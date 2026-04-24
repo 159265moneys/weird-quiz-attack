@@ -1,0 +1,187 @@
+/* ============================================================
+   home-screen.css — ホーム画面 (5タブ UI 中央)
+   ------------------------------------------------------------
+   レイアウト (1080x1920):
+     0     画面上端
+     0-150 header (brand + version)
+     150-1180  stage area (キャラ + セリフ)
+     1180-1720 actions (GAME START / STAGE SELECT)
+     1720-1920 TabBar (200px, body.has-tabbar で余白を取る)
+   ============================================================ */
+
+.screen.home-screen {
+    color: var(--text-on-dark);
+    background-color: var(--canvas-dark);
+    /* 白6%グリッド (question/result と同系統) */
+    background-image:
+        linear-gradient(to right, var(--grid-on-dark) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-on-dark) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px;
+
+    /* 画面自体がスワイプ/スクロールでブレないよう固定。
+       body.touch-action:none を継承するので追加設定は不要。 */
+    overflow: hidden;
+
+    padding: 60px 60px 40px;
+}
+
+/* --- ヘッダー --- */
+.home-head {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 20px;
+}
+.home-head-brand {
+    font-size: 48px;
+    letter-spacing: 8px;
+    font-weight: bold;
+    color: var(--text-on-dark);
+    /* 微妙な cyan グロー (世界観維持) */
+    text-shadow:
+        0 0 8px rgba(0, 229, 255, 0.15),
+        2px 0 0 rgba(255, 51, 64, 0.35),
+        -2px 0 0 rgba(0, 229, 255, 0.35);
+}
+.home-head-ver {
+    font-size: 24px;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+}
+
+/* --- ステージ (キャラ + セリフ) --- */
+.home-stage {
+    flex: 1 1 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    min-height: 0;   /* overflow 対策 */
+}
+
+.home-char-area {
+    flex: 0 0 auto;
+    width: 640px;
+    height: 640px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.home-char {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    /* 静かな VHS ドロップシャドウ */
+    filter:
+        drop-shadow(0 8px 20px rgba(0, 0, 0, 0.7))
+        drop-shadow(0 0 24px rgba(0, 229, 255, 0.12));
+    animation: home-char-breath 5.4s ease-in-out infinite;
+}
+
+.home-char-placeholder {
+    width: 320px;
+    height: 320px;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    opacity: 0.3;
+}
+
+@keyframes home-char-breath {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50%      { transform: translateY(-6px) scale(1.01); }
+}
+
+/* --- セリフ (吹き出し風) --- */
+.home-dialog {
+    width: 100%;
+    max-width: 920px;
+    padding: 32px 40px;
+    background: rgba(20, 20, 26, 0.85);
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    box-shadow:
+        6px 6px 0 rgba(255, 255, 255, 0.85),
+        inset 0 0 0 1px rgba(0, 229, 255, 0.1);
+}
+
+.home-dialog-text {
+    font-size: 36px;
+    line-height: 1.55;
+    letter-spacing: 1px;
+    text-align: center;
+    color: var(--text-on-dark);
+}
+
+/* --- アクション (2 ボタン横並び) --- */
+.home-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-top: 32px;
+    flex: 0 0 auto;
+}
+
+.home-btn {
+    appearance: none;
+    border: 3px solid var(--line);
+    background: var(--box-bg);
+    color: var(--text-on-dark);
+    padding: 32px 24px;
+    box-shadow: 8px 8px 0 var(--line);
+    cursor: pointer;
+    font-family: inherit;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 180px;
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.home-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 4px 4px 0 var(--line);
+}
+
+.home-btn-main {
+    font-size: 46px;
+    font-weight: bold;
+    letter-spacing: 4px;
+}
+.home-btn-sub {
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+}
+
+/* 左: GAME START (cyan accent) */
+.home-btn-start {
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+    box-shadow: 8px 8px 0 var(--accent-cyan);
+}
+.home-btn-start:active {
+    box-shadow: 4px 4px 0 var(--accent-cyan);
+}
+.home-btn-start .home-btn-sub {
+    color: var(--accent-cyan-dim);
+}
+
+/* 右: STAGE SELECT (白) — start より控えめ */
+.home-btn-select {
+    color: var(--text-on-dark);
+    border-color: var(--line);
+}
+
+/* --- タブバーが居るので下側の padding を足す (tab-bar.css 側でも重ねて定義) --- */
+body.has-tabbar .screen.home-screen {
+    padding-bottom: 220px;
+}

@@ -112,9 +112,12 @@
             window.BGM?.play('title', { sequential: seq });
 
             // 右上に ≡ ボタン (ハンバーガーメニュー)。
-            // ステ選択 = ホームなので、設定/スコア/ABOUT/リセット を束ねる。
+            // Phase 3 で廃止予定だが、TabBar 導入直後の互換のため一旦残す。
             const stageSelectRoot = document.querySelector('.stage-select-screen') || document.getElementById('app');
             window.HomeMenu?.mountTrigger(stageSelectRoot);
+
+            // 下部タブバー: stageSelect タブがアクティブ
+            window.TabBar?.mount?.('stageSelect');
 
             document.querySelectorAll('.stage-card').forEach((card) => {
                 card.addEventListener('click', () => {
@@ -206,6 +209,8 @@
             console.log('[Stage]', no, 'slots:', slots,
                 'K:', window.GameState.session.kAssignment,
                 'b18Slot:', window.GameState.session.b18Slot);
+            // クイズ画面は TabBar 不要
+            window.TabBar?.unmount?.();
             window.Router.show('question');
             // ステージ開始 SE: PC起動フェードイン (b20_in 頭1.5s で代用)
             window.SE?.fire('stageStart');

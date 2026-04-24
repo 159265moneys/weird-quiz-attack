@@ -167,8 +167,9 @@
                 }));
 
                 // ロゴ崩壊 (1.2s) + 蝶フライアウト (1.6s) の長い方に合わせて遷移
+                // 5タブ UI 導入後、タイトルの次はホーム画面 (ハブ) に着地する。
                 setTimeout(() => {
-                    window.Router.show('stageSelect');
+                    window.Router.show('home');
                 }, 1600);
             };
 
