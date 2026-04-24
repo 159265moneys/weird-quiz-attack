@@ -28,7 +28,9 @@
     box-sizing: border-box;
 }
 body.has-tabbar .scores-screen-inner {
-    padding-bottom: 260px;
+    /* TabBar は position:fixed でビューポート下端。220 canvas-px で
+       SE 最大ケースまでクリアランスを担保 (tab-bar.css と同値)。 */
+    padding-bottom: 220px;
 }
 
 .scores-screen .hm-panel {

@@ -1,43 +1,47 @@
 /* ============================================================
    tab-bar.css — 画面下部 5タブ ボトムナビ
    ------------------------------------------------------------
-   論理解像度 1080x1920 上のボトムナビ。
-   - 高さ 200px (= 実機 iPhone で ~80pt。一般的スマホゲー標準)
-   - アイコン 72x72、ラベル 24px
-   - 通常: ベース色 (dim)。
-   - 選択: シアン発光 + 1.12 拡大 + ラベルも cyan。
-   - TabBar.mount() で #stage の直下 (つまり #app の兄弟) に挿入。
-     Router が #app.innerHTML を差し替えても TabBar は生き残る。
-     不要な画面 (title / question / result) では init 時に unmount。
-   - 配置される画面 (.home-screen / .stage-select-screen / .ranking-screen)
-     は下端 200px 分の余白を内側で取る (bottom padding)。
+   2026-04 方針転換: TabBar は #stage の外 (body 直下) に置き、
+   position:fixed でビューポート下端にアンカー。iOS UITabBar や
+   PWA のボトムナビと同じレイアウトモデル。
+
+   - 高さは実 CSS px で固定 (UITabBar 準拠の 56px コンテンツ +
+     env(safe-area-inset-bottom) を padding で吸収)
+   - キャンバス側 #stage は transform:scale() で縮小されるが、
+     TabBar はそのスケールを受けないので iPhone 15 の余白も
+     ビューポート下端まで自然に埋まる
+   - 画面下端が TabBar に隠れないよう、各タブ画面は
+     padding-bottom: 220 canvas-px (= SE で 76 CSS px 相当 >
+     TabBar 実高さ 56 + safe 0) で確実にクリアランス確保
    ============================================================ */
 
 .tabbar {
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
-    height: 200px;
     z-index: 900;
 
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     align-items: stretch;
 
+    /* iOS 標準 UITabBar (49pt) より少し背の高い一般的スマホゲー風
+       コンテンツ帯。ホームインジケータ分は padding-bottom が吸収。 */
+    height: 56px;
+    padding: 6px 4px 6px;
+    padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+    /* height + padding の合算を最終高さとしたいので content-box */
+    box-sizing: content-box;
+
     /* 白基調 (ホーム画面のキャンバスと揃える)。上端は細い黒ライン */
-    background:
-        linear-gradient(to top, rgba(255, 255, 255, 0.98), rgba(250, 250, 250, 0.94));
-    border-top: 2px solid rgba(10, 10, 10, 0.18);
-    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-
-    padding: 12px 8px 20px;   /* 下側は少し深め (実機のホームインジケータと干渉しないよう) */
-    gap: 4px;
-
-    /* ネイティブ (Capacitor) の safe-area (下端) をパディングに加算 */
-    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(to top,
+        rgba(255, 255, 255, 0.98),
+        rgba(250, 250, 250, 0.94));
+    border-top: 1px solid rgba(10, 10, 10, 0.18);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 
     /* 自身はスワイプ対象外。下スワイプで body を引きずらない */
     touch-action: manipulation;
@@ -49,19 +53,18 @@
     appearance: none;
     background: transparent;
     border: 0;
-    /* 白背景に合うようグレー (active のみ cyan) */
     color: #6a6a70;
 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 2px;
 
-    padding: 4px 4px 6px;
+    padding: 2px 2px 0;
     font-family: inherit;
-    font-size: 24px;
-    letter-spacing: 1px;
+    font-size: 10px;
+    letter-spacing: 0.5px;
     line-height: 1;
 
     cursor: pointer;
@@ -73,8 +76,8 @@
 }
 
 .tabbar-ic {
-    width: 72px;
-    height: 72px;
+    width: 26px;
+    height: 26px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -86,10 +89,8 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    /* SVG 内の fill="currentColor" をこの色で塗る。
-       画像としてロードした場合 currentColor は効かない (img ではなく inline svg が必要) ため、
-       filter で強制着色する。
-       白背景なので濃いめのグレー (invert 42%)。 */
+    /* SVG の fill="currentColor" は <img> 読み込みでは効かないため、
+       filter で直接グレーに着色。白背景に合う濃いめのグレー。 */
     filter: brightness(0) saturate(100%) invert(42%);
     transition: filter 200ms ease;
 }
@@ -97,27 +98,27 @@
 .tabbar-lbl {
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 0.5px;
 }
 
-/* --- 選択タブ --- */
+/* --- 選択タブ: cyan 発光 + わずかに持ち上げ --- */
 .tabbar-btn.is-active {
     color: var(--accent-cyan, #00e5ff);
-    transform: translateY(-4px) scale(1.12);
+    transform: translateY(-2px) scale(1.08);
 }
 
 .tabbar-btn.is-active .tabbar-ic img {
     /* 白く抜いてから cyan drop-shadow で光らせる */
     filter:
         brightness(0) saturate(100%) invert(92%) sepia(42%) saturate(1600%) hue-rotate(144deg) brightness(110%)
-        drop-shadow(0 0 10px rgba(0, 229, 255, 0.8))
-        drop-shadow(0 0 18px rgba(0, 229, 255, 0.5));
+        drop-shadow(0 0 6px rgba(0, 229, 255, 0.8))
+        drop-shadow(0 0 10px rgba(0, 229, 255, 0.5));
 }
 
 .tabbar-btn.is-active .tabbar-lbl {
     text-shadow:
-        0 0 6px rgba(0, 229, 255, 0.7),
-        0 0 12px rgba(0, 229, 255, 0.4);
+        0 0 3px rgba(0, 229, 255, 0.7),
+        0 0 6px rgba(0, 229, 255, 0.4);
 }
 
 /* --- タップフィードバック --- */
@@ -129,10 +130,21 @@
     transform: scale(1.04);
 }
 
-/* --- 画面側: タブバー分の余白 (画面ごと .scroll-area を持つ構造なので、
-       .screen 自体ではなく .scroll-area に padding-bottom を足す方が安全) --- */
+/* --- 画面側: タブバー分の余白 (canvas-px)
+   ------------------------------------------------------------
+   TabBar は実 CSS px でビューポート下端に張り付くため、キャンバス
+   側のコンテンツがその下に潜り込まないよう bottom padding を確保。
+   
+   - 最も厳しいのは iPhone SE (375x667, safe-area=0): キャンバスが
+     ビューポート全体を占め、TabBar 実高さ 62 CSS px が canvas bottom
+     を完全に覆う。scale=0.347 なので 62 CSS px = 179 canvas-px。
+     安全マージン込みで 220 canvas-px を設定。
+   - iPhone 15 等のモダン端末では canvas がビューポートより短いため、
+     TabBar が canvas 下端と重なる範囲はもっと少ない (~65-100 canvas-px)。
+     220 canvas-px でも余裕を持ってクリアする。
+   ------------------------------------------------------------ */
 body.has-tabbar .home-screen,
 body.has-tabbar .stage-select-screen,
 body.has-tabbar .ranking-screen {
-    padding-bottom: 200px;
+    padding-bottom: 220px;
 }

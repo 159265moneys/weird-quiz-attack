@@ -31,7 +31,10 @@
     box-sizing: border-box;
 }
 body.has-tabbar .profile-screen-inner {
-    padding-bottom: 260px;   /* TabBar (≈200px) + 余白 */
+    /* TabBar は position:fixed でビューポート下端 (実 CSS px)。canvas は
+       scale 変換される都合上、220 canvas-px を SE 最大ケースの
+       クリアランスとして確保 (tab-bar.css の .X-screen 設定と同値)。 */
+    padding-bottom: 220px;
 }
 
 /* hm-panel: モーダル時は min(480px, 92vw) の小さなカードだが、

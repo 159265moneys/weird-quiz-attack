@@ -13,12 +13,16 @@
      sprite/icons/tabs/*.svg を <img> で参照。
      選択時 cyan 発光は CSS filter で実現。
 
-   DOM 構造:
-     #stage
-       #app    (Router.show が innerHTML 差替)
-       .tabbar (TabBar.mount でこの位置に挿入)
-     つまり画面遷移しても TabBar DOM は残る。
-     画面切替のたびに activeId だけ更新するため、mount() は冪等。
+   DOM 構造 (2026-04 更新: position:fixed 化):
+     body
+       #stage           (1080x1920 canvas, transform:scale(--scale))
+         #app           (Router.show が innerHTML 差替)
+       .tabbar          (TabBar.mount でここに挿入。position:fixed
+                         でビューポート下端にアンカー、safe-area 吸収)
+     TabBar は #stage の外に居るのでキャンバスの scale 変換を受けず、
+     iPhone 15 等のアスペクト比が 9:16 より縦長でもビューポート下端
+     に張り付く。iOS UITabBar と同じレイアウトモデル。
+     画面遷移で TabBar DOM は生き残り、active 状態だけ更新される。
    ============================================================ */
 
 (function () {
@@ -33,7 +37,11 @@
     let barEl = null;
 
     function host() {
-        return document.getElementById('stage') || document.body;
+        // position:fixed は祖先の transform/filter/perspective があると
+        // そのボックスを基準にしてしまい viewport 固定が壊れる。
+        // body 直下に置けば body の position:fixed (top/left/right/bottom:0)
+        // もビューポート基準なので、TabBar は常にビューポート下端に張り付く。
+        return document.body;
     }
 
     function render(activeId) {
