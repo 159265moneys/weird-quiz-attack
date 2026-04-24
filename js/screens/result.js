@@ -38,10 +38,12 @@
             const initialScore = taunt ? 0 : result.score;
 
             // 上位 % / 現実換算ラベル (ランダムだが session 内で固定)
+            // stage も加味した実効パーセンタイル → 実効 tier でラベル抽選する。
+            const stageNo = window.GameState?.currentStage;
             const meta = window.Ranks?.META?.[result.rank] || {};
-            const percentileText = window.Ranks?.percentileText(result.rank) || '';
-            const seed = `${s.startAt}_${result.rank}`;
-            const realLabel = window.Ranks?.pickLabel(result.rank, seed) || '';
+            const percentileText = window.Ranks?.percentileText(result.rank, stageNo) || '';
+            const seed = `${s.startAt}_${result.rank}_${stageNo}`;
+            const realLabel = window.Ranks?.pickLabel(result.rank, stageNo, seed) || '';
             const isPositive = !!meta.positive;
 
             const rankAccent = window.Ranks?.accentColorVar(result.rank) || 'var(--accent-cyan)';
@@ -237,7 +239,7 @@
         if (!window.Navigator) return;
         const rank = result.rank;
         const stageNo = window.GameState.currentStage;
-        const pct = window.Ranks?.percentileText(rank) || '';
+        const pct = window.Ranks?.percentileText(rank, stageNo) || '';
         const seed = `${window.GameState?.session?.startAt || 0}_${rank}_${stageNo}_${deathEnd ? 'd' : 'n'}`;
 
         const run = () => {
@@ -281,8 +283,10 @@
                     poses = pick.poses;
                 }
             } else {
-                // rank → tier (F は DOOMED 固定にフォールバック)
-                const tier = window.Ranks?.tierOf(rank) || 'DOOMED';
+                // (rank, stageNo) → 実効 tier でセリフバンクを引く。
+                // 同じ SS でも S1 と S10 で tier が DECENT〜GODLIKE と動くので、
+                // 褒めすぎ/けなしすぎの「傾斜」がここで入る。
+                const tier = window.Ranks?.tierFor(rank, stageNo) || 'DOOMED';
                 const bank = window.Dialogs?.getMain?.(tier);
                 const labelBank = window.Ranks?.TIER_LABELS?.[tier] || [];
                 const label = labelBank.length
