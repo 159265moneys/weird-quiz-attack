@@ -57,10 +57,19 @@
         const dMid   = level;
         const dHigh  = Math.min(10, level + 1);
 
+        // 前回出題済み ID を除外して被り抑止。
+        // プール不足 (seen除外後 < count×2) の場合は seen を無視してフルプールから引く。
+        const seenIds = new Set(window.Save?.getSeenQuestions(stageNo) || []);
+
         const eligible = all.filter(q => {
             const d = q.difficulty || 1;
             return d >= dLow && d <= dHigh;
         });
+
+        // seen除外後のプールが十分あれば seen を適用。なければ全量使う (小プール救済)。
+        const eligibleFiltered = eligible.filter(q => !seenIds.has(q.id));
+        const useFiltered = eligibleFiltered.length >= count * 2;
+        const activeEligible = useFiltered ? eligibleFiltered : eligible;
 
         // 端ステージで dLow==dMid or dMid==dHigh になる場合は比率を吸収
         const ratioMap = { [dLow]: 0, [dMid]: 0, [dHigh]: 0 };
@@ -81,7 +90,7 @@
         // 難度別プール (シャッフル済み)
         const pools = {};
         tiers.forEach(d => { pools[d] = []; });
-        eligible.forEach(q => {
+        activeEligible.forEach(q => {
             const d = q.difficulty;
             if (pools[d] !== undefined) pools[d].push(q);
         });
@@ -105,7 +114,14 @@
 
         // 出題順もシャッフル (難度順で並ばないように)
         // 加えて各 choice 問題の選択肢位置もシャッフル (丸暗記対策)
-        return shuffle(picked).map(shuffleChoices);
+        const result = shuffle(picked).map(shuffleChoices);
+
+        // 今回出題した ID を seen バッファに積む (次回同ステージの被り防止)
+        if (window.Save) {
+            window.Save.addSeenQuestions(stageNo, result.map(q => q.id));
+        }
+
+        return result;
     }
 
     window.QuizLoader = {

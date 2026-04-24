@@ -238,6 +238,30 @@
             this.persist();
         },
 
+        // --- 出題済み ID バッファ (同ステージ再プレイ時の重複抑止) ---
+        // ステージごとに最大 SEEN_BUFFER_PER_STAGE 件の question.id を保持する FIFO。
+        // pickForStage がこれを読んで eligible から除外することで、
+        // 同ステージを何度やっても同じ問題が連続して出にくくなる。
+        SEEN_BUFFER_PER_STAGE: 60,
+
+        getSeenQuestions(stageNo) {
+            return (this.data?.seenQuestions?.[`stage-${stageNo}`] || []).slice();
+        },
+        addSeenQuestions(stageNo, ids) {
+            if (!this.data) return;
+            if (!this.data.seenQuestions) this.data.seenQuestions = {};
+            const key = `stage-${stageNo}`;
+            const buf = this.data.seenQuestions[key] || [];
+            for (const id of ids) {
+                if (!buf.includes(id)) buf.push(id);
+            }
+            // バッファ上限を超えたら古いものを先頭から削除
+            const limit = this.SEEN_BUFFER_PER_STAGE;
+            if (buf.length > limit) buf.splice(0, buf.length - limit);
+            this.data.seenQuestions[key] = buf;
+            this.persist();
+        },
+
         // --- アイコン解放 ---
         // 所持チェック。id が空/null の場合は "NONE 選択" として常に true。
         isIconUnlocked(iconId) {
