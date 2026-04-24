@@ -59,10 +59,11 @@
     opacity: 1;
 }
 
-/* --- danger (削除系) はシャドウをレッドに差し替え --- */
+/* --- danger (削除系) はシャドウをレッドに差し替え ---
+   色は B21/G1 即死ギミックと揃える (--accent-red / --accent-red-dim) */
 .confirm-overlay.is-danger .confirm-panel {
     box-shadow:
-        8px 8px 0 #ff3b6d,
+        8px 8px 0 var(--accent-red, #ff3340),
         inset 0 0 0 1px rgba(255, 255, 255, 0.08),
         0 22px 60px rgba(0, 0, 0, 0.55);
 }
@@ -77,7 +78,7 @@
     text-transform: uppercase;
 }
 .confirm-overlay.is-danger .confirm-title {
-    color: #ff5e85;
+    color: var(--accent-red, #ff3340);
 }
 
 /* --- 本文 --- */
@@ -140,11 +141,11 @@
     filter: brightness(1.08);
 }
 
-/* ok.is-danger: 赤塗り */
+/* ok.is-danger: 赤塗り (即死ギミックと同じ accent-red) */
 .confirm-ok.is-danger {
-    background: #ff3b6d;
+    background: var(--accent-red, #ff3340);
     color: #ffffff;
-    border-color: #ff3b6d;
+    border-color: var(--accent-red, #ff3340);
     box-shadow: 4px 4px 0 rgba(255, 255, 255, 0.18);
 }
 .confirm-ok.is-danger:hover,
