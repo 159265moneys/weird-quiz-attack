@@ -198,10 +198,18 @@
                     if (window.Router.current === 'stageSelect') window.Router.reload();
                     return;
                 case 'reset':
-                    if (confirm('セーブデータを削除します。よろしい？')) {
+                    (async () => {
+                        const ok = await window.ConfirmDialog.show({
+                            title: 'デバッグ: セーブ削除',
+                            message: 'セーブデータを削除します。\nよろしいですか？',
+                            okText: '削除',
+                            cancelText: 'キャンセル',
+                            danger: true,
+                        });
+                        if (!ok) return;
                         window.Save.reset();
                         window.Router.show('title');
-                    }
+                    })();
                     return;
                 case 'title':
                     window.Router.show('title');

@@ -151,14 +151,20 @@ body.has-tabbar .ranking-screen {
 /* home-screen はキャラが画面下端ピンなので padding-bottom:0。
    home-screen.css 側で上書き定義済み。 */
 
-/* --- チュートリアル / 強制フロー中はタブ操作を完全ロック ---
+/* --- チュートリアル / 強制フロー中はタブ操作を完全ロック + 非表示 ---
    body[data-nav-mode=tutorial]  : Navigator が tutorial 吹き出しを出している間
    body.is-tutorial-lock         : stageSelect 側で「初回強制チュートリアル→ステ1」
                                     シーケンス全体で張る (Navigator 発話前後も含む)
-   両方とも: タブを半透明 + pointer-events:none で押せない状態にする。 */
+
+   注意: .tabbar は #stage の外 (body 直下) に position:fixed / z-index:900 で
+   置かれている。Navigator (nav-overlay) は #stage 内の z-index:1500 だが、
+   #stage 自体は transform で独立スタッキングコンテキスト (= 実質 z-index:auto)
+   なので、body レベルでは TabBar のほうが上に重なってしまう。
+   そのため半透明ではなく visibility:hidden で完全に消して Navigator のキャラが
+   タブ帯に隠されないようにする。 */
 body[data-nav-mode="tutorial"] .tabbar,
 body.is-tutorial-lock .tabbar {
     pointer-events: none;
-    opacity: 0.35;
-    filter: grayscale(0.4);
+    opacity: 0;
+    visibility: hidden;
 }

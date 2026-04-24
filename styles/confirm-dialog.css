@@ -1,0 +1,153 @@
+/* ============================================================
+   confirm-dialog.css — 汎用 確認ダイアログ (nav-bubble / box-3d と揃えた
+   ダーク + シアン/レッド アクセント)
+   ------------------------------------------------------------
+   overlay は document.body 直下に position:fixed でマウントされるので
+   すべて viewport 座標で記述する (canvas-scale には乗らない)。
+   ============================================================ */
+
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    /* TabBar (z:900) / settings-overlay (z:9000) / Navigator を全部超える.
+       重要: HomeMenu などのモーダルより上で出したいので 10000 台に置く。 */
+    z-index: 10500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease;
+}
+.confirm-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* --- バックドロップ: 画面を暗くしてピントを中央へ --- */
+.confirm-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 5, 10, 0.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* --- パネル本体: box-3d (白ダブル枠 + シャドウ) の縮小版 --- */
+.confirm-panel {
+    position: relative;
+    width: min(480px, 92vw);
+    padding: 28px 30px 26px;
+    background: #121218;
+    border: 4px solid #ffffff;
+    box-shadow:
+        8px 8px 0 var(--accent-cyan, #00e5ff),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+        0 22px 60px rgba(0, 0, 0, 0.55);
+    color: #eaeaf0;
+    font-family: inherit;
+    letter-spacing: 1px;
+    transform: translateY(12px) scale(0.96);
+    opacity: 0;
+    transition:
+        transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.22s ease;
+}
+.confirm-overlay.is-open .confirm-panel {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+/* --- danger (削除系) はシャドウをレッドに差し替え --- */
+.confirm-overlay.is-danger .confirm-panel {
+    box-shadow:
+        8px 8px 0 #ff3b6d,
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+        0 22px 60px rgba(0, 0, 0, 0.55);
+}
+
+/* --- タイトル --- */
+.confirm-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #ffffff;
+    margin: 0 0 14px;
+    text-transform: uppercase;
+}
+.confirm-overlay.is-danger .confirm-title {
+    color: #ff5e85;
+}
+
+/* --- 本文 --- */
+.confirm-message {
+    font-size: 15px;
+    line-height: 1.75;
+    color: #c9c9d4;
+    margin: 0 0 22px;
+    letter-spacing: 0.6px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+/* --- ボタン列 --- */
+.confirm-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+.confirm-btn {
+    appearance: none;
+    border: 2px solid #ffffff;
+    background: transparent;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 14px 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition:
+        transform 0.12s ease,
+        background 0.18s ease,
+        color 0.18s ease,
+        border-color 0.18s ease;
+}
+.confirm-btn:active {
+    transform: translate(2px, 2px);
+}
+
+/* cancel: アウトラインのまま。hover でシアン気味にほんのり */
+.confirm-cancel:hover,
+.confirm-cancel:active {
+    border-color: var(--accent-cyan, #00e5ff);
+    color: var(--accent-cyan, #00e5ff);
+}
+
+/* ok (default): シアン塗り */
+.confirm-ok {
+    background: var(--accent-cyan, #00e5ff);
+    color: #0a0c14;
+    border-color: var(--accent-cyan, #00e5ff);
+    box-shadow: 4px 4px 0 rgba(255, 255, 255, 0.25);
+}
+.confirm-ok:hover,
+.confirm-ok:active {
+    filter: brightness(1.08);
+}
+
+/* ok.is-danger: 赤塗り */
+.confirm-ok.is-danger {
+    background: #ff3b6d;
+    color: #ffffff;
+    border-color: #ff3b6d;
+    box-shadow: 4px 4px 0 rgba(255, 255, 255, 0.18);
+}
+.confirm-ok.is-danger:hover,
+.confirm-ok.is-danger:active {
+    filter: brightness(1.06);
+}

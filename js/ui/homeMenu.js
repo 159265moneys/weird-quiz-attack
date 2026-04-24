@@ -502,10 +502,24 @@
     //   → localStorage.removeItem → defaultData() を載せ直す一連の処理に統一。
     //   tutorialDone=false に戻るので、title → stageSelect の強制チュートリアル
     //   フローが再び走る (= 初回と同じ体験)。
-    function openResetConfirm() {
-        const ok = confirm('全データ (アイコン / 名前 / 進捗 / ベストスコア / 設定) を削除し、初回インストール状態に戻します。本当に良いですか？');
+    async function openResetConfirm() {
+        // ゲーム UI に揃えたカスタム確認ダイアログ (window.ConfirmDialog) を使用。
+        // 二段階確認: 1) 内容提示 → 2) 最終警告。どちらもキャンセルでノー変更。
+        const ok = await window.ConfirmDialog.show({
+            title: '全データを削除',
+            message: 'アイコン / 名前 / 進捗 / ベストスコア / 設定を\nすべて削除し、初回インストール状態に戻します。\n\n本当によろしいですか？',
+            okText: '次へ',
+            cancelText: 'キャンセル',
+            danger: true,
+        });
         if (!ok) return;
-        const ok2 = confirm('本当に全データを削除します。この操作は取り消せません。');
+        const ok2 = await window.ConfirmDialog.show({
+            title: '最終確認',
+            message: 'この操作は取り消せません。\n本当に全データを削除しますか？',
+            okText: '削除する',
+            cancelText: 'やめる',
+            danger: true,
+        });
         if (!ok2) return;
         try {
             // 全データを初期化 (player id も再発行される)
@@ -541,7 +555,13 @@
             setTimeout(() => window.Router?.show?.('title'), 150);
         } catch (e) {
             console.error('[HomeMenu] reset failed:', e);
-            alert('リセットに失敗しました。');
+            window.ConfirmDialog.show({
+                title: 'エラー',
+                message: 'リセットに失敗しました。\n時間を置いて再度お試しください。',
+                okText: 'OK',
+                cancelText: '閉じる',
+                danger: true,
+            });
         }
     }
 
