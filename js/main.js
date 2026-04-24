@@ -4,22 +4,25 @@
 
 (function () {
     function updateScale() {
-        // ★ 2026-04 方針変更: visualViewport は使わない。
+        // ★ 2026-04 方針: canvas 高さ可変 + 幅固定スケーリング
         // ----------------------------------------------------------
-        // visualViewport.height は iOS でソフトウェアキーボードが
-        // 開くと縮む。これを元に --scale を算出すると、名前入力を
-        // タップした瞬間に #stage 全体が縮小されてしまい UX が崩壊。
-        // layout viewport (window.innerWidth / innerHeight) は
-        // キーボードでは変わらず、アドレスバーの伸縮のみ追従する
-        // (モダン iOS Safari では resize イベントも発火する)。
-        // よってレイアウト viewport のみを使う。
+        // 論理 canvas: 1080px 幅 × 可変高さ (最低 1920)
+        // scale = viewport_width / 1080 (幅に合わせる)
+        // canvas_h = max(1920, viewport_height / scale)
+        //   → scaled 高さが必ず viewport_height 以上になる
+        //   → 上下の「画面外」余白がゼロになる (モダン iPhone も埋まる)
+        //
+        // visualViewport は使わない: キーボードで縮むと #stage 全体が
+        // 縮小されてしまい UX が崩壊するため。layout viewport は
+        // キーボードで変化しない。
         // ----------------------------------------------------------
         const w = window.innerWidth;
         const h = window.innerHeight;
-        const sx = w / 1080;
-        const sy = h / 1920;
-        const scale = Math.min(sx, sy);
-        document.documentElement.style.setProperty('--scale', scale);
+        const scale = w / 1080;
+        const logicalH = Math.max(1920, Math.ceil(h / scale));
+        const root = document.documentElement.style;
+        root.setProperty('--scale', scale);
+        root.setProperty('--canvas-h', logicalH + 'px');
     }
 
     // 初期フラッシュ抑制: DOMContentLoaded を待たずに即時反映

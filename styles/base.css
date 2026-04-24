@@ -86,24 +86,27 @@ body {
     bottom: 0;
 }
 
-/* --- 仮想ステージ (1080x1920 論理ピクセル) ---
-   絶対配置 + 負マージンで中心寄せ → その上で scale。
+/* --- 仮想ステージ (1080 x 可変高 論理ピクセル) ---
+   幅 1080px 固定、高さは viewport に応じて JS から --canvas-h で制御。
+   top-left 基準で viewport 幅いっぱいに scale。
+   - モダン iPhone (19.5:9): 高さ > 1920 → 余白ゼロ
+   - iPhone SE (16:9):       高さ = 1920 → 従来通り
+   - 中間端末:                高さは viewport_h / scale で計算
    注意: body を flex にすると flex-shrink で 1080px が viewport 幅に
    強制圧縮されてしまい scale 後に極細になるため、flex は禁止。 */
 #stage {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 0;
     margin-left: -540px;   /* -width/2 */
-    margin-top: -960px;    /* -height/2 */
     width: 1080px;
-    height: 1920px;
+    height: var(--canvas-h, 1920px);
     /* 背景は .screen 側で指定する (画面タイプでライト/ダーク切替) */
     background: var(--canvas-dark);
     /* --shake-x / --shake-y は VHS グリッチ中に JS から上書きして画面揺れ。
        通常は 0。scale は viewport 適合。 */
     transform: translate(var(--shake-x, 0px), var(--shake-y, 0px)) scale(var(--scale));
-    transform-origin: center center;
+    transform-origin: top center;
     overflow: hidden;
 }
 

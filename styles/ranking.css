@@ -8,9 +8,10 @@
     height: 100%;
     color: var(--text-on-dark);
     /* 左右余白を既定 .screen (60px) より詰めて名前カラムに横幅を譲る。
-       上下は .screen 既定 (padding: 80px 60px) を上書きしない。 */
-    padding-left: 24px;
-    padding-right: 24px;
+       24px は詰めすぎて窮屈だったので 42px まで戻し、カラムを再調整して
+       名前 7+ 文字を維持する。上下は .screen 既定 (80px) をそのまま使う。 */
+    padding-left: 42px;
+    padding-right: 42px;
     padding-bottom: env(safe-area-inset-bottom);
     touch-action: pan-y;   /* 縦スクロールは通常通り、水平はスワイプ判定に回す */
 }

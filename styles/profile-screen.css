@@ -35,8 +35,9 @@
 body.has-tabbar .profile-screen-inner {
     /* TabBar (position:fixed) と重なり過ぎないよう下部に余白を確保。
        overflow:hidden でもあるのでスクロールはしないが、コンテンツの
-       最下段が TabBar の裏に隠れないようにするためのクリアランス。 */
-    padding-bottom: 220px;
+       最下段が TabBar の裏に隠れないようにするためのクリアランス。
+       canvas 可変高対応: TabBar 実高さ (CSS px) を canvas-px に換算。 */
+    padding-bottom: calc((56px + env(safe-area-inset-bottom, 0px)) / var(--scale, 1) + 24px);
 }
 
 /* hm-panel: モーダル時は min(480px, 92vw) の小さなカードだが、
@@ -139,21 +140,88 @@ body.has-tabbar .profile-screen-inner {
 }
 
 /* アイコン選択グリッド: PC 幅だと 64px minmax で 16 列になり
-   ちまちましすぎるので、スマホらしく 4 列固定で大きく表示。
-   さらに 1 画面に納めるためセル高さを固定し (aspect-ratio を解除)、
-   2 行で縦 ~340 canvas-px に収める。 */
+   ちまちましすぎるので、スマホらしく 3 列 × 正方形。プリセット 6 個
+   (butterfly / jellyfish / tv / puzzle / phonograph + "なし") を
+   3 列 × 2 行で綺麗に並べる。アバターは透過 PNG なので背景を白で
+   塗り、そこに CSS のみで VHS 風スキャンライン + 走査ラインを乗せて
+   ゲーム世界観を維持する (キャラ側はそのままクリアに見える)。 */
 .profile-screen .hm-pf-av-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
 }
 .profile-screen .hm-pf-av {
-    aspect-ratio: auto;
-    height: 160px;
-    border-radius: 16px;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    border-radius: 20px;
     border-width: 2px;
+    /* 背景: 白ベース + VHS 風スキャンライン (3canvas-px おきに 1px 黒3%)
+       キャラ画像 (<img>) は position: relative/z-index: 1 で上に載る */
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.045) 0px,
+            rgba(0, 0, 0, 0.045) 2px,
+            transparent 2px,
+            transparent 6px
+        ),
+        radial-gradient(
+            ellipse at center,
+            #ffffff 0%,
+            #f2f2f4 100%
+        );
+    overflow: hidden;
+    isolation: isolate;
+}
+/* 走査ライン: ゆっくり上に流れる細帯。背景の上・画像の下に載せる */
+.profile-screen .hm-pf-av::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 18%;
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.55) 45%,
+        rgba(255, 255, 255, 0.15) 70%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: 0;
+    animation: hm-pf-av-track 5.2s linear infinite;
+}
+/* 軽い RGB 縁 (赤/青のずれ感) を VHS っぽくほんの少し */
+.profile-screen .hm-pf-av::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow:
+        inset 2px 0 0 rgba(255, 51, 64, 0.12),
+        inset -2px 0 0 rgba(0, 229, 255, 0.14);
+    pointer-events: none;
+    z-index: 2;
+}
+/* キャラ本体 (透過 PNG) は走査ラインより上、コンテインは cover → contain
+   に変更して切れを防ぐ。 */
+.profile-screen .hm-pf-av img {
+    position: relative;
+    z-index: 1;
+    object-fit: contain;
+    padding: 10%;
+}
+@keyframes hm-pf-av-track {
+    0%   { transform: translateY(620%); }
+    100% { transform: translateY(-180%); }
 }
 .profile-screen .hm-pf-av-none {
-    font-size: 72px;
+    font-size: 120px;
+    color: rgba(10, 10, 10, 0.35);
+    /* none スロットはキャラが無いので走査ライン越しの "—" を前面に */
+    position: relative;
+    z-index: 1;
 }
 .profile-screen .hm-pf-av-lockbadge {
     width: 44px;
@@ -161,6 +229,7 @@ body.has-tabbar .profile-screen-inner {
     right: 10px;
     top: 10px;
     border-radius: 10px;
+    z-index: 3;
 }
 .profile-screen .hm-pf-av-lockbadge svg {
     width: 24px;

@@ -134,17 +134,19 @@
    ------------------------------------------------------------
    TabBar は実 CSS px でビューポート下端に張り付くため、キャンバス
    側のコンテンツがその下に潜り込まないよう bottom padding を確保。
-   
-   - 最も厳しいのは iPhone SE (375x667, safe-area=0): キャンバスが
-     ビューポート全体を占め、TabBar 実高さ 62 CSS px が canvas bottom
-     を完全に覆う。scale=0.347 なので 62 CSS px = 179 canvas-px。
-     安全マージン込みで 220 canvas-px を設定。
-   - iPhone 15 等のモダン端末では canvas がビューポートより短いため、
-     TabBar が canvas 下端と重なる範囲はもっと少ない (~65-100 canvas-px)。
-     220 canvas-px でも余裕を持ってクリアする。
+
+   2026-04 canvas 可変高化後:
+   - canvas 高さが viewport_h に合わせて伸びるため、canvas 下端 =
+     viewport 下端 = TabBar の下。よって全端末で TabBar が canvas の
+     下端を覆う構図になる。
+   - TabBar 高さ (CSS px) = 56 + env(safe-area-inset-bottom)。
+     canvas-px に戻すと (56 + safe) / scale。
+   - scale は --scale で参照できる (数値)。calc で px / number が可能。
+   - 余裕を持って +24 canvas-px 分プラス。
    ------------------------------------------------------------ */
-body.has-tabbar .home-screen,
 body.has-tabbar .stage-select-screen,
 body.has-tabbar .ranking-screen {
-    padding-bottom: 220px;
+    padding-bottom: calc((56px + env(safe-area-inset-bottom, 0px)) / var(--scale, 1) + 24px);
 }
+/* home-screen はキャラが画面下端ピンなので padding-bottom:0。
+   home-screen.css 側で上書き定義済み。 */

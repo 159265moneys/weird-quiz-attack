@@ -43,12 +43,18 @@
 
     // 所持 (解放済み) キャラからランダム 1 体の画像パス。
     // Avatars manifest 未ロード時は null を返し、init() 側で load 後に差し替える。
+    // ホーム画面ではキャラクター (パズル/蓄音機/TV/クラゲ) のみを選び、butterfly は
+    // 除外する。butterfly は装飾アイコン枠なので「ゲームのキャラ」として前面に
+    // 出すには向かない。
+    const HOME_EXCLUDE = new Set(['butterfly']);
     function pickAvatarPath() {
         const list = window.Avatars?.getList?.() || [];
         if (!list.length) return null;
-        // 解放済みだけに絞る (未解放は除外)
-        const ok = list.filter(it => window.Save?.isIconUnlocked?.(it.id) !== false);
-        const pool = ok.length > 0 ? ok : list;
+        // 装飾枠除外 + 解放済みだけに絞る
+        const chars = list.filter(it => !HOME_EXCLUDE.has(it.id));
+        const ok = chars.filter(it => window.Save?.isIconUnlocked?.(it.id) !== false);
+        const pool = ok.length > 0 ? ok : chars;
+        if (!pool.length) return null;
         const pick = pool[Math.floor(Math.random() * pool.length)];
         return window.Avatars?.pathOf?.(pick.id) || null;
     }
@@ -69,7 +75,6 @@
                 <div class="screen home-screen">
                     <div class="screen-header home-head">
                         <div class="home-head-left">
-                            <div class="home-head-brand">変なクイズ</div>
                             <div class="home-head-ver">v${window.CONFIG.VERSION}</div>
                         </div>
                         <div class="home-head-icons">
@@ -82,11 +87,8 @@
                         </div>
                     </div>
 
-                    <div class="home-stage">
-                        <div class="home-dialog" id="homeDialog">
-                            <p class="home-dialog-text">${escapeHTML(dialogue)}</p>
-                        </div>
-                        <div class="home-char-area">${charHtml}</div>
+                    <div class="home-dialog" id="homeDialog">
+                        <p class="home-dialog-text">${escapeHTML(dialogue)}</p>
                     </div>
 
                     <div class="home-actions">
@@ -99,6 +101,8 @@
                             <span class="home-btn-sub">全ステージ一覧</span>
                         </button>
                     </div>
+
+                    <div class="home-char-area">${charHtml}</div>
                 </div>
             `;
         },

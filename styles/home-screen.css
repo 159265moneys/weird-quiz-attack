@@ -22,7 +22,9 @@
        body.touch-action:none を継承するので追加設定は不要。 */
     overflow: hidden;
 
-    padding: 60px 60px 40px;
+    padding: 60px 60px 0;
+    /* position: relative; でキャラ画像 (absolute) の基準点にする */
+    position: relative;
 }
 
 /* --- ヘッダー --- */
@@ -40,16 +42,6 @@
     display: flex;
     align-items: baseline;
     gap: 16px;
-}
-.home-head-brand {
-    font-size: 48px;
-    letter-spacing: 8px;
-    font-weight: bold;
-    color: var(--text-on-light);
-    /* 黒背景から白背景に移行したので、cyan/red のズレは控えめに */
-    text-shadow:
-        2px 0 0 rgba(255, 51, 64, 0.28),
-        -2px 0 0 rgba(0, 229, 255, 0.28);
 }
 .home-head-ver {
     font-size: 24px;
@@ -88,22 +80,6 @@
     filter: brightness(0) saturate(100%) invert(25%);
 }
 
-/* --- ステージ (吹き出し + キャラ) ---
-   縦配置: 上に吹き出し、その下に三角ポインタで指す形で大きなキャラ。
-   チュートリアル (Navigator) と同じ視覚フロー。 */
-.home-stage {
-    position: relative;
-    flex: 1 1 auto;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 40px;
-    min-height: 0;
-    z-index: 3;
-}
-
 /* --- 吹き出し (nav-bubble と同じ見た目。TAP 送りは無いので next ランプ無し) --- */
 .home-dialog {
     position: relative;
@@ -111,6 +87,7 @@
     max-width: 920px;
     min-height: 180px;
     padding: 40px 48px 44px;
+    margin: 0 auto 48px;  /* キャラ頭上に余白を取る */
     background: var(--box-bg, #151519);
     border: 4px solid var(--line, #ffffff);
     box-shadow:
@@ -118,6 +95,7 @@
         inset 0 0 0 1px rgba(255, 255, 255, 0.08);
     color: var(--text-on-dark, #ffffff);
     animation: homeBubblePop 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+    z-index: 3;
 }
 @keyframes homeBubblePop {
     0%   { transform: translate(0, -8px) scale(0.94); opacity: 0; }
@@ -155,16 +133,27 @@
     border-top: 30px solid var(--box-bg, #151519);
 }
 
-/* --- キャラ (1.5x: 640 → 960) ---
-   アスペクト保持、影つき。アバター PNG は透過前提 (RGB 白背景だと矩形影になる)。 */
+/* --- キャラ (画面下端にピン、最大限大きく) ---
+   .home-screen 内に position:absolute で配置。下端は TabBar 上端より
+   1 canvas-px だけ上 (ピッタリ隣接)。幅は canvas 幅いっぱい (1080)、
+   高さは画面内で最大限取れる範囲に自動調整 (object-fit: contain で
+   アスペクト保持)。
+   透過 PNG 前提なので矩形影は出ない。 */
 .home-char-area {
-    flex: 0 0 auto;
-    width: 960px;
-    height: 960px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    /* 下端: TabBar 実高さ + 1canvas-px の真上
+       (TabBar 自体は position:fixed でビューポート下端に固定) */
+    bottom: calc((56px + env(safe-area-inset-bottom, 0px)) / var(--scale, 1) + 1px);
+    /* 上端: ヘッダと吹き出しの下からスタートさせる。画面の ~40% を
+       吹き出しエリアに譲り、残り ~60% をキャラに使う。 */
+    top: 620px;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
-    position: relative;
+    pointer-events: none;        /* キャラは装飾、ボタン類をブロックしない */
+    z-index: 1;                   /* 吹き出し/ヘッダの下 */
 }
 .home-char {
     max-width: 100%;
@@ -172,15 +161,17 @@
     width: auto;
     height: auto;
     object-fit: contain;
+    object-position: bottom center;
     /* 柔らかい影 + 微弱な cyan ハイライト */
     filter:
         drop-shadow(0 10px 22px rgba(0, 0, 0, 0.25))
         drop-shadow(0 0 18px rgba(0, 229, 255, 0.08));
     animation: home-char-breath 5.4s ease-in-out infinite;
+    transform-origin: center bottom;
 }
 .home-char-placeholder {
-    width: 320px;
-    height: 320px;
+    width: 520px;
+    height: 520px;
     border: 2px dashed rgba(10, 10, 10, 0.25);
     border-radius: 50%;
     opacity: 0.3;
@@ -284,7 +275,11 @@
     transform: translate(-50%, -50%) scale(1);
 }
 
-/* --- タブバーが居るので下側の padding を足す (tab-bar.css 側でも重ねて定義) --- */
+/* --- タブバーが居るので下側の padding を足す (tab-bar.css 側でも重ねて定義) ---
+   home は .home-char-area を position:absolute で下端にピンするので、
+   追加の下側 padding は不要 (0 扱い)。ヘッダ〜アクションは flex フローの
+   上から順に積み上がり、キャラ (absolute) は z-index:1 で背面、ボタンは
+   z-index:4 で前面に重ねる。 */
 body.has-tabbar .screen.home-screen {
-    padding-bottom: 220px;
+    padding-bottom: 0;
 }
