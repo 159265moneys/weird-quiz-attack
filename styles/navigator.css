@@ -48,6 +48,14 @@
         );
     animation: navBackdropIn 0.35s ease both;
 }
+
+/* tutorial: 背後のステージ一覧・タブ等に触れないよう全面を濃いベールで覆う。
+   クリックも backdrop が受けて overlay の pointerdown へ bubble させる
+   (= タップで台詞送り、裏の UI には一切届かない)。 */
+.nav-overlay.mode-tutorial .nav-backdrop {
+    background: rgba(5, 5, 8, 0.82);
+    pointer-events: auto;
+}
 @keyframes navBackdropIn {
     from { opacity: 0; }
     to   { opacity: 1; }

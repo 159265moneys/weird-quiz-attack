@@ -267,6 +267,21 @@
     padding-bottom: 80px;
 }
 
+/* --- 初回強制フロー (チュートリアル → ステ1 自動) 中はステ選択を完全ロック ---
+   body[data-nav-mode=tutorial] : Navigator 発話中
+   body.is-tutorial-lock        : stageSelect 側で張る「全体ロック」
+   タップされてもカードが反応しないように pointer-events:none で遮断。
+   スクロールも効かせない。 */
+body[data-nav-mode="tutorial"] .stage-select-screen .stage-card,
+body.is-tutorial-lock .stage-select-screen .stage-card {
+    pointer-events: none;
+}
+body[data-nav-mode="tutorial"] .stage-select-screen .scroll-area,
+body.is-tutorial-lock .stage-select-screen .scroll-area {
+    overflow: hidden !important;
+    touch-action: none;
+}
+
 /* ステージカード: 暗い地 + 白ダブル枠 (グレー背景の上で映える) */
 .stage-card {
     display: grid;

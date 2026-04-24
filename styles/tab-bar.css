@@ -150,3 +150,15 @@ body.has-tabbar .ranking-screen {
 }
 /* home-screen はキャラが画面下端ピンなので padding-bottom:0。
    home-screen.css 側で上書き定義済み。 */
+
+/* --- チュートリアル / 強制フロー中はタブ操作を完全ロック ---
+   body[data-nav-mode=tutorial]  : Navigator が tutorial 吹き出しを出している間
+   body.is-tutorial-lock         : stageSelect 側で「初回強制チュートリアル→ステ1」
+                                    シーケンス全体で張る (Navigator 発話前後も含む)
+   両方とも: タブを半透明 + pointer-events:none で押せない状態にする。 */
+body[data-nav-mode="tutorial"] .tabbar,
+body.is-tutorial-lock .tabbar {
+    pointer-events: none;
+    opacity: 0.35;
+    filter: grayscale(0.4);
+}

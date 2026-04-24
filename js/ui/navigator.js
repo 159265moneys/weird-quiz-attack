@@ -121,6 +121,9 @@
         mountShell();
         if (overlay) overlay.classList.add('is-open');
         document.body.classList.add('nav-lock');
+        // モードを body に反映。tutorial は「他 UI 完全ロック」、
+        // result (persist) は下のボタンが押せるよう素通し。CSS がこれを参照する。
+        document.body.dataset.navMode = state?.mode || 'tutorial';
     }
 
     function close() {
@@ -136,6 +139,7 @@
             if (figure) figure.classList.remove('is-pop');
         }
         document.body.classList.remove('nav-lock');
+        delete document.body.dataset.navMode;
         const done = state?.onDone;
         state = null;
         if (typeof done === 'function') {

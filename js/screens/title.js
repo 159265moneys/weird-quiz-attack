@@ -166,10 +166,17 @@
                     if (bfly) bfly.classList.add('is-flying');
                 }));
 
-                // ロゴ崩壊 (1.2s) + 蝶フライアウト (1.6s) の長い方に合わせて遷移
-                // 5タブ UI 導入後、タイトルの次はホーム画面 (ハブ) に着地する。
+                // ロゴ崩壊 (1.2s) + 蝶フライアウト (1.6s) の長い方に合わせて遷移。
+                //   初回起動 (tutorialDone=false) は必ず STAGE SELECT に降ろす。
+                //   そこでチュートリアル → ステ1 自動プレイの強制フローに入る。
+                //   2 回目以降は従来通りホームに着地。
                 setTimeout(() => {
-                    window.Router.show('home');
+                    const firstRun = !window.Save?.getFlag?.('tutorialDone');
+                    if (firstRun) {
+                        window.Router.show('stageSelect', { autoTutorial: true });
+                    } else {
+                        window.Router.show('home');
+                    }
                 }, 1600);
             };
 

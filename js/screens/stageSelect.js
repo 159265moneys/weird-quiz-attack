@@ -101,7 +101,7 @@
             `;
         },
 
-        init() {
+        init(params = {}) {
             // stageSelect は title と BGM 共有 (title&main.mp3)。
             // 同名 play は idempotent なので、title から遷移してきた場合は継続再生。
             // question / result からホームへ戻る時は "完全フェードアウト → 頭から再生"
@@ -110,13 +110,32 @@
             const seq = (prev === 'question' || prev === 'result');
             window.BGM?.play('title', { sequential: seq });
 
+            // --- 初回強制フロー判定 ---
+            // tutorialDone が false、または title から autoTutorial:true で来た場合。
+            // この間は「タブ切替 / ステ選択カードタップ / スクロール」すべて禁止で、
+            // チュートリアル完了時に問答無用でステ 1 を開始する。
+            const forceTutorial =
+                !!params.autoTutorial || !window.Save?.getFlag?.('tutorialDone');
+
             // 下部タブバー: stageSelect タブがアクティブ
             // ハンバーガー (≡) は 5タブ UI 導入で廃止。SOUND/RESET/ABOUT は
             // HOME ヘッダの ⚙ アイコン + PROFILE モーダル下部から辿れる。
             window.TabBar?.mount?.('stageSelect');
 
+            if (forceTutorial) {
+                // CSS 側が body.is-tutorial-lock を見て tabbar / stage-card /
+                // scroll を完全ロックする。Navigator 発話前後もこのクラスは
+                // 張り続け、ステ1に遷移する瞬間 (startStage) に外す。
+                document.body.classList.add('is-tutorial-lock');
+            }
+
             document.querySelectorAll('.stage-card').forEach((card) => {
                 card.addEventListener('click', () => {
+                    // 初回強制フロー中は一切のカードタップを黙殺
+                    if (document.body.classList.contains('is-tutorial-lock')) {
+                        window.SE?.fire('cancel');
+                        return;
+                    }
                     if (card.classList.contains('is-locked')) {
                         window.SE?.fire('cancel');
                         return;
@@ -140,6 +159,11 @@
                     startY = e.touches[0].clientY;
                 }, { passive: true });
                 sa.addEventListener('touchmove', (e) => {
+                    // 強制フロー中はスクロール自体禁止
+                    if (document.body.classList.contains('is-tutorial-lock')) {
+                        e.preventDefault();
+                        return;
+                    }
                     const y = e.touches[0].clientY;
                     const dy = y - startY;
                     const atTop = sa.scrollTop <= 0;
@@ -150,33 +174,48 @@
                 }, { passive: false });
             }
 
-            // 初回のみナビゲーターで簡易チュートリアル
-            if (!window.Save.getFlag('tutorialDone')) {
-                runTutorial();
+            // 初回のみナビゲーターで簡易チュートリアル → 終わったら強制でステ1
+            if (forceTutorial) {
+                runTutorial({
+                    onFinish: () => {
+                        window.Save.setFlag('tutorialDone', true);
+                        // ロック解除は startStage 側で画面遷移と同時に行う
+                        startStage(1);
+                    },
+                });
             }
         },
     };
 
-    function runTutorial() {
-        if (!window.Navigator) return;
+    function runTutorial(opts = {}) {
+        if (!window.Navigator) {
+            // Navigator が無い異常時でもフローは止めない
+            opts.onFinish && opts.onFinish();
+            return;
+        }
         const lines = [
             'ようこそ、変なクイズへ。',
             'ルールはシンプル。クイズに答えてステージをクリアする。',
             '…のはずが、進むほど UI が壊れていく。',
             '文字が崩れ、ボタンが動き、キーボードが入れ替わる。',
             '慌てないで。冷静に読めば、たいてい答えは見えるはず。',
-            'じゃあ、始めよう。',
+            'じゃあ、始めよう。まずはステージ 1 から。',
         ];
         const poses = ['hi', 'basic', 'think', 'think_light', 'basic', 'happy'];
         window.Navigator.speak(lines, {
             poses,
+            mode: 'tutorial',
             onDone: () => {
-                window.Save.setFlag('tutorialDone', true);
+                opts.onFinish && opts.onFinish();
             },
         });
     }
 
     async function startStage(no) {
+        // 初回強制フローの抜け道。Router.show('question') 前にロックを外しておかないと、
+        // クイズ画面側に is-tutorial-lock が残ってタブ等に副作用が出る。
+        document.body.classList.remove('is-tutorial-lock');
+
         window.GameState.currentStage = no;
         window.GameState.resetSession();
         window.GameState.session.startAt = Date.now();

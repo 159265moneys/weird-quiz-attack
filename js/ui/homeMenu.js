@@ -72,7 +72,7 @@
                     </button></li>
                     <li><button class="hm-item" data-act="reset">
                         <span class="hm-ic">${ICONS.reset}</span>
-                        <span class="hm-lbl"><span class="hm-lbl-main">RESET</span><span class="hm-lbl-sub">進捗をリセット</span></span>
+                        <span class="hm-lbl"><span class="hm-lbl-main">RESET</span><span class="hm-lbl-sub">全データを削除</span></span>
                         <span class="hm-chv">${ICONS.chevron}</span>
                     </button></li>
                     <li><button class="hm-item" data-act="about">
@@ -496,30 +496,49 @@
     }
 
     // ---------- RESET 確認 (2 段) ----------
+    // 2026-04 更新: "完全初期化" 方針に変更。
+    //   旧実装は identity (id/name/icon) と設定 (音量/ミュート等) を保持して
+    //   進捗だけ消していたが、ユーザー要望で「初回インストール状態まで戻す」に。
+    //   → localStorage.removeItem → defaultData() を載せ直す一連の処理に統一。
+    //   tutorialDone=false に戻るので、title → stageSelect の強制チュートリアル
+    //   フローが再び走る (= 初回と同じ体験)。
     function openResetConfirm() {
-        const ok = confirm('すべての進捗 (クリア状況 / ベストスコア / プレイ回数) をリセットします。本当に良いですか？');
+        const ok = confirm('全データ (アイコン / 名前 / 進捗 / ベストスコア / 設定) を削除し、初回インストール状態に戻します。本当に良いですか？');
         if (!ok) return;
-        const ok2 = confirm('本当にリセットします。この操作は取り消せません。');
+        const ok2 = confirm('本当に全データを削除します。この操作は取り消せません。');
         if (!ok2) return;
         try {
-            // 設定 (音量/ミュート) とプレイヤー ID / 名前 / アイコンは保持して
-            // 進捗 (クリア状況/スコア/プレイ回数) だけ消す。identity は引き継ぎ。
-            const settings = window.Save?.getSettings?.();
-            const prevId   = window.Save?.getPlayerId?.();
-            const prevName = window.Save?.data?.player?.name ?? null;
-            const prevIcon = window.Save?.data?.player?.icon ?? null;
+            // 全データを初期化 (player id も再発行される)
             window.Save?.reset?.();
-            if (settings) {
-                Object.keys(settings).forEach(k => window.Save?.setSetting?.(k, settings[k]));
-            }
-            if (window.Save?.data && prevId) {
-                window.Save.data.player = { id: prevId, name: prevName, icon: prevIcon };
-                window.Save.persist?.();
-            }
+            // ランタイム側の派生状態もクリーンアップ
+            // 保存された音量設定はリセットされデフォルトに戻るので、
+            // 実行中の SE / BGM にも反映させる。
+            try {
+                const s = window.Save?.getSettings?.();
+                if (s) {
+                    window.SE?.setMasterVolume?.(s.seVolume);
+                    window.BGM?.setVolume?.(s.bgmVolume);
+                    window.SE?.mute?.(!!s.muted);
+                    window.BGM?.mute?.(!!s.muted);
+                }
+            } catch (_) { /* noop */ }
+
+            // UI 側の残骸を閉じる (設定モーダル / メニュー / profile overlay 等)
+            try { window.Settings?.close?.(); } catch (_) {}
+            try { closeMenu(); } catch (_) {}
+            try { closeProfile?.(); } catch (_) {}
+            try { closeScores?.(); } catch (_) {}
+            try { closeAbout?.(); } catch (_) {}
+
             window.SE?.fire?.('confirm');
-            closeMenu();
-            // stageSelect を再描画して反映
-            setTimeout(() => window.Router?.reload?.(), 150);
+
+            // Navigator に残っていた吹き出しもクリア (タブロックが残る事故防止)
+            try { window.Navigator?.close?.(); } catch (_) {}
+            document.body.classList.remove('is-tutorial-lock');
+
+            // 初回と全く同じ体験にするためタイトル画面から再スタート。
+            // title → タップ → (tutorialDone=false なので) stageSelect 強制フロー。
+            setTimeout(() => window.Router?.show?.('title'), 150);
         } catch (e) {
             console.error('[HomeMenu] reset failed:', e);
             alert('リセットに失敗しました。');

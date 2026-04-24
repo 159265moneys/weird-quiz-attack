@@ -80,7 +80,7 @@
                     <div class="settings-footer-divider"></div>
                     <div class="settings-footer-actions">
                         <button class="settings-footer-btn" type="button" data-act="about">ABOUT</button>
-                        <button class="settings-footer-btn is-danger" type="button" data-act="resetProgress">RESET PROGRESS</button>
+                        <button class="settings-footer-btn is-danger" type="button" data-act="resetProgress">RESET ALL DATA</button>
                     </div>
                 </div>
             </div>
