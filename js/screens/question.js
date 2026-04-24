@@ -339,7 +339,7 @@
         setTimeout(() => el.remove(), durationMs);
     }
 
-    // --- 中断確認モーダル (pause ではなく完全中断 → ステージ選択へ戻る) ---
+    // --- 中断確認モーダル (pause ではなく完全中断 → ホームへ戻る) ---
     // モーダル表示中もタイマーは継続 (ズル防止)。
     let abortDom = null;
     function openAbortConfirm() {
@@ -351,7 +351,7 @@
         abortDom.innerHTML = `
             <div class="q-abort-panel" role="dialog" aria-modal="true">
                 <div class="q-abort-title">中断しますか？</div>
-                <div class="q-abort-desc">現在のスコアは記録されず、<br>ステージ選択へ戻ります。</div>
+                <div class="q-abort-desc">現在のスコアは記録されず、<br>ホームへ戻ります。</div>
                 <div class="q-abort-actions">
                     <button type="button" class="btn" data-abort="cancel">続ける</button>
                     <button type="button" class="btn btn-accent-red" data-abort="ok">中断する</button>
@@ -385,9 +385,9 @@
         closeAbortConfirm();
         window.Gimmicks?.dispose();
         if (window.Keyboard?.unmount) window.Keyboard.unmount();
-        // 現セッションは破棄 (結果画面には行かず、まっすぐステージ選択へ)
+        // 現セッションは破棄 (結果画面には行かず、まっすぐホームへ)
         if (window.GameState?.resetSession) window.GameState.resetSession();
-        window.Router.show('stageSelect');
+        window.Router.show('home');
     }
 
     function escapeHTML(s) {
