@@ -149,9 +149,16 @@
         const handler = () => { try { unlockOnce(); } catch (_) {} };
         // 永続リスナ。iOS は着信 / 他アプリ復帰で ctx が suspended に戻るため
         // 毎回 user-gesture で resume を試みる。
-        document.addEventListener('pointerdown', handler, { passive: true });
-        document.addEventListener('touchstart',  handler, { passive: true });
-        document.addEventListener('keydown',     handler);
+        //
+        // capture:true 固定。
+        //   title 画面で最初のタップ時、画面側の bubble 内で SE.fire('tapStart')
+        //   を呼ぶコードがあるが、それ以前に ctx.resume() を済ませておかないと
+        //   suspended な ctx に source.start() を積むことになって無音になる。
+        //   capture で先に走らせることで、bubble で出てくる SE.fire が必ず
+        //   resume 済みの ctx に対して発火するようになる。
+        document.addEventListener('pointerdown', handler, { capture: true, passive: true });
+        document.addEventListener('touchstart',  handler, { capture: true, passive: true });
+        document.addEventListener('keydown',     handler, { capture: true });
         // visibilitychange: 他アプリから戻ったとき suspended ならリジュームを試みる
         //                   (user-gesture 必須なので成功は保証されないが、復帰直後の
         //                    タップで確実に動くようにする最善手)。
@@ -168,6 +175,12 @@
     // 失敗時 null。
     function startBuffer(buffer, opts) {
         if (!audioCtx || !masterGain || !buffer) return null;
+        // ctx が suspended のままだと source.start() しても無音になる iOS バグ対策。
+        // unlockOnce は capture phase で先に走るが、念のためここでも resume を
+        // 試みる (コストは低い: state=running なら resume は no-op 相当)。
+        if (audioCtx.state !== 'running') {
+            try { audioCtx.resume().catch(() => {}); } catch (_) {}
+        }
         const gainNode = audioCtx.createGain();
         const baseVol = opts.volume == null ? 1.0 : Number(opts.volume);
         gainNode.gain.value = clampVol(baseVol);  // master は別 node で掛ける

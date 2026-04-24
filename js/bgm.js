@@ -163,29 +163,25 @@
         if (cb) cb();
     }
 
-    // 新規 Audio を生成 (or preload 済みを掠め取る) して再生開始 (volume=0 から fadeIn)
+    // 新規 Audio を生成して再生開始 (volume=0 から fadeIn)
+    //
+    // 2026-04 方針変更: preload 済み HTMLAudioElement は "再利用せず" 破棄する。
+    //   iOS WKWebView (Capacitor) では、user-gesture 前に生成された Audio 要素は
+    //   後から gesture 内で .play() しても「再生プロミスは resolve するのに実音が
+    //   出ない (= ミュート状態)」症状が出ることがある (preloadTitle で仕込んだ
+    //   要素がまさに該当し、タイトル画面で BGM が無音になる原因だった)。
+    //   preloadTitle の本来の目的は "HTTP キャッシュのウォームアップ" で、
+    //   キャッシュは URL ベースで効くので要素そのものを再利用する必要は無い。
+    //   ここでは preload 要素があれば pause して捨て、毎回 new Audio() する。
     function spawnAudio(path, targetVol, fadeInMs) {
-        let el = _preloadByPath.get(path);
-        let usedPreload = false;
-        if (el) {
-            // preload 済みの要素を "初回だけ" 再利用する (Map から外す → 2回目以降は new)。
-            // これにより初回再生時の fetch 待ちが消える (iOS で特に効く)。
+        const pre = _preloadByPath.get(path);
+        if (pre) {
+            try { pre.pause(); } catch (_) {}
+            try { pre.src = ''; } catch (_) {}
             _preloadByPath.delete(path);
-            usedPreload = true;
-            // currentTime=0 が設定できなかった場合 (Safari で partial stream 時に
-            // 発生することがある) は preload 要素を捨てて新規に作り直す。
-            let ok = false;
-            try { el.currentTime = 0; ok = (el.currentTime < 0.2); } catch (_) { ok = false; }
-            if (!ok) {
-                try { el.pause(); } catch (_) {}
-                el = null;
-                usedPreload = false;
-            }
         }
-        if (!el) {
-            el = new Audio(BASE + encodeURIComponent(path));
-            el.preload = 'auto';
-        }
+        const el = new Audio(BASE + encodeURIComponent(path));
+        el.preload = 'auto';
         el.loop = false;
         el.volume = 0;
         el._loopTriggered = false;

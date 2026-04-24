@@ -86,16 +86,20 @@
     filter: brightness(0) saturate(100%) invert(25%);
 }
 
-/* --- 吹き出し (nav-bubble と同じ見た目。TAP 送りは無いので next ランプ無し) --- */
+/* --- 吹き出し (nav-bubble と同じ見た目。TAP 送りは無いので next ランプ無し) ---
+   キャラ画像 (1000×1000 / 画面幅一杯に object-fit:contain = 1080×1080 canvas-px) の
+   直上に少し余白を置いて配置する。
+   bottom = TabBar 実高さ (canvas-px) + 画像高さ (1080) + 余白 (余白内に三角ポインタも収まる)
+   これで機種間 (canvas 高さ可変) でも常にキャラ頭上に吹き出しが追従する。 */
 .home-dialog {
-    position: relative;
-    align-self: center;
-    flex: 0 0 auto;
-    width: 100%;
+    position: absolute;
+    left: 60px;
+    right: 60px;
+    bottom: calc((56px + env(safe-area-inset-bottom, 0px)) / var(--scale, 1) + 1080px + 70px);
+    margin: 0 auto;
     max-width: 920px;
     min-height: 180px;
     padding: 40px 48px 44px;
-    margin: 0 auto 16px;
     background: var(--box-bg, #151519);
     border: 4px solid var(--line, #ffffff);
     box-shadow:
@@ -152,8 +156,10 @@
     right: 0;
     /* 下端: TabBar の実高さ (56px + safe-area) を canvas-px に換算 + 1px 上 */
     bottom: calc((56px + env(safe-area-inset-bottom, 0px)) / var(--scale, 1) + 1px);
-    /* 上端: ヘッダ(~160px) + dialog(~280px) の下くらいから始める */
-    top: 520px;
+    /* 画像は 1000x1000 の正方形。width=100% なので縦幅は 1080 canvas-px で固定。
+       top は 1080 より小さければ内容に影響しない (画像は bottom 寄せ = 底から 1080)。
+       ヘッダ下までは伸ばす必要が無いので控え目に 260 にしておく (上端 overflow 回避)。 */
+    top: 260px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
@@ -194,8 +200,9 @@
     grid-template-columns: 1fr 1fr;
     gap: 28px;
     margin-top: auto;
-    /* TabBar 実高さ分 + ボタンを少し浮かせる余白 */
-    margin-bottom: calc((56px + env(safe-area-inset-bottom, 0px)) / var(--scale, 1) + 48px);
+    /* TabBar 実高さ分 + ボタンを浮かせる余白 (キャラ下半身の上あたりに位置させる)。
+       48 → 160 に引き上げてボタンを上に移動 (ユーザー要望 2026-04)。 */
+    margin-bottom: calc((56px + env(safe-area-inset-bottom, 0px)) / var(--scale, 1) + 160px);
     flex: 0 0 auto;
     position: relative;
     z-index: 10;
