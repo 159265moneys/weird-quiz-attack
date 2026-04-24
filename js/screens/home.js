@@ -68,8 +68,18 @@
             return `
                 <div class="screen home-screen">
                     <div class="screen-header home-head">
-                        <div class="home-head-brand">変なクイズ</div>
-                        <div class="home-head-ver">v${window.CONFIG.VERSION}</div>
+                        <div class="home-head-left">
+                            <div class="home-head-brand">変なクイズ</div>
+                            <div class="home-head-ver">v${window.CONFIG.VERSION}</div>
+                        </div>
+                        <div class="home-head-icons">
+                            <button class="home-head-icon" type="button" data-action="mail" aria-label="お知らせ">
+                                <img src="sprite/icons/header/mail.svg" alt="">
+                            </button>
+                            <button class="home-head-icon" type="button" data-action="settings" aria-label="設定">
+                                <img src="sprite/icons/header/settings.svg" alt="">
+                            </button>
+                        </div>
                     </div>
 
                     <div class="home-stage">
@@ -120,6 +130,16 @@
                 }).catch(() => {});
             }
 
+            document.querySelector('[data-action="settings"]')?.addEventListener('click', () => {
+                window.SE?.fire?.('menuCursor');
+                window.Settings?.open?.();
+            });
+
+            document.querySelector('[data-action="mail"]')?.addEventListener('click', () => {
+                window.SE?.fire?.('cancel');
+                showHomeToast('お知らせ機能は準備中');
+            });
+
             document.querySelector('[data-action="start"]')?.addEventListener('click', () => {
                 window.SE?.fire?.('confirm');
                 const unlocked = window.Save?.data?.progress?.unlockedStage || 1;
@@ -139,6 +159,22 @@
             // home -> stageSelect / ranking は次画面で mount しなおす。
         },
     };
+
+    // --- 軽量トースト (mail 等、まだ機能ないボタンの仮 UI) ---
+    function showHomeToast(text) {
+        const existing = document.querySelector('.home-toast');
+        if (existing) existing.remove();
+        const el = document.createElement('div');
+        el.className = 'home-toast';
+        el.textContent = text;
+        document.body.appendChild(el);
+        // ポップイン後、1.6s で自動フェードアウト
+        requestAnimationFrame(() => el.classList.add('is-shown'));
+        setTimeout(() => {
+            el.classList.remove('is-shown');
+            setTimeout(() => el.remove(), 320);
+        }, 1600);
+    }
 
     // stageSelect.js の startStage とほぼ同じ処理。Phase 1 では複製で済ませる
     // (Phase 2 で 共通 util に切り出し予定)。

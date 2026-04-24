@@ -495,6 +495,36 @@
     color: rgba(230,241,255,0.75);
 }
 
+/* --- PROFILE フッター (ABOUT / RESET PROGRESS 移設先) --- */
+.hm-pf-footer {
+    margin-top: 12px;
+}
+.hm-pf-footer-divider {
+    height: 1px;
+    background: linear-gradient(to right,
+        transparent,
+        rgba(255,255,255,0.2),
+        transparent);
+    margin: 14px 0 12px;
+}
+.hm-pf-footer-actions {
+    display: flex;
+    gap: 8px;
+}
+.hm-pf-btn.hm-pf-btn-small {
+    padding: 10px 8px;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+}
+.hm-pf-btn.hm-pf-btn-danger {
+    border-color: rgba(255, 46, 94, 0.4);
+    color: rgba(255, 46, 94, 0.85);
+    background: rgba(255, 46, 94, 0.04);
+}
+.hm-pf-btn.hm-pf-btn-danger:active {
+    background: rgba(255, 46, 94, 0.16);
+}
+
 /* --- PROFILE 上部: アイコンプレビュー + ID 横並び --- */
 .hm-pf-top {
     display: flex;

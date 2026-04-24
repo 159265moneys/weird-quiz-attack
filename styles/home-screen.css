@@ -30,8 +30,13 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     margin-bottom: 20px;
+}
+.home-head-left {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
 }
 .home-head-brand {
     font-size: 48px;
@@ -48,6 +53,64 @@
     font-size: 24px;
     color: var(--text-dim);
     letter-spacing: 3px;
+}
+.home-head-icons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.home-head-icon {
+    appearance: none;
+    width: 96px;
+    height: 96px;
+    border-radius: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    background: rgba(0, 0, 0, 0.45);
+    color: #d8e6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.home-head-icon:active {
+    transform: scale(0.92);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 16px rgba(0, 229, 255, 0.3);
+}
+.home-head-icon img {
+    width: 56px;
+    height: 56px;
+    /* SVG を白(やや cyan 寄り) で着色 */
+    filter: brightness(0) saturate(100%) invert(82%) sepia(10%) saturate(360%) hue-rotate(160deg);
+}
+
+/* --- トースト (mail 等、準備中 UI 用) --- */
+.home-toast {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.92);
+    z-index: 9500;
+    padding: 22px 32px;
+    background: rgba(0, 0, 0, 0.88);
+    border: 2px solid rgba(0, 229, 255, 0.7);
+    border-radius: 12px;
+    color: var(--accent-cyan);
+    font-family: inherit;
+    font-size: 18px;
+    letter-spacing: 3px;
+    box-shadow:
+        0 0 30px rgba(0, 229, 255, 0.3),
+        0 10px 40px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.home-toast.is-shown {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
 }
 
 /* --- ステージ (キャラ + セリフ) --- */

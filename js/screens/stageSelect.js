@@ -111,12 +111,9 @@
             const seq = (prev === 'question' || prev === 'result');
             window.BGM?.play('title', { sequential: seq });
 
-            // 右上に ≡ ボタン (ハンバーガーメニュー)。
-            // Phase 3 で廃止予定だが、TabBar 導入直後の互換のため一旦残す。
-            const stageSelectRoot = document.querySelector('.stage-select-screen') || document.getElementById('app');
-            window.HomeMenu?.mountTrigger(stageSelectRoot);
-
             // 下部タブバー: stageSelect タブがアクティブ
+            // ハンバーガー (≡) は 5タブ UI 導入で廃止。SOUND/RESET/ABOUT は
+            // HOME ヘッダの ⚙ アイコン + PROFILE モーダル下部から辿れる。
             window.TabBar?.mount?.('stageSelect');
 
             document.querySelectorAll('.stage-card').forEach((card) => {

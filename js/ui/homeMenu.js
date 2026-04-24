@@ -297,6 +297,15 @@
                         <button class="hm-pf-btn hm-pf-save"  type="button">SAVE NAME</button>
                         <button class="hm-pf-btn hm-pf-reset" type="button">RESET NAME</button>
                     </div>
+
+                    <!-- 旧ハンバーガーメニュー (廃止) からの移設: ABOUT / 進捗リセット -->
+                    <div class="hm-pf-footer">
+                        <div class="hm-pf-footer-divider"></div>
+                        <div class="hm-pf-footer-actions">
+                            <button class="hm-pf-btn hm-pf-btn-small" type="button" data-act="about">ABOUT</button>
+                            <button class="hm-pf-btn hm-pf-btn-small hm-pf-btn-danger" type="button" data-act="resetProgress">RESET PROGRESS</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
@@ -331,6 +340,20 @@
             window.SE?.fire?.('cancel');
             const curEl = profileOverlay.querySelector('.hm-pf-current');
             if (curEl) curEl.textContent = window.Save?.getPlayerDisplayName?.() || '';
+        });
+
+        // ABOUT / RESET PROGRESS (旧ハンバーガーから移設)
+        profileOverlay.querySelectorAll('.hm-pf-footer-actions [data-act]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const act = btn.dataset.act;
+                window.SE?.fire?.('menuCursor');
+                if (act === 'about') {
+                    closeProfile();
+                    setTimeout(openAbout, 120);
+                } else if (act === 'resetProgress') {
+                    openResetConfirm();
+                }
+            });
         });
 
         // アイコングリッド: 各セルタップで即保存・プレビュー更新
