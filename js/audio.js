@@ -502,6 +502,119 @@
         gW18Vanish:    null,
     };
 
+    // ====== カウントダウン合成ビープ ======
+    // 「3(ピ) 2(ピ) 1(ピ) 0(ピー)」を AudioContext.currentTime 基準で
+    // サンプル精度スケジュールする。mp3 では timeWarn (1.65s 8連ピ) と
+    // timeout (6.0s ブー) がタイミング・構成ともに合わなかったため、
+    // OscillatorNode ベースで合成して厳密に 0 秒ぴったり「ピー」が鳴る形にした。
+    //
+    // 使い方:
+    //   const h = SE.scheduleCountdownBeeps(Q_TIME_LIMIT_MS);
+    //   // ユーザーが早く答えた等で打ち切りたいときは
+    //   h.cancel();
+    //
+    // 戻り値は常に { cancel() } を持つオブジェクト (ctx 未初期化でも null 返しにしない)。
+    // AudioContext が suspended の場合は上位の unlockOnce / visibilitychange で
+    // 復帰するが、scheduled start は resume 後にそのまま走ってくれる。
+    function scheduleCountdownBeeps(totalMs, opts = {}) {
+        const noop = { cancel: () => {} };
+        const ctx = ensureCtx();
+        if (!ctx || !masterGain) return noop;
+        const total = Math.max(0, Number(totalMs) || 0);
+        if (total < 1000) return noop; // 1s 未満なら鳴らす意味がない
+        // mute 中でも masterGain が 0 になるだけで schedule は走らせる。
+        // これでハプティクス (setTimeout 経由) は従来どおり動く。
+
+        const baseVol   = opts.volume    == null ? 0.35 : Number(opts.volume);
+        const beepFreq  = opts.beepFreq  || 880;   // "ピ" (高音)
+        const finalFreq = opts.finalFreq || 520;   // "ピー" (低音・存在感)
+        const beepMs    = opts.beepMs    || 110;
+        const finalMs   = opts.finalMs   || 520;
+
+        const startTime = ctx.currentTime;
+        const outGain = ctx.createGain();
+        outGain.gain.value = clampVol(baseVol);
+        outGain.connect(masterGain);
+
+        const oscillators = [];
+
+        function scheduleTone(whenSec, freq, durMs) {
+            if (whenSec < 0) return;
+            const osc = ctx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            const env = ctx.createGain();
+            env.gain.value = 0;
+            osc.connect(env);
+            env.connect(outGain);
+
+            const t0 = startTime + whenSec;
+            const dur = durMs / 1000;
+            const attack  = 0.006;
+            const release = 0.05;
+
+            // クリック/プチ音防止のため attack/release を短くフェード。
+            env.gain.setValueAtTime(0, t0);
+            env.gain.linearRampToValueAtTime(1, t0 + attack);
+            env.gain.setValueAtTime(1, Math.max(t0 + attack, t0 + dur - release));
+            env.gain.linearRampToValueAtTime(0, t0 + dur);
+
+            try { osc.start(t0); } catch (_) { return; }
+            try { osc.stop(t0 + dur + 0.05); } catch (_) {}
+            osc.onended = () => {
+                try { osc.disconnect(); } catch (_) {}
+                try { env.disconnect(); } catch (_) {}
+            };
+            oscillators.push(osc);
+        }
+
+        // 残り 3.0s / 2.0s / 1.0s で短い "ピ"、残り 0.0s で長い "ピー"。
+        // 長音の立ち上がり (attack=6ms) が 0 秒きっかりなので、体感タイミングは厳密に 0 秒。
+        scheduleTone((total - 3000) / 1000, beepFreq,  beepMs);
+        scheduleTone((total - 2000) / 1000, beepFreq,  beepMs);
+        scheduleTone((total - 1000) / 1000, beepFreq,  beepMs);
+        scheduleTone(total           / 1000, finalFreq, finalMs);
+
+        // ハプティクスは AudioContext と別クロックなので setTimeout で独立に予約。
+        // 音と比べて 10ms 単位の誤差は体感されにくい。
+        const hapticTimers = [];
+        function scheduleHaptic(offsetMs, pattern) {
+            if (offsetMs < 0) return;
+            const tid = setTimeout(() => {
+                try { navigator.vibrate && navigator.vibrate(pattern); } catch (_) {}
+            }, offsetMs);
+            hapticTimers.push(tid);
+        }
+        scheduleHaptic(total - 3000, 30);
+        scheduleHaptic(total - 2000, 30);
+        scheduleHaptic(total - 1000, 30);
+        scheduleHaptic(total,        [80, 40, 120]);
+
+        let cancelled = false;
+        function cancel() {
+            if (cancelled) return;
+            cancelled = true;
+            const tNow = (audioCtx && audioCtx.currentTime) || 0;
+            try {
+                outGain.gain.cancelScheduledValues(tNow);
+                outGain.gain.setValueAtTime(outGain.gain.value, tNow);
+                outGain.gain.linearRampToValueAtTime(FADE_MIN, tNow + 0.05);
+            } catch (_) {}
+            for (const osc of oscillators) {
+                // 未来時刻の start もまだ鳴っていなければ stop(t<start) で発音されない挙動になる。
+                try { osc.stop(tNow + 0.06); } catch (_) {}
+            }
+            for (const tid of hapticTimers) {
+                try { clearTimeout(tid); } catch (_) {}
+            }
+            setTimeout(() => {
+                try { outGain.disconnect(); } catch (_) {}
+            }, 150);
+        }
+
+        return { cancel };
+    }
+
     function fire(name) {
         // ハプティクスは SE の音が null (無音マッピング) でも発火したい場合がある
         // (例: keyTap は音を廃止したが、打鍵の感触だけは残したい)。
@@ -551,6 +664,8 @@
         // セマンティック
         fire,
         stopNamed,
+        // 合成ビープ: 残3,2,1,0 の "ピ ピ ピ ピー" (question.js のタイマーから呼ぶ)
+        scheduleCountdownBeeps,
         SPEC: SE_SPEC,
     };
 })();

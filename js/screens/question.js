@@ -8,6 +8,7 @@
     let questionStartAt = 0;
     let timerRAF = 0;
     let resolved = false;
+    let countdownHandle = null;   // SE.scheduleCountdownBeeps の戻り値 (cancel 用)
     let selectedIdx = -1;   // choice モード: 「回答」ボタン押下前に選んでいる選択肢
 
     function currentQ() {
@@ -186,16 +187,14 @@
 
     function startTimer() {
         stopTimer();
-        let warnedShort = false;
+        // 残り 3/2/1/0 秒の "ピ ピ ピ ピー" を AudioContext 基準でまとめて予約。
+        // 0 秒ぴったりに「ピー」が立ち上がるようサンプル精度スケジュールしているので、
+        // 旧実装のような RAF 検知 + timeWarn 単発 + timeout SE 重畳は廃止。
+        countdownHandle = window.SE?.scheduleCountdownBeeps?.(Q_TIME_LIMIT_MS) || null;
         const loop = () => {
             const elapsed = Date.now() - questionStartAt;
             const remaining = Math.max(0, Q_TIME_LIMIT_MS - elapsed);
             const pct = (remaining / Q_TIME_LIMIT_MS) * 100;
-            // 残り3秒切ったら時間警告 SE を一度だけ鳴らす
-            if (!warnedShort && !resolved && remaining > 0 && remaining <= 3000) {
-                warnedShort = true;
-                window.SE?.fire('timeWarn');
-            }
 
             const fill = document.getElementById('qTimerFill');
             const label = document.getElementById('qTimerLabel');
@@ -226,6 +225,12 @@
             cancelAnimationFrame(timerRAF);
             timerRAF = 0;
         }
+        // 予約済みのカウントダウンビープを早期解答/画面遷移時にキャンセル。
+        // ピー未発火なら無音で終わる (stop(t<start) は発音されない)。
+        if (countdownHandle) {
+            try { countdownHandle.cancel(); } catch (_) {}
+            countdownHandle = null;
+        }
     }
 
     function resolveAnswer(correct, userInput, reason) {
@@ -253,8 +258,10 @@
         window.Gimmicks?.dispose();
 
         // 正解/不正解/タイムアウトの SE
+        // timeout は scheduleCountdownBeeps の「ピー」(0s 発火) が既に tiemout 告知を
+        // 担っているため、ここでの追加 SE は鳴らさない (旧 timeout.mp3 の 6s ブーは廃止)。
         if (reason === 'timeout') {
-            window.SE?.fire('timeout');
+            // no-op: 0s ピーで完結
         } else if (correct) {
             window.SE?.fire('correct');
         } else if (reason === 'instant-death' || reason === 'gimmick-death') {
