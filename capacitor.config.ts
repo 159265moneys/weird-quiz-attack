@@ -9,7 +9,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
    ============================================================ */
 
 const config: CapacitorConfig = {
-    appId: 'com.odd.quiz',
+    appId: 'com.oddquiz.app',
     appName: '変なクイズ',
     webDir: 'www',
 

@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">変なクイズ</string>
     <string name="title_activity_main">変なクイズ</string>
-    <string name="package_name">com.odd.quiz</string>
-    <string name="custom_url_scheme">com.odd.quiz</string>
+    <string name="package_name">com.oddquiz.app</string>
+    <string name="custom_url_scheme">com.oddquiz.app</string>
 </resources>

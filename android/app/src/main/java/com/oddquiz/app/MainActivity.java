@@ -1,4 +1,4 @@
-package com.odd.quiz;
+package com.oddquiz.app;
 
 import com.getcapacitor.BridgeActivity;
 
