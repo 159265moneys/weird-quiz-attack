@@ -7,6 +7,10 @@
     flex-direction: column;
     height: 100%;
     color: var(--text-on-dark);
+    /* 左右余白を既定 .screen (60px) より詰めて名前カラムに横幅を譲る。
+       上下は .screen 既定 (padding: 80px 60px) を上書きしない。 */
+    padding-left: 24px;
+    padding-right: 24px;
     padding-bottom: env(safe-area-inset-bottom);
     touch-action: pan-y;   /* 縦スクロールは通常通り、水平はスワイプ判定に回す */
 }
@@ -183,12 +187,15 @@
    一回り大きくする (下参照)。 */
 .rk-row {
     display: grid;
-    grid-template-columns: 80px 76px 1fr 64px 160px 100px;
+    /* pos / avatar / name / rank / score / time の 6 列。
+       スコア・ランク・秒数を詰めて、name (1fr) に最低 7 文字分 ~230px は
+       確保できるように。左右 padding も 14 → 8 に詰めて viewport を節約。 */
+    grid-template-columns: 64px 60px 1fr 52px 120px 80px;
     align-items: center;
-    gap: 14px;
-    padding: 10px 14px;
+    gap: 10px;
+    padding: 10px 8px;
     border-bottom: 1px solid var(--line-dim);
-    font-size: 28px;
+    font-size: 26px;
     color: var(--text-on-dark);
     min-height: 88px;
 }
@@ -197,20 +204,20 @@
 }
 .rk-pos {
     font-family: inherit;
-    font-size: 28px;
+    font-size: 24px;
     color: var(--text-dim);
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     text-align: left;
     font-weight: 600;
 }
-.rk-row.rk-medal-1 .rk-pos { color: var(--accent-warn); font-weight: 800; font-size: 32px; }
-.rk-row.rk-medal-2 .rk-pos { color: #d7d7e8;           font-weight: 800; font-size: 32px; }
-.rk-row.rk-medal-3 .rk-pos { color: #e39a5b;           font-weight: 800; font-size: 32px; }
+.rk-row.rk-medal-1 .rk-pos { color: var(--accent-warn); font-weight: 800; font-size: 28px; }
+.rk-row.rk-medal-2 .rk-pos { color: #d7d7e8;           font-weight: 800; font-size: 28px; }
+.rk-row.rk-medal-3 .rk-pos { color: #e39a5b;           font-weight: 800; font-size: 28px; }
 
 .rk-avatar {
     display: inline-block;
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     background: var(--box-bg) center/cover no-repeat;
     border: 2px solid var(--line-dim);
@@ -225,22 +232,22 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    letter-spacing: 1.5px;
-    font-size: 26px;
+    letter-spacing: 0.5px;
+    font-size: 24px;
 }
 .rk-death {
     display: inline-block;
-    margin-left: 8px;
+    margin-left: 6px;
     color: var(--accent-red);
-    font-size: 22px;
+    font-size: 20px;
     opacity: 0.85;
 }
 
 .rk-rank {
     text-align: center;
     font-weight: 800;
-    letter-spacing: 1px;
-    font-size: 30px;
+    letter-spacing: 0.5px;
+    font-size: 26px;
 }
 .rk-rank.rank-SS { color: var(--accent-warn); }
 .rk-rank.rank-S  { color: var(--accent-cyan); }
@@ -254,41 +261,43 @@
 .rk-score {
     text-align: right;
     font-variant-numeric: tabular-nums;
-    letter-spacing: 1.5px;
-    font-size: 28px;
+    letter-spacing: 0.5px;
+    font-size: 24px;
     font-weight: 600;
 }
 .rk-time {
     text-align: right;
     color: var(--text-faint);
     font-variant-numeric: tabular-nums;
-    font-size: 22px;
+    font-size: 20px;
 }
 
 /* --- Jumbo 行 (TOP10 + 自分) ------------------------------------
-   可読性優先で約 1.6x に拡大。grid の数値カラムも広げて数字が潰れないように。
+   可読性優先で拡大。ただし name カラム (1fr) を 7 文字以上出すため、
+   数値系カラムと avatar は以前より詰めて、name に最低 380 canvas-px を残す。
 ---------------------------------------------------------------- */
 .rk-row.is-jumbo {
-    grid-template-columns: 110px 112px 1fr 84px 220px 140px;
-    gap: 20px;
-    padding: 18px 18px;
+    /* pos / avatar / name / rank / score / time */
+    grid-template-columns: 84px 90px 1fr 70px 170px 110px;
+    gap: 14px;
+    padding: 16px 12px;
     min-height: 148px;
-    font-size: 44px;
+    font-size: 38px;
 }
-.rk-row.is-jumbo .rk-pos { font-size: 44px; }
+.rk-row.is-jumbo .rk-pos { font-size: 38px; }
 .rk-row.is-jumbo.rk-medal-1 .rk-pos,
 .rk-row.is-jumbo.rk-medal-2 .rk-pos,
-.rk-row.is-jumbo.rk-medal-3 .rk-pos { font-size: 52px; }
+.rk-row.is-jumbo.rk-medal-3 .rk-pos { font-size: 44px; }
 .rk-row.is-jumbo .rk-avatar {
-    width: 104px;
-    height: 104px;
+    width: 90px;
+    height: 90px;
     border-width: 3px;
 }
-.rk-row.is-jumbo .rk-name { font-size: 42px; }
-.rk-row.is-jumbo .rk-death { font-size: 36px; margin-left: 10px; }
-.rk-row.is-jumbo .rk-rank { font-size: 52px; }
-.rk-row.is-jumbo .rk-score { font-size: 44px; }
-.rk-row.is-jumbo .rk-time { font-size: 34px; }
+.rk-row.is-jumbo .rk-name { font-size: 34px; letter-spacing: 0.5px; }
+.rk-row.is-jumbo .rk-death { font-size: 28px; margin-left: 8px; }
+.rk-row.is-jumbo .rk-rank { font-size: 42px; }
+.rk-row.is-jumbo .rk-score { font-size: 34px; }
+.rk-row.is-jumbo .rk-time { font-size: 26px; }
 
 /* --- リスト本体 --- */
 .rk-list {

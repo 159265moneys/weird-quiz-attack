@@ -4,26 +4,30 @@
 
 (function () {
     function updateScale() {
-        // visualViewport を優先 (iOS のアドレスバー変動に追従)
-        const vv = window.visualViewport;
-        const w = (vv && vv.width)  || window.innerWidth;
-        const h = (vv && vv.height) || window.innerHeight;
-        // 左右/上下に 1px も余らせないため、丸め誤差で見切れるのを避ける
+        // ★ 2026-04 方針変更: visualViewport は使わない。
+        // ----------------------------------------------------------
+        // visualViewport.height は iOS でソフトウェアキーボードが
+        // 開くと縮む。これを元に --scale を算出すると、名前入力を
+        // タップした瞬間に #stage 全体が縮小されてしまい UX が崩壊。
+        // layout viewport (window.innerWidth / innerHeight) は
+        // キーボードでは変わらず、アドレスバーの伸縮のみ追従する
+        // (モダン iOS Safari では resize イベントも発火する)。
+        // よってレイアウト viewport のみを使う。
+        // ----------------------------------------------------------
+        const w = window.innerWidth;
+        const h = window.innerHeight;
         const sx = w / 1080;
         const sy = h / 1920;
         const scale = Math.min(sx, sy);
         document.documentElement.style.setProperty('--scale', scale);
     }
 
-    // 初期フラッシュ抑制: DOMContentLoadedを待たずに即時反映
+    // 初期フラッシュ抑制: DOMContentLoaded を待たずに即時反映
     updateScale();
     window.addEventListener('resize', updateScale);
     window.addEventListener('orientationchange', updateScale);
-    if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', updateScale);
-        window.visualViewport.addEventListener('scroll', updateScale);
-    }
-    // iOSでレイアウト確定が遅れるケースに備えて次ティックでも再計算
+    // visualViewport resize はキーボード開閉で発火するため意図的に不使用。
+    // iOS でレイアウト確定が遅れるケースに備えて次ティックでも再計算
     setTimeout(updateScale, 0);
     setTimeout(updateScale, 300);
 

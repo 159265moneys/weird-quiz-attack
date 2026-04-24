@@ -309,6 +309,52 @@
     border-top-color: rgba(255,255,255,0.08);
 }
 
+/* ---- フッタ (ABOUT / RESET PROGRESS) ----
+   プロフィール画面から移設したユーティリティ操作。主機能 (音量/
+   ミュート) より目立たせず、罫線で視覚的に区切る。 */
+.settings-footer {
+    margin-top: 20px;
+    padding-top: 16px;
+}
+.settings-footer-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.14);
+    margin-bottom: 14px;
+}
+.settings-footer-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.settings-footer-btn {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(13px, 2.6vw, 16px);
+    letter-spacing: 0.22em;
+    font-weight: 700;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.04);
+    color: #e6f1ff;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+}
+.settings-footer-btn:hover,
+.settings-footer-btn:active {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.38);
+    transform: translateY(1px);
+}
+.settings-footer-btn.is-danger {
+    border-color: rgba(255,46,94,0.42);
+    color: var(--accent-red, #ff2e5e);
+}
+.settings-footer-btn.is-danger:hover,
+.settings-footer-btn.is-danger:active {
+    background: rgba(255,46,94,0.12);
+    border-color: var(--accent-red, #ff2e5e);
+}
+
 /* ---- ヒント行 ---- */
 .settings-hint {
     margin-top: 14px;

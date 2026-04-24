@@ -24,16 +24,18 @@
     flex: 1 1 auto;
     width: 100%;
     min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
+    /* ABOUT / RESET PROGRESS を設定モーダルに移設し、内容を 1 画面に
+       納められる量にしたためスクロール禁止。キーボード表示中も勝手に
+       ページがスクロールして UI がズレるのを防ぐ副次効果もある。 */
+    overflow: hidden;
+    touch-action: none;
     padding: 0 0 24px;
     box-sizing: border-box;
 }
 body.has-tabbar .profile-screen-inner {
-    /* TabBar は position:fixed でビューポート下端 (実 CSS px)。canvas は
-       scale 変換される都合上、220 canvas-px を SE 最大ケースの
-       クリアランスとして確保 (tab-bar.css の .X-screen 設定と同値)。 */
+    /* TabBar (position:fixed) と重なり過ぎないよう下部に余白を確保。
+       overflow:hidden でもあるのでスクロールはしないが、コンテンツの
+       最下段が TabBar の裏に隠れないようにするためのクリアランス。 */
     padding-bottom: 220px;
 }
 
@@ -45,13 +47,15 @@ body.has-tabbar .profile-screen-inner {
     max-width: none;
     max-height: none;
     margin: 0;
-    padding: 32px 36px 44px;
+    /* スクロール禁止 (overflow:hidden) 前提で 1 画面に納めるため上下は
+       コンパクトに、左右は hm-panel 標準より広めに (36px) 取る。 */
+    padding: 20px 36px 28px;
     border: none;             /* 画面そのものが暗背景なので外枠は不要 */
     box-shadow: none;
     background: transparent;  /* 画面背景グラデがそのまま透ける */
     border-radius: 0;
     box-sizing: border-box;
-    overflow: visible;        /* スクロールは .profile-screen-inner に移譲 */
+    overflow: visible;
     animation: none;          /* 画面遷移で毎回 pop-in しない */
 }
 
@@ -70,15 +74,16 @@ body.has-tabbar .profile-screen-inner {
    デザイン (色/枠/発光/書体) は home-menu.css の値をそのまま継承。
    ------------------------------------------------------------ */
 
-/* プロフィール本体: 要素間ギャップを大きめに */
+/* プロフィール本体: スクロール禁止 + 全要素を 1 画面 (1920 canvas-px) に
+   収める必要があるので、モーダル時よりもギャップを締める。 */
 .profile-screen .hm-profile {
-    gap: 40px;
-    padding: 10px 2px 2px;
+    gap: 28px;
+    padding: 6px 2px 2px;
 }
 
 /* 各 row (ラベル + 入力/ボタン群) の内部ギャップ */
 .profile-screen .hm-pf-row {
-    gap: 16px;
+    gap: 12px;
 }
 
 /* ラベル (PLAYER ID / DISPLAY NAME / ICON / RANKING) */
@@ -103,44 +108,48 @@ body.has-tabbar .profile-screen-inner {
 
 /* テキスト入力 */
 .profile-screen .hm-pf-input {
-    font-size: 34px;
-    padding: 22px 24px;
+    font-size: 32px;
+    padding: 16px 20px;
     border-radius: 12px;
     border-width: 2px;
 }
 
 /* ヒント文 (○文字まで etc.) */
 .profile-screen .hm-pf-hint {
-    font-size: 22px;
-    margin-top: 8px;
+    font-size: 20px;
+    margin-top: 4px;
 }
 
 /* 上部: アイコンプレビュー + PLAYER ID の横並び領域 */
 .profile-screen .hm-pf-top {
-    gap: 32px;
-    padding: 4px 0 6px;
+    gap: 28px;
+    padding: 2px 0 4px;
 }
 .profile-screen .hm-pf-avpreview {
-    width: 220px;
-    height: 220px;
-    border-radius: 28px;
+    width: 180px;
+    height: 180px;
+    border-radius: 24px;
     border-width: 3px;
 }
 .profile-screen .hm-pf-avpreview-none {
-    font-size: 72px;
+    font-size: 60px;
 }
 .profile-screen .hm-pf-topinfo {
-    gap: 10px;
+    gap: 8px;
 }
 
 /* アイコン選択グリッド: PC 幅だと 64px minmax で 16 列になり
-   ちまちましすぎるので、スマホらしく 4 列固定で大きく表示 */
+   ちまちましすぎるので、スマホらしく 4 列固定で大きく表示。
+   さらに 1 画面に納めるためセル高さを固定し (aspect-ratio を解除)、
+   2 行で縦 ~340 canvas-px に収める。 */
 .profile-screen .hm-pf-av-grid {
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 14px;
 }
 .profile-screen .hm-pf-av {
-    border-radius: 18px;
+    aspect-ratio: auto;
+    height: 160px;
+    border-radius: 16px;
     border-width: 2px;
 }
 .profile-screen .hm-pf-av-none {
@@ -188,11 +197,11 @@ body.has-tabbar .profile-screen-inner {
 
 /* メインアクション (SAVE / RESET NAME) */
 .profile-screen .hm-pf-actions {
-    gap: 20px;
-    margin-top: 16px;
+    gap: 14px;
+    margin-top: 8px;
 }
 .profile-screen .hm-pf-btn {
-    padding: 26px 20px;
+    padding: 20px 20px;
     font-size: 28px;
     letter-spacing: 6px;
     border-width: 3px;
@@ -200,16 +209,10 @@ body.has-tabbar .profile-screen-inner {
     min-height: 0;
 }
 
-/* フッタ (ABOUT / RESET PROGRESS) */
-.profile-screen .hm-pf-footer {
-    margin-top: 32px;
-}
-.profile-screen .hm-pf-footer-divider {
-    margin-bottom: 24px;
-}
-.profile-screen .hm-pf-footer-actions {
-    gap: 16px;
-}
+/* hm-pf-footer (ABOUT / RESET PROGRESS) はプロフィール画面から撤去し
+   設定モーダルに移設した。旧スタイル上書きも不要。
+   RESET NAME は .hm-pf-btn-small として残るので小サイズのオーバーライド
+   のみ維持する。 */
 .profile-screen .hm-pf-btn.hm-pf-btn-small {
     padding: 22px 16px;
     font-size: 26px;

@@ -21,11 +21,14 @@
     flex: 1 1 auto;
     width: 100%;
     min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-    padding: 0 0 24px;
+    /* スクロール禁止: 10 行を均等に引き伸ばして画面内に納める設計。 */
+    overflow: hidden;
+    touch-action: none;
+    padding: 0 0 12px;
     box-sizing: border-box;
+    /* hm-panel を縦に flex grow させるため、inner も flex コンテナ化 */
+    display: flex;
+    flex-direction: column;
 }
 body.has-tabbar .scores-screen-inner {
     /* TabBar は position:fixed でビューポート下端。220 canvas-px で
@@ -38,7 +41,7 @@ body.has-tabbar .scores-screen-inner {
     max-width: none;
     max-height: none;
     margin: 0;
-    padding: 24px 32px 40px;
+    padding: 16px 32px 16px;
     border: none;
     box-shadow: none;
     background: transparent;
@@ -46,6 +49,12 @@ body.has-tabbar .scores-screen-inner {
     box-sizing: border-box;
     overflow: visible;
     animation: none;
+    /* hm-sc-list が残り高さをすべて埋めて、10 行が均等に伸びるように
+       パネル自体を縦 flex column 化し、inner の全高を占有させる。 */
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 /* 旧モーダル内タイトル行 (SCORES + ×) は tab-header に集約したので非表示 */
@@ -74,18 +83,24 @@ body.has-tabbar .scores-screen-inner {
     letter-spacing: 2px;
 }
 
-/* スコアリスト全体 */
+/* スコアリスト全体: 残り縦領域をすべて占有し、10 行が均等に伸びる */
 .scores-screen .hm-sc-list {
-    gap: 12px;
+    gap: 10px;
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
-/* 各ステージ行: ステージ番号 / 名前 / スコアボディ */
+/* 各ステージ行: ステージ番号 / 名前 / スコアボディ
+   flex:1 1 0 で 10 行が均等に縦方向を埋める。縦 padding は最小限にし、
+   高さは flex で自動配分。 */
 .scores-screen .hm-sc-row {
     grid-template-columns: 72px 1fr auto;
     gap: 20px;
-    padding: 22px 22px;
+    padding: 12px 22px;
     border-radius: 14px;
     border-width: 2px;
+    flex: 1 1 0;
+    min-height: 0;
 }
 
 /* ステージ番号 (01 / 02 …) */

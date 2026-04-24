@@ -72,6 +72,17 @@
                         <span class="settings-mute-label">VIBRATION</span>
                     </label>
                 </div>
+
+                <!-- 旧プロフィールフッタから移設: ABOUT / 進捗リセット。
+                     プロフィール画面 (ACCOUNT タブ) は画面内に納めたいので
+                     ユーティリティ系アクションは設定パネルに集約する。 -->
+                <div class="settings-footer">
+                    <div class="settings-footer-divider"></div>
+                    <div class="settings-footer-actions">
+                        <button class="settings-footer-btn" type="button" data-act="about">ABOUT</button>
+                        <button class="settings-footer-btn is-danger" type="button" data-act="resetProgress">RESET PROGRESS</button>
+                    </div>
+                </div>
             </div>
         `;
         document.body.appendChild(overlay);
@@ -143,6 +154,22 @@
             window.Haptics?.setEnabled?.(v);
             // ON にした時だけフィードバック (OFF 直後に鳴らすと矛盾する)
             if (v) window.Haptics?.vibrate?.(30);
+        });
+
+        // ABOUT / RESET PROGRESS (プロフィール画面フッタから移設)
+        // HomeMenu 側のモーダル実装をそのまま呼ぶ (重複実装を避けるため)。
+        overlay.querySelectorAll('.settings-footer-btn[data-act]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const act = btn.dataset.act;
+                window.SE?.fire?.('menuCursor');
+                if (act === 'about') {
+                    // 設定はそのまま裏に残す。ABOUT は上に重ねて開く
+                    // (hm-overlay の z-index は settings-overlay より上)。
+                    window.HomeMenu?.openAbout?.();
+                } else if (act === 'resetProgress') {
+                    window.HomeMenu?.openResetConfirm?.();
+                }
+            });
         });
 
         return overlay;

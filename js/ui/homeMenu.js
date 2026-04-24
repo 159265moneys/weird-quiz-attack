@@ -298,19 +298,12 @@
                          「プロフィール全体を保存した」という印象になるよう
                          ラベルを中立的な "SAVE" に。RESET NAME は名前専用の
                          サブアクションとして控えめに残す (アイコンのリセットは
-                         アバターグリッド先頭の "—" で行う)。 -->
+                         アバターグリッド先頭の "—" で行う)。
+                         ABOUT / RESET PROGRESS は Home の ⚙ (設定モーダル)
+                         に移動したのでここからは削除。 -->
                     <div class="hm-pf-actions">
                         <button class="hm-pf-btn hm-pf-save"  type="button" data-default-label="SAVE">SAVE</button>
                         <button class="hm-pf-btn hm-pf-reset hm-pf-btn-small" type="button">RESET NAME</button>
-                    </div>
-
-                    <!-- 旧ハンバーガーメニュー (廃止) からの移設: ABOUT / 進捗リセット -->
-                    <div class="hm-pf-footer">
-                        <div class="hm-pf-footer-divider"></div>
-                        <div class="hm-pf-footer-actions">
-                            <button class="hm-pf-btn hm-pf-btn-small" type="button" data-act="about">ABOUT</button>
-                            <button class="hm-pf-btn hm-pf-btn-small hm-pf-btn-danger" type="button" data-act="resetProgress">RESET PROGRESS</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -560,6 +553,9 @@
         openProfile,
         openScores,
         openAbout,
+        // ホーム ⚙ (設定モーダル) から ABOUT / 進捗リセットを開けるように
+        // 公開。従来はプロフィール画面フッタから呼んでいた。
+        openResetConfirm,
         // フルスクリーンタブ (js/screens/profile.js, scores.js) から
         // モーダルと同じ HTML / ハンドラを再利用するための公開 API。
         buildProfileHTML,     // -> <div class="hm-panel">...</div>
