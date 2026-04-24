@@ -127,6 +127,9 @@
             const MAX_CONCURRENT = 1;
             let concurrentFires = 0;
 
+            // 各ビームのベース角度。CSS の transform は廃止し JS で毎発射上書き。
+            const BASE_ANGLES = [60.6, 119.4, 240.6, 299.4];
+
             function fire(beam) {
                 if (!alive) return;
                 // 既に上限撃ってる場合は短期リトライ (互いに順番待ち)
@@ -134,6 +137,9 @@
                     schedule(() => fire(beam), 120 + Math.random() * 280);
                     return;
                 }
+                // ±20° ランダム角度を毎発射適用 (始点・終点は60px外出しで常に画面外)
+                const base = parseFloat(beam.dataset.base);
+                beam.style.transform = `rotate(${base + (Math.random() - 0.5) * 40}deg)`;
                 concurrentFires++;
                 window.SE?.fire('gB11Charge');
                 beam.classList.add('is-fire');
@@ -141,13 +147,15 @@
                 schedule(() => {
                     beam.classList.remove('is-fire');
                     concurrentFires = Math.max(0, concurrentFires - 1);
-                    // 休憩は 600〜1400ms (同時1本制約下でも"連射感"を保つ短めレンジ)
-                    schedule(() => fire(beam), 600 + Math.random() * 800);
+                    // 200〜600ms (旧: 600〜1400ms) — 頻度アップで妨害力を向上
+                    schedule(() => fire(beam), 200 + Math.random() * 400);
                 }, FIRE_DURATION);
             }
 
-            // 4本を順番に起動 (初期ずらし 400ms 刻み)
+            // 4本を順番に起動。ベース角度を data 属性に焼き込んで初期 transform も設定。
             beams.forEach((beam, i) => {
+                beam.dataset.base = BASE_ANGLES[i];
+                beam.style.transform = `rotate(${BASE_ANGLES[i]}deg)`;
                 schedule(() => fire(beam), 300 + i * 400 + Math.random() * 300);
             });
 
@@ -710,9 +718,9 @@
     };
 
     // --- B29 問題文バウンド ---
-    // 問題文の各文字が 1 文字 0.5 秒ペースで「上から落ちてきて」ランダム位置に
-    // 跳ねて着地する。跳ねた後は固定 (連続アニメで酔わない)。
-    // 読むには全部落ちてくるまで待つ必要があり、時間のプレッシャーが増す。
+    // 問題文は定位置表示。0.3 秒後に先頭から 1 文字ずつ真下に落下し、
+    // stem 下端でバウンド → ランダム角度で画面外へ飛ぶ。
+    // アニメーションは Web Animations API (fall + bounce の 2 フェーズ)。
     const B29_BOUNCE = {
         id: 'B29', name: '問題文バウンド', supports: 'both', introducedAt: 8, difficulty: 9,
         conflicts: stemConflictsExcept('B29'),
@@ -721,26 +729,66 @@
             if (!stem) return () => {};
             const originalHTML = stem.innerHTML;
             const prevClasses = stem.className;
-            const chars = Array.from(stem.textContent);
 
-            stem.classList.add('gk-b29-bounce');
-            stem.innerHTML = '';
-            let vi = 0;
-            chars.forEach((ch) => {
-                if (/\s/.test(ch)) return;
-                const span = document.createElement('span');
-                span.textContent = ch;
-                span.className = 'gk-b29-char';
-                // ランダム着地位置 (stem 領域内、中央基準なので translate(-50%) 前提で x は 3-92%)
-                const x = 5 + Math.random() * 90;
-                const y = 8 + Math.random() * 80;
-                span.style.left = `${x}%`;
-                span.style.top = `${y}%`;
-                span.style.animationDelay = `${vi * 0.5}s`;
-                stem.appendChild(span);
-                vi++;
+            // .q-stem は display:flex のコンテナ。直接の子要素はすべて flex item になるため、
+            // 各文字 span を直接 stem に入れると flex item として横並びになりテキストフローが崩れる。
+            // gk-b29-wrap (display:block) を1枚挟むことで stem の flex item は wrap1個のみにし、
+            // 内部ではインラインフローとして普通に文字が並ぶようにする。
+            stem.innerHTML = `<div class="gk-b29-wrap">${
+                Array.from(stem.textContent).map(ch =>
+                    /\s/.test(ch) ? esc(ch) : `<span class="gk-b29-char">${esc(ch)}</span>`
+                ).join('')
+            }</div>`;
+
+            const spans = Array.from(stem.querySelectorAll('.gk-b29-char'));
+            const timers = [];
+            const anims = [];
+            let cancelled = false;
+
+            spans.forEach((span, i) => {
+                const t = setTimeout(() => {
+                    if (cancelled) return;
+
+                    const spanRect = span.getBoundingClientRect();
+                    const stemRect = stem.getBoundingClientRect();
+                    // 文字下端 → stem 下端 (outer border) までの落下距離。
+                    // getBoundingClientRect() はビューポート座標を返すので、
+                    // 親に CSS transform がない通常時は translateY のローカル座標と一致する。
+                    const fallDist = Math.max(0, stemRect.bottom - spanRect.bottom);
+
+                    // バウンド角度: 水平から 25°〜75° 上向き、左右ランダム
+                    const elevDeg = 25 + Math.random() * 50;
+                    const elevRad = elevDeg * Math.PI / 180;
+                    const side = Math.random() < 0.5 ? 1 : -1;
+                    const speed = 1000 + Math.random() * 500;
+                    const exitX = side * Math.cos(elevRad) * speed;
+                    const exitY = -Math.sin(elevRad) * speed; // 負=上方向
+
+                    // Phase 1: 真下に落下 (ease-in で重力感)
+                    const fall = span.animate([
+                        { transform: 'translateY(0)',             opacity: '1' },
+                        { transform: `translateY(${fallDist}px)`, opacity: '1' },
+                    ], { duration: 380, easing: 'ease-in', fill: 'forwards' });
+                    anims.push(fall);
+
+                    fall.onfinish = () => {
+                        if (cancelled) return;
+                        window.SE?.fire('gB25Pop');
+                        // Phase 2: ランダム角度で画面外へ
+                        const bounce = span.animate([
+                            { transform: `translateY(${fallDist}px)`,                        opacity: '1' },
+                            { transform: `translate(${exitX}px, ${fallDist + exitY}px)`,     opacity: '0' },
+                        ], { duration: 520, easing: 'ease-out', fill: 'forwards' });
+                        anims.push(bounce);
+                    };
+                }, 300 + i * 200);
+                timers.push(t);
             });
+
             return () => {
+                cancelled = true;
+                timers.forEach(clearTimeout);
+                anims.forEach(a => { try { a.cancel(); } catch (e) {} });
                 stem.className = prevClasses;
                 stem.innerHTML = originalHTML;
             };

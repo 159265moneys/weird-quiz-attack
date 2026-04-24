@@ -65,10 +65,10 @@
 }
 .gk-b11-beam {
     position: absolute;
-    width: 2300px;              /* 1080×1920 の画面対角 ≈2203px を僅かに上回る長さ */
-    height: 200px;              /* 320→200 に縮小 (見た目のインパクトは確保) */
-    margin-top: -100px;          /* 縦中央を基準点 (corner) に合わせる */
-    transform-origin: 0 50%;     /* 左端中央を回転軸 = 各corner */
+    width: 2500px;              /* pivot を60px外出しした分 + ±20°余裕 */
+    height: 270px;              /* 200→270 (妨害力向上。グラデのみなのでコストゼロ) */
+    margin-top: -135px;         /* 縦中央を pivot に合わせる */
+    transform-origin: 0 50%;    /* 左端中央を回転軸 = pivot point */
     pointer-events: none;
 }
 /* core: コア光だけを描画。box-shadow は廃止してグラデに"にじみ"を内包。
@@ -124,17 +124,19 @@
     100% { opacity: 0; transform: scaleX(1); }
 }
 
-/* 1080:1920 のスクリーン対角線 ≈ 60.6° (atan(1920/1080))
-   各cornerから対角cornerに向かう方向に回転 */
-.gk-b11-tl { top: 0;    left: 0;    transform: rotate(60.6deg); }
-.gk-b11-tr { top: 0;    left: 100%; transform: rotate(119.4deg); }
-.gk-b11-br { top: 100%; left: 100%; transform: rotate(240.6deg); }
-.gk-b11-bl { top: 100%; left: 0;    transform: rotate(299.4deg); }
+/* pivot を各隅から 60px 外にオフセット → 始点が必ず画面外になる。
+   rotate() は JS 側で毎発射ランダム付与するので CSS には書かない。 */
+.gk-b11-tl { top: -60px; left: -60px; }
+.gk-b11-tr { top: -60px; left: calc(100% + 60px); }
+.gk-b11-br { top: calc(100% + 60px); left: calc(100% + 60px); }
+.gk-b11-bl { top: calc(100% + 60px); left: -60px; }
 
-/* ---------- B16 偽カウントダウン: 特大で焦らす ---------- */
+/* ---------- B16 偽カウントダウン: 特大で焦らす ----------
+   2026-04: サイズを 1.2x、位置を +100px (260 -> 360) に調整。
+   プレイヤーから視認されやすい中央寄り位置で圧を強める。 */
 .gk-b16-fake {
     position: absolute;
-    top: 260px;
+    top: 360px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 90;
@@ -142,23 +144,23 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     color: var(--accent-red, #ff3030);
     font-family: 'Courier New', monospace;
-    text-shadow: 0 0 18px rgba(255, 48, 48, 0.7);
+    text-shadow: 0 0 22px rgba(255, 48, 48, 0.7);
     animation: gkB16Pulse 0.32s infinite alternate;
 }
 .gk-b16-label {
-    font-size: 38px;
+    font-size: 46px;
     letter-spacing: 0.24em;
     opacity: 0.85;
     font-weight: bold;
 }
 .gk-b16-num {
-    font-size: 260px;
+    font-size: 312px;
     line-height: 1;
     font-weight: 900;
-    min-width: 620px;
+    min-width: 744px;
     text-align: center;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.02em;
@@ -771,30 +773,16 @@
 }
 
 /* ---------- B29 問題文バウンド ----------
-   各文字を絶対配置して上から落下→着地バウンド→静止。
-   animation-delay を JS 側で i*0.5s に設定。 */
-.q-stem.gk-b29-bounce {
-    position: relative;
-    min-height: 220px;
-    overflow: hidden;
+   JS (Web Animations API) で各文字を落下→バウンド→画面外に飛ばす。
+   .q-stem は display:flex なので直接子に span を入れると全文字が flex item になりレイアウト崩れ。
+   gk-b29-wrap (block) を1枚挟んで stem の flex item を1個に絞り、内部はインラインフローで並べる。 */
+.gk-b29-wrap {
+    display: block;
+    text-align: center;
+    width: 100%;
 }
-.q-stem.gk-b29-bounce .gk-b29-char {
-    position: absolute;
-    font-size: 34px;
-    font-weight: 700;
-    opacity: 0;
-    transform: translate(-50%, -200%);
-    animation: gkB29Land 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    will-change: transform, opacity;
-}
-@keyframes gkB29Land {
-    0%   { opacity: 0; transform: translate(-50%, -200%); }
-    30%  { opacity: 1; transform: translate(-50%, -40%); }
-    50%  { transform: translate(-50%, 15%); }
-    65%  { transform: translate(-50%, -12%); }
-    80%  { transform: translate(-50%, 5%); }
-    92%  { transform: translate(-50%, -2%); }
-    100% { opacity: 1; transform: translate(-50%, 0); }
+.gk-b29-char {
+    display: inline-block;
 }
 
 /* ---------- B30 問題文渦巻き ----------
