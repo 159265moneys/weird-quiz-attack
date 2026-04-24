@@ -15,7 +15,7 @@
    ============================================================ */
 
 (function () {
-    const SHOW_ON = new Set(['title', 'stageSelect', 'result']);
+    const SHOW_ON = new Set(['title', 'stageSelect', 'result', 'home']);
 
     const W = 1080;
     const H = 1920;

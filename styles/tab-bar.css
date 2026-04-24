@@ -25,9 +25,11 @@
     grid-template-columns: repeat(5, 1fr);
     align-items: stretch;
 
+    /* 白基調 (ホーム画面のキャンバスと揃える)。上端は細い黒ライン */
     background:
-        linear-gradient(to top, rgba(10, 10, 14, 0.98), rgba(10, 10, 14, 0.92));
-    border-top: 2px solid rgba(255, 255, 255, 0.12);
+        linear-gradient(to top, rgba(255, 255, 255, 0.98), rgba(250, 250, 250, 0.94));
+    border-top: 2px solid rgba(10, 10, 10, 0.18);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
 
@@ -47,7 +49,8 @@
     appearance: none;
     background: transparent;
     border: 0;
-    color: var(--text-dim, #888892);
+    /* 白背景に合うようグレー (active のみ cyan) */
+    color: #6a6a70;
 
     display: flex;
     flex-direction: column;
@@ -85,8 +88,9 @@
     object-fit: contain;
     /* SVG 内の fill="currentColor" をこの色で塗る。
        画像としてロードした場合 currentColor は効かない (img ではなく inline svg が必要) ため、
-       filter で強制着色する。 */
-    filter: brightness(0) saturate(100%) invert(60%);
+       filter で強制着色する。
+       白背景なので濃いめのグレー (invert 42%)。 */
+    filter: brightness(0) saturate(100%) invert(42%);
     transition: filter 200ms ease;
 }
 

@@ -8,7 +8,7 @@
    ============================================================ */
 
 (function () {
-    const SHOW_ON = new Set(['title', 'stageSelect', 'result']);
+    const SHOW_ON = new Set(['title', 'stageSelect', 'result', 'home']);
 
     const CAPACITY = 14; // 同時に浮かぶ最大文字数
 

@@ -83,10 +83,10 @@
                     </div>
 
                     <div class="home-stage">
-                        <div class="home-char-area">${charHtml}</div>
-                        <div class="home-dialog">
-                            <p class="home-dialog-text" id="homeDialog">${escapeHTML(dialogue)}</p>
+                        <div class="home-dialog" id="homeDialog">
+                            <p class="home-dialog-text">${escapeHTML(dialogue)}</p>
                         </div>
+                        <div class="home-char-area">${charHtml}</div>
                     </div>
 
                     <div class="home-actions">
