@@ -1,11 +1,14 @@
 /* ============================================================
    ranking.js — ランキング画面
    ------------------------------------------------------------
-   - ステージタブ (1〜10) + 解放済みタブのみ非グレー
-     (未クリアでも見えるが視覚的に一段弱める)
-   - 選択中ステージの TOP 100 を表示 (自分はハイライト)
-   - 100 位圏外なら下部に "YOUR RANK" ピン表示
-   - 参加 OFF 状態なら Banner で案内 + 送信されないことを明示
+   - ステージナビ: 現在ステージを中央に配置し、前後 1 個ずつ半分見える
+     カルーセル形式。◀ ▶ ボタンと画面全体の左右スワイプで切替。
+     未解放ステージも可視化 (dim) するが、プレビュー目的で選択は可能。
+   - 選択中ステージの TOP 100 を表示 (自分はハイライト)。
+   - 表示倍率: 上位 10 位 + 自分のエントリは jumbo (約 1.6x) で強調。
+     その他の行は通常サイズ。
+   - 100 位圏外なら下部に "YOUR RANK" ピン表示 (jumbo で)。
+   - 参加 OFF 状態なら Banner で案内 + 送信されないことを明示。
 
    エントリ例:
      { rank(#), playerId, displayName, iconId,
@@ -14,6 +17,11 @@
 
 (function () {
     let currentStage = 1;
+
+    // スワイプ判定用の状態
+    const SWIPE_MIN_PX = 60;          // 発火に必要な水平移動量
+    const SWIPE_AXIS_RATIO = 1.5;     // |dx| > |dy| * 1.5 で水平スワイプと判定
+    let swipe = null;
 
     // --- helpers ---
     function fmtTime(ms) {
@@ -40,9 +48,11 @@
     function rowHtml(entry, pos) {
         const medal = pos <= 3 ? `rk-medal-${pos}` : '';
         const self = entry._self ? 'is-self' : '';
+        // 上位 10 + 自分は大サイズ。(pinned は _self 付きで呼ばれるので自動対応)
+        const jumbo = (pos <= 10 || entry._self) ? 'is-jumbo' : '';
         const death = entry.deathEnd ? '<span class="rk-death" title="即死">☠</span>' : '';
         return `
-            <li class="rk-row ${medal} ${self}" data-pos="${pos}">
+            <li class="rk-row ${medal} ${self} ${jumbo}" data-pos="${pos}">
                 <span class="rk-pos">${pos <= 99 ? '#' + pos : String(pos)}</span>
                 ${avatarImgTag(entry.iconId)}
                 <span class="rk-name">${escapeHtml(entry.displayName)}${death}</span>
@@ -52,6 +62,126 @@
             </li>
         `;
     }
+
+    // --- ステージナビ ---
+    // 全 10 ステージ分のボタンを常に track 内に並べ、transform でスライドさせる。
+    // prev/next ボタンは端で disabled。
+    function stageBtnHtml(s, isActive, isUnlocked) {
+        const cls = [
+            'rk-stage-btn',
+            isActive ? 'is-active' : '',
+            isUnlocked ? '' : 'is-dim',
+        ].filter(Boolean).join(' ');
+        return `
+            <button class="${cls}" data-stage="${s.no}" aria-label="Stage ${s.no}">
+                <span class="rk-stage-btn-no">${String(s.no).padStart(2, '0')}</span>
+                <span class="rk-stage-btn-name">${escapeHtml(s.name || '')}</span>
+            </button>
+        `;
+    }
+
+    // viewport 内で currentStage のボタンが中央に来るように track の translateX を計算。
+    // リサイズ/初回で同期する。animate=false で初期配置時の transition を抑制。
+    function layoutTrack(root, animate = true) {
+        const viewport = root.querySelector('.rk-stage-viewport');
+        const track = root.querySelector('.rk-stage-track');
+        if (!viewport || !track) return;
+        const btns = track.querySelectorAll('.rk-stage-btn');
+        if (!btns.length) return;
+        // 先頭ボタンを基準に 1 個あたりの幅 + gap を算出
+        const firstRect = btns[0].getBoundingClientRect();
+        const secondRect = btns[1] ? btns[1].getBoundingClientRect() : null;
+        const step = secondRect ? (secondRect.left - firstRect.left) : firstRect.width;
+        const vw = viewport.offsetWidth;
+        const idx = Math.min(btns.length - 1, Math.max(0, currentStage - 1));
+        const offset = (vw - firstRect.width) / 2 - idx * step;
+        if (!animate) {
+            track.style.transition = 'none';
+        }
+        track.style.transform = `translateX(${offset}px)`;
+        if (!animate) {
+            // 次フレームで transition を戻す
+            requestAnimationFrame(() => {
+                track.style.transition = '';
+            });
+        }
+    }
+
+    function updateArrows(root) {
+        const prev = root.querySelector('[data-action="prevStage"]');
+        const next = root.querySelector('[data-action="nextStage"]');
+        const max = (window.CONFIG?.STAGES || []).length;
+        if (prev) prev.disabled = currentStage <= 1;
+        if (next) next.disabled = currentStage >= max;
+    }
+
+    function updateActiveTab(root) {
+        root.querySelectorAll('.rk-stage-btn').forEach(b => {
+            b.classList.toggle('is-active',
+                parseInt(b.dataset.stage, 10) === currentStage);
+        });
+    }
+
+    function changeStage(root, delta) {
+        const max = (window.CONFIG?.STAGES || []).length;
+        const next = Math.min(max, Math.max(1, currentStage + delta));
+        if (next === currentStage) return;
+        currentStage = next;
+        applyStageChange(root);
+    }
+
+    function setStage(root, no) {
+        const max = (window.CONFIG?.STAGES || []).length;
+        const n = Math.min(max, Math.max(1, parseInt(no, 10) || 1));
+        if (n === currentStage) return;
+        currentStage = n;
+        applyStageChange(root);
+    }
+
+    function applyStageChange(root) {
+        window.SE?.fire?.('menuCursor');
+        updateActiveTab(root);
+        updateArrows(root);
+        layoutTrack(root, true);
+        const stages = window.CONFIG?.STAGES || [];
+        const head = root.querySelector('.rk-stage-head');
+        if (head) {
+            const noEl = head.querySelector('.rk-stage-no');
+            const nameEl = head.querySelector('.rk-stage-name');
+            if (noEl) noEl.textContent = `STAGE ${String(currentStage).padStart(2, '0')}`;
+            if (nameEl) nameEl.textContent = stages[currentStage - 1]?.name || '';
+        }
+        rerenderList(root);
+    }
+
+    // --- スワイプ ---
+    // 画面全体で左右スワイプを拾ってステージ切替。縦スクロールと干渉させないため、
+    // 終点で dx/dy を見て水平判定が成立した時だけ切替する。
+    function onPointerDown(ev, root) {
+        // 矢印・タブ自身をタップした場合はスワイプ対象外 (click と二重発火防止)
+        if (ev.target.closest('.rk-stage-btn, .rk-stage-arrow, .btn-back')) {
+            swipe = null;
+            return;
+        }
+        swipe = {
+            x: ev.clientX,
+            y: ev.clientY,
+            t: Date.now(),
+            done: false,
+        };
+    }
+    function onPointerUp(ev, root) {
+        if (!swipe || swipe.done) { swipe = null; return; }
+        const dx = ev.clientX - swipe.x;
+        const dy = ev.clientY - swipe.y;
+        swipe.done = true;
+        swipe = null;
+        if (Math.abs(dx) < SWIPE_MIN_PX) return;
+        if (Math.abs(dx) < Math.abs(dy) * SWIPE_AXIS_RATIO) return;
+        // 左スワイプ (dx<0) → 次 / 右スワイプ → 前
+        changeStage(root, dx < 0 ? 1 : -1);
+    }
+    function onPointerCancel() { swipe = null; }
 
     async function rerenderList(root) {
         const listEl = root.querySelector('.rk-list');
@@ -97,12 +227,9 @@
             const unlocked = progress.unlockedStage || 1;
             const enabled = window.Ranking?.isEnabled?.() ?? true;
 
-            const tabs = stages.map(s => {
-                const isUnlocked = s.no <= unlocked;
-                const active = (s.no === currentStage) ? 'is-active' : '';
-                const dim = isUnlocked ? '' : 'is-dim';
-                return `<button class="rk-tab ${active} ${dim}" data-stage="${s.no}">${String(s.no).padStart(2, '0')}</button>`;
-            }).join('');
+            const tabs = stages.map(s =>
+                stageBtnHtml(s, s.no === currentStage, s.no <= unlocked)
+            ).join('');
 
             const banner = enabled ? '' : `
                 <div class="rk-banner">
@@ -118,19 +245,17 @@
                         <div class="rk-title">RANKING</div>
                         <div style="width:64px"></div>
                     </div>
-                    <div class="rk-tabs scroll-x">${tabs}</div>
+                    <div class="rk-stage-bar">
+                        <button class="rk-stage-arrow" data-action="prevStage" aria-label="前のステージ">◀</button>
+                        <div class="rk-stage-viewport">
+                            <div class="rk-stage-track">${tabs}</div>
+                        </div>
+                        <button class="rk-stage-arrow" data-action="nextStage" aria-label="次のステージ">▶</button>
+                    </div>
                     ${banner}
                     <div class="rk-stage-head">
                         <span class="rk-stage-no">STAGE ${String(currentStage).padStart(2, '0')}</span>
                         <span class="rk-stage-name">${stages[currentStage - 1].name}</span>
-                    </div>
-                    <div class="rk-colhead">
-                        <span class="rk-pos">#</span>
-                        <span></span>
-                        <span class="rk-name">NAME</span>
-                        <span class="rk-rank">R</span>
-                        <span class="rk-score">SCORE</span>
-                        <span class="rk-time">TIME</span>
                     </div>
                     <div class="scroll-area">
                         <ol class="rk-list"><li class="rk-loading">LOADING…</li></ol>
@@ -150,31 +275,52 @@
                 window.Router.show('stageSelect');
             });
 
-            // タブ切替
-            root.querySelectorAll('.rk-tab').forEach(btn => {
+            // ステージ矢印
+            root.querySelector('[data-action="prevStage"]')
+                ?.addEventListener('click', () => changeStage(root, -1));
+            root.querySelector('[data-action="nextStage"]')
+                ?.addEventListener('click', () => changeStage(root, +1));
+
+            // タブ自体のクリック (peek を叩いて飛ぶ or 中央連打でも無害)
+            root.querySelectorAll('.rk-stage-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const no = parseInt(btn.dataset.stage, 10);
-                    if (!no || no === currentStage) return;
-                    currentStage = no;
-                    window.SE?.fire?.('menuCursor');
-                    // 再描画 (全画面 reload するほどの内容でもないので局所 update)
-                    root.querySelectorAll('.rk-tab').forEach(b => {
-                        b.classList.toggle('is-active', parseInt(b.dataset.stage, 10) === currentStage);
-                    });
-                    root.querySelector('.rk-stage-no').textContent = `STAGE ${String(currentStage).padStart(2, '0')}`;
-                    root.querySelector('.rk-stage-name').textContent =
-                        window.CONFIG.STAGES[currentStage - 1].name;
-                    rerenderList(root);
+                    if (!no) return;
+                    setStage(root, no);
                 });
             });
 
+            // スワイプ (画面全体)
+            root.addEventListener('pointerdown', (ev) => onPointerDown(ev, root));
+            root.addEventListener('pointerup',   (ev) => onPointerUp(ev, root));
+            root.addEventListener('pointercancel', onPointerCancel);
+
+            // リサイズ追従: 縦横切替や軽微なサイズ変動で中央ズレを補正
+            const resizeHandler = () => layoutTrack(root, false);
+            window.addEventListener('resize', resizeHandler);
+            // Screen.destroy で片付けるため参照を保存
+            Screen._resizeHandler = resizeHandler;
+
+            updateArrows(root);
+
             // アバター画像パスの解決が manifest load 完了後なので、load を待ってから描画
-            const kickoff = () => rerenderList(root);
+            const kickoff = () => {
+                rerenderList(root);
+                // DOM/フォント確定後に中央揃えの transform を確定させる
+                requestAnimationFrame(() => layoutTrack(root, false));
+            };
             if (window.Avatars?.load) {
                 window.Avatars.load().then(kickoff).catch(kickoff);
             } else {
                 kickoff();
             }
+        },
+        destroy() {
+            if (Screen._resizeHandler) {
+                window.removeEventListener('resize', Screen._resizeHandler);
+                Screen._resizeHandler = null;
+            }
+            swipe = null;
         },
     };
 

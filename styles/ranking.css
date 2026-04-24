@@ -8,6 +8,7 @@
     height: 100%;
     color: var(--text-on-dark);
     padding-bottom: env(safe-area-inset-bottom);
+    touch-action: pan-y;   /* 縦スクロールは通常通り、水平はスワイプ判定に回す */
 }
 
 .ranking-screen .screen-header {
@@ -36,39 +37,126 @@
     font-weight: 700;
 }
 
-/* --- ステージタブ (横スクロール) --- */
-.rk-tabs {
+/* --- ステージナビ (カルーセル形式) -----------------------------
+   current を中央・左右に 1 個ずつ (約半分) 見せる。両端は ◀ / ▶ ボタン。
+   viewport で overflow:hidden、track を transform:translateX でスライド。
+---------------------------------------------------------------- */
+.rk-stage-bar {
     display: flex;
-    gap: 8px;
-    padding: 4px 2px 10px 2px;
-    overflow-x: auto;
-    overflow-y: hidden;
+    align-items: stretch;
+    gap: 10px;
+    padding: 6px 2px 14px 2px;
     border-bottom: 1px solid var(--line-dim);
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
-.rk-tabs::-webkit-scrollbar { height: 6px; }
-.rk-tabs::-webkit-scrollbar-thumb { background: var(--line-dim); }
-.rk-tab {
+.rk-stage-arrow {
     flex: 0 0 auto;
-    min-width: 56px;
-    padding: 10px 14px;
+    width: 72px;
+    background: var(--box-bg);
+    border: 2px solid var(--line);
+    color: var(--text-on-dark);
+    font-family: inherit;
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--line);
+}
+.rk-stage-arrow:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--line);
+}
+.rk-stage-arrow:disabled {
+    opacity: 0.28;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.rk-stage-viewport {
+    flex: 1 1 auto;
+    min-width: 0;            /* flex の縮み確保 (overflow:hidden と合わせる) */
+    overflow: hidden;
+    position: relative;
+    /* 無選択のタブ peek をフェードで見せる (端でスッと消える) */
+    mask-image: linear-gradient(
+        to right,
+        transparent 0,
+        #000 16px,
+        #000 calc(100% - 16px),
+        transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0,
+        #000 16px,
+        #000 calc(100% - 16px),
+        transparent 100%
+    );
+}
+
+.rk-stage-track {
+    display: flex;
+    gap: 18px;
+    transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+    /* 初期位置: JS が layoutTrack で上書きする */
+}
+
+.rk-stage-btn {
+    /* viewport の約 52% 幅 → 左右にほぼ半タブ分 (peek) が覗く配置。
+       min-width でナロー端末でもタブ自体が潰れすぎないよう下限保証。 */
+    flex: 0 0 52%;
+    min-width: 220px;
+    padding: 18px 14px;
     background: var(--box-bg);
     border: 2px solid var(--line-dim);
-    color: var(--text-dim);
+    color: var(--text-on-dark);
     font-family: inherit;
-    font-size: 20px;
-    letter-spacing: 2px;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-align: center;
+    opacity: 0.5;
+    transform: scale(0.88);
+    transition:
+        opacity 260ms ease,
+        transform 260ms ease,
+        background 260ms ease,
+        border-color 260ms ease,
+        box-shadow 260ms ease;
 }
-.rk-tab.is-dim { opacity: 0.45; }
-.rk-tab.is-active {
-    background: var(--accent-cyan);
-    color: var(--bg-panel);
+.rk-stage-btn.is-dim { opacity: 0.3; }
+.rk-stage-btn.is-active {
+    opacity: 1;
+    transform: scale(1);
+    background: var(--bg-elevated);
     border-color: var(--accent-cyan);
-    box-shadow: 3px 3px 0 var(--accent-cyan-dim);
+    box-shadow: 4px 4px 0 var(--accent-cyan-dim);
 }
-.rk-tab:active {
-    transform: translate(1px, 1px);
+.rk-stage-btn-no {
+    font-size: 30px;
+    letter-spacing: 3px;
+    font-weight: 800;
+    color: var(--text-dim);
+}
+.rk-stage-btn.is-active .rk-stage-btn-no {
+    font-size: 44px;
+    color: var(--accent-cyan);
+}
+.rk-stage-btn-name {
+    font-size: 16px;
+    letter-spacing: 1.5px;
+    color: var(--text-faint);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.rk-stage-btn.is-active .rk-stage-btn-name {
+    font-size: 22px;
+    color: var(--text-on-dark);
 }
 
 /* --- 参加 OFF バナー --- */
@@ -112,31 +200,15 @@
     letter-spacing: 2px;
 }
 
-/* --- カラムヘッダ --- */
-/* 2026-04: モバイル端末で細かすぎて読めなかったので全体を大幅スケールアップ。
-            スクロール増えてでも可読性優先 (1行に情報詰めすぎない)。 */
-.rk-colhead, .rk-row {
+/* --- リスト行 (通常サイズ) --------------------------------------
+   11 位以下など「その他」のデフォルト。上位 10 + 自分は .is-jumbo で
+   一回り大きくする (下参照)。 */
+.rk-row {
     display: grid;
     grid-template-columns: 80px 76px 1fr 64px 160px 100px;
     align-items: center;
     gap: 14px;
     padding: 10px 14px;
-}
-.rk-colhead {
-    font-size: 18px;
-    letter-spacing: 3px;
-    color: var(--text-dim);
-    border-bottom: 1px dashed var(--line-dim);
-    margin-bottom: 6px;
-}
-
-/* --- リスト --- */
-.rk-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-.rk-row {
     border-bottom: 1px solid var(--line-dim);
     font-size: 28px;
     color: var(--text-on-dark);
@@ -215,12 +287,48 @@
     font-size: 22px;
 }
 
+/* --- Jumbo 行 (TOP10 + 自分) ------------------------------------
+   可読性優先で約 1.6x に拡大。grid の数値カラムも広げて数字が潰れないように。
+---------------------------------------------------------------- */
+.rk-row.is-jumbo {
+    grid-template-columns: 110px 112px 1fr 84px 220px 140px;
+    gap: 20px;
+    padding: 18px 18px;
+    min-height: 148px;
+    font-size: 44px;
+}
+.rk-row.is-jumbo .rk-pos { font-size: 44px; }
+.rk-row.is-jumbo.rk-medal-1 .rk-pos,
+.rk-row.is-jumbo.rk-medal-2 .rk-pos,
+.rk-row.is-jumbo.rk-medal-3 .rk-pos { font-size: 52px; }
+.rk-row.is-jumbo .rk-avatar {
+    width: 104px;
+    height: 104px;
+    border-width: 3px;
+}
+.rk-row.is-jumbo .rk-name { font-size: 42px; }
+.rk-row.is-jumbo .rk-death { font-size: 36px; margin-left: 10px; }
+.rk-row.is-jumbo .rk-rank { font-size: 52px; }
+.rk-row.is-jumbo .rk-score { font-size: 44px; }
+.rk-row.is-jumbo .rk-time { font-size: 34px; }
+
+/* --- リスト本体 --- */
+.rk-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
 /* --- 自分のエントリ強調 --- */
 .rk-row.is-self {
     background: rgba(0, 229, 255, 0.12);
     border-left: 3px solid var(--accent-cyan);
     padding-left: 5px;
     animation: rkSelfGlow 2.4s ease-in-out infinite;
+}
+.rk-row.is-jumbo.is-self {
+    border-left-width: 5px;
+    padding-left: 13px;
 }
 @keyframes rkSelfGlow {
     0%, 100% { box-shadow: inset 0 0 0 0 rgba(0, 229, 255, 0); }
