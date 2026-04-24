@@ -23,9 +23,11 @@
     overflow: hidden;
 
     /* padding-bottom はゼロ (キャラは absolute で TabBar 上端 -1px まで下降、
-       ボタンは flex 内で margin-bottom 使って TabBar の少し上に置く) */
+       ボタンは flex 内で margin-bottom 使って TabBar の少し上に置く)
+       NOTE: position は base .screen の absolute + inset:0 を維持する。
+       ここで relative に変えると .screen の inset:0 が失われ、画面が
+       コンテンツ分しか縦伸びしなくなる (= 中段で途切れて下側に黒帯)。 */
     padding: 60px 60px 0;
-    position: relative;
     display: flex;
     flex-direction: column;
     align-items: stretch;
