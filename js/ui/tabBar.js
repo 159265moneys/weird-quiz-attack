@@ -2,14 +2,12 @@
    tabBar.js — 画面下部 5タブ ボトムナビ
    ------------------------------------------------------------
    左から: ACCOUNT / STAGE / HOME / RANKING / SCORES
-     - ACCOUNT  : HomeMenu.openProfile (モーダル) を開く
+     - ACCOUNT  : Router.show('profile')
      - STAGE    : Router.show('stageSelect')
      - HOME     : Router.show('home')
      - RANKING  : Router.show('ranking')
-     - SCORES   : HomeMenu.openScores (モーダル) を開く
-
-   Phase 2 以降、SCORES/ACCOUNT はフルスクリーンタブ化の予定。
-   今回はモーダルで繋いでおく (既存 UI 再利用、動線短縮は達成済み)。
+     - SCORES   : Router.show('scores')
+   Phase 3b ですべてフルスクリーンタブ化完了。
 
    アイコン: Material Symbols (Outlined, Apache 2.0 / Google)
      sprite/icons/tabs/*.svg を <img> で参照。
@@ -85,19 +83,9 @@
 
         window.SE?.fire?.('menuCursor');
 
-        switch (id) {
-            case 'account':
-                window.HomeMenu?.openProfile?.();
-                break;
-            case 'scores':
-                window.HomeMenu?.openScores?.();
-                break;
-            case 'home':
-            case 'stageSelect':
-            case 'ranking':
-                window.Router?.show?.(id);
-                break;
-        }
+        // ACCOUNT タブ → profile 画面 (id と screen 名を対応させるためマップ)
+        const screenName = (id === 'account') ? 'profile' : id;
+        window.Router?.show?.(screenName);
     }
 
     window.TabBar = {

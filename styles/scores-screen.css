@@ -1,0 +1,175 @@
+/* ============================================================
+   scores-screen.css — SCORES フルスクリーン (SCORES タブ)
+   ------------------------------------------------------------
+   1080x1920 キャンバス px。5タブ UI の右端。
+   ベース: profile-screen と揃えた白キャンバス + 黒グリッド。
+   ステージ別ベストスコアの一覧 (ビュー専用)。
+   ============================================================ */
+
+.screen.scores-screen {
+    color: var(--text-on-light);
+    background-color: var(--canvas-gray);
+    background-image:
+        linear-gradient(to right, var(--grid-on-light) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-on-light) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px;
+    padding: 60px 60px 40px;
+    overflow: hidden;
+}
+
+/* --- ヘッダ --- */
+.screen-header.scores-head {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 5;
+}
+.scores-head .back-btn {
+    justify-self: start;
+}
+.scores-head-spacer {
+    width: 100%;
+}
+.scores-title {
+    margin: 0;
+    font-size: 56px;
+    letter-spacing: 8px;
+    font-weight: bold;
+    color: var(--text-on-light);
+    text-shadow:
+        2px 0 0 rgba(255, 51, 64, 0.28),
+        -2px 0 0 rgba(0, 229, 255, 0.28);
+    text-align: center;
+}
+
+/* --- スクロール領域 --- */
+.scores-scroll {
+    flex: 1 1 auto;
+    width: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 4px 40px;
+    position: relative;
+    z-index: 3;
+    touch-action: pan-y;
+}
+body.has-tabbar .scores-scroll {
+    padding-bottom: 260px;
+}
+
+/* --- サマリ (CLEARED / PLAYS) --- */
+.sc-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding: 28px 24px;
+    background: #ffffff;
+    border: 3px solid #0a0a0a;
+    box-shadow: 6px 6px 0 #0a0a0a;
+}
+.sc-summary > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.sc-sum-lbl {
+    font-size: 22px;
+    letter-spacing: 6px;
+    color: var(--text-mute);
+}
+.sc-sum-val {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 72px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: var(--accent-cyan-dim);
+    line-height: 1;
+    text-shadow: 2px 2px 0 rgba(0, 229, 255, 0.15);
+}
+
+/* --- 各ステージ行 --- */
+.sc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.sc-row {
+    display: grid;
+    grid-template-columns: 96px 1fr auto;
+    align-items: center;
+    gap: 24px;
+    padding: 24px 28px;
+    background: #ffffff;
+    border: 3px solid #0a0a0a;
+    box-shadow: 4px 4px 0 #0a0a0a;
+    font-family: 'Courier New', Courier, monospace;
+    min-height: 140px;
+}
+.sc-no {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: var(--text-mute);
+    text-align: center;
+}
+.sc-name {
+    font-family: inherit;
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: var(--text-on-light);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.sc-body {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-variant-numeric: tabular-nums;
+}
+.sc-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    height: 64px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 3px solid var(--rank-accent, rgba(0, 0, 0, 0.3));
+    color: var(--rank-accent, #0a0a0a);
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    background: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 6px var(--rank-accent, transparent);
+}
+.sc-score {
+    font-size: 40px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: var(--text-on-light);
+    min-width: 180px;
+    text-align: right;
+}
+.sc-plays {
+    font-size: 26px;
+    color: var(--text-mute);
+    min-width: 80px;
+    text-align: right;
+}
+.sc-lock {
+    font-size: 26px;
+    letter-spacing: 4px;
+    color: var(--text-mute);
+    opacity: 0.6;
+}
+.sc-none {
+    font-size: 24px;
+    letter-spacing: 3px;
+    color: var(--text-mute);
+}
