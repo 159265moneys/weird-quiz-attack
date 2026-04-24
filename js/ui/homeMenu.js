@@ -311,21 +311,32 @@
         `;
     }
 
-    function bindProfileHandlers() {
-        profileOverlay.querySelector('.hm-close').addEventListener('click', () => {
+    // root / opts を受け取ってモーダル以外 (= フルスクリーンタブ画面) にも
+    // バインドできる形にしてある。
+    //   root: 走査対象のルート要素 (省略時は profileOverlay = モーダル版)
+    //   opts.onClose: 閉じるボタン/ABOUT/RESET 後に外側から渡される hook。
+    //     モーダル版は closeProfile/closeMenu を使うが、フルスクリーン版は
+    //     Router.show('home') 等を渡せばよい。
+    function bindProfileHandlers(root, opts) {
+        root = root || profileOverlay;
+        opts = opts || {};
+        const onClose = typeof opts.onClose === 'function' ? opts.onClose : closeProfile;
+        const isModal = opts.isModal !== false; // 省略時はモーダル扱い
+
+        root.querySelector('.hm-close')?.addEventListener('click', () => {
             window.SE?.fire?.('cancel');
-            closeProfile();
+            onClose();
         });
-        const input = profileOverlay.querySelector('.hm-pf-input');
-        profileOverlay.querySelector('.hm-pf-save').addEventListener('click', () => {
+        const input = root.querySelector('.hm-pf-input');
+        root.querySelector('.hm-pf-save')?.addEventListener('click', () => {
             const v = input ? input.value : '';
             window.Save?.setPlayerName?.(v);
             window.SE?.fire?.('confirm');
-            const curEl = profileOverlay.querySelector('.hm-pf-current');
+            const curEl = root.querySelector('.hm-pf-current');
             if (curEl) curEl.textContent = window.Save?.getPlayerDisplayName?.() || '';
         });
         // ランキング参加 ON/OFF トグル (即時反映)
-        const rankToggle = profileOverlay.querySelector('.hm-pf-rank');
+        const rankToggle = root.querySelector('.hm-pf-rank');
         if (rankToggle) {
             rankToggle.addEventListener('change', () => {
                 const v = rankToggle.checked;
@@ -334,22 +345,28 @@
             });
         }
 
-        profileOverlay.querySelector('.hm-pf-reset').addEventListener('click', () => {
+        root.querySelector('.hm-pf-reset')?.addEventListener('click', () => {
             if (input) input.value = '';
             window.Save?.setPlayerName?.(null);
             window.SE?.fire?.('cancel');
-            const curEl = profileOverlay.querySelector('.hm-pf-current');
+            const curEl = root.querySelector('.hm-pf-current');
             if (curEl) curEl.textContent = window.Save?.getPlayerDisplayName?.() || '';
         });
 
         // ABOUT / RESET PROGRESS (旧ハンバーガーから移設)
-        profileOverlay.querySelectorAll('.hm-pf-footer-actions [data-act]').forEach(btn => {
+        root.querySelectorAll('.hm-pf-footer-actions [data-act]').forEach(btn => {
             btn.addEventListener('click', () => {
                 const act = btn.dataset.act;
                 window.SE?.fire?.('menuCursor');
                 if (act === 'about') {
-                    closeProfile();
-                    setTimeout(openAbout, 120);
+                    // モーダル版は一旦閉じてから ABOUT を重ねる。フルスクリーン版は
+                    // そのまま ABOUT モーダルを上に重ねる。
+                    if (isModal) {
+                        closeProfile();
+                        setTimeout(openAbout, 120);
+                    } else {
+                        openAbout();
+                    }
                 } else if (act === 'resetProgress') {
                     openResetConfirm();
                 }
@@ -357,7 +374,7 @@
         });
 
         // アイコングリッド: 各セルタップで即保存・プレビュー更新
-        const grid = profileOverlay.querySelector('.hm-pf-av-grid');
+        const grid = root.querySelector('.hm-pf-av-grid');
         if (grid) {
             grid.querySelectorAll('.hm-pf-av').forEach((btn) => {
                 btn.addEventListener('click', () => {
@@ -376,7 +393,7 @@
                     grid.querySelectorAll('.hm-pf-av.is-sel').forEach(el => el.classList.remove('is-sel'));
                     btn.classList.add('is-sel');
                     // プレビューを差し替え
-                    const pv = profileOverlay.querySelector('.hm-pf-avpreview');
+                    const pv = root.querySelector('.hm-pf-avpreview');
                     if (pv) {
                         const path = id ? window.Avatars?.pathOf?.(id) : null;
                         pv.innerHTML = path
@@ -521,5 +538,10 @@
         openProfile,
         openScores,
         openAbout,
+        // フルスクリーンタブ (js/screens/profile.js, scores.js) から
+        // モーダルと同じ HTML / ハンドラを再利用するための公開 API。
+        buildProfileHTML,     // -> <div class="hm-panel">...</div>
+        buildScoresHTML,      // -> <div class="hm-panel hm-panel-wide">...</div>
+        bindProfileHandlers,  // (rootEl, { onClose, isModal=false })
     };
 })();
