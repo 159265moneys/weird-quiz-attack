@@ -84,10 +84,9 @@
 
             return `
                 <div class="screen stage-select-screen">
-                    <div class="screen-header" style="margin-bottom:16px;justify-content:flex-end;">
-                        <div class="text-mute" style="font-size:24px;letter-spacing:3px;">v${window.CONFIG.VERSION}</div>
+                    <div class="tab-header">
+                        <h1 class="tab-header-title">STAGE SELECT</h1>
                     </div>
-                    <div class="stage-title">STAGE SELECT</div>
                     <div class="stage-progress">
                         <span class="sp-label">UNLOCKED</span>
                         <span class="sp-value">${unlocked}/10</span>

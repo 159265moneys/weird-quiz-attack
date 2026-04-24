@@ -14,6 +14,9 @@
             const html = window.HomeMenu?.buildProfileHTML?.() || '';
             return `
                 <div class="screen profile-screen">
+                    <div class="tab-header">
+                        <h1 class="tab-header-title">ACCOUNT</h1>
+                    </div>
                     <div class="profile-screen-inner">${html}</div>
                 </div>
             `;

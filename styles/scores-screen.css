@@ -2,14 +2,16 @@
    scores-screen.css — SCORES フルスクリーンタブ
    ------------------------------------------------------------
    既存モーダル (home-menu.css の hm-panel-wide / hm-sc-*) を
-   そのまま流用し、画面いっぱいに広げるだけのオーバーライド。
-   パネル内部のスタイルは一切変更しない。
+   そのまま流用。モーダル中央寄せを解除してフルスクリーン化しつつ、
+   1080×1920 canvas で行がやせ細って見える PC っぽさを解消する
+   モバイル最適化のみ行う。配色・書体・アクセント色は変更しない。
    ============================================================ */
 
 .screen.scores-screen {
     background: linear-gradient(180deg, #0c1018 0%, #0a0c14 100%);
     color: #e6f1ff;
-    padding: 0;
+    /* stage/ranking の .screen 既定と同じ上余白 80px に揃える */
+    padding: 80px 0 0 0;
     align-items: stretch;
     justify-content: flex-start;
     overflow: hidden;
@@ -22,19 +24,110 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
-    padding: 24px 16px 24px;
+    padding: 0 0 24px;
     box-sizing: border-box;
 }
 body.has-tabbar .scores-screen-inner {
-    padding-bottom: 220px;
+    padding-bottom: 260px;
 }
 
 .scores-screen .hm-panel {
     width: 100%;
     max-width: none;
     max-height: none;
-    margin: 0 auto;
+    margin: 0;
+    padding: 24px 32px 40px;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    border-radius: 0;
     box-sizing: border-box;
     overflow: visible;
     animation: none;
+}
+
+/* 旧モーダル内タイトル行 (SCORES + ×) は tab-header に集約したので非表示 */
+.scores-screen .hm-head {
+    display: none;
+}
+
+/* ------------------------------------------------------------
+   モバイル最適化オーバーライド
+   元の font-size は 12-26px (480px 幅モーダル向け)。canvas-px で
+   36-48px 相当まで大きくしてスマホ実機で読みやすく。
+   ------------------------------------------------------------ */
+
+/* サマリ (CLEARED / PLAYS) */
+.scores-screen .hm-sc-summary {
+    padding: 22px 4px 26px;
+    gap: 40px;
+    margin-bottom: 18px;
+}
+.scores-screen .hm-sc-sum-lbl {
+    font-size: 22px;
+    letter-spacing: 5px;
+}
+.scores-screen .hm-sc-sum-val {
+    font-size: 52px;
+    letter-spacing: 2px;
+}
+
+/* スコアリスト全体 */
+.scores-screen .hm-sc-list {
+    gap: 12px;
+}
+
+/* 各ステージ行: ステージ番号 / 名前 / スコアボディ */
+.scores-screen .hm-sc-row {
+    grid-template-columns: 72px 1fr auto;
+    gap: 20px;
+    padding: 22px 22px;
+    border-radius: 14px;
+    border-width: 2px;
+}
+
+/* ステージ番号 (01 / 02 …) */
+.scores-screen .hm-sc-no {
+    font-size: 38px;
+    letter-spacing: 2px;
+}
+
+/* ステージ名 */
+.scores-screen .hm-sc-name {
+    font-size: 28px;
+    letter-spacing: 2px;
+}
+
+/* body (ランク + スコア + ×回) の内部ギャップ */
+.scores-screen .hm-sc-body {
+    gap: 16px;
+}
+
+/* ランクバッジ */
+.scores-screen .hm-sc-rank {
+    min-width: 64px;
+    font-size: 34px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border-width: 2px;
+}
+
+/* スコア値 */
+.scores-screen .hm-sc-score {
+    font-size: 30px;
+    min-width: 160px;
+    letter-spacing: 1px;
+}
+
+/* ×N プレイ回数 */
+.scores-screen .hm-sc-plays {
+    font-size: 22px;
+    min-width: 70px;
+}
+
+/* LOCKED / — NO CLEAR — 等のプレースホルダ */
+.scores-screen .hm-sc-lock,
+.scores-screen .hm-sc-none {
+    font-size: 24px;
+    letter-spacing: 5px;
 }

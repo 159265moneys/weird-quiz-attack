@@ -11,31 +11,9 @@
     touch-action: pan-y;   /* 縦スクロールは通常通り、水平はスワイプ判定に回す */
 }
 
-.ranking-screen .screen-header {
-    margin-bottom: 16px;
-}
-.ranking-screen .btn-back {
-    min-height: 70px;
-    padding: 14px 18px;
-    background: var(--box-bg);
-    border: 2px solid var(--line);
-    color: var(--text-on-dark);
-    font-family: inherit;
-    font-size: 20px;
-    letter-spacing: 2px;
-    cursor: pointer;
-    box-shadow: 3px 3px 0 var(--line);
-}
-.ranking-screen .btn-back:active {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 var(--line);
-}
-.rk-title {
-    font-size: 44px;
-    letter-spacing: 6px;
-    color: var(--accent-cyan);
-    font-weight: 700;
-}
+/* ヘッダは共通 .tab-header (base.css) を使用。BACK ボタンは TabBar
+   導入で廃止。.rk-title / .btn-back 用のスタイルも削除済み。
+   余白も共通 (margin-bottom:28px) をそのまま使う。 */
 
 /* --- ステージナビ (カルーセル形式) -----------------------------
    current を中央・左右に 1 個ずつ (約半分) 見せる。両端は ◀ / ▶ ボタン。

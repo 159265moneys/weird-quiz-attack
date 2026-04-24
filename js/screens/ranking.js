@@ -240,10 +240,8 @@
 
             return `
                 <div class="screen ranking-screen">
-                    <div class="screen-header">
-                        <button class="btn-back" data-action="back" aria-label="BACK">◀ BACK</button>
-                        <div class="rk-title">RANKING</div>
-                        <div style="width:64px"></div>
+                    <div class="tab-header">
+                        <h1 class="tab-header-title">RANKING</h1>
                     </div>
                     <div class="rk-stage-bar">
                         <button class="rk-stage-arrow" data-action="prevStage" aria-label="前のステージ">◀</button>
@@ -270,13 +268,8 @@
             if (!root) return;
 
             // 下部タブバー: ranking タブがアクティブ
+            // BACK ボタンは廃止: TabBar から直接他画面へ遷移可能。
             window.TabBar?.mount?.('ranking');
-
-            // BACK (TabBar 導入後も残す: モーダル動線慣れ対応)
-            root.querySelector('[data-action="back"]')?.addEventListener('click', () => {
-                window.SE?.fire?.('menuCursor');
-                window.Router.show('home');
-            });
 
             // ステージ矢印
             root.querySelector('[data-action="prevStage"]')

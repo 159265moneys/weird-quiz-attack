@@ -1,17 +1,20 @@
 /* ============================================================
-   profile-screen.css — PROFILE フルスクリーンタブ
+   profile-screen.css — PROFILE (ACCOUNT) フルスクリーンタブ
    ------------------------------------------------------------
    既存モーダル (home-menu.css の hm-panel / hm-pf-*) の見た目は
-   そのまま流用し、モーダルを包むオーバーレイ / 中央寄せの代わりに
-   画面いっぱいに広げるだけのオーバーライド。
-   パネル内部 (タイトル、カード、ボタン等) のスタイルは一切変更しない。
+   そのまま流用。ここではモーダル中央寄せを解除してフルスクリーンに
+   広げるのと、スマホ画面 (1080×1920 canvas) での間延びを防ぐ
+   "モバイル最適化" のみ行う。配色 / 枠 / グロー / フォント種別は
+   一切変更しない。
    ============================================================ */
 
 .screen.profile-screen {
-    /* hm-overlay と同系統の暗色背景 (パネルのグラデ上端に合わせた) */
+    /* hm-overlay と同系統の暗色背景 (パネル上端グラデに合わせた) */
     background: linear-gradient(180deg, #0c1018 0%, #0a0c14 100%);
     color: #e6f1ff;
-    padding: 0;
+    /* 他の非Homeタブ (stage / ranking) の .screen 既定と同じ上余白に
+       揃える: 80px 上 + tab-header 140px = タイトル基準線を全タブ共通化 */
+    padding: 80px 0 0 0;
     align-items: stretch;
     justify-content: flex-start;
     overflow: hidden;
@@ -24,23 +27,188 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
-    padding: 24px 16px 24px;
+    padding: 0 0 24px;
     box-sizing: border-box;
 }
 body.has-tabbar .profile-screen-inner {
-    padding-bottom: 220px;  /* TabBar (200px) + 余白 */
+    padding-bottom: 260px;   /* TabBar (≈200px) + 余白 */
 }
 
-/* hm-panel は通常 min(480px, 92vw) の小さなカードだが、フルスクリーン
-   ではコンテンツが画面幅を使えるように max-width を解除 + 角丸と外側の
-   影を控えめに残す。配色 / 内側パディング / ヘッダ / 枠 cyan / glow は
-   オリジナルのまま。 */
+/* hm-panel: モーダル時は min(480px, 92vw) の小さなカードだが、
+   フルスクリーンではコンテンツを画面幅いっぱいに広げる。角丸 /
+   枠 / 内側グロー / 背景グラデ等はそのまま流用。 */
 .profile-screen .hm-panel {
     width: 100%;
     max-width: none;
     max-height: none;
-    margin: 0 auto;
+    margin: 0;
+    padding: 32px 36px 44px;
+    border: none;             /* 画面そのものが暗背景なので外枠は不要 */
+    box-shadow: none;
+    background: transparent;  /* 画面背景グラデがそのまま透ける */
+    border-radius: 0;
     box-sizing: border-box;
-    overflow: visible;  /* スクロールは外側 (.profile-screen-inner) に移譲 */
-    animation: none;    /* 画面遷移で毎回 pop-in しない */
+    overflow: visible;        /* スクロールは .profile-screen-inner に移譲 */
+    animation: none;          /* 画面遷移で毎回 pop-in しない */
+}
+
+/* 旧モーダル内のタイトル行 (タイトル + × ボタン) は tab-header に
+   置き換わったので非表示。hm-close 自体も TabBar 導入で不要。 */
+.profile-screen .hm-head {
+    display: none;
+}
+
+/* ------------------------------------------------------------
+   モバイル最適化オーバーライド
+   ------------------------------------------------------------
+   hm-panel は元々 480px 幅を想定した font-size / padding / grid。
+   1080×1920 canvas に置くと間延びして "PC 画面っぽく" 見えるので、
+   canvas-px で適切な密度に再調整する。
+   デザイン (色/枠/発光/書体) は home-menu.css の値をそのまま継承。
+   ------------------------------------------------------------ */
+
+/* プロフィール本体: 要素間ギャップを大きめに */
+.profile-screen .hm-profile {
+    gap: 40px;
+    padding: 10px 2px 2px;
+}
+
+/* 各 row (ラベル + 入力/ボタン群) の内部ギャップ */
+.profile-screen .hm-pf-row {
+    gap: 16px;
+}
+
+/* ラベル (PLAYER ID / DISPLAY NAME / ICON / RANKING) */
+.profile-screen .hm-pf-lbl {
+    font-size: 26px;
+    letter-spacing: 6px;
+}
+
+/* PLAYER ID 表示 (等幅 / 枠) */
+.profile-screen .hm-pf-id {
+    font-size: 52px;
+    padding: 14px 26px;
+    border-radius: 14px;
+    letter-spacing: 6px;
+}
+
+/* 現在の DISPLAY NAME 表示 */
+.profile-screen .hm-pf-current {
+    font-size: 42px;
+    padding: 10px 4px 6px;
+}
+
+/* テキスト入力 */
+.profile-screen .hm-pf-input {
+    font-size: 34px;
+    padding: 22px 24px;
+    border-radius: 12px;
+    border-width: 2px;
+}
+
+/* ヒント文 (○文字まで etc.) */
+.profile-screen .hm-pf-hint {
+    font-size: 22px;
+    margin-top: 8px;
+}
+
+/* 上部: アイコンプレビュー + PLAYER ID の横並び領域 */
+.profile-screen .hm-pf-top {
+    gap: 32px;
+    padding: 4px 0 6px;
+}
+.profile-screen .hm-pf-avpreview {
+    width: 220px;
+    height: 220px;
+    border-radius: 28px;
+    border-width: 3px;
+}
+.profile-screen .hm-pf-avpreview-none {
+    font-size: 72px;
+}
+.profile-screen .hm-pf-topinfo {
+    gap: 10px;
+}
+
+/* アイコン選択グリッド: PC 幅だと 64px minmax で 16 列になり
+   ちまちましすぎるので、スマホらしく 4 列固定で大きく表示 */
+.profile-screen .hm-pf-av-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+.profile-screen .hm-pf-av {
+    border-radius: 18px;
+    border-width: 2px;
+}
+.profile-screen .hm-pf-av-none {
+    font-size: 72px;
+}
+.profile-screen .hm-pf-av-lockbadge {
+    width: 44px;
+    height: 44px;
+    right: 10px;
+    top: 10px;
+    border-radius: 10px;
+}
+.profile-screen .hm-pf-av-lockbadge svg {
+    width: 24px;
+    height: 24px;
+}
+.profile-screen .hm-pf-av-empty {
+    font-size: 24px;
+    padding: 28px 20px;
+}
+
+/* RANKING トグル行 */
+.profile-screen .hm-pf-row-toggle .hm-pf-toggle {
+    gap: 18px;
+    padding: 6px 2px;
+}
+.profile-screen .hm-pf-toggle-label {
+    font-size: 26px;
+    letter-spacing: 3px;
+}
+.profile-screen .hm-pf-toggle-box {
+    width: 72px;
+    height: 40px;
+    border-radius: 22px;
+    border-width: 2px;
+}
+.profile-screen .hm-pf-toggle-box::after {
+    top: 4px; left: 4px;
+    width: 28px;
+    height: 28px;
+}
+.profile-screen .hm-pf-toggle input:checked + .hm-pf-toggle-box::after {
+    transform: translateX(30px);
+}
+
+/* メインアクション (SAVE / RESET NAME) */
+.profile-screen .hm-pf-actions {
+    gap: 20px;
+    margin-top: 16px;
+}
+.profile-screen .hm-pf-btn {
+    padding: 26px 20px;
+    font-size: 28px;
+    letter-spacing: 6px;
+    border-width: 3px;
+    border-radius: 10px;
+    min-height: 0;
+}
+
+/* フッタ (ABOUT / RESET PROGRESS) */
+.profile-screen .hm-pf-footer {
+    margin-top: 32px;
+}
+.profile-screen .hm-pf-footer-divider {
+    margin-bottom: 24px;
+}
+.profile-screen .hm-pf-footer-actions {
+    gap: 16px;
+}
+.profile-screen .hm-pf-btn.hm-pf-btn-small {
+    padding: 22px 16px;
+    font-size: 26px;
+    letter-spacing: 5px;
 }

@@ -255,6 +255,43 @@ body {
     box-shadow: 2px 2px 0 var(--line);
 }
 
+/* ============================================================
+   タブスクリーン共通ヘッダ (Account / Stage / Ranking / Scores)
+   ------------------------------------------------------------
+   5タブ UI 導入後、ホーム以外の4タブのヘッダ高さ/タイトル位置/
+   サイズを揃えるための共通コンポーネント。中身 (タブ個別 UI) は
+   このヘッダの下に自由に置いて良い。色のみ背景テーマ毎に上書き。
+   ============================================================ */
+.tab-header {
+    flex: 0 0 auto;
+    width: 100%;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 40px;
+    margin: 0 0 28px 0;
+    box-sizing: border-box;
+}
+.tab-header-title {
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 56px;
+    font-weight: 900;
+    letter-spacing: 10px;
+    color: var(--accent-cyan);
+    text-shadow:
+        0 0 14px rgba(0, 255, 240, 0.55),
+        0 0 2px rgba(0, 255, 240, 0.85);
+    text-align: center;
+    line-height: 1;
+}
+/* 白基調タブ (Stage Select) はシアン発光が弱く見えるのでダーク文字に */
+.stage-select-screen .tab-header-title {
+    color: var(--text-on-light);
+    text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+}
+
 /* スクロール可能領域
    ----------------------------------------------------------------
    iOS で「領域ごと画面が上下にずれる」問題の対策:

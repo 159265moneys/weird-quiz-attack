@@ -12,6 +12,9 @@
             const html = window.HomeMenu?.buildScoresHTML?.() || '';
             return `
                 <div class="screen scores-screen">
+                    <div class="tab-header">
+                        <h1 class="tab-header-title">SCORES</h1>
+                    </div>
                     <div class="scores-screen-inner">${html}</div>
                 </div>
             `;
