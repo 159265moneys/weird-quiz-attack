@@ -1,4 +1,4 @@
-# 変なクイズ (WEIRD QUIZ ATTACK)
+# 変なクイズ (ODD QUIZ)
 
 崩壊UIが襲いかかる、バイラル狙いのスコアアタック型クイズアプリ。  
 技術スタック: **HTML / CSS / Vanilla JavaScript** (ビルドツール無し) + **Capacitor** (最終段階でネイティブ化)。

@@ -54,7 +54,7 @@
                     <div class="title-logo-wrap">
                         <div class="title-logo" id="titleLogo">${logoChars}</div>
                     </div>
-                    <div class="title-sub">WEIRD QUIZ ATTACK</div>
+                    <div class="title-sub">ODD QUIZ</div>
 
                     <div class="title-tap" id="titleTap">
                         <div class="title-tap-text">

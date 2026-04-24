@@ -199,7 +199,7 @@
                     const blob = await window.ShareCard.toBlob(canvas);
                     const text = window.ShareCard.buildText(result, stageInfo, { labelSeed });
 
-                    const filename = `weirdquiz_stage${String(stageNo).padStart(2, '0')}_${result.rank}.png`;
+                    const filename = `oddquiz_stage${String(stageNo).padStart(2, '0')}_${result.rank}.png`;
                     const r = await window.ShareSheet.share({ blob, text, filename });
 
                     showToast(r);

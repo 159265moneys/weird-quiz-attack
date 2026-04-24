@@ -217,12 +217,12 @@
         });
 
         // 8. フッタ: タイトル + ハッシュタグ
-        drawText(ctx, 'WEIRD QUIZ ATTACK', SIZE / 2, 1030, {
+        drawText(ctx, 'ODD QUIZ', SIZE / 2, 1030, {
             font: `bold 30px ${FONT_MONO}`,
             color: COLOR.accentCyan,
             letterSpacing: 10,
         });
-        drawText(ctx, '#変なクイズ  #WEIRDQUIZ', SIZE / 2, 1060, {
+        drawText(ctx, '#変なクイズ  #ODDQUIZ', SIZE / 2, 1060, {
             font: `20px ${FONT_JP}`,
             color: COLOR.textDim,
             letterSpacing: 2,
@@ -263,7 +263,7 @@
         const pctLine = pct ? `${pct}${label ? `  ≒ ${label}` : ''}` : '';
         const lines = [rankLine, stageLine, `正解 ${result.correct}/${result.total}`];
         if (pctLine) lines.push(pctLine);
-        lines.push('', '#変なクイズ #WEIRDQUIZ');
+        lines.push('', '#変なクイズ #ODDQUIZ');
         return lines.join('\n');
     }
 

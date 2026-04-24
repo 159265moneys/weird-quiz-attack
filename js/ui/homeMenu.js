@@ -465,7 +465,7 @@
                 </div>
                 <div class="hm-about">
                     <div class="hm-about-logo">変なクイズ</div>
-                    <div class="hm-about-sub">WEIRD QUIZ ATTACK</div>
+                    <div class="hm-about-sub">ODD QUIZ</div>
                     <div class="hm-about-ver">v${ver}</div>
                     <div class="hm-about-credit">
                         Icons: Lucide (MIT)<br>

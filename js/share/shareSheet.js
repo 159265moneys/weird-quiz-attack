@@ -48,7 +48,7 @@
                     await navigator.share({
                         files: [file],
                         text,
-                        title: 'WEIRD QUIZ ATTACK',
+                        title: 'ODD QUIZ',
                     });
                     return { method: 'share-file' };
                 } catch (e) {
@@ -63,7 +63,7 @@
             try {
                 await navigator.share({
                     text,
-                    title: 'WEIRD QUIZ ATTACK',
+                    title: 'ODD QUIZ',
                 });
                 // ついでに画像をダウンロードもさせる (テキストだけじゃ絵がない)
                 if (blob) await downloadBlob(blob, filename);
