@@ -293,9 +293,15 @@
                         </label>
                     </div>
 
+                    <!-- 保存ボタンは 1つに統一: アイコンはタップで即保存される
+                         設計のため、このボタンは実質「名前の保存」だが、UX 上は
+                         「プロフィール全体を保存した」という印象になるよう
+                         ラベルを中立的な "SAVE" に。RESET NAME は名前専用の
+                         サブアクションとして控えめに残す (アイコンのリセットは
+                         アバターグリッド先頭の "—" で行う)。 -->
                     <div class="hm-pf-actions">
-                        <button class="hm-pf-btn hm-pf-save"  type="button">SAVE NAME</button>
-                        <button class="hm-pf-btn hm-pf-reset" type="button">RESET NAME</button>
+                        <button class="hm-pf-btn hm-pf-save"  type="button" data-default-label="SAVE">SAVE</button>
+                        <button class="hm-pf-btn hm-pf-reset hm-pf-btn-small" type="button">RESET NAME</button>
                     </div>
 
                     <!-- 旧ハンバーガーメニュー (廃止) からの移設: ABOUT / 進捗リセット -->
@@ -328,12 +334,28 @@
             onClose();
         });
         const input = root.querySelector('.hm-pf-input');
-        root.querySelector('.hm-pf-save')?.addEventListener('click', () => {
+        const saveBtn = root.querySelector('.hm-pf-save');
+        saveBtn?.addEventListener('click', () => {
             const v = input ? input.value : '';
             window.Save?.setPlayerName?.(v);
             window.SE?.fire?.('confirm');
             const curEl = root.querySelector('.hm-pf-current');
             if (curEl) curEl.textContent = window.Save?.getPlayerDisplayName?.() || '';
+
+            // 保存した感フィードバック: 一瞬 "SAVED" 表示 + saved クラスで発光
+            // アイコンはタップ時に既に保存済みだが、ユーザーには「1ボタンで
+            // 両方保存された」という体験を演出するためここで一括フラッシュ。
+            if (saveBtn && !saveBtn.dataset.flashing) {
+                const defaultLabel = saveBtn.dataset.defaultLabel || 'SAVE';
+                saveBtn.dataset.flashing = '1';
+                saveBtn.textContent = 'SAVED';
+                saveBtn.classList.add('is-saved-flash');
+                setTimeout(() => {
+                    saveBtn.textContent = defaultLabel;
+                    saveBtn.classList.remove('is-saved-flash');
+                    delete saveBtn.dataset.flashing;
+                }, 900);
+            }
         });
         // ランキング参加 ON/OFF トグル (即時反映)
         const rankToggle = root.querySelector('.hm-pf-rank');

@@ -488,8 +488,30 @@
     border-color: var(--accent-cyan, #00fff0);
     color: var(--accent-cyan, #00fff0);
     background: rgba(0,255,240,0.08);
+    transition:
+        transform 0.08s ease,
+        background 0.2s ease,
+        box-shadow 0.3s ease,
+        color 0.2s ease;
 }
 .hm-pf-save:active { background: rgba(0,255,240,0.18); }
+
+/* 保存完了フラッシュ: 一瞬 "SAVED" 表示 + cyan 発光。
+   アイコンはタップ時自動保存・名前はこのボタン押下で保存という
+   二段構造を、UX 的には "1ボタンで全部保存された" に見せる演出。 */
+.hm-pf-save.is-saved-flash {
+    background: rgba(0, 229, 255, 0.28);
+    box-shadow:
+        0 0 0 2px rgba(0, 229, 255, 0.35),
+        0 0 18px rgba(0, 229, 255, 0.45);
+    color: #e6ffff;
+    animation: hmPfSavedPop 0.4s ease;
+}
+@keyframes hmPfSavedPop {
+    0%   { transform: scale(1);    }
+    40%  { transform: scale(1.05); }
+    100% { transform: scale(1);    }
+}
 .hm-pf-reset {
     border-color: rgba(255,255,255,0.25);
     color: rgba(230,241,255,0.75);
