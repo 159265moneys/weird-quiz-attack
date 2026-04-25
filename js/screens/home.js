@@ -168,6 +168,9 @@
                             <button class="home-head-icon" type="button" data-action="settings" aria-label="設定">
                                 <img src="sprite/icons/header/settings.svg" alt="">
                             </button>
+                            <button class="home-head-icon" type="button" data-action="achievements" aria-label="達成バッジ">
+                                <img src="sprite/icons/header/trophy.svg" alt="">
+                            </button>
                         </div>
                     </div>
 
@@ -237,6 +240,11 @@
             document.querySelector('[data-action="mail"]')?.addEventListener('click', () => {
                 window.SE?.fire?.('cancel');
                 showHomeToast('お知らせ機能は準備中');
+            });
+
+            document.querySelector('[data-action="achievements"]')?.addEventListener('click', () => {
+                window.SE?.fire?.('menuCursor');
+                window.HomeMenu?.openAchievements?.();
             });
 
             document.querySelector('[data-action="start"]')?.addEventListener('click', () => {

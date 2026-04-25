@@ -702,3 +702,71 @@
     60%      { transform: translateX(-3px); }
     80%      { transform: translateX(3px); }
 }
+
+/* ============================================================
+   ACHIEVEMENTS モーダル (HomeMenu.openAchievements)
+   ------------------------------------------------------------
+   ホームヘッダの trophy アイコンから開く。hm-panel-wide を
+   ベースにバッジ一覧を 2 列グリッドで並べる。tier 別に色分け。
+   ============================================================ */
+.hm-ach-summary {
+    font-size: 14px;
+    letter-spacing: 4px;
+    color: var(--accent-cyan, #36d3e3);
+    font-weight: 900;
+    text-align: right;
+    margin: -2px 0 10px;
+}
+.hm-ach-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 12px;
+    width: 100%;
+}
+.hm-ach-card {
+    padding: 12px 14px;
+    border: 2px solid var(--line-dim, rgba(255, 255, 255, 0.18));
+    background: var(--box-bg, rgba(20, 22, 28, 0.85));
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
+    color: var(--text-on-dark, #e6f1ff);
+    min-height: 0;
+    overflow: hidden;
+}
+.hm-ach-card.is-locked {
+    opacity: 0.45;
+    filter: grayscale(0.5);
+}
+.hm-ach-card.is-got.tier-story {
+    border-color: var(--accent-warn, #ffd400);
+    box-shadow: 3px 3px 0 rgba(255, 212, 0, 0.35);
+}
+.hm-ach-card.is-got.tier-skill {
+    border-color: var(--accent-cyan, #36d3e3);
+    box-shadow: 3px 3px 0 var(--accent-cyan-dim, rgba(54, 211, 227, 0.4));
+}
+.hm-ach-card.is-got.tier-fun {
+    border-color: var(--accent-red, #ff3340);
+    box-shadow: 3px 3px 0 var(--accent-red-dim, rgba(255, 51, 64, 0.4));
+}
+.hm-ach-card.is-got.tier-core {
+    border-color: var(--accent-cyan, #36d3e3);
+}
+.hm-ach-card-name {
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 1.2px;
+    margin-bottom: 3px;
+}
+.hm-ach-card-hint {
+    font-size: 12px;
+    letter-spacing: 0.6px;
+    color: var(--text-faint, rgba(230, 241, 255, 0.62));
+    line-height: 1.3;
+}
+.hm-ach-empty {
+    grid-column: 1 / -1;
+    font-size: 14px;
+    color: var(--text-faint, rgba(230, 241, 255, 0.6));
+    padding: 8px 4px;
+    text-align: center;
+}

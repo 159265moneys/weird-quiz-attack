@@ -237,34 +237,56 @@
         return `<div class="hm-pf-av-grid">${cells.join('')}</div>`;
     }
 
-    // 達成バッジ一覧。Achievements.CATALOG を 1 セル = 1 バッジで並べる。
-    //   未解放はグレーアウト + ロックアイコン (アバターと同じ慣例)。
+    // 達成バッジ一覧モーダル。Achievements.CATALOG を 1 セル = 1 バッジで並べる。
+    //   未解放はグレーアウト (アバターと同じ慣例)。
     //   tier 別に色味を変える: story=warn / skill=cyan / fun=red / core=cyan-dim。
-    //   タップ時にヒント文を ConfirmDialog で alert する手も考えたが、画面密度が
-    //   上がるので今は title 属性に格納するだけ (Web 版でツールチップ表示)。
     function buildAchievementsHTML() {
         const cat = window.Achievements?.CATALOG || [];
-        if (!cat.length) {
-            return `<div class="hm-pf-ach-empty">読み込み中…</div>`;
-        }
         const have = new Set(window.Save?.getAchievements?.() || []);
         const totalGot = cat.filter(a => have.has(a.id)).length;
-        const cells = cat.map((a) => {
-            const got = have.has(a.id);
-            const cls = `hm-pf-ach tier-${a.tier || 'core'} ${got ? 'is-got' : 'is-locked'}`;
-            // ロック時もカードは見せて hint だけ伏せたいが、密度の都合で今は同表示。
-            //   後段で「未解放は ??? に置換」も検討可。
-            return `
-                <div class="${cls}" title="${escapeHTML(a.hint)}">
-                    <div class="hm-pf-ach-name">${escapeHTML(a.name)}</div>
-                    <div class="hm-pf-ach-hint">${escapeHTML(a.hint)}</div>
-                </div>
-            `;
-        }).join('');
+        const cellsHTML = !cat.length
+            ? `<div class="hm-ach-empty">読み込み中…</div>`
+            : cat.map((a) => {
+                const got = have.has(a.id);
+                const cls = `hm-ach-card tier-${a.tier || 'core'} ${got ? 'is-got' : 'is-locked'}`;
+                return `
+                    <div class="${cls}">
+                        <div class="hm-ach-card-name">${escapeHTML(a.name)}</div>
+                        <div class="hm-ach-card-hint">${escapeHTML(a.hint)}</div>
+                    </div>
+                `;
+            }).join('');
         return `
-            <div class="hm-pf-ach-summary">${totalGot} / ${cat.length}</div>
-            <div class="hm-pf-ach-grid">${cells}</div>
+            <div class="hm-panel hm-panel-wide" role="dialog" aria-label="ACHIEVEMENTS">
+                <div class="hm-head">
+                    <div class="hm-title">ACHIEVEMENTS</div>
+                    <button class="hm-close" aria-label="閉じる">${ICONS.close}</button>
+                </div>
+                <div class="hm-ach-summary">${totalGot} / ${cat.length}</div>
+                <div class="hm-ach-grid">${cellsHTML}</div>
+            </div>
         `;
+    }
+
+    // 達成バッジモーダル。openProfile 等と同じ hm-overlay レイヤを使う。
+    //   Achievements カタログは IIFE 即時定義なので Avatars と違い load 待ち不要。
+    let achievementsOverlay = null;
+    function openAchievements() {
+        if (!achievementsOverlay) {
+            achievementsOverlay = document.createElement('div');
+            achievementsOverlay.className = 'hm-overlay';
+            document.body.appendChild(achievementsOverlay);
+        }
+        achievementsOverlay.innerHTML = buildAchievementsHTML();
+        achievementsOverlay.classList.add('is-open');
+        achievementsOverlay.querySelector('.hm-close')?.addEventListener('click', () => {
+            window.SE?.fire?.('cancel');
+            closeAchievements();
+        });
+        window.SE?.fire?.('confirm');
+    }
+    function closeAchievements() {
+        if (achievementsOverlay) achievementsOverlay.classList.remove('is-open');
     }
 
     // ACHIEVEMENTS グリッド (PROFILE 画面に埋め込む)。
@@ -345,11 +367,6 @@
                     <div class="hm-pf-row">
                         <div class="hm-pf-lbl">ICON</div>
                         <div class="hm-pf-avwrap">${buildAvatarGridHTML(iconId)}</div>
-                    </div>
-
-                    <div class="hm-pf-row">
-                        <div class="hm-pf-lbl">ACHIEVEMENTS</div>
-                        <div class="hm-pf-achwrap">${buildAchievementsHTML()}</div>
                     </div>
 
                     <div class="hm-pf-row hm-pf-row-toggle">
@@ -665,6 +682,7 @@
         openProfile,
         openScores,
         openAbout,
+        openAchievements,
         // ホーム ⚙ (設定モーダル) から ABOUT / 進捗リセットを開けるように
         // 公開。従来はプロフィール画面フッタから呼んでいた。
         openResetConfirm,
