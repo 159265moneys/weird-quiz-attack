@@ -76,6 +76,8 @@
             try {
                 const cleanup = g.apply(ctx);
                 active.push({ gimmick: g, cleanup: cleanup || (() => {}) });
+                // 図鑑用: 一度でも発動したギミックは「確認済み」として記録。
+                window.Save?.markGimmickEncountered?.(g.id);
             } catch (e) {
                 console.error('[Gimmick] apply failed:', g.id, e);
             }

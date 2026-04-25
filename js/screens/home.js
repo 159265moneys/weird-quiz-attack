@@ -161,17 +161,24 @@
                         <div class="home-head-left">
                             <div class="home-head-ver">v${window.CONFIG.VERSION}</div>
                         </div>
-                        <div class="home-head-icons">
-                            <button class="home-head-icon" type="button" data-action="mail" aria-label="お知らせ">
-                                <img src="sprite/icons/header/mail.svg" alt="">
-                            </button>
-                            <button class="home-head-icon" type="button" data-action="settings" aria-label="設定">
-                                <img src="sprite/icons/header/settings.svg" alt="">
-                            </button>
-                            <button class="home-head-icon" type="button" data-action="achievements" aria-label="達成バッジ">
-                                <img src="sprite/icons/header/trophy.svg" alt="">
-                            </button>
-                        </div>
+                    </div>
+                    <!-- ヘッダ右上に縦に並べるアイコン群。
+                         home-head から外して home-screen 直下に置くことで
+                         position:absolute の containing block を home-screen
+                         (= canvas 全体) に取り、画面右端ピン留めにする。 -->
+                    <div class="home-head-icons">
+                        <button class="home-head-icon" type="button" data-action="mail" aria-label="お知らせ">
+                            <img src="sprite/icons/header/mail.svg" alt="">
+                        </button>
+                        <button class="home-head-icon" type="button" data-action="settings" aria-label="設定">
+                            <img src="sprite/icons/header/settings.svg" alt="">
+                        </button>
+                        <button class="home-head-icon" type="button" data-action="achievements" aria-label="達成バッジ">
+                            <img src="sprite/icons/header/trophy.svg" alt="">
+                        </button>
+                        <button class="home-head-icon" type="button" data-action="gimmickGuide" aria-label="ギミック図鑑">
+                            <img src="sprite/icons/header/encyclopedia.svg" alt="">
+                        </button>
                     </div>
 
                     ${buildStatsHTML()}
@@ -249,6 +256,11 @@
             document.querySelector('[data-action="achievements"]')?.addEventListener('click', () => {
                 window.SE?.fire?.('menuCursor');
                 window.HomeMenu?.openAchievements?.();
+            });
+
+            document.querySelector('[data-action="gimmickGuide"]')?.addEventListener('click', () => {
+                window.SE?.fire?.('menuCursor');
+                window.GimmickGuide?.open?.();
             });
 
             document.querySelector('[data-action="start"]')?.addEventListener('click', () => {

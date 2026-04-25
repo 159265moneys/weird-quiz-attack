@@ -60,6 +60,9 @@
             },
             // 達成バッジ。js/achievements.js のカタログ id を配列で保持。
             achievements: [],
+            // 図鑑用「過去に発動を見たことがあるギミック ID」の配列。
+            // 1度でも apply されたら追加。図鑑では未開放の場合 ??? 表示にする。
+            encounteredGimmicks: [],
             flags: {
                 tutorialDone: false,
             },
@@ -134,6 +137,10 @@
                 // achievements 配列の後方互換 (2026-04 追加)
                 if (!Array.isArray(this.data.achievements)) {
                     this.data.achievements = [];
+                }
+                // encounteredGimmicks 配列の後方互換 (2026-04 追加)
+                if (!Array.isArray(this.data.encounteredGimmicks)) {
+                    this.data.encounteredGimmicks = [];
                 }
                 // 旧セーブで既に jellyfish/tv/phonograph を選択してた人は
                 //   "没収しない" ポリシー: 選択中アイコンを所持扱いにする
@@ -427,6 +434,26 @@
         },
         getAchievements() {
             return (this.data?.achievements || []).slice();
+        },
+
+        // --- 図鑑: ギミック発動履歴 ---
+        // 1度でも実際の出題で apply されたギミック ID を蓄積。
+        // 図鑑は未発動 (= 未確認) のものを ??? 表示にしてネタバレを防ぐ。
+        markGimmickEncountered(id) {
+            if (!this.data) return false;
+            if (typeof id !== 'string' || id.length === 0) return false;
+            if (!Array.isArray(this.data.encounteredGimmicks)) this.data.encounteredGimmicks = [];
+            const list = this.data.encounteredGimmicks;
+            if (list.includes(id)) return false;
+            list.push(id);
+            this.persist();
+            return true;
+        },
+        hasEncounteredGimmick(id) {
+            return (this.data?.encounteredGimmicks || []).includes(id);
+        },
+        getEncounteredGimmicks() {
+            return (this.data?.encounteredGimmicks || []).slice();
         },
 
         // iconId を解放。新規解放なら true を返す (呼び出し側で popup 演出に利用)。

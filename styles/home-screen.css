@@ -127,10 +127,18 @@
     color: var(--text-mute);
     letter-spacing: 3px;
 }
+/* 4つのアイコンを画面右端に縦並びでピン留め。
+   home-head の外に出してあるので containing block は home-screen (= canvas 全体)。
+   絶対座標 (px) は canvas の 1080x... 仮想座標系。 */
 .home-head-icons {
+    position: absolute;
+    top: 40px;
+    right: 40px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
+    z-index: 12;
 }
 .home-head-icon {
     appearance: none;
