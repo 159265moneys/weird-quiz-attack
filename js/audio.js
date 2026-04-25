@@ -88,7 +88,18 @@
         const url = BASE + encodeURI(path);
         const p = fetch(url)
             .then((r) => {
-                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                // iOS WKWebView (Capacitor) はメディアファイル (.mp3/.m4a/.aac/.wav)
+                // を fetch すると最適化のため HTTPURLResponse ではなく URLResponse を
+                // 返す。結果 r.status は 0 / r.ok は false になるが、これは "エラー"
+                // ではなく仕様 (bytes はちゃんと付いてくる)。
+                //   ref: https://github.com/ionic-team/capacitor/issues/7794
+                // ここで !r.ok を信じて throw すると Capacitor iOS では全 SE が
+                // 読み込み失敗扱いとなり、SE が一切鳴らなくなる症状が出る。
+                // status===0 (メディア最適化経路) は許容、それ以外の本物のエラー
+                // (404 / 500 等) のみ throw する。
+                if (r.status !== 0 && !r.ok) {
+                    throw new Error(`HTTP ${r.status}`);
+                }
                 return r.arrayBuffer();
             })
             .then((ab) => new Promise((resolve, reject) => {
