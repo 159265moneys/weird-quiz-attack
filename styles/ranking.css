@@ -20,76 +20,57 @@
    導入で廃止。.rk-title / .btn-back 用のスタイルも削除済み。
    余白も共通 (margin-bottom:28px) をそのまま使う。 */
 
-/* --- ステージナビ (カルーセル形式) -----------------------------
-   current を中央・左右に 1 個ずつ (約半分) 見せる。両端は ◀ / ▶ ボタン。
-   viewport で overflow:hidden、track を transform:translateX でスライド。
+/* --- ステージナビ (左寄せカルーセル) ----------------------------
+   - active カードは viewport の左端にピタッと貼り付く
+   - 右側には「次ステージの左端だけ」が peek (--rk-peek 分)
+   - prev (左) は viewport 外にハミ出るので peek しない
+   - stage 10 は next が無いので右側 peek スロットが空白になる (仕様)
+   - 矢印は廃止 (右 peek タップ + 左右スワイプで切替)
 ---------------------------------------------------------------- */
 .rk-stage-bar {
     display: flex;
     align-items: stretch;
-    gap: 10px;
-    padding: 6px 2px 14px 2px;
+    padding: 6px 0 14px 0;
     border-bottom: 1px solid var(--line-dim);
     margin-bottom: 14px;
-}
-.rk-stage-arrow {
-    flex: 0 0 auto;
-    width: 72px;
-    background: var(--box-bg);
-    border: 2px solid var(--line);
-    color: var(--text-on-dark);
-    font-family: inherit;
-    font-size: 32px;
-    line-height: 1;
-    cursor: pointer;
-    box-shadow: 3px 3px 0 var(--line);
-}
-.rk-stage-arrow:active {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 var(--line);
-}
-.rk-stage-arrow:disabled {
-    opacity: 0.28;
-    cursor: not-allowed;
-    box-shadow: none;
+    /* peek の幅 (= 次カードの左端が見える量 + 隙間) */
+    --rk-peek: 92px;
+    --rk-gap: 16px;
 }
 
 .rk-stage-viewport {
     flex: 1 1 auto;
-    min-width: 0;            /* flex の縮み確保 (overflow:hidden と合わせる) */
+    min-width: 0;
     overflow: hidden;
     position: relative;
-    /* 無選択のタブ peek をフェードで見せる (端でスッと消える) */
+    /* 右端だけ淡くフェードして peek を「続いてる感」に。左は active 端なのでフェード不要 */
     mask-image: linear-gradient(
         to right,
-        transparent 0,
-        #000 16px,
-        #000 calc(100% - 16px),
+        #000 0,
+        #000 calc(100% - 18px),
         transparent 100%
     );
     -webkit-mask-image: linear-gradient(
         to right,
-        transparent 0,
-        #000 16px,
-        #000 calc(100% - 16px),
+        #000 0,
+        #000 calc(100% - 18px),
         transparent 100%
     );
 }
 
 .rk-stage-track {
     display: flex;
-    gap: 18px;
+    gap: var(--rk-gap);
     transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform;
     /* 初期位置: JS が layoutTrack で上書きする */
 }
 
 .rk-stage-btn {
-    /* viewport の約 52% 幅 → 左右にほぼ半タブ分 (peek) が覗く配置。
-       min-width でナロー端末でもタブ自体が潰れすぎないよう下限保証。 */
-    flex: 0 0 52%;
-    min-width: 220px;
-    padding: 18px 14px;
+    /* active を左端に貼り付けたとき、右側に peek 分だけ次カードが顔を出す */
+    flex: 0 0 calc(100% - var(--rk-peek));
+    min-width: 0;
+    padding: 18px 22px;
     background: var(--box-bg);
     border: 2px solid var(--line-dim);
     color: var(--text-on-dark);
@@ -97,15 +78,13 @@
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;       /* 中身も左寄せに統一 */
     justify-content: center;
-    gap: 6px;
-    text-align: center;
-    opacity: 0.5;
-    transform: scale(0.88);
+    gap: 4px;
+    text-align: left;
+    opacity: 0.45;
     transition:
         opacity 260ms ease,
-        transform 260ms ease,
         background 260ms ease,
         border-color 260ms ease,
         box-shadow 260ms ease;
@@ -113,23 +92,24 @@
 .rk-stage-btn.is-dim { opacity: 0.3; }
 .rk-stage-btn.is-active {
     opacity: 1;
-    transform: scale(1);
     background: var(--bg-elevated);
     border-color: var(--accent-cyan);
     box-shadow: 4px 4px 0 var(--accent-cyan-dim);
 }
 .rk-stage-btn-no {
-    font-size: 30px;
+    font-size: 36px;
     letter-spacing: 3px;
     font-weight: 800;
     color: var(--text-dim);
+    line-height: 1;
 }
 .rk-stage-btn.is-active .rk-stage-btn-no {
-    font-size: 44px;
+    font-size: 48px;
     color: var(--accent-cyan);
+    text-shadow: 0 0 12px var(--accent-cyan-dim, rgba(0,255,240,0.45));
 }
 .rk-stage-btn-name {
-    font-size: 16px;
+    font-size: 18px;
     letter-spacing: 1.5px;
     color: var(--text-faint);
     max-width: 100%;
@@ -140,6 +120,12 @@
 .rk-stage-btn.is-active .rk-stage-btn-name {
     font-size: 22px;
     color: var(--text-on-dark);
+}
+
+/* ◀ / ▶ ボタンは左寄せレイアウトでは邪魔なので非表示。
+   既存マークアップを温存しつつスタイルだけ消す (スワイプ + peek タップで操作) */
+.rk-stage-arrow {
+    display: none;
 }
 
 /* --- 参加 OFF バナー --- */

@@ -105,6 +105,11 @@
         if (!limit) limit = 100;
         await load();
         const myId = window.Save?.getPlayerId?.() || null;
+        // _self 行に表示する identity は提出時のスナップショットではなく、
+        //   今プロフィールで設定されている最新値 (アバター変更を即座に反映する)
+        const myCurrentName = window.Save?.getPlayerDisplayName?.() || null;
+        const myCurrentIcon = window.Save?.getPlayerIcon?.() || null;
+
         const myLatestByStage = {};
         // 自分のベストだけ残す (同じステージで複数送信してたら最高スコア 1 件)
         for (const e of readSubmissions()) {
@@ -119,11 +124,19 @@
         const merged = bots.concat(mine).slice();
         merged.sort(sortLeaderboard);
 
-        // _self マーキング
-        return merged.slice(0, limit).map((e) => ({
-            ...e,
-            _self: !!(myId && e.playerId === myId),
-        }));
+        // _self マーキング + 自分の identity を最新化
+        return merged.slice(0, limit).map((e) => {
+            const isSelf = !!(myId && e.playerId === myId);
+            if (isSelf) {
+                return {
+                    ...e,
+                    _self: true,
+                    displayName: myCurrentName || e.displayName,
+                    iconId: myCurrentIcon != null ? myCurrentIcon : e.iconId,
+                };
+            }
+            return { ...e, _self: false };
+        });
     }
 
     // --- API: 送信 ---

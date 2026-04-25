@@ -80,30 +80,30 @@
         `;
     }
 
-    // viewport 内で currentStage のボタンが中央に来るように track の translateX を計算。
-    // リサイズ/初回で同期する。animate=false で初期配置時の transition を抑制。
+    // active ボタンを viewport の **左端** に揃えるように track の translateX を計算。
+    //   - 右側には次ステージの左端だけが peek するレイアウト (CSS 側でカード幅を絞る)
+    //   - prev は track 外 (左にハミ出る) なので peek しない
+    //   - 単位は offsetLeft / offsetWidth で統一: getBoundingClientRect() は
+    //     #stage に掛かった transform: scale(...) でデバイス px に変換されるため、
+    //     offsetWidth (キャンバス px) と混在させると idx が増えるほど誤差が雪だるま
+    //     式に膨らんで active が画面外に飛んでいく既知バグになる。
     function layoutTrack(root, animate = true) {
-        const viewport = root.querySelector('.rk-stage-viewport');
         const track = root.querySelector('.rk-stage-track');
-        if (!viewport || !track) return;
+        if (!track) return;
         const btns = track.querySelectorAll('.rk-stage-btn');
         if (!btns.length) return;
-        // 先頭ボタンを基準に 1 個あたりの幅 + gap を算出
-        const firstRect = btns[0].getBoundingClientRect();
-        const secondRect = btns[1] ? btns[1].getBoundingClientRect() : null;
-        const step = secondRect ? (secondRect.left - firstRect.left) : firstRect.width;
-        const vw = viewport.offsetWidth;
+        const step = btns[1]
+            ? (btns[1].offsetLeft - btns[0].offsetLeft)
+            : btns[0].offsetWidth;
         const idx = Math.min(btns.length - 1, Math.max(0, currentStage - 1));
-        const offset = (vw - firstRect.width) / 2 - idx * step;
+        // 左寄せ: active カードを viewport 左端に配置
+        const offset = -idx * step;
         if (!animate) {
             track.style.transition = 'none';
         }
         track.style.transform = `translateX(${offset}px)`;
         if (!animate) {
-            // 次フレームで transition を戻す
-            requestAnimationFrame(() => {
-                track.style.transition = '';
-            });
+            requestAnimationFrame(() => { track.style.transition = ''; });
         }
     }
 
