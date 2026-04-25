@@ -112,15 +112,13 @@
         return svg;
     }
 
-    let mountedSvg = null;
+    let mountedRoot = null;
 
     const HomeBackdrop = {
         // 旧 API は canvas 要素を引数に受け取っていた。互換のため引数は受けるが、
-        // 中身は SVG 差し替えに変更。受け取った要素は SVG に置換 or 削除する。
+        // 中身は SVG 差し替えに変更。受け取った要素は削除する。
         mount(targetEl) {
             this.unmount();
-            // home.js の render() が <canvas class="home-bg-canvas"> を埋め込んでいる。
-            // canvas 自体は完全不要なので親に空 SVG を挿し直す。
             let parent = null;
             if (targetEl && targetEl.parentNode) {
                 parent = targetEl.parentNode;
@@ -129,15 +127,20 @@
                 parent = document.querySelector('.home-screen');
             }
             if (!parent) return;
-            mountedSvg = buildSvg();
+            // perspective を持つ stage div で SVG を包んで 3D 回転させる
+            const stage = document.createElement('div');
+            stage.className = 'home-bg-poly-stage';
+            stage.setAttribute('aria-hidden', 'true');
+            stage.appendChild(buildSvg());
+            mountedRoot = stage;
             // 背景レイヤとして 一番先頭 に挿入 (z-index は CSS 側で -1)
-            parent.insertBefore(mountedSvg, parent.firstChild);
+            parent.insertBefore(mountedRoot, parent.firstChild);
         },
         unmount() {
-            if (mountedSvg && mountedSvg.parentNode) {
-                mountedSvg.parentNode.removeChild(mountedSvg);
+            if (mountedRoot && mountedRoot.parentNode) {
+                mountedRoot.parentNode.removeChild(mountedRoot);
             }
-            mountedSvg = null;
+            mountedRoot = null;
         },
     };
 

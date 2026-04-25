@@ -46,11 +46,12 @@
    現実装は静的 SVG を 1 度だけ生成し、CSS @keyframes で transform 回転のみ。
    GPU 上では「テクスチャ 1 枚を回転 compositing」 する処理しか走らないので
    ほぼゼロコスト。絶対に落ちない設計。 */
-.home-bg-poly {
+/* 多面体本体は SVG。GPU compositor が transform を 1 枚のレイヤに対して
+   matrix 計算 するだけなので 3D 回転でもほぼ無コスト。
+   - .home-bg-poly-stage: perspective を持つ親 (3D 視差)
+   - .home-bg-poly:        rotateX / rotateY / rotateZ で多軸回転 */
+.home-bg-poly-stage {
     position: absolute;
-    /* 中央 1 画面分の大きさで回転させる (画面四隅まで届かなくて OK)。
-       回転で四隅が動いてもクリップされて見えないようにフルスクリーンでは無く
-       中央 90vmin の正方形として配置。 */
     top: 50%;
     left: 50%;
     width: min(150vmin, 100%);
@@ -58,18 +59,23 @@
     transform: translate(-50%, -50%);
     pointer-events: none;
     z-index: -1;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+}
+.home-bg-poly {
+    width: 100%;
+    height: 100%;
     opacity: 0.9;
     will-change: transform;
-    animation: homePolySpin 60s linear infinite;
     transform-origin: center center;
-}
-.home-bg-poly > * {
-    /* SVG 内部要素は動かない。回転は <svg> 自体に対してのみ */
-    transform-box: fill-box;
+    animation: homePolySpin 24s linear infinite;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
 }
 @keyframes homePolySpin {
-    0%   { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
+    0%   { transform: rotateX(0deg)   rotateY(0deg)   rotateZ(0deg); }
+    50%  { transform: rotateX(180deg) rotateY(360deg) rotateZ(60deg); }
+    100% { transform: rotateX(360deg) rotateY(720deg) rotateZ(120deg); }
 }
 
 /* --- ヘッダー --- */
