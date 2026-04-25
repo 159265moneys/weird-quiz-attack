@@ -1024,26 +1024,34 @@
                     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
                 }[c]));
             }
-            // 本物の行にもノイズを前後に混ぜて紛れ込ませる:
-            // 「本物行だけ左端から始まる/予測可能な位置」の手掛かりを潰す。
-            // インデント幅・接頭/接尾ノイズ長は控えめにし、本物の問題文が
-            // 画面右端で切れて読めなくなるのを避ける。
-            const LINES = 12;
+            // 2026-04 改修: 問題文エリアをノイズで埋め尽くす。
+            //   .q-zone-question は 1080-canvas で 960×660px。28px Courier の
+            //   モノスペース字幅 ≒ 14px、行高 ≒ 32px なので、最大で
+            //     縦: ~20 行 / 横: ~60 文字
+            //   詰められる。本物の問題文は最大でも約 30 文字なので、本物以外
+            //   全行を 40〜55 文字のノイズで埋める。本物行も pre/post に
+            //   ノイズを 8〜18 文字ずつ入れて全体長を揃える (= 行の長さで
+            //   見分けがつかないようにする)。
+            //   インデントは 0〜40px のランダム (本物だけ揃った位置にしない)。
+            // 22 行は下端がクリップされて本物が読めなくなるリスクがある
+            // (28px * 1.1 * 22 + padding ≒ 694px > q-zone 660px)。
+            // 確実に全行表示できる 20 行に固定。
+            const LINES = 20;
             const realLineIdx = Math.floor(Math.random() * LINES);
 
             function realLine() {
-                const pre = randStr(0, 2);
-                const post = randStr(0, 2);
+                const pre = randStr(8, 18);
+                const post = randStr(8, 18);
                 return `${pre}${originalText}${post}`;
             }
             const out = [];
             for (let i = 0; i < LINES; i++) {
-                const indent = Math.floor(Math.random() * 40);  // 0..40px (旧: 0..140px)
+                const indent = Math.floor(Math.random() * 40);  // 0..40px
                 const style = `padding-left:${indent}px;`;
                 if (i === realLineIdx) {
                     out.push(`<span class="gk-b17-line gk-b17-real" style="${style}">${esc(realLine())}</span>`);
                 } else {
-                    out.push(`<span class="gk-b17-line" style="${style}">${esc(randStr(6, 18))}</span>`);
+                    out.push(`<span class="gk-b17-line" style="${style}">${esc(randStr(40, 55))}</span>`);
                 }
             }
             stem.classList.add('gk-b17-noise');

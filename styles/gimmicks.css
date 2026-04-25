@@ -608,10 +608,11 @@
 .q-stem.gk-b17-noise {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 12px 20px;
+    /* 2026-04: 行を最大限詰めてエリアをノイズで埋め尽くす */
+    gap: 0;
+    padding: 8px 20px;
     font-size: 28px;
-    line-height: 1.15;
+    line-height: 1.1;
     letter-spacing: 0;
     text-align: left;
     overflow: hidden;
@@ -999,7 +1000,8 @@
 .q-stem.gk-b24-scroll .gk-b24-track {
     display: inline-block;
     white-space: nowrap;
-    animation: gkB24Marquee 12s linear infinite;
+    /* 2026-04: ユーザ要望でスピード 3 倍 (12s → 4s) */
+    animation: gkB24Marquee 4s linear infinite;
     will-change: transform;
 }
 .q-stem.gk-b24-scroll .gk-b24-seg {

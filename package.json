@@ -10,7 +10,8 @@
     "cap:open:android": "npx cap open android",
     "cap:run:ios": "npm run build && npx cap sync ios && npx cap run ios",
     "assets:generate": "npx @capacitor/assets generate --iconBackgroundColor \"#ffffff\" --iconBackgroundColorDark \"#0a0a0a\" --splashBackgroundColor \"#0a0a0a\" --splashBackgroundColorDark \"#0a0a0a\"",
-    "seed:ranking": "node tools/seed_ranking.js"
+    "seed:ranking": "node tools/seed_ranking.js",
+    "gen:thumbs": "node scripts/gen-gimmick-thumbs.js"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.1",
@@ -24,6 +25,7 @@
     "@capacitor/status-bar": "^8.0.2"
   },
   "devDependencies": {
+    "puppeteer": "^24.42.0",
     "typescript": "^6.0.3"
   }
 }

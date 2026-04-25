@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>thumb-gen</title>
+<!-- 本番と同じ CSS を全部読む。サムネは実 DOM レンダリング結果のスナップショット。 -->
+<link rel="stylesheet" href="../styles/base.css">
+<link rel="stylesheet" href="../styles/screens.css">
+<link rel="stylesheet" href="../styles/keyboard.css">
+<link rel="stylesheet" href="../styles/gimmicks.css">
+<link rel="stylesheet" href="../styles/effects.css">
+<style>
+    /* puppeteer の viewport を 1080×1080 にして、ここで question-screen を
+       1080×1920 で描画。スクショは page 全体を撮ってトリミングする。 */
+    html, body {
+        margin: 0;
+        padding: 0;
+        background: #050609;
+        width: 1080px;
+        /* ページ高さは 1920 確保。スクショ時は puppeteer 側で clip 指定する。 */
+        height: 1920px;
+        overflow: hidden;
+    }
+    #stage {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+    }
+    /* 本番の .screen.question-screen と同じ条件を作る。
+       --canvas-h は 1920 固定 (CSS の絶対配置がこれ前提)。 */
+    .question-screen {
+        position: absolute;
+        inset: 0;
+        width: 1080px;
+        height: 1920px;
+        --canvas-h: 1920px;
+        background: var(--canvas-bg, #050609);
+        overflow: hidden;
+        isolation: isolate;
+    }
+</style>
+</head>
+<body>
+<div id="stage">
+    <div class="screen question-screen" id="sample">
+        <div class="q-zone-header">
+            <div class="q-header"><span>STAGE 5</span><span>03 / 05</span></div>
+            <div class="q-timer-bar"><div class="q-timer-fill" style="width:65%"></div></div>
+        </div>
+        <div class="q-zone-question">
+            <div class="q-stem">これはサンプル問題文です</div>
+        </div>
+        <div class="q-zone-answer is-choice">
+            <div class="q-choices">
+                <button type="button" class="q-choice">えらぶ いち</button>
+                <button type="button" class="q-choice">えらぶ に</button>
+                <button type="button" class="q-choice">えらぶ さん</button>
+                <button type="button" class="q-choice">えらぶ よん</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ギミック apply に必要な最小依存だけ。Save / SE / Audio はモック化。 -->
+<script>
+    // 必要最低限のグローバル mock。実プレイ時のグローバル群を疑似する。
+    window.SE = { fire: function () {} };
+    window.BGM = { fadeOut: function () {}, fadeIn: function () {}, stop: function () {}, play: function () {}, setVolume: function () {} };
+    window.Save = {
+        markGimmickEncountered: function () {},
+        getEncounteredGimmicks: function () { return []; },
+        hasEncounteredGimmick: function () { return true; },
+    };
+    window.Haptics = { tap: function () {}, success: function () {}, fail: function () {} };
+    window.NavigatorBox = { say: function () {}, hide: function () {} };
+    window.CONFIG = window.CONFIG || {};
+</script>
+<script src="../js/gimmicks/registry.js"></script>
+
+<script>
+(function () {
+    const sampleEl = document.getElementById('sample');
+    const QUESTIONS = [
+        'これはサンプル問題文です',
+        '正しい答えを選んでください',
+        '本物の問題はどれでしょう',
+    ];
+    const CHOICES_BASE = ['えらぶ いち', 'えらぶ に', 'えらぶ さん', 'えらぶ よん'];
+
+    // stem / choices / その他 sample 直下の追加要素を完全リセット。
+    function resetDom() {
+        const stem = sampleEl.querySelector('.q-stem');
+        const zoneQ = sampleEl.querySelector('.q-zone-question');
+        const zoneA = sampleEl.querySelector('.q-zone-answer');
+        const choicesWrap = sampleEl.querySelector('.q-choices');
+
+        if (stem) {
+            stem.textContent = QUESTIONS[0];
+            stem.removeAttribute('style');
+            stem.className = 'q-stem';
+        }
+        if (zoneQ) {
+            zoneQ.removeAttribute('style');
+            zoneQ.className = 'q-zone-question';
+        }
+        if (zoneA) {
+            zoneA.removeAttribute('style');
+            zoneA.className = 'q-zone-answer is-choice';
+        }
+        if (choicesWrap) {
+            choicesWrap.removeAttribute('style');
+            choicesWrap.className = 'q-choices';
+        }
+        const choices = sampleEl.querySelectorAll('.q-choice');
+        choices.forEach((c, i) => {
+            c.textContent = CHOICES_BASE[i] || `えらぶ ${i+1}`;
+            c.removeAttribute('style');
+            c.className = 'q-choice';
+        });
+        // sample 直下に動的追加された overlay を全部消す
+        const keep = new Set([
+            sampleEl.querySelector('.q-zone-header'),
+            sampleEl.querySelector('.q-zone-question'),
+            sampleEl.querySelector('.q-zone-answer'),
+        ]);
+        Array.from(sampleEl.children).forEach(el => {
+            if (!keep.has(el)) el.remove();
+        });
+        sampleEl.className = 'screen question-screen';
+    }
+
+    let curCleanup = null;
+
+    window.__resetSample = function () {
+        try { curCleanup && curCleanup(); } catch (e) { /* ignore */ }
+        curCleanup = null;
+        resetDom();
+    };
+
+    window.__applyGimmick = function (id) {
+        const g = (window.GimmickRegistry?.all || []).find(x => x.id === id);
+        if (!g) return false;
+        // ギミックは ctx.q / ctx.screen / ctx.zones を読むので最小ダミーを渡す。
+        const ctx = {
+            q: {
+                id: 'GG_THUMB',
+                mode: 'choice',
+                question: QUESTIONS[0],
+                choices: CHOICES_BASE.slice(),
+                answer: 0,
+            },
+            screen: sampleEl,
+            zones: {
+                header: sampleEl.querySelector('.q-zone-header'),
+                question: sampleEl.querySelector('.q-zone-question'),
+                answer: sampleEl.querySelector('.q-zone-answer'),
+            },
+        };
+        try {
+            curCleanup = g.apply(ctx) || (() => {});
+            return true;
+        } catch (e) {
+            console.error('apply failed:', id, e);
+            curCleanup = () => {};
+            return false;
+        }
+    };
+
+    window.__listGimmicks = function () {
+        return (window.GimmickRegistry?.all || []).map(g => ({
+            id: g.id,
+            cat: String(g.id).charAt(0),
+            supports: g.supports,
+        }));
+    };
+
+    window.__ready = true;
+})();
+</script>
+</body>
+</html>

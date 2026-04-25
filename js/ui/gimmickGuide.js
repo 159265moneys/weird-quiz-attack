@@ -168,73 +168,27 @@
         `;
     }
 
-    // ギミック毎のサムネ HTML を生成。各効果を視覚的に示す静止画 (CSS-only)。
-    // 53 個分すべてに固有のサムネを与える。可能な限り「EXAMPLE」テキストや
-    // UI 風の小さい矩形でその効果が一目で分かるように作る。
+    // ギミック毎のサムネ HTML を生成。
+    //   - 大半 (B/C/G) は scripts/gen-gimmick-thumbs.js が
+    //     実 DOM レンダリングしてキャプチャした PNG を使う
+    //     (sprite/gimmick-thumbs/{ID}.png)。
+    //   - W (キーボード/入力系) はサンプル DOM にキーボードが無いので
+    //     キャプチャ対象外 → カテゴリ別のシンプルな静止アートで代替。
+    //   - PNG が無い場合は fallback としてカテゴリ別アートを返す。
+    const PNG_AVAILABLE = new Set([
+        'B01','B02','B03','B04','B05','B06','B07','B08','B09','B10',
+        'B11','B12','B13','B15','B16','B17','B18','B20','B21','B22',
+        'B23','B24','B25','B26','B27','B28','B29','B30','B31','B32',
+        'B33','B34','B35','B36','B37','B38','B39','B40',
+        'C01','C02','C03','C04',
+        'G1','G4','G5','G7',
+    ]);
+
     function buildThumbInner(id) {
-        switch (id) {
-            // ---- B (問題文/画面系) ----
-            case 'B01': return '<div class="gt-flip-tap">↓<br>↑</div>';
-            case 'B02': return '<div class="gt-typewriter">EXA<i></i></div>';
-            case 'B03': return '<div class="gt-mirror">EXAMPLE</div>';
-            case 'B04': return '<div class="gt-zoom">EXAMPLE</div>';
-            case 'B05': return '<div class="gt-hflip">EXAMPLE</div>';
-            case 'B06': return '<div class="gt-rainbow">EXAMPLE</div>';
-            case 'B07': return '<div class="gt-glitch" data-text="EXAMPLE">EXAMPLE</div>';
-            case 'B08': return '<div class="gt-fade">EXAMPLE</div>';
-            case 'B09': return '<div class="gt-shrink">EX</div>';
-            case 'B10': return '<div class="gt-homog">口口口口</div>';
-            case 'B11': return '<div class="gt-beam"></div>';
-            case 'B12': return '<div class="gt-blur">EXAMPLE</div>';
-            case 'B13': return '<div class="gt-tiny">EXAMPLE</div>';
-            case 'B15': return '<div class="gt-reverse">ELPMAXE</div>';
-            case 'B16': return '<div class="gt-countdown"><span>00:03</span></div>';
-            case 'B17': return '<div class="gt-noise-text"><span>x▓░▓Λ#</span><span>EXAMPLE</span><span>%▓░※x</span></div>';
-            case 'B18': return '<div class="gt-error">ERROR!</div>';
-            case 'B20': return '<div class="gt-blackout"></div>';
-            case 'B21': return '<div class="gt-trap">EXAMPLE<i></i></div>';
-            case 'B22': return '<div class="gt-double" data-text="EXAMPLE">EXAMPLE</div>';
-            case 'B23': return '<div class="gt-redact">EX<i></i>PLE</div>';
-            case 'B24': return '<div class="gt-marquee">EXAMPLE»»</div>';
-            case 'B25': return '<div class="gt-mascot"></div>';
-            case 'B26': return '<div class="gt-randcolor"><b>E</b><b>X</b><b>A</b><b>M</b><b>P</b><b>L</b><b>E</b></div>';
-            case 'B27': return '<div class="gt-drop">E A P E</div>';
-            case 'B28': return '<div class="gt-mixsize"><b>E</b><i>x</i><b>A</b><i>m</i><b>P</b></div>';
-            case 'B29': return '<div class="gt-bounce">EX</div>';
-            case 'B30': return '<div class="gt-spiral">EX</div>';
-            case 'B31': return '<div class="gt-pale">EXAMPLE</div>';
-            case 'B32': return '<div class="gt-tilt">EXAMPLE</div>';
-            case 'B33': return '<div class="gt-scanlines"></div>';
-            case 'B34': return '<div class="gt-jitter">EXAMPLE</div>';
-            case 'B35': return '<div class="gt-scanbar"></div>';
-            case 'B36': return '<div class="gt-bubble">!?</div>';
-            case 'B37': return '<div class="gt-sticky">MEMO</div>';
-            case 'B38': return '<div class="gt-qrain">?<span>?</span><i>?</i><b>?</b></div>';
-            case 'B39': return '<div class="gt-notif"><span></span><b>NOTICE</b></div>';
-            case 'B40': return '<div class="gt-danmaku"><span>www</span><b>草草草</b></div>';
-            // ---- C (選択肢系) ----
-            case 'C01': return '<div class="gt-shuffle"><b>3</b><b>1</b><b>4</b><b>2</b></div>';
-            case 'C02': return '<div class="gt-cnoise">A▓C░E</div>';
-            case 'C03': return '<div class="gt-blackchoice"><b></b><b></b><i></i><b></b></div>';
-            case 'C04': return '<div class="gt-5050"><b></b><b></b><i></i><i></i></div>';
-            // ---- W (キーボード/入力系) ----
-            case 'W01': return '<div class="gt-keypad gt-keypad-fade"></div>';
-            case 'W02': return '<div class="gt-keypad gt-keypad-shuffle"></div>';
-            case 'W03': return '<div class="gt-noinput"></div>';
-            case 'W04': return '<div class="gt-offsetkey">A<span>→</span>B</div>';
-            case 'W06': return '<div class="gt-reverse-in">ELPMAXE</div>';
-            case 'W07': return '<div class="gt-autodel">EXA<span>←</span></div>';
-            case 'W08': return '<div class="gt-keypad gt-keypad-shuffle"></div>';
-            case 'W09': return '<div class="gt-doublekey">EEEXAA</div>';
-            case 'W18': return '<div class="gt-keypad gt-keypad-missing"></div>';
-            case 'W20': return '<div class="gt-flick">↓ ↑<br>← →</div>';
-            // ---- G (Stage10 ボス) ----
-            case 'G1': return '<div class="gt-skull"></div>';
-            case 'G4': return '<div class="gt-corrupt">▓░Λ#</div>';
-            case 'G5': return '<div class="gt-warp"><b></b><b></b><b></b><b></b></div>';
-            case 'G7': return '<div class="gt-insult">!?</div>';
+        if (PNG_AVAILABLE.has(id)) {
+            return `<img class="gg-thumb-img" src="sprite/gimmick-thumbs/${escapeHTML(id)}.png" alt="" loading="lazy" decoding="async" />`;
         }
-        // Fallback (未登録 id): カテゴリ別の幾何モチーフ
+        // フォールバック (W 系): カテゴリ別の幾何モチーフ
         const cat = String(id).charAt(0);
         return `<div class="gg-thumb-art gg-thumb-art-${cat}"></div>`;
     }

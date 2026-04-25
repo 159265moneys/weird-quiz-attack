@@ -203,9 +203,11 @@
     letter-spacing: 0.18em;
 }
 
-/* サムネ (静止)。カテゴリ別の幾何モチーフのみ。テキストは載せない。 */
+/* サムネ (静止)。
+   2026-04: scripts/gen-gimmick-thumbs.js がキャプチャした 1080×1080 PNG を
+   使うので 1:1。W (キーボード系) のみ CSS フォールバックアート。 */
 .gimmick-guide-screen .gg-thumb {
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 1 / 1;
     border-radius: 16px;
     border: 2px solid rgba(255,255,255,0.10);
     display: flex;
@@ -215,9 +217,17 @@
     position: relative;
     background: linear-gradient(180deg, #16202d 0%, #0c1118 100%);
 }
-/* POPUP 内のサムネは元のサイズ感に戻す */
+/* PNG サムネは枠いっぱいに敷き詰め (cover で四隅まで埋める) */
+.gimmick-guide-screen .gg-thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+}
+/* POPUP 内のサムネは元のサイズ感に戻す (現状 popup ではサムネは出してない) */
 .gg-popup .gg-thumb {
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 1 / 1;
     border-radius: 8px;
     border: 1px solid rgba(255,255,255,0.10);
     display: flex;
