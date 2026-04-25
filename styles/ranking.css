@@ -20,114 +20,80 @@
    導入で廃止。.rk-title / .btn-back 用のスタイルも削除済み。
    余白も共通 (margin-bottom:28px) をそのまま使う。 */
 
-/* --- ステージナビ (左寄せカルーセル) ----------------------------
-   - active カードは viewport の左端にピタッと貼り付く
-   - 右側には「次ステージの左端だけ」が peek (--rk-peek 分)
-   - prev (左) は viewport 外にハミ出るので peek しない
-   - stage 10 は next が無いので右側 peek スロットが空白になる (仕様)
-   - 矢印は廃止 (右 peek タップ + 左右スワイプで切替)
+/* --- ステージナビ (横スクロールチップ列) ------------------------
+   要件:
+     - 10 ステージを 数字チップ (01..10) として横一列に並べる
+     - active チップだけ大きく + シアン枠/グロウ
+     - inactive は小さく+ dim
+     - 横方向 overflow-x: auto でスクロール、active が常に画面内に来るよう
+       JS から scrollIntoView で寄せる
+     - ステージ名 (TUTORIAL ZONE 等) はナビには出さず、下の rk-stage-head に出す
+     - 左右スワイプ (画面全体) でも切替可
 ---------------------------------------------------------------- */
 .rk-stage-bar {
-    display: flex;
-    align-items: stretch;
-    padding: 6px 0 14px 0;
+    padding: 8px 0 14px 0;
     border-bottom: 1px solid var(--line-dim);
     margin-bottom: 14px;
-    /* バーが空っぽに潰れないよう最低高さを確保 (JS でカード幅確定するまでの初期値) */
-    min-height: 116px;
 }
 
-.rk-stage-viewport {
-    flex: 1 1 auto;
-    min-width: 0;
-    overflow: hidden;
-    position: relative;
-    /* 右端だけ淡くフェードして peek を「続いてる感」に。左は active 端なのでフェード不要 */
-    mask-image: linear-gradient(
-        to right,
-        #000 0,
-        #000 calc(100% - 18px),
-        transparent 100%
-    );
-    -webkit-mask-image: linear-gradient(
-        to right,
-        #000 0,
-        #000 calc(100% - 18px),
-        transparent 100%
-    );
-}
-
-.rk-stage-track {
+.rk-stage-chips {
     display: flex;
     flex-wrap: nowrap;
-    /* gap / カード幅は JS の layoutTrack() がインライン style で確定させる。
-       CSS の % flex-basis や calc/var の解釈ブレ (WKWebView) に依存しない。 */
-    transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: transform;
+    align-items: center;
+    gap: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 4px;
+    scroll-behavior: smooth;
+    scroll-padding: 0 24px;
+    -webkit-overflow-scrolling: touch;
+    /* スクロールバーは消す (iOS は元々非表示だが念のため) */
+    scrollbar-width: none;
 }
+.rk-stage-chips::-webkit-scrollbar { display: none; }
 
-.rk-stage-btn {
-    /* width / flex-basis は JS が確定。ここではフォールバック値だけ与える。 */
+.rk-chip {
     flex: 0 0 auto;
-    width: 600px;
-    min-width: 120px;
-    min-height: 96px;
-    padding: 18px 22px;
+    box-sizing: border-box;
+    min-width: 92px;
+    height: 84px;
+    padding: 0 18px;
     background: var(--box-bg);
     border: 2px solid var(--line-dim);
-    color: var(--text-on-dark);
+    color: var(--text-dim);
     font-family: inherit;
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    line-height: 1;
     cursor: pointer;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;       /* 中身も左寄せに統一 */
+    align-items: center;
     justify-content: center;
-    gap: 4px;
-    text-align: left;
-    opacity: 0.45;
     transition:
-        opacity 260ms ease,
-        background 260ms ease,
-        border-color 260ms ease,
-        box-shadow 260ms ease;
+        min-width 220ms ease,
+        height 220ms ease,
+        font-size 220ms ease,
+        color 220ms ease,
+        border-color 220ms ease,
+        background 220ms ease,
+        box-shadow 220ms ease,
+        opacity 220ms ease;
 }
-.rk-stage-btn.is-dim { opacity: 0.3; }
-.rk-stage-btn.is-active {
-    opacity: 1;
-    background: var(--bg-elevated);
-    border-color: var(--accent-cyan);
-    box-shadow: 4px 4px 0 var(--accent-cyan-dim);
+.rk-chip.is-locked {
+    opacity: 0.32;
 }
-.rk-stage-btn-no {
-    font-size: 36px;
-    letter-spacing: 3px;
-    font-weight: 800;
-    color: var(--text-dim);
-    line-height: 1;
-}
-.rk-stage-btn.is-active .rk-stage-btn-no {
-    font-size: 48px;
+.rk-chip.is-active {
+    min-width: 124px;
+    height: 100px;
+    font-size: 50px;
     color: var(--accent-cyan);
-    text-shadow: 0 0 12px var(--accent-cyan-dim, rgba(0,255,240,0.45));
-}
-.rk-stage-btn-name {
-    font-size: 18px;
-    letter-spacing: 1.5px;
-    color: var(--text-faint);
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.rk-stage-btn.is-active .rk-stage-btn-name {
-    font-size: 22px;
-    color: var(--text-on-dark);
-}
-
-/* ◀ / ▶ ボタンは左寄せレイアウトでは邪魔なので非表示。
-   既存マークアップを温存しつつスタイルだけ消す (スワイプ + peek タップで操作) */
-.rk-stage-arrow {
-    display: none;
+    border-color: var(--accent-cyan);
+    background: var(--bg-elevated);
+    box-shadow:
+        0 0 0 2px var(--accent-cyan-dim, rgba(0,255,240,0.25)),
+        0 0 18px var(--accent-cyan-dim, rgba(0,255,240,0.35));
+    text-shadow: 0 0 10px var(--accent-cyan-dim, rgba(0,255,240,0.45));
 }
 
 /* --- 参加 OFF バナー --- */

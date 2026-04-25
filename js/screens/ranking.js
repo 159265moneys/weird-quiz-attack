@@ -63,71 +63,36 @@
         `;
     }
 
-    // --- ステージナビ ---
-    // 全 10 ステージ分のボタンを常に track 内に並べ、transform でスライドさせる。
-    // prev/next ボタンは端で disabled。
-    function stageBtnHtml(s, isActive, isUnlocked) {
+    // --- ステージナビ (横スクロールチップ列) ---
+    //   - 数字チップを横一列で並べる (overflow-x: auto)
+    //   - active チップだけ大きく+シアン枠
+    //   - active が常に画面に収まるように scrollIntoView
+    function chipHtml(s, isActive, isUnlocked) {
         const cls = [
-            'rk-stage-btn',
+            'rk-chip',
             isActive ? 'is-active' : '',
-            isUnlocked ? '' : 'is-dim',
+            isUnlocked ? '' : 'is-locked',
         ].filter(Boolean).join(' ');
-        return `
-            <button class="${cls}" data-stage="${s.no}" aria-label="Stage ${s.no}">
-                <span class="rk-stage-btn-no">${String(s.no).padStart(2, '0')}</span>
-                <span class="rk-stage-btn-name">${escapeHtml(s.name || '')}</span>
-            </button>
-        `;
+        return `<button class="${cls}" data-stage="${s.no}" aria-label="Stage ${s.no}">${String(s.no).padStart(2, '0')}</button>`;
     }
 
-    // ステージナビ レイアウト
-    //   - active カードを viewport の左端にピタッと配置
-    //   - 右側に次ステージの左端だけ peek
-    //   - 単位/サイズは全部 JS で決め打ち。CSS の % flex-basis / var() / calc() に
-    //     頼らない。WKWebView (Capacitor iOS) で flex container の main size が
-    //     indefinite と解釈されてカード幅が 0 に潰れるケースを根本回避するため。
-    //   - viewport.clientWidth (キャンバス px) を基準にカード幅 = viewport - PEEK
-    //     を JS で各カードに設定し、step = card + GAP も JS で計算する。
-    const PEEK_PX = 92;   // 右に覗く次ステージの幅 (gap 込み)
-    const GAP_PX  = 16;   // カード間隔
-    function layoutTrack(root, animate = true) {
-        const viewport = root.querySelector('.rk-stage-viewport');
-        const track = root.querySelector('.rk-stage-track');
-        if (!viewport || !track) return;
-        const btns = track.querySelectorAll('.rk-stage-btn');
-        if (!btns.length) return;
-
-        // カード幅を JS で確定 (CSS 依存を排除)
-        const vw = viewport.clientWidth || viewport.offsetWidth || 0;
-        const cardW = Math.max(120, vw - PEEK_PX);
-        track.style.gap = GAP_PX + 'px';
-        btns.forEach(b => {
-            b.style.flex = '0 0 ' + cardW + 'px';
-            b.style.width = cardW + 'px';
-        });
-
-        const step = cardW + GAP_PX;
-        const idx = Math.min(btns.length - 1, Math.max(0, currentStage - 1));
-        const offset = -idx * step;
-        if (!animate) {
-            track.style.transition = 'none';
+    // active チップを画面中央寄りにスクロール
+    function scrollActiveIntoView(root, animate = true) {
+        const chips = root.querySelector('.rk-stage-chips');
+        if (!chips) return;
+        const active = chips.querySelector('.rk-chip.is-active');
+        if (!active) return;
+        // active の中心を chips の中心に揃える
+        const left = active.offsetLeft - (chips.clientWidth / 2 - active.offsetWidth / 2);
+        if (animate) {
+            chips.scrollTo({ left, behavior: 'smooth' });
+        } else {
+            chips.scrollLeft = left;
         }
-        track.style.transform = `translateX(${offset}px)`;
-        if (!animate) {
-            requestAnimationFrame(() => { track.style.transition = ''; });
-        }
-    }
-
-    function updateArrows(root) {
-        const prev = root.querySelector('[data-action="prevStage"]');
-        const next = root.querySelector('[data-action="nextStage"]');
-        const max = (window.CONFIG?.STAGES || []).length;
-        if (prev) prev.disabled = currentStage <= 1;
-        if (next) next.disabled = currentStage >= max;
     }
 
     function updateActiveTab(root) {
-        root.querySelectorAll('.rk-stage-btn').forEach(b => {
+        root.querySelectorAll('.rk-chip').forEach(b => {
             b.classList.toggle('is-active',
                 parseInt(b.dataset.stage, 10) === currentStage);
         });
@@ -152,8 +117,7 @@
     function applyStageChange(root) {
         window.SE?.fire?.('menuCursor');
         updateActiveTab(root);
-        updateArrows(root);
-        layoutTrack(root, true);
+        scrollActiveIntoView(root, true);
         const stages = window.CONFIG?.STAGES || [];
         const head = root.querySelector('.rk-stage-head');
         if (head) {
@@ -169,8 +133,8 @@
     // 画面全体で左右スワイプを拾ってステージ切替。縦スクロールと干渉させないため、
     // 終点で dx/dy を見て水平判定が成立した時だけ切替する。
     function onPointerDown(ev, root) {
-        // 矢印・タブ自身をタップした場合はスワイプ対象外 (click と二重発火防止)
-        if (ev.target.closest('.rk-stage-btn, .rk-stage-arrow, .btn-back')) {
+        // チップ列内 (横スクロール領域) と チップ自身は除外
+        if (ev.target.closest('.rk-chip, .rk-stage-chips, .btn-back')) {
             swipe = null;
             return;
         }
@@ -238,8 +202,8 @@
             const unlocked = progress.unlockedStage || 1;
             const enabled = window.Ranking?.isEnabled?.() ?? true;
 
-            const tabs = stages.map(s =>
-                stageBtnHtml(s, s.no === currentStage, s.no <= unlocked)
+            const chips = stages.map(s =>
+                chipHtml(s, s.no === currentStage, s.no <= unlocked)
             ).join('');
 
             const banner = enabled ? '' : `
@@ -255,11 +219,7 @@
                         <h1 class="tab-header-title">RANKING</h1>
                     </div>
                     <div class="rk-stage-bar">
-                        <button class="rk-stage-arrow" data-action="prevStage" aria-label="前のステージ">◀</button>
-                        <div class="rk-stage-viewport">
-                            <div class="rk-stage-track">${tabs}</div>
-                        </div>
-                        <button class="rk-stage-arrow" data-action="nextStage" aria-label="次のステージ">▶</button>
+                        <div class="rk-stage-chips">${chips}</div>
                     </div>
                     ${banner}
                     <div class="rk-stage-head">
@@ -278,18 +238,10 @@
             const root = document.querySelector('.ranking-screen');
             if (!root) return;
 
-            // 下部タブバー: ranking タブがアクティブ
-            // BACK ボタンは廃止: TabBar から直接他画面へ遷移可能。
             window.TabBar?.mount?.('ranking');
 
-            // ステージ矢印
-            root.querySelector('[data-action="prevStage"]')
-                ?.addEventListener('click', () => changeStage(root, -1));
-            root.querySelector('[data-action="nextStage"]')
-                ?.addEventListener('click', () => changeStage(root, +1));
-
-            // タブ自体のクリック (peek を叩いて飛ぶ or 中央連打でも無害)
-            root.querySelectorAll('.rk-stage-btn').forEach(btn => {
+            // チップタップでステージ切替
+            root.querySelectorAll('.rk-chip').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const no = parseInt(btn.dataset.stage, 10);
                     if (!no) return;
@@ -302,19 +254,10 @@
             root.addEventListener('pointerup',   (ev) => onPointerUp(ev, root));
             root.addEventListener('pointercancel', onPointerCancel);
 
-            // リサイズ追従: 縦横切替や軽微なサイズ変動で中央ズレを補正
-            const resizeHandler = () => layoutTrack(root, false);
-            window.addEventListener('resize', resizeHandler);
-            // Screen.destroy で片付けるため参照を保存
-            Screen._resizeHandler = resizeHandler;
-
-            updateArrows(root);
-
-            // アバター画像パスの解決が manifest load 完了後なので、load を待ってから描画
+            // 描画後に active を画面内へ
             const kickoff = () => {
                 rerenderList(root);
-                // DOM/フォント確定後に中央揃えの transform を確定させる
-                requestAnimationFrame(() => layoutTrack(root, false));
+                requestAnimationFrame(() => scrollActiveIntoView(root, false));
             };
             if (window.Avatars?.load) {
                 window.Avatars.load().then(kickoff).catch(kickoff);
@@ -323,10 +266,6 @@
             }
         },
         destroy() {
-            if (Screen._resizeHandler) {
-                window.removeEventListener('resize', Screen._resizeHandler);
-                Screen._resizeHandler = null;
-            }
             swipe = null;
         },
     };
