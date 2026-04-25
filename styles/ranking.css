@@ -81,7 +81,10 @@
         opacity 220ms ease;
 }
 .rk-chip.is-locked {
-    opacity: 0.32;
+    opacity: 0.16;
+    color: var(--text-faint);
+    border-color: var(--line-dim);
+    filter: saturate(0.4);
 }
 .rk-chip.is-active {
     min-width: 124px;

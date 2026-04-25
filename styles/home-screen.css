@@ -17,6 +17,9 @@
         linear-gradient(to right, var(--grid-on-light) 1px, transparent 1px),
         linear-gradient(to bottom, var(--grid-on-light) 1px, transparent 1px);
     background-size: 60px 60px, 60px 60px;
+    /* 背景多面体 canvas (.home-bg-canvas) を最下層に敷くため、
+       ホーム自体を stacking context にする */
+    isolation: isolate;
 
     /* 画面自体がスワイプ/スクロールでブレないよう固定。
        body.touch-action:none を継承するので追加設定は不要。 */
@@ -31,6 +34,27 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
+}
+
+/* --- 背景多面体 canvas (z-index 最下層) ---
+   home-screen 直下に absolute で全面に敷く。pointer-events:none で
+   タップを通す。home-screen 全要素は明示 z-index >= 1 で常に上に来る。 */
+.home-bg-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    /* 白背景に対して描画線が淡いので、僅かに加算寄りで馴染ませる */
+    mix-blend-mode: multiply;
+}
+/* home-screen の直接子で canvas 以外は明示的に z-index 1 以上に。
+   canvas (z-index:0, position:absolute) より確実に手前に来るよう、
+   position:relative も併設する (個別ルール側で z-index を上げているものは温存)。 */
+.screen.home-screen > *:not(.home-bg-canvas) {
+    position: relative;
+    z-index: 1;
 }
 
 /* --- ヘッダー --- */
