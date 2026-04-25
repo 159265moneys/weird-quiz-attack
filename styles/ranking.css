@@ -60,6 +60,10 @@
 
 .rk-stage-track {
     display: flex;
+    /* % ベースの flex-basis を解決させるため track に確定幅を持たせる
+       (これが無いと子の calc(100% - ...) が auto に fallback して
+       カード達が content 幅に縮んで全部 viewport に詰まる) */
+    width: 100%;
     gap: var(--rk-gap);
     transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform;
@@ -67,9 +71,13 @@
 }
 
 .rk-stage-btn {
-    /* active を左端に貼り付けたとき、右側に peek 分だけ次カードが顔を出す */
-    flex: 0 0 calc(100% - var(--rk-peek));
+    /* active を左端に貼り付けたとき、右側に peek 分だけ次カードが顔を出す。
+       flex-basis ではなく width を併用 (basis 解決失敗時の保険)。
+       box-sizing:border-box で padding/border を幅に含めて peek を維持。 */
+    flex: 0 0 auto;
+    width: calc(100% - var(--rk-peek));
     min-width: 0;
+    box-sizing: border-box;
     padding: 18px 22px;
     background: var(--box-bg);
     border: 2px solid var(--line-dim);
