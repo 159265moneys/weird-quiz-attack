@@ -56,7 +56,8 @@
         const time = elapsedMs * 0.001;
         const cx = W * 0.5;
         const cy = H * 0.46;
-        const radius = Math.min(W, H) * 0.32;
+        // 3x: 元 0.32 → 0.96。投影で *0.67 されるので実視半径は約 min(W,H)*0.64
+        const radius = Math.min(W, H) * 0.96;
 
         const rotX = time * 0.3;
         const rotY = time * 0.5;
@@ -113,20 +114,7 @@
             ctx.arc(p[0], p[1], size, 0, Math.PI * 2);
             ctx.fill();
         }
-
-        // 装飾外周リング
-        ctx.strokeStyle = 'rgba(20, 22, 30, 0.08)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius * 1.3, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // シアン弧 (アクセント色を控えめに)
-        ctx.strokeStyle = 'rgba(0, 200, 220, 0.10)';
-        ctx.lineWidth = 1.4;
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius * 1.5, time, time + Math.PI * 1.5);
-        ctx.stroke();
+        // 外周装飾リングは削除 (多面体だけ表示)
     }
 
     function loop() {
