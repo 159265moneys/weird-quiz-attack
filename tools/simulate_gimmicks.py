@@ -118,6 +118,14 @@ REGISTRY: List[Gimmick] = [
             conflicts=['B02', 'B07', 'B10', 'B15', 'B17',
                        'B23', 'B24', 'B26', 'B27', 'B28', 'B29']),
     Gimmick('B31', '問題文超薄',       'both', 4, 5),
+    # --- 2026-04 追加: Annoyance pack (Stage 1-4 向けうざい系 4個) ---
+    # 入力/判定には影響せず視覚的にうざいだけ。CSS-only or 軽量 overlay。
+    Gimmick('B32', '画面ねじれ',       'both', 3, 3,
+            conflicts=['B03', 'B04', 'B05', 'B09']),
+    Gimmick('B33', 'CRT走査線',        'both', 1, 2),
+    Gimmick('B34', '文字震え',         'both', 4, 4,
+            conflicts=['B04', 'B29', 'B30']),
+    Gimmick('B35', '偽カーソル',       'both', 2, 2),
 ]
 
 # --- 未実装ギミック ---

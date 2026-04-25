@@ -320,6 +320,87 @@
     -webkit-user-drag: none;
 }
 
+/* ============================================================
+   Annoyance pack (Stage 1-4) — B32 / B33 / B34 / B35
+   ============================================================ */
+
+/* ---------- B33 CRT走査線 ----------
+   画面全体に半透明の横線パターンを敷き、ゆっくり下に流す。
+   pointer-events: none で入力には一切干渉しない。 */
+.question-screen.gk-b33-scanlines::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 75;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.22) 0,
+        rgba(0, 0, 0, 0.22) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    animation: gkB33ScanScroll 1.6s linear infinite;
+    will-change: background-position;
+}
+@keyframes gkB33ScanScroll {
+    from { background-position: 0 0; }
+    to   { background-position: 0 6px; }
+}
+
+/* ---------- B35 偽カーソル横切り ----------
+   シアンの細い水平線が 4 秒で画面上下を 1 往復。
+   読み進めるカーソルのように見えてうっとうしい。 */
+.gk-b35-scanbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    pointer-events: none;
+    z-index: 78;
+    background: linear-gradient(
+        to right,
+        transparent,
+        var(--accent-cyan, #2af) 25%,
+        var(--accent-cyan, #2af) 75%,
+        transparent
+    );
+    box-shadow:
+        0 0 10px var(--accent-cyan, #2af),
+        0 0 22px var(--accent-cyan, #2af);
+    animation: gkB35ScanSweep 4s ease-in-out infinite alternate;
+    will-change: transform;
+}
+@keyframes gkB35ScanSweep {
+    0%   { transform: translateY(0); }
+    100% { transform: translateY(calc(var(--canvas-h, 100vh) - 2px)); }
+}
+
+/* ---------- B32 画面ねじれ ----------
+   画面全体を 2.5deg 傾ける。読めるけど平衡感覚が崩れる。
+   B03/B04/B05/B09 と transform を奪い合うので registry で排他済。 */
+.question-screen.gk-b32-tilt {
+    transform: rotate(2.5deg);
+    transform-origin: center center;
+}
+
+/* ---------- B34 文字震え ----------
+   .q-stem を ±1.5px のマイクロシェイク。読めるが見続けると酔う。
+   q-stem に transform をかける他ギミックとは registry で排他済。 */
+.q-stem.gk-b34-jitter {
+    animation: gkB34Jitter 0.09s steps(2, jump-none) infinite;
+    will-change: transform;
+}
+@keyframes gkB34Jitter {
+    0%   { transform: translate(0, 0); }
+    20%  { transform: translate(-1.5px, 1px); }
+    40%  { transform: translate(1.5px, -1px); }
+    60%  { transform: translate(-1px, -1.5px); }
+    80%  { transform: translate(1px, 1.5px); }
+    100% { transform: translate(0, 0); }
+}
+
 /* ---------- B12 ぼかし: 5秒周期で濃度を脈動 (緩急付き) ----------
    一定強度だと長文や他ギミック併発時に詰む & 単調なので、
    超ぼかし → ぼかし → 薄ぼかし → ぼかし → 超ぼかし の波を作る。

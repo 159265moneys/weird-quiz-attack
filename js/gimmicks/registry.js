@@ -1767,6 +1767,62 @@
         },
     };
 
+    // ============================================================
+    //  Annoyance pack (Stage 1-4 向けうざい系) — B32 / B33 / B34 / B35
+    //  全て純CSS or 軽量 overlay 1個追加のみで判定/入力には一切影響しない。
+    //  目的: 「うざいだけで詰まない」軽量プレッシャーを Stage 序盤に分散投入。
+    // ============================================================
+
+    // B33 CRT走査線: 画面全体に半透明の走査線パターンを上から下へ流す。
+    // 読みづらくはならないが、目障り。Stage 1 から登場。
+    const B33_SCANLINES = {
+        id: 'B33', name: 'CRT走査線', supports: 'both', introducedAt: 1, difficulty: 2,
+        apply(ctx) {
+            ctx.screen.classList.add('gk-b33-scanlines');
+            return () => ctx.screen.classList.remove('gk-b33-scanlines');
+        },
+    };
+
+    // B35 偽カーソル横切り: シアン水平線 (高さ 2px) が 4秒で 1 往復。
+    // 画面に 1 個 overlay を append するだけ。pointer-events: none で
+    // 入力には一切影響しない。
+    const B35_SCAN_BAR = {
+        id: 'B35', name: '偽カーソル', supports: 'both', introducedAt: 2, difficulty: 2,
+        apply(ctx) {
+            const el = document.createElement('div');
+            el.className = 'gk-b35-scanbar';
+            el.setAttribute('aria-hidden', 'true');
+            ctx.screen.appendChild(el);
+            return () => { if (el.isConnected) el.remove(); };
+        },
+    };
+
+    // B32 画面ねじれ: ctx.screen を 2.5deg 傾ける。読めるが平衡感覚がズレる。
+    // 他の screen 全体 transform 系 (B03 逆さ / B04 ズーム / B05 ミラー /
+    // B09 縮小) と inline transform を奪い合うので排他。
+    const B32_TILT = {
+        id: 'B32', name: '画面ねじれ', supports: 'both', introducedAt: 3, difficulty: 3,
+        conflicts: ['B03', 'B04', 'B05', 'B09'],
+        apply(ctx) {
+            ctx.screen.classList.add('gk-b32-tilt');
+            return () => ctx.screen.classList.remove('gk-b32-tilt');
+        },
+    };
+
+    // B34 文字震え: q-stem に 1.5px のマイクロシェイクをかける。読めるが
+    // 見続けると目が泳ぐ。他の q-stem transform 系と排他。
+    const B34_JITTER = {
+        id: 'B34', name: '文字震え', supports: 'both', introducedAt: 4, difficulty: 4,
+        // q-stem に transform を当てる系 (B04 ズーム, B29 バウンド, B30 渦巻き) と排他
+        conflicts: ['B04', 'B29', 'B30'],
+        apply(ctx) {
+            const stem = q(ctx.screen, '.q-stem');
+            if (!stem) return () => {};
+            stem.classList.add('gk-b34-jitter');
+            return () => stem.classList.remove('gk-b34-jitter');
+        },
+    };
+
     // --- G7: スコア煽り ---
     // 今回は "session フラグを立てるだけ" のシンプル実装。
     // 実際のアニメは result.js がフラグを拾って描画する。
@@ -1794,6 +1850,7 @@
         B26_COLOR_RANDOM, B27_CHAR_DROP, B28_SIZE_CHAOS,
         B29_BOUNCE, B30_SPIRAL, B31_FAINT,
         B01_REVERSE_TAP, B17_NOISE_TEXT,
+        B32_TILT, B33_SCANLINES, B34_JITTER, B35_SCAN_BAR,
         C01_SHUFFLE, C02_CHOICE_NOISE, C03_CHAR_CORRUPT, C04_FAKE_5050,
         W01_KEYS_INVISIBLE, W02_KEYS_SHUFFLE, W03_ANSWER_INVISIBLE, W07_CHAR_DROP,
         W04_INPUT_SHIFT, W06_REVERSE_TEXT, W09_GHOST_INPUT,
