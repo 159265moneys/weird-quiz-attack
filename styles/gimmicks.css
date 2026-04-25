@@ -401,6 +401,168 @@
     100% { transform: translate(0, 0); }
 }
 
+/* ============================================================
+   Overlay annoyance pack 2 — B36 / B37 / B38 / B39 / B40
+   全て pointer-events: none。判定/入力には影響しない。
+   ============================================================ */
+
+/* ---------- B36 吹き出しスパム ----------
+   ホーム/リザルト風の白吹き出しが画面のあちこちにポップして消える。 */
+.gk-b36-bubble {
+    position: absolute;
+    pointer-events: none;
+    z-index: 85;
+    background: #fff;
+    color: #111;
+    border: 3px solid #111;
+    border-radius: 14px;
+    padding: 8px 14px;
+    font-size: 22px;
+    font-weight: 800;
+    box-shadow: 4px 4px 0 #111;
+    transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(0);
+    opacity: 0;
+    animation: gkB36Bubble 1.5s ease-out forwards;
+    white-space: nowrap;
+    max-width: 60%;
+    will-change: transform, opacity;
+}
+@keyframes gkB36Bubble {
+    0%   { transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(0);    opacity: 0; }
+    18%  { transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1.15); opacity: 1; }
+    30%  { transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1);    opacity: 1; }
+    80%  { transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1);    opacity: 1; }
+    100% { transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(0.9);  opacity: 0; }
+}
+
+/* ---------- B37 付箋スパム ----------
+   黄/桃/シアン等の正方形ふせんが画面ランダム位置に貼られて消える。 */
+.gk-b37-sticky {
+    position: absolute;
+    pointer-events: none;
+    z-index: 84;
+    width: 96px;
+    height: 96px;
+    color: #111;
+    font-size: 30px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        4px 4px 0 rgba(0, 0, 0, 0.35),
+        inset 0 -10px 14px rgba(0, 0, 0, 0.08);
+    transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(0);
+    opacity: 0;
+    animation: gkB37Sticky 2.2s ease-out forwards;
+    will-change: transform, opacity;
+}
+@keyframes gkB37Sticky {
+    0%   { opacity: 0; transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(0); }
+    12%  { opacity: 1; transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1.08); }
+    22%  { transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1); }
+    85%  { opacity: 1; transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(0.9); }
+}
+
+/* ---------- B38 ？マーク雨 ----------
+   薄白の ？ が画面上から下にゆっくり落ちていく装飾。 */
+.gk-b38-qmark {
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+    z-index: 60;
+    color: rgba(255, 255, 255, 0.32);
+    font-weight: 900;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.18);
+    animation-name: gkB38QFall;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    will-change: transform, opacity;
+}
+@keyframes gkB38QFall {
+    0%   { transform: translate(0, -10vh) rotate(0deg); opacity: 0; }
+    8%   { opacity: 0.7; }
+    92%  { opacity: 0.7; }
+    100% {
+        transform: translate(var(--drift, 0px), var(--canvas-h, 100vh)) rotate(var(--rot, 0deg));
+        opacity: 0;
+    }
+}
+
+/* ---------- B39 偽通知バナー ----------
+   iOS 風の通知バナーが上端からスライドイン → 一定時間後にスライドアウト。 */
+.gk-b39-notif {
+    position: absolute;
+    top: 32px;
+    left: 50%;
+    width: 86%;
+    max-width: 680px;
+    pointer-events: none;
+    z-index: 90;
+    background: rgba(36, 38, 46, 0.92);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border-radius: 18px;
+    padding: 14px 22px;
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    transform: translateX(-50%) translateY(-220%);
+    animation: gkB39Notif 3.5s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+    will-change: transform;
+}
+.gk-b39-notif-app {
+    font-size: 18px;
+    font-weight: 700;
+    opacity: 0.7;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+.gk-b39-notif-body {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+@keyframes gkB39Notif {
+    0%   { transform: translateX(-50%) translateY(-220%); }
+    8%   { transform: translateX(-50%) translateY(0); }
+    88%  { transform: translateX(-50%) translateY(0); }
+    100% { transform: translateX(-50%) translateY(-220%); }
+}
+
+/* ---------- B40 ニコ動弾幕 ----------
+   問題文エリアに弾幕コメントが右→左に流れる。 */
+.q-zone-question.gk-b40-host {
+    /* registry 側で overflow:hidden を inline で当てる。class は識別用。 */
+}
+.gk-b40-danmaku {
+    position: absolute;
+    right: 0;
+    pointer-events: none;
+    z-index: 86;
+    white-space: nowrap;
+    font-weight: 900;
+    line-height: 1;
+    text-shadow:
+        2px 2px 0 #000,
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        0 2px 0 #000,
+        0 -2px 0 #000,
+        2px 0 0 #000,
+        -2px 0 0 #000;
+    transform: translateX(100%);
+    animation-name: gkB40Slide;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    will-change: transform;
+}
+@keyframes gkB40Slide {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(calc(-1 * var(--travel, 1000px))); }
+}
+
 /* ---------- B12 ぼかし: 5秒周期で濃度を脈動 (緩急付き) ----------
    一定強度だと長文や他ギミック併発時に詰む & 単調なので、
    超ぼかし → ぼかし → 薄ぼかし → ぼかし → 超ぼかし の波を作る。

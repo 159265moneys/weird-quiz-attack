@@ -126,6 +126,13 @@ REGISTRY: List[Gimmick] = [
     Gimmick('B34', '文字震え',         'both', 4, 4,
             conflicts=['B04', 'B29', 'B30']),
     Gimmick('B35', '偽カーソル',       'both', 2, 2),
+    # --- 2026-04 追加: Overlay annoyance pack 2 (5個) ---
+    # 全て pointer-events: none の overlay spawn のみ。判定/入力には影響しない。
+    Gimmick('B36', '吹き出しスパム',   'both', 4, 4),
+    Gimmick('B37', '付箋スパム',       'both', 3, 3),
+    Gimmick('B38', 'クエスチョン雨',   'both', 1, 2),
+    Gimmick('B39', '偽通知',           'both', 4, 3),
+    Gimmick('B40', 'ニコ動弾幕',       'both', 5, 5),
 ]
 
 # --- 未実装ギミック ---

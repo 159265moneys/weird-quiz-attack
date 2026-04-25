@@ -1823,6 +1823,198 @@
         },
     };
 
+    // ============================================================
+    //  Overlay annoyance pack — B36 / B37 / B38 / B39 / B40
+    //  全て pointer-events: none の overlay を spawn/dispose するだけ。
+    //  画面構造・入力・判定には一切干渉しない。
+    // ============================================================
+
+    // B36 吹き出しスパム: 白い吹き出しが画面ランダム位置にポップ→消える。
+    // 1.5s 寿命、約 0.8s 間隔で spawn。
+    const B36_BUBBLE_SPAM = {
+        id: 'B36', name: '吹き出しスパム', supports: 'both', introducedAt: 4, difficulty: 4,
+        apply(ctx) {
+            const TEXTS = ['？', '！', '…', 'なにこれ', '間違ってない？', 'ちがうよ', 'うそでしょ', 'えっ', 'まじ？', 'やめろ', 'なんで'];
+            const items = new Set();
+            function spawn() {
+                const el = document.createElement('div');
+                el.className = 'gk-b36-bubble';
+                el.textContent = TEXTS[Math.floor(Math.random() * TEXTS.length)];
+                el.style.left = `${5 + Math.random() * 85}%`;
+                el.style.top = `${5 + Math.random() * 85}%`;
+                el.style.setProperty('--rot', `${(Math.random() * 12 - 6).toFixed(1)}deg`);
+                ctx.screen.appendChild(el);
+                items.add(el);
+                setTimeout(() => {
+                    if (el.isConnected) el.remove();
+                    items.delete(el);
+                }, 1500);
+            }
+            spawn();
+            const t = setInterval(spawn, 800);
+            return () => {
+                clearInterval(t);
+                items.forEach(el => { if (el.isConnected) el.remove(); });
+            };
+        },
+    };
+
+    // B37 付箋スパム: 黄/桃/シアンの正方形ふせんが画面ランダム位置に「貼られる」。
+    // 2.2s 寿命、1.2s 間隔。傾き付き。
+    const B37_STICKY_NOTES = {
+        id: 'B37', name: '付箋スパム', supports: 'both', introducedAt: 3, difficulty: 3,
+        apply(ctx) {
+            const TEXTS = ['？', '?!', '!?', '！', '正解', '違う', '？？', '!!'];
+            const COLORS = ['#fff276', '#ff9bd2', '#9be7ff', '#ffb88a', '#b6ffb6'];
+            const items = new Set();
+            function spawn() {
+                const el = document.createElement('div');
+                el.className = 'gk-b37-sticky';
+                el.textContent = TEXTS[Math.floor(Math.random() * TEXTS.length)];
+                el.style.left = `${5 + Math.random() * 80}%`;
+                el.style.top = `${10 + Math.random() * 75}%`;
+                el.style.setProperty('--rot', `${(Math.random() * 12 - 6).toFixed(1)}deg`);
+                el.style.background = COLORS[Math.floor(Math.random() * COLORS.length)];
+                ctx.screen.appendChild(el);
+                items.add(el);
+                setTimeout(() => {
+                    if (el.isConnected) el.remove();
+                    items.delete(el);
+                }, 2200);
+            }
+            spawn();
+            const t = setInterval(spawn, 1200);
+            return () => {
+                clearInterval(t);
+                items.forEach(el => { if (el.isConnected) el.remove(); });
+            };
+        },
+    };
+
+    // B38 ？マーク雨: 画面上端から ？ がランダムに落下する装飾ノイズ。
+    // 4-6s 寿命、約 0.7s 間隔で spawn。pure decoration。
+    const B38_QMARK_RAIN = {
+        id: 'B38', name: 'クエスチョン雨', supports: 'both', introducedAt: 1, difficulty: 2,
+        apply(ctx) {
+            const items = new Set();
+            function spawn() {
+                const el = document.createElement('div');
+                el.className = 'gk-b38-qmark';
+                el.textContent = '？';
+                el.style.left = `${Math.random() * 100}%`;
+                el.style.fontSize = `${40 + Math.floor(Math.random() * 80)}px`;
+                const dur = 4 + Math.random() * 2;
+                el.style.animationDuration = `${dur}s`;
+                el.style.setProperty('--drift', `${Math.floor(Math.random() * 60 - 30)}px`);
+                el.style.setProperty('--rot', `${Math.floor(Math.random() * 720 - 360)}deg`);
+                ctx.screen.appendChild(el);
+                items.add(el);
+                setTimeout(() => {
+                    if (el.isConnected) el.remove();
+                    items.delete(el);
+                }, dur * 1000 + 200);
+            }
+            spawn(); spawn();
+            const t = setInterval(spawn, 700);
+            return () => {
+                clearInterval(t);
+                items.forEach(el => { if (el.isConnected) el.remove(); });
+            };
+        },
+    };
+
+    // B39 偽通知バナー: 画面上端に iOS 風の通知バナーが定期的にスライドダウン。
+    // 一覧から random pick。pointer-events: none で実機通知に偽装。
+    const B39_FAKE_NOTIFICATION = {
+        id: 'B39', name: '偽通知', supports: 'both', introducedAt: 4, difficulty: 3,
+        apply(ctx) {
+            const NOTIFS = [
+                { app: 'システム',   body: 'アップデートが利用可能です' },
+                { app: '通信',       body: 'ネットワーク接続が不安定です' },
+                { app: 'バッテリー', body: '残量 1% — 充電してください' },
+                { app: 'メール',     body: '新着メッセージ (1)' },
+                { app: '位置情報',   body: '現在地の取得に失敗しました' },
+                { app: 'カレンダー', body: '次の予定: 締切 10 分後' },
+                { app: 'リマインダー', body: '今すぐ確認してください' },
+                { app: 'ストレージ', body: '空き容量がわずかです' },
+            ];
+            const items = new Set();
+            function escapeHTML(s) {
+                return String(s).replace(/[&<>"']/g, c => ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+                }[c]));
+            }
+            function spawn() {
+                const n = NOTIFS[Math.floor(Math.random() * NOTIFS.length)];
+                const el = document.createElement('div');
+                el.className = 'gk-b39-notif';
+                el.innerHTML =
+                    `<div class="gk-b39-notif-app">${escapeHTML(n.app)}</div>` +
+                    `<div class="gk-b39-notif-body">${escapeHTML(n.body)}</div>`;
+                ctx.screen.appendChild(el);
+                items.add(el);
+                setTimeout(() => {
+                    if (el.isConnected) el.remove();
+                    items.delete(el);
+                }, 3500);
+            }
+            spawn();
+            const t = setInterval(spawn, 4200);
+            return () => {
+                clearInterval(t);
+                items.forEach(el => { if (el.isConnected) el.remove(); });
+            };
+        },
+    };
+
+    // B40 ニコ動弾幕: 問題文エリア (q-zone-question) の中をコメントが
+    // 右→左へ流れる。文字色・サイズ・速度ランダム、複数同時。
+    // overflow:hidden を一時的に zone に付けて、はみ出しを clip。
+    const B40_DANMAKU = {
+        id: 'B40', name: 'ニコ動弾幕', supports: 'both', introducedAt: 5, difficulty: 5,
+        apply(ctx) {
+            const COMMENTS = [
+                'wwwwww', '草', '簡単', '答え:1', '答え:2', '答え:3', '答え:4',
+                'ヒント！', 'いやそれ違うw', '騙されんなｗ', 'これは罠', 'やべぇ',
+                'むずい', '時間ない', 'ええええ', 'マジで？', 'うそだろ', '神回',
+                '88888888', '俺はわかった', '正解は出ない', 'もう諦めろ', 'バグってる？',
+                '自信ある', 'チートかな', '神問題', 'ksk', 'ファッ！？', '焦るな',
+            ];
+            const COLORS = ['#ffffff', '#ff8888', '#88ff88', '#8888ff', '#ffff88', '#ff88ff', '#88ffff', '#ffaa00'];
+            const zone = q(ctx.screen, '.q-zone-question') || ctx.screen;
+            const prevOverflow = zone.style.overflow;
+            zone.style.overflow = 'hidden';
+            zone.classList.add('gk-b40-host');
+            const items = new Set();
+            function spawn() {
+                const el = document.createElement('div');
+                el.className = 'gk-b40-danmaku';
+                el.textContent = COMMENTS[Math.floor(Math.random() * COMMENTS.length)];
+                el.style.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+                el.style.fontSize = `${24 + Math.floor(Math.random() * 18)}px`;
+                el.style.top = `${Math.random() * 88}%`;
+                const dur = 4 + Math.random() * 2.5;
+                el.style.animationDuration = `${dur}s`;
+                const travel = (zone.clientWidth || 800) + 400;
+                el.style.setProperty('--travel', `${travel}px`);
+                zone.appendChild(el);
+                items.add(el);
+                setTimeout(() => {
+                    if (el.isConnected) el.remove();
+                    items.delete(el);
+                }, dur * 1000 + 200);
+            }
+            spawn(); spawn();
+            const t = setInterval(spawn, 600);
+            return () => {
+                clearInterval(t);
+                items.forEach(el => { if (el.isConnected) el.remove(); });
+                zone.classList.remove('gk-b40-host');
+                zone.style.overflow = prevOverflow;
+            };
+        },
+    };
+
     // --- G7: スコア煽り ---
     // 今回は "session フラグを立てるだけ" のシンプル実装。
     // 実際のアニメは result.js がフラグを拾って描画する。
@@ -1851,6 +2043,7 @@
         B29_BOUNCE, B30_SPIRAL, B31_FAINT,
         B01_REVERSE_TAP, B17_NOISE_TEXT,
         B32_TILT, B33_SCANLINES, B34_JITTER, B35_SCAN_BAR,
+        B36_BUBBLE_SPAM, B37_STICKY_NOTES, B38_QMARK_RAIN, B39_FAKE_NOTIFICATION, B40_DANMAKU,
         C01_SHUFFLE, C02_CHOICE_NOISE, C03_CHAR_CORRUPT, C04_FAKE_5050,
         W01_KEYS_INVISIBLE, W02_KEYS_SHUFFLE, W03_ANSWER_INVISIBLE, W07_CHAR_DROP,
         W04_INPUT_SHIFT, W06_REVERSE_TEXT, W09_GHOST_INPUT,
