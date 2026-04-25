@@ -1,15 +1,25 @@
 /* ============================================================
-   ui/gimmickGuide.js — ギミック図鑑モーダル
+   ui/gimmickGuide.js — ギミック図鑑 (独立スクリーン)
    ------------------------------------------------------------
-   ホーム画面の「📖 図鑑」ボタンから開く。
+   Phase: 2026-04-21 リファクタ
+     - 旧: document.body に overlay 追加する modal 実装
+     - 新: window.Screens.gimmickGuide として Router 経由のフル
+            スクリーン画面に変更
+   home → 図鑑ボタン → Router.show('gimmickGuide')
      - 2列グリッドにカード (サムネ + 名前) を並べる
      - 一度でも食らったことのないギミックは ??? にして popup 不可
      - カードをタップすると popup が開いてサンプル領域でギミックを
        3秒ループで実演 (同時に動くのは1個だけ)
+     - 戻るは画面右上の × ボタン (= Router.show('home'))
    難易度の表示は registry の difficulty (1〜10) を:
      1〜5: ☆ × N
      6〜8: 💀 × (N-5)
      9〜10: 💀 × 3 にクランプ
+
+   POPUP は子詳細なので overlay のまま (画面遷移するほどの情報量
+   ではない / 閉じる直前のコンテキストを残したい)。Router.show で
+   別スクリーンに行く際は destroy() で popup と sample ループも
+   確実に止める。
    ============================================================ */
 (function () {
     // -------- ギミック解説テキスト (作者編集用) --------
@@ -118,11 +128,11 @@
         return html;
     }
 
-    // -------- グリッド (図鑑ページ) --------
-    let guideOverlay = null;
-    let escHandler = null;
+    // ============================================================
+    // スクリーン (Router.show('gimmickGuide') で開く)
+    // ============================================================
 
-    function buildGridHTML() {
+    function buildScreenHTML() {
         const all = window.GimmickRegistry?.all || [];
         const seenSet = new Set(window.Save?.getEncounteredGimmicks?.() || []);
         // difficulty 昇順 → id 昇順 でソート
@@ -135,16 +145,18 @@
         const total = all.length;
         const seen = sorted.filter(g => seenSet.has(g.id)).length;
         return `
-            <div class="gg-panel" role="dialog" aria-label="ギミック図鑑">
-                <div class="gg-head">
-                    <div class="gg-title">GIMMICK ARCHIVE</div>
-                    <button class="gg-close" type="button" aria-label="閉じる">${ICON_CLOSE}</button>
+            <div class="screen gimmick-guide-screen" role="region" aria-label="ギミック図鑑">
+                <div class="gg-screen-head">
+                    <div class="gg-screen-title">GIMMICK ARCHIVE</div>
+                    <button class="gg-screen-back" type="button" data-gg-action="back" aria-label="ホームに戻る">${ICON_CLOSE}</button>
                 </div>
                 <div class="gg-progress-bar">
                     <span class="gg-progress-cnt">${seen} / ${total}</span>
                     <span class="gg-progress-lbl">CONFIRMED</span>
                 </div>
-                <div class="gg-grid">${cards}</div>
+                <div class="gg-grid-wrap">
+                    <div class="gg-grid">${cards}</div>
+                </div>
             </div>
         `;
     }
@@ -174,46 +186,15 @@
         `;
     }
 
-    function open() {
-        // 初回のみ overlay を作って delegated click handler を仕込む。
-        // 再オープン時は innerHTML を差し替えるだけ → DOM を再生成しないので
-        // メモリ使用量と GC 圧が低い (53枚カードを毎回 new するのは無駄)。
-        if (!guideOverlay) {
-            guideOverlay = document.createElement('div');
-            guideOverlay.className = 'gg-overlay';
-            document.body.appendChild(guideOverlay);
-            guideOverlay.addEventListener('click', onGuideClick);
-        }
-        guideOverlay.innerHTML = buildGridHTML();
-        guideOverlay.classList.add('is-open');
-
-        escHandler = (e) => {
-            if (e.key !== 'Escape') return;
-            if (popupOverlay && popupOverlay.classList.contains('is-open')) {
-                // popup 側の close 経路に合わせて SE 復元してから cancel
-                unpatchSE();
-                window.SE?.fire?.('cancel');
-                closeCardPopup();
-            } else {
-                window.SE?.fire?.('cancel');
-                close();
-            }
-        };
-        document.addEventListener('keydown', escHandler);
-
-        window.SE?.fire?.('confirm');
-    }
-
-    // delegated click: 背景タップ / .gg-close / .gg-card のいずれを判定。
-    function onGuideClick(e) {
-        if (e.target === guideOverlay) {
+    // 画面ルート要素 (.gimmick-guide-screen) への click delegated handler。
+    //   各クリックで closest を辿って判定するので、innerHTML 差し替えで
+    //   ボタンが消えても新しい DOM にそのまま追従する。
+    function onScreenClick(e) {
+        const screenEl = e.currentTarget;
+        if (!screenEl) return;
+        if (e.target.closest('[data-gg-action="back"]')) {
             window.SE?.fire?.('cancel');
-            close();
-            return;
-        }
-        if (e.target.closest('.gg-close')) {
-            window.SE?.fire?.('cancel');
-            close();
+            window.Router.show('home');
             return;
         }
         const card = e.target.closest('.gg-card');
@@ -226,16 +207,71 @@
         }
     }
 
-    function close() {
-        closeCardPopup();
-        if (guideOverlay) guideOverlay.classList.remove('is-open');
-        if (escHandler) {
-            document.removeEventListener('keydown', escHandler);
-            escHandler = null;
-        }
-    }
+    let escHandler = null;
 
-    // -------- POPUP (カードタップ時の詳細) --------
+    const Screen = {
+        render() {
+            return buildScreenHTML();
+        },
+        init() {
+            // タブバーは出さない (図鑑は深掘りビュー、5タブのいずれでもない)
+            window.TabBar?.unmount?.();
+
+            const screenEl = document.querySelector('.gimmick-guide-screen');
+            if (screenEl) screenEl.addEventListener('click', onScreenClick);
+
+            // ESC キーで戻る (PC ブラウザ用)。popup が開いてれば popup を閉じる。
+            escHandler = (e) => {
+                if (e.key !== 'Escape') return;
+                if (popupOverlay && popupOverlay.classList.contains('is-open')) {
+                    unpatchSE();
+                    window.SE?.fire?.('cancel');
+                    closeCardPopup();
+                } else {
+                    window.SE?.fire?.('cancel');
+                    window.Router.show('home');
+                }
+            };
+            document.addEventListener('keydown', escHandler);
+
+            window.SE?.fire?.('confirm');
+        },
+        destroy() {
+            // 画面遷移時は popup と sample ループを必ず止める (rAF/setTimeout が
+            // 別画面まで生き残ると BGM 帯域や CPU を喰い続けてしまうため)。
+            closeCardPopup();
+            if (escHandler) {
+                document.removeEventListener('keydown', escHandler);
+                escHandler = null;
+            }
+            // popup overlay を DOM から完全撤去 (次回 open 時に再生成する)
+            if (popupOverlay) {
+                popupOverlay.removeEventListener('click', onPopupClick);
+                popupOverlay.remove();
+                popupOverlay = null;
+            }
+        },
+    };
+
+    window.Screens = window.Screens || {};
+    window.Screens.gimmickGuide = Screen;
+
+    // -------- 公開 API: ホーム画面のボタンから呼ばれる --------
+    window.GimmickGuide = {
+        open() {
+            window.Router.show('gimmickGuide');
+        },
+        close() {
+            // 後方互換用 (現状の呼び出し箇所無し)
+            window.Router.show('home');
+        },
+    };
+
+    // ============================================================
+    // POPUP (カードタップ時の詳細) — 画面の上に乗る overlay
+    //   閉じる動作は画面内に留まる。Router.show されたら destroy で
+    //   完全クリーンアップする。
+    // ============================================================
     let popupOverlay = null;
     let activeSampleStop = null;
     // ギミックの一部 (B16 偽カウントダウン等) は apply 内/setInterval で
@@ -427,6 +463,4 @@
         unpatchSE();
         if (popupOverlay) popupOverlay.classList.remove('is-open');
     }
-
-    window.GimmickGuide = { open, close };
 })();

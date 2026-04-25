@@ -1,16 +1,76 @@
 /* ============================================================
-   gimmick-guide.css — ギミック図鑑 (グリッド + POPUP)
+   gimmick-guide.css — ギミック図鑑 (独立スクリーン + POPUP)
    ------------------------------------------------------------
-   home-menu.css と同系統のモーダル風 UI。
+   2026-04-21: modal overlay 実装から Router 経由のフルスクリーン
+   実装に変更。 .gimmick-guide-screen は #app の中で他の screen と
+   同じ扱い (= 1080 × --canvas-h の論理キャンバスにフィット)。
+   POPUP は子詳細なので overlay のまま (transient)。
    サンプル領域は .question-screen の絶対配置を上書きして
    コンパクトな矩形 (~280x380) に詰めて見せる。
    ============================================================ */
 
-/* ---- オーバーレイ ----
-   guide は backdrop-filter で背景の home 多面体/VHS をぼかす。
-   popup は guide の上に乗るだけなので、blur を重ねず単色 rgba で済ませる
-   (iOS WKWebView の backdrop-filter 二重スタックは GPU 負荷が跳ねるため)。 */
-.gg-overlay,
+/* ---- スクリーン本体 (Router.show('gimmickGuide') で開く) ---- */
+.gimmick-guide-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #0a0d14 0%, #060810 100%);
+    color: #e6f1ff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ヘッダ (タイトル + 戻るボタン) */
+.gg-screen-head {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 56px 56px 24px;
+    border-bottom: 2px solid rgba(0,255,240,0.22);
+    background: linear-gradient(180deg, rgba(12,16,24,0.98) 72%, rgba(12,16,24,0.6) 100%);
+}
+.gg-screen-title {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--accent-cyan, #00fff0);
+    text-shadow: 0 0 20px rgba(0,255,240,0.45);
+}
+.gg-screen-back {
+    width: 96px;
+    height: 96px;
+    border-radius: 22px;
+    border: 2px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.04);
+    color: #cfeefb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.14s ease, border-color 0.14s ease, transform 0.12s ease;
+}
+.gg-screen-back:active {
+    background: rgba(0,255,240,0.10);
+    border-color: rgba(0,255,240,0.55);
+    transform: scale(0.94);
+}
+.gg-screen-back svg {
+    width: 44px;
+    height: 44px;
+}
+
+/* グリッドラッパ (縦スクロール領域) */
+.gg-grid-wrap {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 32px 80px;
+}
+
+/* ---- POPUP オーバーレイ (画面の上に乗る詳細ビュー) ---- */
 .gg-popup-overlay {
     position: fixed;
     inset: 0;
@@ -19,18 +79,9 @@
     justify-content: center;
     padding: 24px 16px;
     overflow-y: auto;
-}
-.gg-overlay {
-    z-index: 9100;
-    background: rgba(0,0,0,0.78);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-}
-.gg-popup-overlay {
     z-index: 9300;
     background: rgba(0,0,0,0.85);
 }
-.gg-overlay.is-open,
 .gg-popup-overlay.is-open {
     display: flex;
     animation: ggFadeIn 0.18s ease both;
@@ -39,55 +90,11 @@
     from { opacity: 0; }
     to   { opacity: 1; }
 }
-
-/* ---- 図鑑パネル ---- */
-.gg-panel {
-    width: min(560px, 94vw);
-    max-height: calc(100vh - 48px);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    background: linear-gradient(180deg, #0c1018 0%, #0a0c14 100%);
-    border: 2px solid rgba(0,255,240,0.42);
-    border-radius: 20px;
-    color: #e6f1ff;
-    padding: 0 0 22px;
-    box-shadow:
-        0 0 0 3px rgba(0,0,0,0.4),
-        0 0 40px rgba(0,255,240,0.22),
-        inset 0 0 24px rgba(0,255,240,0.06);
-    position: relative;
-    animation: ggPopIn 0.22s cubic-bezier(0.2, 1.2, 0.3, 1) both;
-}
 @keyframes ggPopIn {
     from { transform: translateY(14px) scale(0.96); opacity: 0; }
     to   { transform: translateY(0)    scale(1);    opacity: 1; }
 }
 
-/* ヘッダ (sticky) */
-.gg-head {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 22px 14px;
-    background: linear-gradient(180deg, rgba(12,16,24,0.98) 72%, rgba(12,16,24,0.78) 100%);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border-bottom: 1px solid rgba(0, 255, 240, 0.18);
-    border-top-left-radius: 18px;
-    border-top-right-radius: 18px;
-}
-.gg-title {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: clamp(20px, 5vw, 28px);
-    font-weight: 700;
-    letter-spacing: 0.22em;
-    color: var(--accent-cyan, #00fff0);
-    text-shadow: 0 0 12px rgba(0,255,240,0.45);
-}
-.gg-close,
 .gg-popup-close {
     width: 40px;
     height: 40px;
@@ -101,78 +108,78 @@
     cursor: pointer;
     transition: background 0.14s ease, border-color 0.14s ease, transform 0.12s ease;
 }
-.gg-close:hover, .gg-popup-close:hover,
-.gg-close:active, .gg-popup-close:active {
+.gg-popup-close:hover,
+.gg-popup-close:active {
     background: rgba(0,255,240,0.10);
     border-color: rgba(0,255,240,0.55);
     transform: scale(0.94);
 }
-.gg-close svg, .gg-popup-close svg {
+.gg-popup-close svg {
     width: 18px;
     height: 18px;
 }
 
-/* 進捗バー */
-.gg-progress-bar {
-    margin: 14px 22px 6px;
-    padding: 10px 14px;
-    border: 1px solid rgba(0,255,240,0.22);
-    border-radius: 12px;
+/* 進捗バー (スクリーン用) */
+.gimmick-guide-screen .gg-progress-bar {
+    flex: 0 0 auto;
+    margin: 32px 56px 12px;
+    padding: 22px 28px;
+    border: 2px solid rgba(0,255,240,0.22);
+    border-radius: 18px;
     background:
         linear-gradient(135deg, rgba(0,255,240,0.06), rgba(0,255,240,0.02));
     display: flex;
     align-items: baseline;
-    gap: 10px;
+    gap: 22px;
     font-family: 'Courier New', Courier, monospace;
 }
 .gg-progress-cnt {
-    font-size: 22px;
+    font-size: 56px;
     font-weight: 700;
     color: var(--accent-cyan, #00fff0);
     letter-spacing: 0.12em;
 }
 .gg-progress-lbl {
-    font-size: 11px;
+    font-size: 22px;
     letter-spacing: 0.24em;
     color: #93b3c7;
 }
 
 /* ---- カードグリッド (2列) ---- */
-.gg-grid {
-    margin: 16px 18px 0;
+.gimmick-guide-screen .gg-grid {
+    margin: 24px 0 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 28px;
 }
-.gg-card {
+.gimmick-guide-screen .gg-card {
     appearance: none;
     -webkit-appearance: none;
-    border: 1px solid rgba(0,255,240,0.22);
+    border: 2px solid rgba(0,255,240,0.22);
     background: linear-gradient(180deg, #0e131c 0%, #090c14 100%);
-    border-radius: 12px;
-    padding: 10px 10px 12px;
+    border-radius: 22px;
+    padding: 22px 22px 26px;
     color: #e6f1ff;
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 18px;
     text-align: left;
     transition: transform 0.12s ease, border-color 0.14s ease, box-shadow 0.14s ease;
 }
-.gg-card:not(:disabled):hover,
-.gg-card:not(:disabled):active {
-    transform: translateY(-1px) scale(0.99);
+.gimmick-guide-screen .gg-card:not(:disabled):active {
+    transform: translateY(-2px) scale(0.99);
     border-color: var(--accent-cyan, #00fff0);
-    box-shadow: 0 6px 18px rgba(0,255,240,0.18);
+    box-shadow: 0 12px 30px rgba(0,255,240,0.18);
 }
-.gg-card.is-locked {
+.gimmick-guide-screen .gg-card.is-locked {
     cursor: not-allowed;
     opacity: 0.55;
     border-color: rgba(255,255,255,0.10);
     background: linear-gradient(180deg, #11141b 0%, #0a0c11 100%);
 }
-.gg-card-name {
-    font-size: 13px;
+.gimmick-guide-screen .gg-card-name {
+    font-size: 30px;
     line-height: 1.35;
     color: #d6ecff;
     letter-spacing: 0.04em;
@@ -184,14 +191,26 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-.gg-card.is-locked .gg-card-name {
+.gimmick-guide-screen .gg-card.is-locked .gg-card-name {
     color: #6c7d8a;
     font-weight: 400;
     letter-spacing: 0.18em;
 }
 
 /* サムネ (静止)。カテゴリ別の幾何モチーフのみ。テキストは載せない。 */
-.gg-thumb {
+.gimmick-guide-screen .gg-thumb {
+    aspect-ratio: 16 / 10;
+    border-radius: 16px;
+    border: 2px solid rgba(255,255,255,0.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(180deg, #16202d 0%, #0c1118 100%);
+}
+/* POPUP 内のサムネは元のサイズ感に戻す */
+.gg-popup .gg-thumb {
     aspect-ratio: 16 / 10;
     border-radius: 8px;
     border: 1px solid rgba(255,255,255,0.10);
@@ -272,6 +291,9 @@
     font-weight: 800;
     color: rgba(255,255,255,0.32);
     text-shadow: 0 0 6px rgba(0,0,0,0.6);
+}
+.gimmick-guide-screen .gg-thumb-q {
+    font-size: 96px;
 }
 
 /* ---- POPUP ---- */
