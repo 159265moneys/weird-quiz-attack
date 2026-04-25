@@ -45,7 +45,7 @@ const CROP_OVERRIDE = {
     B11_BLASTER: { delay: 700 },
     B33_SCANLINES: { delay: 600 },
     B35_SCAN_BAR: { delay: 700 },
-    B36_BUBBLE_SPAM: { delay: 1500 },   // bubble がいくつか出てから
+    B36_BUBBLE_SPAM: { delay: 1300 },   // 2 個重なる時間帯 (b0[0-1500]+b1[800-2300])
     B37_STICKY_NOTES: { delay: 1500 },
     B38_QMARK_RAIN: { delay: 1500 },    // ? が画面に十分降ってから
     B39_FAKE_NOTIFICATION: { delay: 1500, y: 0 }, // 通知バナーは画面上部に出る
@@ -99,6 +99,11 @@ function delay(ms) {
     return new Promise(r => setTimeout(r, ms));
 }
 
+// CLI: node scripts/gen-gimmick-thumbs.js [ID...]
+//   引数を渡すとそれだけ再生成 (例: node scripts/gen-gimmick-thumbs.js B36 B40)
+//   引数なしで全ギミック再生成。
+const ONLY_IDS = process.argv.slice(2).filter(a => !a.startsWith('-'));
+
 (async () => {
     if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
 
@@ -121,6 +126,9 @@ function delay(ms) {
 
     let ok = 0, skipped = 0, failed = [];
     for (const g of list) {
+        if (ONLY_IDS.length && !ONLY_IDS.includes(g.id)) {
+            continue;
+        }
         if (SKIP_IDS.has(g.id)) {
             skipped++;
             console.log(`  SKIP ${g.id}`);
