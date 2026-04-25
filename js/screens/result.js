@@ -9,9 +9,18 @@
             const s = window.GameState.session;
 
             // セーブ (初回表示時のみ)
+            //   recordStageClear は B 以上だけ "クリア" 扱いで unlockedStage を伸ばす。
+            //   戻り値で「次ステージ解放/初クリア」が分かるので、後段の演出で使う。
             if (window.GameState.currentStage && !s._saved) {
-                window.Save.recordStageClear(window.GameState.currentStage, result.score, result.rank);
+                const rec = window.Save.recordStageClear(window.GameState.currentStage, result.score, result.rank);
+                s._saveRec = rec || null;
                 s._saved = true;
+                // アチーブメントの判定 (saveRec が「Bクリア」を握っているのでここで一発)。
+                //   toast はこの瞬間に出るが、リザルト演出と被るので Achievements 側で
+                //   左下スライドイン (icon-unlock とは座標を分ける)。
+                try {
+                    window.Achievements?.checkAfterStage?.(rec, result, window.GameState.currentStage, s);
+                } catch (e) { console.warn('[ach] post-stage failed', e); }
 
                 // ランキング送信 (α Prep モードでは localStorage のみ)
                 //   参加 OFF / Ranking モジュール未ロード時は no-op。
@@ -48,14 +57,103 @@
 
             const rankAccent = window.Ranks?.accentColorVar(result.rank) || 'var(--accent-cyan)';
 
-            // B21 で即死した場合は見出しに DEAD END を出す
-            const deathHead = s.deathEnd
-                ? '<div class="result-head result-head-dead">DEAD END</div>'
-                : '<div class="result-head">STAGE CLEAR</div>';
+            // 見出しの 3 分岐 (+ Stage10 全クリア時の特例):
+            //   - Stage10 を B 以上で 初めて 抜けた -> ALL CLEAR (祝祭)
+            //   - 死亡エンド (B21 即死系)         -> DEAD END (赤・震え)
+            //   - クリア基準 (B 以上) クリア      -> STAGE CLEAR (シアン)
+            //   - クリア基準未満 (C 以下)         -> STAGE FAILED (赤系)
+            // クリア状況は recordStageClear の戻り値 (s._saveRec) を信頼する。
+            const rec = s._saveRec || {};
+            const isClearing = !!rec.isClearing;
+
+            // 全クリアフラグの初回検出。第10ステージを B 以上で抜けた瞬間に
+            //   一度だけ true になる。判定はここでのみ行い、Save.flags へ確定書込。
+            //   Navigator 側のコメントもこのフラグを参照して切替えできるよう、
+            //   フラグを立てるのはバナー表示判定より先 (= render の早い段階)。
+            // session に既にメモ済みなら再 render でもフラグを維持する。
+            //   render() は Router の再描画で 1 セッション中複数回呼ばれ得るため、
+            //   getFlag は 2 回目以降 false を返してしまう。session 側にスナップする。
+            let isAllClearMoment = !!s._wasAllClearMoment;
+            if (!isAllClearMoment
+                && stageNo === 10 && isClearing
+                && !window.Save?.getFlag?.('gameCleared')) {
+                isAllClearMoment = true;
+                s._wasAllClearMoment = true;
+                window.Save?.setFlag?.('gameCleared', true);
+            }
+
+            let head;
+            if (isAllClearMoment) {
+                head = '<div class="result-head result-head-allclear">ALL STAGES CLEAR</div>';
+            } else if (s.deathEnd) {
+                head = '<div class="result-head result-head-dead">DEAD END</div>';
+            } else if (isClearing) {
+                head = '<div class="result-head result-head-clear">STAGE CLEAR</div>';
+            } else {
+                head = '<div class="result-head result-head-failed">STAGE FAILED</div>';
+            }
+
+            // 「Bランク以上で次ステージ解放」のヒント / 解放告知バナー
+            //   - ALL CLEAR の瞬間 -> 専用の "ENDING" バナー (祝祭)
+            //   - 初回 B 以上クリア & 次ステージが解放された -> 大きめのアンロック告知
+            //   - 失敗 (C 以下 / 死亡エンド) -> 「Bランク以上で次に進めます」のヒント
+            //   - それ以外 (再クリア・最終ステージ再クリア等) -> 何も出さない
+            let statusBanner = '';
+            if (isAllClearMoment) {
+                statusBanner = `
+                    <div class="result-unlock-banner is-allclear" data-banner="allclear">
+                        <span class="rub-eye">ENDING</span>
+                        <span class="rub-text">全 10 ステージ制覇</span>
+                    </div>`;
+            } else if (rec.newlyUnlockedStage) {
+                statusBanner = `
+                    <div class="result-unlock-banner" data-banner="unlock">
+                        <span class="rub-eye">UNLOCKED</span>
+                        <span class="rub-text">STAGE ${String(rec.newlyUnlockedStage).padStart(2, '0')} 解放</span>
+                    </div>`;
+            } else if (!isClearing) {
+                statusBanner = `
+                    <div class="result-unlock-banner is-fail" data-banner="fail">
+                        <span class="rub-eye">REQUIREMENT</span>
+                        <span class="rub-text">B ランク以上で次ステージ解放</span>
+                    </div>`;
+            }
+
+            // 動的 2 ボタン:
+            //   失敗 / 死亡 ->  [もう一度] [ステージ選択]
+            //   クリア + 次がある -> [次のステージ] [ステージ選択]
+            //   クリア + 最終 (10) -> [もう一度] [ステージ選択]
+            // シェアは右上にアイコン化して常時 (狭いので 3 ボタン化はしない)。
+            let primaryAction, primaryLabel, primaryClass;
+            const hasNext = isClearing && stageNo && stageNo < 10;
+            if (hasNext) {
+                primaryAction = 'next';
+                primaryLabel = `STAGE ${String(stageNo + 1).padStart(2, '0')} へ`;
+                primaryClass = 'btn btn-accent-cyan';
+            } else if (!isClearing) {
+                primaryAction = 'retry';
+                primaryLabel = 'もう一度';
+                primaryClass = 'btn btn-accent-red';
+            } else {
+                // クリア済み + 最終ステージ
+                primaryAction = 'retry';
+                primaryLabel = 'もう一度';
+                primaryClass = 'btn btn-accent-cyan';
+            }
 
             return `
-                <div class="screen result-screen rank-${result.rank}">
-                    ${deathHead}
+                <div class="screen result-screen rank-${result.rank} ${isClearing ? 'is-cleared' : 'is-failed'}">
+                    <button class="result-share-btn" data-action="share" aria-label="シェア">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="6" cy="12" r="2.6"/>
+                            <circle cx="18" cy="6"  r="2.6"/>
+                            <circle cx="18" cy="18" r="2.6"/>
+                            <line x1="8.2" y1="10.7" x2="15.8" y2="7.3"/>
+                            <line x1="8.2" y1="13.3" x2="15.8" y2="16.7"/>
+                        </svg>
+                    </button>
+                    ${head}
                     <div class="result-rank-wrap">
                         <div class="result-rank-label">RANK</div>
                         <div class="result-rank rank-${result.rank}">${result.rank}</div>
@@ -79,8 +177,11 @@
                         ${timeouts > 0 ? `<span class="text-red">TIMEOUT × ${timeouts}</span><br>` : ''}
                         STAGE ${window.GameState.currentStage}
                     </div>
+
+                    ${statusBanner}
+
                     <div class="result-actions">
-                        <button class="btn btn-accent-cyan" data-action="share">シェア</button>
+                        <button class="${primaryClass}" data-action="${primaryAction}">${primaryLabel}</button>
                         <button class="btn" data-action="stageSelect">ステージ選択</button>
                     </div>
                     <div class="share-toast" data-share-toast></div>
@@ -163,8 +264,13 @@
                 }
             }
 
-            // 上位ランク (SS/S/A) だけ蝶バースト演出
-            if (result.rank === 'SS' || result.rank === 'S' || result.rank === 'A') {
+            // 上位ランク (SS/S/A) は蝶バースト演出。
+            //   ALL CLEAR の瞬間 (Stage10 を B 以上で初めて抜けた) は、
+            //   ランクに関わらず SS 相当の祝祭バーストを出す。
+            const isAllClearMoment = !!s._wasAllClearMoment;
+            if (isAllClearMoment) {
+                spawnButterflies('SS');
+            } else if (result.rank === 'SS' || result.rank === 'S' || result.rank === 'A') {
                 spawnButterflies(result.rank);
             }
 
@@ -213,10 +319,76 @@
             });
 
             document.querySelector('[data-action="stageSelect"]')?.addEventListener('click', () => {
+                window.SE?.fire('menuCursor');
                 window.Router.show('stageSelect');
+            });
+
+            // もう一度: 同じステージを再開する。
+            //   stageSelect に挟まずダイレクトに startStage 相当を実行する。
+            //   stageSelect の startStage が module-private なので、stageSelect に
+            //   一旦遷移して params.autoStart で再開させる方式は避け、ここで
+            //   GameState を組み直して question を直接出す。
+            document.querySelector('[data-action="retry"]')?.addEventListener('click', () => {
+                const no = window.GameState?.currentStage;
+                if (!no) {
+                    window.Router.show('stageSelect');
+                    return;
+                }
+                window.SE?.fire('menuCursor');
+                relaunchStage(no);
+            });
+
+            // 次のステージへ。解放済みのはず (recordStageClear で unlocked) なので
+            //   念のため Save.isStageUnlocked で検査して、ロックなら stageSelect 経由。
+            document.querySelector('[data-action="next"]')?.addEventListener('click', () => {
+                const cur = window.GameState?.currentStage || 0;
+                const nextNo = Math.min(cur + 1, 10);
+                if (!window.Save?.isStageUnlocked?.(nextNo)) {
+                    window.Router.show('stageSelect');
+                    return;
+                }
+                window.SE?.fire('menuCursor');
+                relaunchStage(nextNo);
             });
         },
     };
+
+    // ステージを開き直す共通ルーチン。stageSelect.js の startStage と同じ流れ。
+    //   重複コードだが、stageSelect.js 側は IIFE 内に閉じていて呼べないので
+    //   ここに薄くコピーする。Phase 2 で共通 util に切り出し予定。
+    async function relaunchStage(no) {
+        try {
+            // Navigator が holdLast 等で残っているケースがあるので閉じる
+            if (window.Navigator?.isOpen?.()) window.Navigator.close();
+
+            window.GameState.currentStage = no;
+            window.GameState.resetSession();
+            window.GameState.session.startAt = Date.now();
+
+            const all = await window.QuizLoader.loadAll();
+            const picked = window.QuizLoader.pickForStage(all, no, window.CONFIG.QUESTIONS_PER_STAGE);
+            window.GameState.session.questions = picked;
+            const slots = window.GimmickSelector.pickGimmickSlots(no, picked.length);
+            window.GameState.session.gimmickSlots = slots;
+            window.GameState.session.kAssignment =
+                window.GimmickSelector.generateKAssignment(no, slots);
+            const b18Prob = window.CONFIG.B18_STAGE_PROB ?? 1.0;
+            const inputIdxs = picked
+                .map((q, i) => (q.mode === 'input' ? i : -1))
+                .filter(i => i >= 0);
+            window.GameState.session.b18Slot =
+                (Math.random() < b18Prob && inputIdxs.length > 0)
+                    ? inputIdxs[Math.floor(Math.random() * inputIdxs.length)]
+                    : -1;
+
+            window.TabBar?.unmount?.();
+            window.Router.show('question');
+            window.SE?.fire('stageStart');
+        } catch (e) {
+            console.error('[Result] relaunch failed:', e);
+            window.Router.show('stageSelect');
+        }
+    }
 
     // seed から安定した非負整数ハッシュ (同一セッション内で抽選を固定する用)
     function hashSeed(s) {

@@ -396,22 +396,65 @@
             play(cn);
         }
     }
+    // 画面がバックグラウンド (ロック / 別アプリ / タスクスイッチャ) に入った時、
+    // BGM を即座に pause する。Capacitor iOS では WKWebView のメディアパイプラインが
+    // 何もしないと裏でも鳴り続けるため、ゲームアプリとして不適切な挙動になる。
+    // currentName / currentEl は捨てずに保持しておき、resumeFromBackground で
+    // 同じ場所から再開する (本当に止めたい時は BGM.stop() を画面側から呼ぶ)。
+    function pauseForBackground() {
+        if (currentEl) {
+            try { currentEl.pause(); } catch (_) {}
+        }
+        // フェード中の旧 el も止める (鳴り続けると bg で漏れる)
+        fadingEls.forEach((el) => { try { el.pause(); } catch (_) {} });
+        // SE もまとめて停止 (loop SE が裏で鳴り続けるのを防ぐ)
+        try { window.SE?.abortAll?.(0, false); } catch (_) {}
+    }
+
     function installVisibilityHandler() {
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
                 // resume を次フレームに遅延 (visible イベントと同期で Audio API
                 // を叩くと iOS で失敗することがあるため)
                 setTimeout(resumeFromBackground, 60);
+            } else {
+                // hidden (= ロック画面 / 別アプリ / タスクスイッチャ表示)
+                // ここで BGM を pause しないと iOS では裏で鳴り続ける。
+                pauseForBackground();
             }
         });
         // pageshow: bfcache から復帰したケース (iOS Safari でよくある)
         window.addEventListener('pageshow', (ev) => {
             if (ev.persisted) setTimeout(resumeFromBackground, 60);
         });
-        // focus: PWA として起動した場合の保険
+        // pagehide: bfcache に入る瞬間 / ナビゲーション離脱時にも止める
+        window.addEventListener('pagehide', () => {
+            pauseForBackground();
+        });
+        // focus / blur: PWA として起動した場合の保険
         window.addEventListener('focus', () => {
             setTimeout(resumeFromBackground, 60);
         });
+        window.addEventListener('blur', () => {
+            pauseForBackground();
+        });
+
+        // Capacitor App プラグイン: iOS では visibilitychange が信頼できない
+        // ケース (一部の状態遷移で発火しない / 遅れる) があるため、
+        // ネイティブ側の appStateChange を併用して二重に塞ぐ。
+        try {
+            const Cap = window.Capacitor;
+            const AppPlugin = Cap?.Plugins?.App;
+            if (AppPlugin && typeof AppPlugin.addListener === 'function') {
+                AppPlugin.addListener('appStateChange', (state) => {
+                    if (state && state.isActive === false) {
+                        pauseForBackground();
+                    } else if (state && state.isActive === true) {
+                        setTimeout(resumeFromBackground, 60);
+                    }
+                });
+            }
+        } catch (_) { /* noop */ }
     }
 
     // ------- unlock 連動 -------

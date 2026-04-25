@@ -11,6 +11,15 @@
     // 初回起動時に発行し、以後は不変。表示名 (name) が未設定なら ID を
     // そのまま表示名に使う (= デフォルトで "固有の ID = その人の名前")。
     const ID_POOL = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    // YYYY-MM-DD (端末ローカル時刻) を返す。連続ログイン判定用。
+    //   toISOString() は UTC ベースなので深夜帯で日付がズレる → 自前で組む。
+    function ymdLocal(d) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    }
+
     function generatePlayerId(len) {
         if (!len) len = 6;
         let s = '';
@@ -42,6 +51,15 @@
             scores: {
                 // 'stage-1': { best: 12000, bestRank: 'B', plays: 4 }
             },
+            // ログイン (= ホーム画面到達) の追跡。連続日数バッジに使う。
+            //   lastPlayDate : 最後にホームを開いた日 (ローカル時刻 YYYY-MM-DD)
+            //   streak       : 連続日数 (1 始まり、間が空いたら 1 に戻る)
+            session: {
+                lastPlayDate: null,
+                streak: 0,
+            },
+            // 達成バッジ。js/achievements.js のカタログ id を配列で保持。
+            achievements: [],
             flags: {
                 tutorialDone: false,
             },
@@ -109,6 +127,14 @@
                 for (const baseId of ['butterfly', 'puzzle']) {
                     if (!prog.unlockedIcons.includes(baseId)) prog.unlockedIcons.push(baseId);
                 }
+                // session ブロックの後方互換 (2026-04 追加: 連続日数)
+                if (!this.data.session || typeof this.data.session !== 'object') {
+                    this.data.session = { lastPlayDate: null, streak: 0 };
+                }
+                // achievements 配列の後方互換 (2026-04 追加)
+                if (!Array.isArray(this.data.achievements)) {
+                    this.data.achievements = [];
+                }
                 // 旧セーブで既に jellyfish/tv/phonograph を選択してた人は
                 //   "没収しない" ポリシー: 選択中アイコンを所持扱いにする
                 if (pl.icon && !prog.unlockedIcons.includes(pl.icon)) {
@@ -149,13 +175,41 @@
             return this.data?.progress?.clearedStages?.includes(no) || false;
         },
 
+        // ランクが "クリア基準" (デフォルト B) 以上か。
+        //   SS > S > A > B > C > D > E > F の順序で判定する。
+        //   死亡エンド時は Scoring 側で rank='F' になるため必然的に false。
+        isRankClearing(rank) {
+            const ORDER = window.CONFIG.RANK_ORDER || ['SS', 'S', 'A', 'B', 'C', 'D', 'E', 'F'];
+            const threshold = window.CONFIG.CLEAR_RANK_THRESHOLD || 'B';
+            const ti = ORDER.indexOf(threshold);
+            const ri = ORDER.indexOf(rank);
+            if (ti < 0 || ri < 0) return false;
+            return ri <= ti;  // 配列前方ほど上位 = 数字が小さい = clear
+        },
+
+        // ステージ完了処理。プレイ回数とベストスコアは「ランクに関わらず」常に記録する
+        //   (ランキングや BEST 表示の連続性を保つため) が、
+        //   "クリア済み" マーク + 次ステージ解放は B 以上のときだけ。
+        // 戻り値: {
+        //   isClearing: bool,             // B 以上で「クリア」と認定された
+        //   isFirstClearOfStage: bool,    // このステージを初めて B 以上で抜けた
+        //   newlyUnlockedStage: number|0, // 解放された次のステージ番号 (なければ 0)
+        //   isBestUpdated: bool,
+        //   bestScore, bestRank,
+        //   plays,
+        // }
         recordStageClear(no, score, rank) {
-            if (!this.data) return;
+            const result = {
+                isClearing: false,
+                isFirstClearOfStage: false,
+                newlyUnlockedStage: 0,
+                isBestUpdated: false,
+                bestScore: 0,
+                bestRank: '',
+                plays: 0,
+            };
+            if (!this.data) return result;
             const prog = this.data.progress;
-            if (!prog.clearedStages.includes(no)) {
-                prog.clearedStages.push(no);
-            }
-            prog.unlockedStage = Math.max(prog.unlockedStage, Math.min(no + 1, 10));
 
             const key = `stage-${no}`;
             const cur = this.data.scores[key] || { best: 0, bestRank: '', plays: 0 };
@@ -163,9 +217,30 @@
             if (score > cur.best) {
                 cur.best = score;
                 cur.bestRank = rank;
+                result.isBestUpdated = true;
             }
             this.data.scores[key] = cur;
+
+            const isClearing = this.isRankClearing(rank);
+            if (isClearing) {
+                result.isClearing = true;
+                if (!prog.clearedStages.includes(no)) {
+                    prog.clearedStages.push(no);
+                    result.isFirstClearOfStage = true;
+                }
+                const before = prog.unlockedStage;
+                const after = Math.max(before, Math.min(no + 1, 10));
+                if (after > before) {
+                    prog.unlockedStage = after;
+                    result.newlyUnlockedStage = after;
+                }
+            }
+
             this.persist();
+            result.bestScore = cur.best;
+            result.bestRank = cur.bestRank;
+            result.plays = cur.plays;
+            return result;
         },
 
         getStageScore(no) {
@@ -272,6 +347,88 @@
         getUnlockedIcons() {
             return (this.data?.progress?.unlockedIcons || []).slice();
         },
+        // --- 連続ログイン (session) ---
+        // ホーム画面到達時に呼ばれる。
+        //   - 初回:                streak=1, lastPlayDate=今日
+        //   - 同日 2 回目以降:     何もしない
+        //   - 前日に来てた:        streak += 1, lastPlayDate=今日
+        //   - 1 日以上空いた:      streak=1 に戻して再スタート
+        // 戻り値: { streak, isNewDay }
+        //   isNewDay=true なら呼び出し側で「STREAK +1」演出が出せる
+        // 日付は端末ローカル時刻 YYYY-MM-DD で扱う (UTC 跨ぎで連続が崩れない)。
+        touchSession() {
+            if (!this.data) return { streak: 1, isNewDay: false };
+            if (!this.data.session) this.data.session = { lastPlayDate: null, streak: 0 };
+            const sess = this.data.session;
+            const today = ymdLocal(new Date());
+            if (sess.lastPlayDate === today) {
+                return { streak: sess.streak || 1, isNewDay: false };
+            }
+            const y = new Date();
+            y.setDate(y.getDate() - 1);
+            const yesterday = ymdLocal(y);
+            if (sess.lastPlayDate === yesterday) {
+                sess.streak = (sess.streak || 0) + 1;
+            } else {
+                sess.streak = 1;
+            }
+            sess.lastPlayDate = today;
+            this.persist();
+            return { streak: sess.streak, isNewDay: true };
+        },
+        getStreak() {
+            return this.data?.session?.streak || 0;
+        },
+
+        // --- 全ステージ集計 (HOME の STATS バーで使う) ---
+        // 累計プレイ回数 (= scores[*].plays の合計)
+        getTotalPlays() {
+            const sc = this.data?.scores || {};
+            let n = 0;
+            for (const k in sc) {
+                if (sc[k] && typeof sc[k].plays === 'number') n += sc[k].plays;
+            }
+            return n;
+        },
+        // 全ステージの中で最高ランク (SS > S > A > B > C > D > E > F)。
+        // 1 度もクリアしていない場合 null を返す。
+        getBestRankAcross() {
+            const ORDER = ['SS', 'S', 'A', 'B', 'C', 'D', 'E', 'F'];
+            const sc = this.data?.scores || {};
+            let best = null;
+            let bestIdx = ORDER.length;
+            for (const k in sc) {
+                const r = sc[k]?.bestRank;
+                if (!r) continue;
+                const i = ORDER.indexOf(r);
+                if (i >= 0 && i < bestIdx) {
+                    bestIdx = i;
+                    best = r;
+                }
+            }
+            return best;
+        },
+
+        // --- 達成バッジ ---
+        // 既に持っていれば false。新規解放なら true を返す。
+        unlockAchievement(id) {
+            if (!this.data) return false;
+            if (typeof id !== 'string' || id.length === 0) return false;
+            if (!Array.isArray(this.data.achievements)) this.data.achievements = [];
+            const list = this.data.achievements;
+            if (list.includes(id)) return false;
+            list.push(id);
+            this.persist();
+            return true;
+        },
+        hasAchievement(id) {
+            const list = this.data?.achievements || [];
+            return list.includes(id);
+        },
+        getAchievements() {
+            return (this.data?.achievements || []).slice();
+        },
+
         // iconId を解放。新規解放なら true を返す (呼び出し側で popup 演出に利用)。
         unlockIcon(iconId) {
             if (!this.data) return false;

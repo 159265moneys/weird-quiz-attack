@@ -81,6 +81,14 @@ window.CONFIG = Object.freeze({
         others: 'その他',
     },
 
+    // --- クリア判定 ---
+    // ステージを「クリア」と認める最低ランク。これ以上なら次ステージ解放 +
+    //   サブキャラ解放抽選の対象になる。これ未満は score/play は記録するが
+    //   "未クリア" 扱い (リザルトは STAGE FAILED)。
+    //   ランク順序は SS > S > A > B > C > D > E > F。
+    CLEAR_RANK_THRESHOLD: 'B',
+    RANK_ORDER: ['SS', 'S', 'A', 'B', 'C', 'D', 'E', 'F'],
+
     // --- セーブデータ ---
     SAVE_KEY: 'kuso_quiz_save_v1',
     SAVE_VERSION: 1,

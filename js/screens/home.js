@@ -42,6 +42,59 @@
     }
 
     // ------------------------------------------------------------------
+    // TIPS — ボタンの上に出す小カード。タップで次の TIP に切替。
+    // ------------------------------------------------------------------
+    // 操作のコツ + 仕様の小ネタを混ぜる。順番は提示時にシャッフル。
+    // 絵文字は使わない (.cursor/rules/no-emoji.mdc)。
+    const TIPS = [
+        '同じキーを連打で「あ→い→う→え→お」と切替できる',
+        'フリック (上下左右) でも文字入力できる',
+        '濁点キーを連打で「だ→ば→ぱ」と変換できる',
+        '問題文に「ひらがなで」とある時は ABC/123 切替が効かなくなる',
+        '黒塗りの文字は よーく見ると うっすら透けている',
+        'ステージクリアで次のステージとアイコンが解放される',
+        'プロフィールタブで 名前とアイコンを変えられる',
+        'ランキング送信は 設定 → ONLINE RANKING でオフにできる',
+        '回答中の中断は画面右上 EXIT ボタンから',
+        'BGM は アプリをバックグラウンドにすると止まる',
+        'プレイヤー ID は 6 文字。ランキングで他の人と区別する目印',
+        'タイトル画面でタップするとスタート (ロックは効かないので慎重に)',
+    ];
+
+    function pickInitialTipIndex() {
+        return Math.floor(Math.random() * TIPS.length);
+    }
+
+    // ------------------------------------------------------------------
+    // STATS — ヘッダ下の 1 行ストリップ。
+    //   STAGE n/10  ·  BEST <rank>  ·  STREAK Nd  ·  PLAYS N
+    //   未クリア時は BEST/PLAYS が "—" 表示。STREAK は 0 → "1d" 扱い。
+    // ------------------------------------------------------------------
+    function buildStatsHTML() {
+        const progress = window.Save?.data?.progress || {};
+        const unlocked = progress.unlockedStage || 1;
+        const totalStages = (window.CONFIG.STAGES?.length) || 10;
+
+        const bestRank = window.Save?.getBestRankAcross?.() || null;
+        const totalPlays = window.Save?.getTotalPlays?.() || 0;
+        const streak = Math.max(1, window.Save?.getStreak?.() || 0);
+
+        const cells = [
+            { key: 'stage',  label: 'STAGE',  value: `${unlocked}/${totalStages}` },
+            { key: 'best',   label: 'BEST',   value: bestRank || '—' },
+            { key: 'streak', label: 'STREAK', value: `${streak}d` },
+            { key: 'plays',  label: 'PLAYS',  value: String(totalPlays) },
+        ];
+        const html = cells.map(c => `
+            <div class="home-stats-cell" data-key="${c.key}">
+                <span class="home-stats-k">${c.label}</span>
+                <span class="home-stats-v">${escapeHTML(c.value)}</span>
+            </div>
+        `).join('<span class="home-stats-sep" aria-hidden="true">·</span>');
+        return `<div class="home-stats" aria-label="プレイ状況">${html}</div>`;
+    }
+
+    // ------------------------------------------------------------------
     // HOME に立たせるキャラ絵プール (1000×1000 透過 PNG / sprite/chars/)
     // ------------------------------------------------------------------
     // 各キャラは複数ポーズを持つ。PROFILE で表示するアイコン (160×160 前後) と
@@ -79,6 +132,9 @@
         return CHARS_BASE + encodeURIComponent(pick);
     }
 
+    // タップで切替する TIP の index (画面再生成のたびに乱数で初期化)
+    let currentTipIdx = 0;
+
     const Screen = {
         render() {
             const progress = window.Save?.data?.progress || {};
@@ -90,6 +146,14 @@
             const charHtml = avPath
                 ? `<img class="home-char" src="${escapeHTML(avPath)}" alt="" id="homeChar" onerror="this.remove();">`
                 : `<div class="home-char home-char-placeholder" id="homeChar"></div>`;
+
+            currentTipIdx = pickInitialTipIndex();
+            const tipHtml = `
+                <button class="home-tip" id="homeTip" type="button" aria-label="次の TIP">
+                    <span class="home-tip-label">TIP</span>
+                    <span class="home-tip-text" id="homeTipText">${escapeHTML(TIPS[currentTipIdx])}</span>
+                </button>
+            `;
 
             return `
                 <div class="screen home-screen">
@@ -107,6 +171,8 @@
                         </div>
                     </div>
 
+                    ${buildStatsHTML()}
+
                     <div class="home-dialog" id="homeDialog">
                         <p class="home-dialog-text">${escapeHTML(dialogue)}</p>
                     </div>
@@ -114,6 +180,8 @@
                     <!-- キャラを flex 伸長領域で描画。dialog とボタンの間を埋める。
                          画像はこの領域一杯に object-fit:contain でフィットする。 -->
                     <div class="home-char-area">${charHtml}</div>
+
+                    ${tipHtml}
 
                     <div class="home-actions">
                         <button class="home-btn home-btn-start" type="button" data-action="start">
@@ -130,6 +198,25 @@
         },
 
         init() {
+            // 連続日数を更新 (1 度の起動で何回 home に来ても同日なら no-op)
+            //   isNewDay=true なら STREAK セルにポップ演出を 1 回入れる。
+            const sess = window.Save?.touchSession?.();
+            // 連続日数バッジ (STREAK 3 / 7) の判定。toast は Achievements 側で出る。
+            //   isNewDay でなくても streak >= 7 を保持していれば過去解放済みのはず =
+            //   tryUnlock は 2 回目以降 false なので副作用なし。
+            try { window.Achievements?.checkAfterSession?.(sess); } catch (_) {}
+            if (sess?.isNewDay) {
+                requestAnimationFrame(() => {
+                    const cell = document.querySelector(
+                        '.home-stats-cell[data-key="streak"]'
+                    );
+                    if (cell) {
+                        cell.classList.add('is-bumped');
+                        setTimeout(() => cell.classList.remove('is-bumped'), 1500);
+                    }
+                });
+            }
+
             // タブバーを表示 (home がアクティブ)
             window.TabBar?.mount?.('home');
 
@@ -161,6 +248,20 @@
             document.querySelector('[data-action="select"]')?.addEventListener('click', () => {
                 window.SE?.fire?.('menuCursor');
                 window.Router.show('stageSelect');
+            });
+
+            // TIP カード: タップで次の TIP に進む (リング状に循環)
+            document.getElementById('homeTip')?.addEventListener('click', () => {
+                window.SE?.fire?.('select');
+                currentTipIdx = (currentTipIdx + 1) % TIPS.length;
+                const el = document.getElementById('homeTipText');
+                if (el) {
+                    el.classList.remove('is-flip');
+                    // reflow trick (1px) で animation を再起動
+                    void el.offsetWidth;
+                    el.textContent = TIPS[currentTipIdx];
+                    el.classList.add('is-flip');
+                }
             });
         },
 

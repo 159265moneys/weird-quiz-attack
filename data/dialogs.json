@@ -123,7 +123,7 @@
             "iconId": "jellyfish",
             "image": "sprite/chars/jellyfish_1.png",
             "stages": [5, 6],
-            "ranks": ["A", "S", "SS"],
+            "ranks": ["B", "A", "S", "SS"],
             "poses": ["basic"],
             "variants": [
                 ["あら主様、見事なお手並みでありんすこと。", "{pct}…{label} に相応しゅうござんすねえ。"],
@@ -139,7 +139,7 @@
             "iconId": "tv",
             "image": "sprite/chars/tv_1.png",
             "stages": [7, 8],
-            "ranks": ["A", "S", "SS"],
+            "ranks": ["B", "A", "S", "SS"],
             "poses": ["basic"],
             "variants": [
                 ["ふーん、{pct} ね。", "まあ {label} くらいはあるじゃん？"],
@@ -155,7 +155,7 @@
             "iconId": "phonograph",
             "image": "sprite/chars/phonograph_1.png",
             "stages": [9, 10],
-            "ranks": ["A", "S", "SS"],
+            "ranks": ["B", "A", "S", "SS"],
             "poses": ["basic"],
             "variants": [
                 ["ふむ、見事ですね。", "{pct}…{label} に相当する結果、確かに。"],

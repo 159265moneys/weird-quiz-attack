@@ -306,3 +306,73 @@ body.has-tabbar .profile-screen-inner {
     font-size: 26px;
     letter-spacing: 5px;
 }
+
+/* ============================================================
+   ACHIEVEMENTS 一覧 (PROFILE 内)
+   ------------------------------------------------------------
+   ICON グリッドの直下に配置するセクション。アバターと同じ縦リズムで
+   「未解放はグレーアウト + 同行」の慣例を踏襲する。
+   ============================================================ */
+.profile-screen .hm-pf-achwrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.profile-screen .hm-pf-ach-summary {
+    font-size: 22px;
+    letter-spacing: 4px;
+    color: var(--accent-cyan, #36d3e3);
+    font-weight: 900;
+    align-self: flex-start;
+}
+.profile-screen .hm-pf-ach-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 12px;
+    width: 100%;
+}
+.profile-screen .hm-pf-ach {
+    padding: 12px 14px;
+    border: 2px solid var(--line-dim, rgba(255, 255, 255, 0.18));
+    background: var(--box-bg, rgba(20, 22, 28, 0.85));
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
+    color: var(--text-on-dark, #e6f1ff);
+    min-height: 0;
+    overflow: hidden;
+}
+.profile-screen .hm-pf-ach.is-locked {
+    opacity: 0.45;
+    filter: grayscale(0.5);
+}
+.profile-screen .hm-pf-ach.is-got.tier-story {
+    border-color: var(--accent-warn, #ffd400);
+    box-shadow: 3px 3px 0 rgba(255, 212, 0, 0.35);
+}
+.profile-screen .hm-pf-ach.is-got.tier-skill {
+    border-color: var(--accent-cyan, #36d3e3);
+    box-shadow: 3px 3px 0 var(--accent-cyan-dim, rgba(54, 211, 227, 0.4));
+}
+.profile-screen .hm-pf-ach.is-got.tier-fun {
+    border-color: var(--accent-red, #ff3340);
+    box-shadow: 3px 3px 0 var(--accent-red-dim, rgba(255, 51, 64, 0.4));
+}
+.profile-screen .hm-pf-ach.is-got.tier-core {
+    border-color: var(--accent-cyan, #36d3e3);
+}
+.profile-screen .hm-pf-ach-name {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+}
+.profile-screen .hm-pf-ach-hint {
+    font-size: 16px;
+    letter-spacing: 0.8px;
+    color: var(--text-faint, rgba(230, 241, 255, 0.62));
+    line-height: 1.3;
+}
+.profile-screen .hm-pf-ach-empty {
+    font-size: 22px;
+    color: var(--text-faint, rgba(230, 241, 255, 0.6));
+    padding: 8px 4px;
+}

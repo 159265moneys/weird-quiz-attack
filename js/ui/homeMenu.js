@@ -237,6 +237,69 @@
         return `<div class="hm-pf-av-grid">${cells.join('')}</div>`;
     }
 
+    // 達成バッジ一覧。Achievements.CATALOG を 1 セル = 1 バッジで並べる。
+    //   未解放はグレーアウト + ロックアイコン (アバターと同じ慣例)。
+    //   tier 別に色味を変える: story=warn / skill=cyan / fun=red / core=cyan-dim。
+    //   タップ時にヒント文を ConfirmDialog で alert する手も考えたが、画面密度が
+    //   上がるので今は title 属性に格納するだけ (Web 版でツールチップ表示)。
+    function buildAchievementsHTML() {
+        const cat = window.Achievements?.CATALOG || [];
+        if (!cat.length) {
+            return `<div class="hm-pf-ach-empty">読み込み中…</div>`;
+        }
+        const have = new Set(window.Save?.getAchievements?.() || []);
+        const totalGot = cat.filter(a => have.has(a.id)).length;
+        const cells = cat.map((a) => {
+            const got = have.has(a.id);
+            const cls = `hm-pf-ach tier-${a.tier || 'core'} ${got ? 'is-got' : 'is-locked'}`;
+            // ロック時もカードは見せて hint だけ伏せたいが、密度の都合で今は同表示。
+            //   後段で「未解放は ??? に置換」も検討可。
+            return `
+                <div class="${cls}" title="${escapeHTML(a.hint)}">
+                    <div class="hm-pf-ach-name">${escapeHTML(a.name)}</div>
+                    <div class="hm-pf-ach-hint">${escapeHTML(a.hint)}</div>
+                </div>
+            `;
+        }).join('');
+        return `
+            <div class="hm-pf-ach-summary">${totalGot} / ${cat.length}</div>
+            <div class="hm-pf-ach-grid">${cells}</div>
+        `;
+    }
+
+    // ACHIEVEMENTS グリッド (PROFILE 画面に埋め込む)。
+    //   解放済み = 鮮やかな枠 / hint を本文化。
+    //   未解放    = グレー枠 + ロックアイコン (詳細はホバー/タップで見える)。
+    // CATALOG は js/achievements.js が管理。未ロード時はメッセージのみ。
+    function buildAchievementsHTML() {
+        const cat = window.Achievements?.getCatalog?.();
+        if (!cat || !cat.length) {
+            return `<div class="hm-pf-ach-empty">未ロード</div>`;
+        }
+        const owned = new Set(window.Save?.getAchievements?.() || []);
+        const unlockedCount = cat.filter(a => owned.has(a.id)).length;
+
+        const cells = cat.map((a) => {
+            const isOwned = owned.has(a.id);
+            const stateCls = isOwned ? 'is-owned' : 'is-locked';
+            const tierCls = `tier-${a.tier || 'core'}`;
+            const name = isOwned ? escapeHTML(a.name) : '???';
+            const hint = escapeHTML(a.hint);
+            return `
+                <div class="hm-pf-ach-cell ${stateCls} ${tierCls}" data-ach="${a.id}">
+                    <div class="hm-pf-ach-name">${name}</div>
+                    <div class="hm-pf-ach-hint">${hint}</div>
+                </div>`;
+        }).join('');
+
+        return `
+            <div class="hm-pf-ach-wrap">
+                <div class="hm-pf-ach-summary">${unlockedCount} / ${cat.length}</div>
+                <div class="hm-pf-ach-grid">${cells}</div>
+            </div>
+        `;
+    }
+
     function buildProfileHTML() {
         const id   = window.Save?.getPlayerId?.() || '??????';
         const disp = window.Save?.getPlayerDisplayName?.() || id;
@@ -284,6 +347,11 @@
                         <div class="hm-pf-avwrap">${buildAvatarGridHTML(iconId)}</div>
                     </div>
 
+                    <div class="hm-pf-row">
+                        <div class="hm-pf-lbl">ACHIEVEMENTS</div>
+                        <div class="hm-pf-achwrap">${buildAchievementsHTML()}</div>
+                    </div>
+
                     <div class="hm-pf-row hm-pf-row-toggle">
                         <div class="hm-pf-lbl">RANKING</div>
                         <label class="hm-pf-toggle">
@@ -291,6 +359,11 @@
                             <span class="hm-pf-toggle-box"></span>
                             <span class="hm-pf-toggle-label">オンライン TOP100 に参加</span>
                         </label>
+                    </div>
+
+                    <div class="hm-pf-row hm-pf-row-ach">
+                        <div class="hm-pf-lbl">ACHIEVEMENTS</div>
+                        ${buildAchievementsHTML()}
                     </div>
 
                     <!-- 保存ボタンは 1つに統一: アイコンはタップで即保存される

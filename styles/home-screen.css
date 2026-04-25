@@ -86,6 +86,86 @@
     filter: brightness(0) saturate(100%) invert(25%);
 }
 
+/* --- STATS バー (ヘッダ直下、横一列で進捗を出す) ---
+   表示内容: STAGE n/m · BEST <rank> · STREAK Nd · PLAYS N
+   セパレータは中点 ·。VHS-readout 風に "ラベル小・値大" で 2 行構造。
+   セル中央が STREAK の場合だけ初日 / 連続更新時に bump アニメ。
+   配置: home-screen は flex column。home-head の直下に通常フローで載せる。
+        position は relative で、VHS / floating-text レイヤより手前 (z-index:5)。 */
+.home-stats {
+    width: 100%;
+    margin-bottom: 18px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    background: rgba(10, 10, 14, 0.78);
+    border: 2px solid rgba(0, 229, 255, 0.45);
+    box-shadow:
+        4px 4px 0 rgba(0, 229, 255, 0.22),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    color: var(--text-on-dark, #fff);
+    font-family: var(--font-mono, 'Courier New', monospace);
+    position: relative;
+    z-index: 5;
+}
+.home-stats-cell {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 4px 6px;
+}
+.home-stats-k {
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: rgba(0, 229, 255, 0.82);
+    font-weight: 700;
+}
+.home-stats-v {
+    font-size: 32px;
+    letter-spacing: 1.5px;
+    color: var(--text-on-dark, #fff);
+    font-weight: 700;
+    line-height: 1;
+    /* 値が長い (例: BEST=SS) でもセル内に収める */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+.home-stats-sep {
+    flex: 0 0 auto;
+    color: rgba(0, 229, 255, 0.5);
+    font-size: 28px;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+}
+/* STREAK セル: 連続日数が更新された当日 1 回だけポップ + 発光。
+   js 側で .is-bumped を 1.5s 付ける。 */
+.home-stats-cell[data-key="streak"] .home-stats-v {
+    color: var(--accent-cyan, #00e5ff);
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.55);
+}
+.home-stats-cell.is-bumped {
+    animation: homeStatsBump 1.4s ease-out;
+}
+.home-stats-cell.is-bumped .home-stats-v {
+    text-shadow: 0 0 18px rgba(0, 229, 255, 0.95);
+}
+@keyframes homeStatsBump {
+    0%   { transform: scale(1); }
+    20%  { transform: scale(1.18); }
+    40%  { transform: scale(0.97); }
+    60%  { transform: scale(1.06); }
+    100% { transform: scale(1); }
+}
+
 /* --- 吹き出し (nav-bubble と同じ見た目。TAP 送りは無いので next ランプ無し) ---
    キャラ画像 (1000×1000 / 画面幅一杯に object-fit:contain = 1080×1080 canvas-px) の
    直上に少し余白を置いて配置する。
@@ -191,6 +271,71 @@
     50%      { transform: translateY(-6px) scale(1.01); }
 }
 
+/* --- TIP カード (ボタン直上、横長 1 行)
+   タップで次の TIP に切替。VHS-readout 風の薄い半透明黒背景 + シアン縁取り。
+   キャラ画像 (z-index:1) より手前に出す (z-index:10)。
+   配置: home-actions の "前" の flex item として通常フローに乗せる。
+        margin-top: auto は actions 側にあるため、tip は actions の直上に
+        張り付く形になる (= 機種ごと canvas-h が変わっても自動追従)。 */
+.home-tip {
+    appearance: none;
+    width: 100%;
+    /* margin-top:auto で flex 下端へ押し出し、actions はその直下に張り付く形 */
+    margin-top: auto;
+    margin-bottom: 14px;
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(10, 10, 14, 0.78);
+    border: 2px solid rgba(0, 229, 255, 0.55);
+    box-shadow:
+        4px 4px 0 rgba(0, 229, 255, 0.32),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    color: var(--text-on-dark, #fff);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    position: relative;
+    z-index: 10;
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.home-tip:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 rgba(0, 229, 255, 0.32);
+}
+.home-tip-label {
+    flex: 0 0 auto;
+    font-family: var(--font-mono, 'Courier New', monospace);
+    font-size: 20px;
+    letter-spacing: 4px;
+    font-weight: 800;
+    color: var(--accent-cyan, #00e5ff);
+    padding: 4px 10px;
+    border: 2px solid var(--accent-cyan, #00e5ff);
+    border-radius: 4px;
+    background: rgba(0, 229, 255, 0.08);
+}
+.home-tip-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 24px;
+    line-height: 1.4;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.92);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* 切替時のフラッシュ演出 */
+}
+.home-tip-text.is-flip {
+    animation: homeTipFlip 0.4s ease-out;
+}
+@keyframes homeTipFlip {
+    0%   { opacity: 0; transform: translateY(6px); filter: blur(2px); }
+    60%  { opacity: 1; transform: translateY(0);   filter: blur(0); }
+    100% { opacity: 1; transform: translateY(0);   filter: blur(0); }
+}
+
 /* --- アクション (2 ボタン横並び) ---
    margin-top: auto で flex 下端に寄せ、margin-bottom で TabBar + 少し上に。
    z-index: 10 でキャラ画像 (.home-char-area / z-index:1) より確実に手前に。 */
@@ -199,7 +344,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 28px;
-    margin-top: auto;
+    /* margin-top:auto は home-tip 側に移譲済み (tip + actions が下端に寄る) */
+    margin-top: 0;
     /* TabBar 実高さ分 + ボタンを浮かせる余白 (キャラ下半身の上あたりに位置させる)。
        48 → 160 に引き上げてボタンを上に移動 (ユーザー要望 2026-04)。 */
     margin-bottom: calc((56px + env(safe-area-inset-bottom, 0px)) / var(--scale, 1) + 160px);

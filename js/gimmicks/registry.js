@@ -564,8 +564,11 @@
     };
 
     // --- B23 問題文黒塗り ---
-    // 連続する 2〜5 文字を 2〜4 箇所、黒帯で隠す。機密文書風。
-    // 隠された部分は推測で補わないと解けない問題もあり得る。
+    // ランダムな位置に 1〜5 文字 (最大 5) を黒帯で覆い隠す。
+    // 完全に消すのではなく、文字色を極薄白 (rgba 0.05) にして、よーく見ると
+    // うっすら文字シルエットが透けるようにする (= 推測のヒント程度に残す)。
+    // 旧仕様 (連続セグメント × 複数) は問題文全体を埋め尽くしてしまい、
+    // ギミックとして機能していなかったため 2026-04 に簡素化。
     const B23_REDACTION = {
         id: 'B23', name: '問題文黒塗り', supports: 'both', introducedAt: 6, difficulty: 7,
         conflicts: stemConflictsExcept('B23'),
@@ -575,31 +578,34 @@
             const originalHTML = stem.innerHTML;
             const chars = Array.from(stem.textContent);
             const n = chars.length;
-            if (n < 4) return () => {};
+            if (n < 2) return () => {};
 
-            // 2〜4 個の連続セグメント (各 2〜5 文字) を塗り潰し
-            const covered = new Array(n).fill(false);
-            const segCount = 2 + Math.floor(Math.random() * 3);
-            for (let s = 0; s < segCount; s++) {
-                const segLen = 2 + Math.floor(Math.random() * 4);
-                const maxStart = Math.max(0, n - segLen);
-                const start = Math.floor(Math.random() * (maxStart + 1));
-                for (let i = start; i < Math.min(n, start + segLen); i++) covered[i] = true;
+            // 隠す文字数 = 1〜5 の一様乱数。問題文が短い時は n を上限にクリップ。
+            const target = Math.min(n, 1 + Math.floor(Math.random() * 5));
+
+            // 重複しない位置を target 個選ぶ (= ランダムに散りばめる)。
+            //   連続セグメントだと「機密文書」感は出るが、5 文字程度の短い帯は
+            //   必ず読めてしまうのでギミックにならない。バラ撒くことで全体の
+            //   どこかに「読めない箇所」が点在する形にする。
+            const indices = [];
+            const used = new Set();
+            let safety = 0;
+            while (indices.length < target && safety++ < 100) {
+                const idx = Math.floor(Math.random() * n);
+                if (used.has(idx)) continue;
+                used.add(idx);
+                indices.push(idx);
             }
 
+            const covered = new Array(n).fill(false);
+            indices.forEach(i => { covered[i] = true; });
+
             let html = '';
-            let i = 0;
-            while (i < n) {
+            for (let i = 0; i < n; i++) {
                 if (covered[i]) {
-                    let j = i;
-                    while (j < n && covered[j]) j++;
-                    html += `<span class="gk-b23-redact">${esc(chars.slice(i, j).join(''))}</span>`;
-                    i = j;
+                    html += `<span class="gk-b23-redact">${esc(chars[i])}</span>`;
                 } else {
-                    let j = i;
-                    while (j < n && !covered[j]) j++;
-                    html += esc(chars.slice(i, j).join(''));
-                    i = j;
+                    html += esc(chars[i]);
                 }
             }
             stem.innerHTML = html;

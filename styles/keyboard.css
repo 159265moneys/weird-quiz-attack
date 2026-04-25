@@ -155,6 +155,40 @@
 }
 .kb-fn-space { font-size: 36px; }
 
+/* ---------------- モード切替ロック ----------------
+   「ひらがなで」「カタカナで」等が問題文にある時、ABC/123/あ/CAPS の
+   切替系 fn キーをロックする (= タップしても何も起きない)。
+   ハッチング (斜線) を上に乗せて「無効」を視覚的に伝え、色も暗く落とす。
+   pointer-events は handleKey 内で SE.cancel を鳴らしたいので onClick は
+   通したままにし、見た目とロジックの両方で「押せるけど効かない」と表現する。
+   見た目だけ無効化したい場合は filter:grayscale + opacity で十分。 */
+.kb-key.kb-fn.is-locked {
+    background: #3a3a3d;
+    color: rgba(255, 255, 255, 0.32);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+    cursor: not-allowed;
+    /* 斜線パターンで「使えない」感を出す */
+    background-image: repeating-linear-gradient(
+        135deg,
+        transparent 0,
+        transparent 8px,
+        rgba(0, 0, 0, 0.22) 8px,
+        rgba(0, 0, 0, 0.22) 10px
+    );
+}
+.kb-key.kb-fn.is-locked:active,
+.kb-key.kb-fn.is-locked.is-pressed {
+    background: #3a3a3d;
+    color: rgba(255, 255, 255, 0.32);
+    background-image: repeating-linear-gradient(
+        135deg,
+        transparent 0,
+        transparent 8px,
+        rgba(0, 0, 0, 0.22) 8px,
+        rgba(0, 0, 0, 0.22) 10px
+    );
+}
+
 /* ---------------- フリック方向ヒント (サブ文字) ---------------- */
 /* iPhone 純正は「通常時はヒント非表示」。ただしプレイヤビリティのため最小サイズで残す。 */
 .kb-sub {

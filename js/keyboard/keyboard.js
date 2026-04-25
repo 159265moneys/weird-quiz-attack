@@ -17,6 +17,12 @@
     // フリック判定しきい値 (client pixel)
     const FLICK_THRESHOLD = 18;
 
+    // ガラケー風 連打 (multi-tap) のタイムアウト。
+    //   同じキーを連続タップすると c→l→u→r→d の順でサイクルし、最後に
+    //   タップしてからこの ms 経過すると次回タップは新規入力扱いになる。
+    //   1.0s だとタイピングが速い人で誤判定するため少し緩めに。
+    const MULTITAP_TIMEOUT_MS = 1200;
+
     // 状態
     let host = null;
     let opts = null;
@@ -27,8 +33,21 @@
     // ドラッグ/フリック中の状態
     let dragging = null; // { x, y, keyEl, key, direction }
 
+    // 連打 (multi-tap) 状態。
+    //   keyC:    識別キー (= key.c)。違うキーをタップしたらリセット。
+    //   cycle:   サイクル文字列 (raw、ひらがな or 英小文字)。adjustOutput で変換して挿入。
+    //   idx:     現在のサイクル位置 (0-based)。
+    //   timer:   タイムアウト ID。新タップで refresh される。
+    let multitap = null;
+
     // ギミック用フック: フリック方向変換 (fn(dir)=>dir'). null で無効。
     let flickTransform = null;
+
+    // 「モード切替/CAPS キー」を完全ロックするフラグ。
+    //   問題文に「ひらがなで」「カタカナで」等の指定がある時に true にして、
+    //   ABC / 123 / あ / 大小切替を無効化 (グレーアウト + クリック黙殺)。
+    //   suggestMode で決まった初期モードに固定したいケース用。
+    let lockModeKeys = false;
 
     // render() 後 (モード切替でも呼ばれる) に実行されるコールバック。
     // ギミック側で文字盤 DOM をいじるものはここに再適用処理を登録することで、
@@ -49,28 +68,35 @@
                 onSubmit: () => {},
                 maxLength: 24,
                 initialValue: '',
+                // 「ひらがなで」「カタカナで」等の問題で、勝手にモード切替されるのを
+                // 防ぎたい場合に true。ABC/123/あ/大小切替の fn キーが no-op になる。
+                lockModeKeys: false,
             }, options || {});
             buffer = opts.initialValue || '';
             mode = opts.mode;
             alphaCaps = false;
+            lockModeKeys = !!opts.lockModeKeys;
+            clearMultitap();
             render();
             emitChange();
         },
 
         unmount() {
             cleanupDragging();
+            clearMultitap();
             if (host) host.innerHTML = '';
             host = null;
             opts = null;
             buffer = '';
+            lockModeKeys = false;
             flickTransform = null;   // ギミック状態のリセット
             postRenderHooks.length = 0;
         },
 
         getValue() { return buffer; },
-        setValue(s) { buffer = s || ''; emitChange(); renderBufferOnly(); },
-        clear() { buffer = ''; emitChange(); renderBufferOnly(); },
-        setMode(m) { mode = m; render(); },
+        setValue(s) { buffer = s || ''; clearMultitap(); emitChange(); renderBufferOnly(); },
+        clear() { buffer = ''; clearMultitap(); emitChange(); renderBufferOnly(); },
+        setMode(m) { mode = m; clearMultitap(); render(); },
         getMode() { return mode; },
 
         // --- ギミック用フック (Phase 5b Batch4〜) ---
@@ -164,12 +190,22 @@
         emitChange();
     }
 
+    // モードロック中に無効化対象とする fn キー一覧。
+    //   ABC/123/あ への切替 + 英字大小切替 (caps) を全て止める。
+    //   他の fn (bs / space / ok / dakuten) は通常通り使える。
+    const LOCKED_FN_KEYS = new Set(['mode-hira', 'mode-alpha', 'mode-num', 'caps']);
+
+    function isFnLocked(fn) {
+        return lockModeKeys && LOCKED_FN_KEYS.has(fn);
+    }
+
     function keyHTML(key) {
         if (!key || (!key.c && !key.fn)) {
             return `<div class="kb-key kb-empty"></div>`;
         }
         const cls = ['kb-key'];
         if (key.fn) cls.push('kb-fn', 'kb-fn-' + key.fn);
+        if (key.fn && isFnLocked(key.fn)) cls.push('is-locked');
         const display = keyDisplayChar(key);
         // 複数文字ラベル (iPhone風 "ABC" 等) は font を小さめに
         if (!key.fn && display.length >= 2) cls.push('kb-main-group');
@@ -280,20 +316,105 @@
     // キー処理
     // ---------------------------------------------------------
     function handleKey(key, dir) {
-        if (key.fn) return handleFn(key.fn);
+        if (key.fn) {
+            // モード切替/CAPS のロック中は黙殺 (cancel SE で「無効」を伝える)
+            if (isFnLocked(key.fn)) {
+                window.SE?.fire('cancel');
+                return;
+            }
+            return handleFn(key.fn);
+        }
         // ギミックによるフリック方向変換 (W19: 上下左右反転など)
         if (flickTransform) {
             try { dir = flickTransform(dir) || dir; } catch (e) { /* ignore */ }
         }
-        // 文字キー
-        let char = (dir === 'c') ? (key.c || '')
-            : (dir === 'u' ? (key.u || '')
-            : (dir === 'd' ? (key.d || '')
-            : (dir === 'l' ? (key.l || '')
-            : (dir === 'r' ? (key.r || '') : ''))));
+
+        // --- 連打 (multi-tap) ---
+        // dir==='c' (フリックなしの素タップ) のみ対象。フリック入力は素直に方向の文字。
+        if (dir === 'c') {
+            handleCenterTap(key);
+            return;
+        }
+
+        // フリック確定時は連打サイクルをリセットして方向文字を type
+        clearMultitap();
+        let char =
+            dir === 'u' ? (key.u || '') :
+            dir === 'd' ? (key.d || '') :
+            dir === 'l' ? (key.l || '') :
+            dir === 'r' ? (key.r || '') : '';
         if (!char) return;
         char = adjustOutput(char);
         type(char);
+    }
+
+    // 中央タップ (dir === 'c')。連打サイクルを管理する。
+    //   ・同じキーを連続でタップ → 直前に挿入した文字をサイクル次の文字に置換
+    //   ・違うキー or タイムアウト経過 → 新規入力 (key.c を 1 文字 type)
+    //   ・サイクル順は c → l → u → r → d (= ガラケー順「あ→い→う→え→お」)
+    function handleCenterTap(key) {
+        const cycle = buildTapCycle(key);
+
+        // サイクルが 1 文字以下のキー (= 数字, ピリオド等) は連打しても意味が無い。
+        // 普通に新規 type。
+        if (cycle.length <= 1) {
+            clearMultitap();
+            const ch = adjustOutput(key.c || '');
+            if (!ch) return;
+            type(ch);
+            return;
+        }
+
+        const sameKey = !!multitap && multitap.keyC === key.c;
+        if (sameKey) {
+            // サイクル進行: 直前に置いた文字を次のサイクル文字で置換
+            multitap.idx = (multitap.idx + 1) % multitap.cycle.length;
+            const next = adjustOutput(multitap.cycle[multitap.idx]);
+            const arr = Array.from(buffer);
+            if (arr.length === 0) {
+                // 何らかの事情で buffer が空 (BS で消されたなど) → 新規 type に倒す
+                clearMultitap();
+                type(next);
+                return;
+            }
+            arr[arr.length - 1] = next;
+            buffer = arr.join('');
+            window.SE?.fire('keyTap');
+            emitChange();
+            refreshMultitapTimeout();
+            return;
+        }
+
+        // 別キー or タイムアウト後の素タップ: 新規入力 + サイクル開始
+        clearMultitap();
+        const first = adjustOutput(cycle[0]);
+        if (!first) return;
+        type(first);
+        multitap = { keyC: key.c, cycle, idx: 0, timer: null };
+        refreshMultitapTimeout();
+    }
+
+    // タップサイクル列を作る。順序: c, l, u, r, d (= 「あいうえお」順)。
+    //   存在しない方向はスキップする (例: 数字キー [c のみ] → ['1'])。
+    function buildTapCycle(key) {
+        const order = ['c', 'l', 'u', 'r', 'd'];
+        const out = [];
+        for (const k of order) {
+            const ch = key[k];
+            if (ch && !out.includes(ch)) out.push(ch);
+        }
+        return out;
+    }
+
+    function clearMultitap() {
+        if (multitap?.timer) clearTimeout(multitap.timer);
+        multitap = null;
+    }
+
+    function refreshMultitapTimeout() {
+        if (!multitap) return;
+        if (multitap.timer) clearTimeout(multitap.timer);
+        multitap.timer = setTimeout(() => { multitap = null; }, MULTITAP_TIMEOUT_MS);
     }
 
     function adjustOutput(ch) {
@@ -303,6 +424,8 @@
     }
 
     function handleFn(fn) {
+        // どの fn キーであっても、連打サイクルは中断する (= 次回中央タップは新規入力)
+        clearMultitap();
         switch (fn) {
             case 'bs': window.SE?.fire('keyBs'); backspace(); return;
             case 'space': type(' '); return;  // type() 側で keyTap 発火

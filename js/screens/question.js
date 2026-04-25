@@ -117,8 +117,12 @@
             } else {
                 // 入力モード: 内製文字盤をマウント
                 const suggested = window.Judge.suggestMode(q);
+                // 問題文に「ひらがなで」等の指定がある時は、ABC/123/あ/CAPS の
+                // 切替系 fn キーを全部ロックする (= 勝手にモードを変えられない)
+                const lockModeKeys = window.Judge.shouldLockMode?.(q) ?? false;
                 window.Keyboard.mount('#keyboardHost', {
                     mode: suggested,
+                    lockModeKeys,
                     onChange: (value) => updateInputBox(value),
                     onSubmit: (value) => {
                         if (resolved) return;

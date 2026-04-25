@@ -127,6 +127,30 @@
                 // scroll を完全ロックする。Navigator 発話前後もこのクラスは
                 // 張り続け、ステ1に遷移する瞬間 (startStage) に外す。
                 document.body.classList.add('is-tutorial-lock');
+
+                // ステ 1 カードへ誘導 cue (矢印 + ラベル) を注入。
+                //   発話中は Navigator backdrop が画面全体を暗転させているので
+                //   この cue は見えない。holdLast で is-persist になった瞬間に
+                //   backdrop が消え、暗転していた他カードの上にこの cue だけが
+                //   残って「ここをタップ」と明示する。
+                const stage1Card = document.querySelector(
+                    '.stage-select-screen .stage-card[data-stage="1"]'
+                );
+                if (stage1Card && !stage1Card.querySelector('.tutorial-cue')) {
+                    const cue = document.createElement('div');
+                    cue.className = 'tutorial-cue';
+                    cue.setAttribute('aria-hidden', 'true');
+                    // 矢印は外部 SVG ファイル参照 (currentColor で配色制御可)。
+                    // ラベルは絵文字を使わない (.cursor/rules/no-emoji.mdc)。
+                    cue.innerHTML = `
+                        <div class="tutorial-cue-label">TAP STAGE 1</div>
+                        <img class="tutorial-cue-arrow"
+                             src="sprite/icons/tutorial/arrow-down.svg"
+                             alt=""
+                             aria-hidden="true">
+                    `;
+                    stage1Card.appendChild(cue);
+                }
             }
 
             document.querySelectorAll('.stage-card').forEach((card) => {
