@@ -157,7 +157,6 @@
 
             return `
                 <div class="screen home-screen">
-                    <canvas class="home-bg-canvas" aria-hidden="true"></canvas>
                     <div class="screen-header home-head">
                         <div class="home-head-left">
                             <div class="home-head-ver">v${window.CONFIG.VERSION}</div>
@@ -202,9 +201,9 @@
         },
 
         init() {
-            // 背景の回転多面体 (1SEC 移植)。z-index 最下層に常駐。
-            const bgCv = document.querySelector('.home-screen .home-bg-canvas');
-            if (bgCv) window.HomeBackdrop?.mount?.(bgCv);
+            // 背景の回転多面体。SVG + CSS アニメ (canvas/rAF 廃止 = GPU 安全)。
+            // mount() は home-screen を見つけて自動で SVG を挿入する。
+            window.HomeBackdrop?.mount?.();
 
             // 連続日数を更新 (1 度の起動で何回 home に来ても同日なら no-op)
             //   isNewDay=true なら STREAK セルにポップ演出を 1 回入れる。

@@ -36,26 +36,40 @@
     align-items: stretch;
 }
 
-/* --- 背景多面体 canvas (z-index 最下層) ---
+/* --- 背景多面体 SVG (z-index 最下層 / GPU compositor 専属レイヤ) ---
    home-screen 直下に absolute で全面に敷く。pointer-events:none で
-   タップを通す。
-   z-index: -1 で .home-screen が作る stacking context (isolation:isolate)
-   の最背面に固定。これにより他の子要素は position の指定 (absolute / static)
-   を問わず canvas より手前で描画される。
-   旧実装で「全子要素を position:relative に強制」していたが、これは
-   .home-dialog や .home-char-area の absolute 配置を破壊してしまうので廃止。 */
-.home-bg-canvas {
+   タップを通す。z-index: -1 で .home-screen が作る stacking context
+   (isolation:isolate) の最背面に固定。
+   旧実装は <canvas> + requestAnimationFrame で毎フレーム再描画していたが、
+   WKWebView で他の VHS / FloatingText / drop-shadow と重なって GPU バッファ
+   不足を起こし WebContent プロセスが kill される事例多発。
+   現実装は静的 SVG を 1 度だけ生成し、CSS @keyframes で transform 回転のみ。
+   GPU 上では「テクスチャ 1 枚を回転 compositing」 する処理しか走らないので
+   ほぼゼロコスト。絶対に落ちない設計。 */
+.home-bg-poly {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    /* 中央 1 画面分の大きさで回転させる (画面四隅まで届かなくて OK)。
+       回転で四隅が動いてもクリップされて見えないようにフルスクリーンでは無く
+       中央 90vmin の正方形として配置。 */
+    top: 50%;
+    left: 50%;
+    width: min(150vmin, 100%);
+    height: min(150vmin, 100%);
+    transform: translate(-50%, -50%);
     pointer-events: none;
     z-index: -1;
-    /* 旧実装で mix-blend-mode: multiply を入れていたが、iOS WKWebView では
-       フルスクリーン canvas に対する blend mode が GPU 重く、5〜10 秒で
-       WebContent プロセスが kill されてタイトルへ落ちる現象が出ていた。
-       不要なので撤去し、線色側を濃いめにして馴染みを取る (homeBackdrop.js)。 */
-    opacity: 0.85;
+    opacity: 0.9;
+    will-change: transform;
+    animation: homePolySpin 60s linear infinite;
+    transform-origin: center center;
+}
+.home-bg-poly > * {
+    /* SVG 内部要素は動かない。回転は <svg> 自体に対してのみ */
+    transform-box: fill-box;
+}
+@keyframes homePolySpin {
+    0%   { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 /* --- ヘッダー --- */
