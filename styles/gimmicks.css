@@ -320,6 +320,22 @@
     -webkit-user-drag: none;
 }
 
+/* ---------- B12 ぼかし: 5秒周期で濃度を脈動 (緩急付き) ----------
+   一定強度だと長文や他ギミック併発時に詰む & 単調なので、
+   超ぼかし → ぼかし → 薄ぼかし → ぼかし → 超ぼかし の波を作る。
+   完全なクリア状態 (blur 0) は作らない (= 最薄でも 3px)。 */
+.q-stem.gk-b12-blur-pulse {
+    animation: gkB12BlurPulse 5s ease-in-out infinite;
+    will-change: filter;
+}
+@keyframes gkB12BlurPulse {
+    0%   { filter: blur(12px); }
+    25%  { filter: blur(7px); }
+    50%  { filter: blur(3px); }
+    75%  { filter: blur(7px); }
+    100% { filter: blur(12px); }
+}
+
 /* ---------- B06 色覚破壊: 画面全体の色相が常時シフト ---------- */
 .question-screen.gk-b06 {
     animation: gkB06Hue 3.5s linear infinite;
@@ -355,20 +371,26 @@
     flex-direction: column;
     gap: 4px;
     padding: 12px 20px;
-    font-size: 34px;
+    font-size: 28px;
     line-height: 1.15;
     letter-spacing: 0;
     text-align: left;
     overflow: hidden;
-    align-items: flex-start;
+    align-items: stretch;
     justify-content: flex-start;
 }
+/* 全ての行は左右の枠内に収まるよう折り返す (旧: nowrap で右端で
+   clip → 本物の問題文の続きが画面外で読めない問題があった)。
+   ノイズ行も本物行も同じ折り返し挙動にし、行が長い場合は単に
+   2 行へ折り返るだけで見分けが付かないようにする。 */
 .gk-b17-line {
     display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: clip;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-all;
     font-family: 'Courier New', monospace;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 /* 本物行も見た目は全く同じにする (=見分けがつかない) */
 .gk-b17-line.gk-b17-real {
@@ -710,12 +732,19 @@
    ("黒 = α0.95"、文字側を α0.05 の白) 「めちゃくちゃ薄く文字が透ける」
    状態にする。よく目を凝らすとシルエットが見えるが普通には読めない。
    clickable 要素ではないので pointer-events は触らない。 */
+/* padding: 0 2px は隣接文字を 4px ずつ右に押し出して文字列全体が
+   ズレる原因になる (= 黒塗り箇所が増えるほど後続文字列が右に流れる)。
+   redact span は親 .q-stem と全く同じ字幅で描画したいので、
+   padding/margin/border を取り除き、純粋に背景色と文字色だけを切り替える。
+   見た目の "黒帯感" は box-shadow を inset で持たせて確保する。 */
 .q-stem .gk-b23-redact {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
     background: rgba(0, 0, 0, 0.95);
     color: rgba(255, 255, 255, 0.05);
-    border-radius: 3px;
-    padding: 0 2px;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.3);
 }
 
 /* ---------- B24 問題文スクロール ----------

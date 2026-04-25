@@ -913,10 +913,19 @@
         apply(ctx) {
             const stem = q(ctx.screen, '.q-stem');
             if (!stem) return () => {};
-            const prev = stem.style.filter;
-            // 12px は強すぎて読めなくなるので 9px に。
-            stem.style.filter = `${prev ? prev + ' ' : ''}blur(9px)`;
-            return () => { stem.style.filter = prev; };
+            // 5秒周期で blur(12px) ↔ blur(3px) を脈動させる:
+            //   超ぼかし → ぼかし → 薄ぼかし → ぼかし → 超ぼかし
+            // 一定の強度だと長文や他ギミック併発時に詰むため緩急を付ける。
+            // ただし「完全にクリア」な状態は作らない (= 最薄でも 3px)。
+            // 既存の filter / animation は一旦退避し、解除時に戻す。
+            const prevFilter = stem.style.filter;
+            const prevAnim = stem.style.animation;
+            stem.classList.add('gk-b12-blur-pulse');
+            return () => {
+                stem.classList.remove('gk-b12-blur-pulse');
+                stem.style.filter = prevFilter;
+                stem.style.animation = prevAnim;
+            };
         },
     };
 
@@ -1015,25 +1024,26 @@
                     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
                 }[c]));
             }
-            // 本物の行にもノイズを前後・内部に混ぜて紛れ込ませる:
+            // 本物の行にもノイズを前後に混ぜて紛れ込ませる:
             // 「本物行だけ左端から始まる/予測可能な位置」の手掛かりを潰す。
-            // 行数も増やし、インデントをランダム化。本物は任意の行に配置。
-            const LINES = 16;
+            // インデント幅・接頭/接尾ノイズ長は控えめにし、本物の問題文が
+            // 画面右端で切れて読めなくなるのを避ける。
+            const LINES = 12;
             const realLineIdx = Math.floor(Math.random() * LINES);
 
             function realLine() {
-                const pre = randStr(2, 6);
-                const post = randStr(2, 6);
+                const pre = randStr(0, 2);
+                const post = randStr(0, 2);
                 return `${pre}${originalText}${post}`;
             }
             const out = [];
             for (let i = 0; i < LINES; i++) {
-                const indent = Math.floor(Math.random() * 140);  // 0..140px
+                const indent = Math.floor(Math.random() * 40);  // 0..40px (旧: 0..140px)
                 const style = `padding-left:${indent}px;`;
                 if (i === realLineIdx) {
                     out.push(`<span class="gk-b17-line gk-b17-real" style="${style}">${esc(realLine())}</span>`);
                 } else {
-                    out.push(`<span class="gk-b17-line" style="${style}">${esc(randStr(8, 26))}</span>`);
+                    out.push(`<span class="gk-b17-line" style="${style}">${esc(randStr(6, 18))}</span>`);
                 }
             }
             stem.classList.add('gk-b17-noise');
@@ -1109,11 +1119,18 @@
             const btns = qa(ctx.screen, '.q-choice');
             if (btns.length === 0) return () => {};
             const NOISE = ['▓', '█', '▒', '░', '◊', '※', '◇', '◆', '◯', '☒'];
+            // 2文字以下の選択肢 (例「蛇尾」) はノイズで1文字隠すと残り1文字になり、
+            // どの選択肢もほぼ同じ見た目になり運ゲー化する。3文字以上にのみ適用。
+            const MIN_LEN = 3;
             const records = [];
             btns.forEach(btn => {
                 const original = btn.textContent;
                 const chars = Array.from(original);
-                // 置換対象は空白以外の文字。候補がなければ何もしない。
+                const visibleCount = chars.filter(c => !/\s/.test(c)).length;
+                if (visibleCount < MIN_LEN) {
+                    records.push({ btn, original, changed: false });
+                    return;
+                }
                 const candidates = [];
                 for (let i = 0; i < chars.length; i++) {
                     if (!/\s/.test(chars[i])) candidates.push(i);
@@ -1171,7 +1188,15 @@
         apply(ctx) {
             const btns = qa(ctx.screen, '.q-choice');
             if (btns.length === 0) return () => {};
-            const target = btns[Math.floor(Math.random() * btns.length)];
+            // 2文字以下の選択肢を黒塗りすると情報量がほぼ無く運ゲー化するので、
+            // 候補は3文字以上の選択肢に限定する。該当ゼロなら何もしない。
+            const MIN_LEN = 3;
+            const eligible = btns.filter(btn => {
+                const t = btn.textContent || '';
+                return Array.from(t).filter(c => !/\s/.test(c)).length >= MIN_LEN;
+            });
+            if (eligible.length === 0) return () => {};
+            const target = eligible[Math.floor(Math.random() * eligible.length)];
             target.classList.add('gk-c03-blackout');
             return () => {
                 if (target.isConnected) target.classList.remove('gk-c03-blackout');
