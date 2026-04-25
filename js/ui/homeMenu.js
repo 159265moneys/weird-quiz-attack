@@ -237,33 +237,130 @@
         return `<div class="hm-pf-av-grid">${cells.join('')}</div>`;
     }
 
-    // 達成バッジ一覧モーダル。Achievements.CATALOG を 1 セル = 1 バッジで並べる。
-    //   未解放はグレーアウト (アバターと同じ慣例)。
-    //   tier 別に色味を変える: story=warn / skill=cyan / fun=red / core=cyan-dim。
+    // tier 別アイコン (SVG, 24x24 想定)。
+    //   story = 旗 / skill = 稲妻 / fun = どくろ / core = 焚き火っぽい炎
+    const TIER_ICONS = {
+        story: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg>`,
+        skill: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg>`,
+        fun:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a7 7 0 0 0-7 7v3l2 2v3a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-3l2-2v-3a7 7 0 0 0-7-7Z"/><circle cx="9" cy="11" r="1.4"/><circle cx="15" cy="11" r="1.4"/><path d="M10 17h4"/></svg>`,
+        core:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1.5 3 4 4 4 7a4 4 0 0 1-8 0c0-1.5 1-2.5 2-4 .8 1 2 1.5 2 0 0-1-1-2 0-3Z"/><path d="M6 17a6 6 0 0 0 12 0"/></svg>`,
+    };
+    const TIER_LABELS = {
+        story: 'STORY',
+        skill: 'SKILL',
+        fun:   'HIDDEN',
+        core:  'DAILY',
+    };
+    const TIER_ORDER = ['story', 'skill', 'core', 'fun'];
+
+    // ロックアイコン (錠前)
+    const LOCK_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
+
+    // 達成バッジ一覧モーダル。Achievements.CATALOG を tier 毎にグルーピング表示。
+    //   - 上部にスティッキーなヘッダ (タイトル + CLOSE)
+    //   - 進捗カード (大きな数字 + 進捗バー + tier 別チップ)
+    //   - tier セクション (STORY → SKILL → DAILY → HIDDEN)
+    //   - 各カード: tier アイコン / 名称 / ヒント / 状態ピル (EARNED / LOCKED)
+    //   - 未解放は名前を ??? にし、ロックアイコンを出して密かさを演出。
     function buildAchievementsHTML() {
         const cat = window.Achievements?.CATALOG || [];
         const have = new Set(window.Save?.getAchievements?.() || []);
-        const totalGot = cat.filter(a => have.has(a.id)).length;
-        const cellsHTML = !cat.length
-            ? `<div class="hm-ach-empty">読み込み中…</div>`
-            : cat.map((a) => {
-                const got = have.has(a.id);
-                const cls = `hm-ach-card tier-${a.tier || 'core'} ${got ? 'is-got' : 'is-locked'}`;
+        const total = cat.length;
+        const got = cat.filter(a => have.has(a.id)).length;
+        const pct = total ? Math.round((got / total) * 100) : 0;
+
+        // tier 別カウント
+        const tierCounts = {};
+        TIER_ORDER.forEach(t => { tierCounts[t] = { got: 0, total: 0 }; });
+        cat.forEach(a => {
+            const t = a.tier || 'core';
+            if (!tierCounts[t]) tierCounts[t] = { got: 0, total: 0 };
+            tierCounts[t].total++;
+            if (have.has(a.id)) tierCounts[t].got++;
+        });
+
+        const chipsHTML = TIER_ORDER
+            .filter(t => tierCounts[t] && tierCounts[t].total > 0)
+            .map(t => `
+                <div class="hm-ach-chip tier-${t}">
+                    <span class="hm-ach-chip-ic">${TIER_ICONS[t] || ''}</span>
+                    <span class="hm-ach-chip-lbl">${TIER_LABELS[t] || t.toUpperCase()}</span>
+                    <span class="hm-ach-chip-cnt">${tierCounts[t].got}/${tierCounts[t].total}</span>
+                </div>
+            `).join('');
+
+        // tier 毎にグルーピング (CATALOG 順を保ったまま)
+        const groups = {};
+        TIER_ORDER.forEach(t => { groups[t] = []; });
+        cat.forEach(a => {
+            const t = a.tier || 'core';
+            if (!groups[t]) groups[t] = [];
+            groups[t].push(a);
+        });
+
+        const sectionsHTML = TIER_ORDER
+            .filter(t => groups[t] && groups[t].length > 0)
+            .map(t => {
+                const cards = groups[t].map((a) => {
+                    const isGot = have.has(a.id);
+                    const cls = `hm-ach-card tier-${t} ${isGot ? 'is-got' : 'is-locked'}`;
+                    const name = isGot ? escapeHTML(a.name) : '??? ??? ???';
+                    const hint = escapeHTML(a.hint);
+                    const icon = isGot ? (TIER_ICONS[t] || '') : LOCK_ICON;
+                    const pillCls = isGot ? 'is-got' : 'is-locked';
+                    const pillText = isGot ? 'EARNED' : 'LOCKED';
+                    return `
+                        <div class="${cls}">
+                            <div class="hm-ach-card-ic">${icon}</div>
+                            <div class="hm-ach-card-body">
+                                <div class="hm-ach-card-name">${name}</div>
+                                <div class="hm-ach-card-hint">${hint}</div>
+                            </div>
+                            <div class="hm-ach-pill ${pillCls}">${pillText}</div>
+                        </div>
+                    `;
+                }).join('');
                 return `
-                    <div class="${cls}">
-                        <div class="hm-ach-card-name">${escapeHTML(a.name)}</div>
-                        <div class="hm-ach-card-hint">${escapeHTML(a.hint)}</div>
-                    </div>
+                    <section class="hm-ach-section tier-${t}">
+                        <header class="hm-ach-sec-head">
+                            <span class="hm-ach-sec-ic">${TIER_ICONS[t] || ''}</span>
+                            <span class="hm-ach-sec-lbl">${TIER_LABELS[t] || t.toUpperCase()}</span>
+                            <span class="hm-ach-sec-line"></span>
+                            <span class="hm-ach-sec-cnt">${tierCounts[t].got}/${tierCounts[t].total}</span>
+                        </header>
+                        <div class="hm-ach-grid">${cards}</div>
+                    </section>
                 `;
             }).join('');
+
+        const bodyHTML = !total
+            ? `<div class="hm-ach-empty">読み込み中…</div>`
+            : `
+                <div class="hm-ach-progress">
+                    <div class="hm-ach-progress-num">
+                        <span class="hm-ach-progress-got">${got}</span>
+                        <span class="hm-ach-progress-sep">/</span>
+                        <span class="hm-ach-progress-total">${total}</span>
+                        <span class="hm-ach-progress-lbl">UNLOCKED</span>
+                    </div>
+                    <div class="hm-ach-progress-bar">
+                        <div class="hm-ach-progress-fill" style="width:${pct}%"></div>
+                        <div class="hm-ach-progress-pct">${pct}%</div>
+                    </div>
+                    <div class="hm-ach-chips">${chipsHTML}</div>
+                </div>
+                ${sectionsHTML}
+            `;
+
         return `
-            <div class="hm-panel hm-panel-wide" role="dialog" aria-label="ACHIEVEMENTS">
-                <div class="hm-head">
+            <div class="hm-panel hm-panel-wide hm-panel-ach" role="dialog" aria-label="ACHIEVEMENTS">
+                <div class="hm-head hm-head-sticky">
                     <div class="hm-title">ACHIEVEMENTS</div>
                     <button class="hm-close" aria-label="閉じる">${ICONS.close}</button>
                 </div>
-                <div class="hm-ach-summary">${totalGot} / ${cat.length}</div>
-                <div class="hm-ach-grid">${cellsHTML}</div>
+                <div class="hm-ach-body">
+                    ${bodyHTML}
+                </div>
             </div>
         `;
     }
@@ -271,6 +368,7 @@
     // 達成バッジモーダル。openProfile 等と同じ hm-overlay レイヤを使う。
     //   Achievements カタログは IIFE 即時定義なので Avatars と違い load 待ち不要。
     let achievementsOverlay = null;
+    let achievementsKeyHandler = null;
     function openAchievements() {
         if (!achievementsOverlay) {
             achievementsOverlay = document.createElement('div');
@@ -279,14 +377,28 @@
         }
         achievementsOverlay.innerHTML = buildAchievementsHTML();
         achievementsOverlay.classList.add('is-open');
-        achievementsOverlay.querySelector('.hm-close')?.addEventListener('click', () => {
+
+        const doClose = () => {
             window.SE?.fire?.('cancel');
             closeAchievements();
+        };
+        achievementsOverlay.querySelector('.hm-close')?.addEventListener('click', doClose);
+        // 背景タップでも閉じる (パネル内のクリックは無視)
+        achievementsOverlay.addEventListener('click', (e) => {
+            if (e.target === achievementsOverlay) doClose();
         });
+        // ESC キーでも閉じる (デスクトップ)
+        achievementsKeyHandler = (e) => { if (e.key === 'Escape') doClose(); };
+        document.addEventListener('keydown', achievementsKeyHandler);
+
         window.SE?.fire?.('confirm');
     }
     function closeAchievements() {
         if (achievementsOverlay) achievementsOverlay.classList.remove('is-open');
+        if (achievementsKeyHandler) {
+            document.removeEventListener('keydown', achievementsKeyHandler);
+            achievementsKeyHandler = null;
+        }
     }
 
     function buildProfileHTML() {
