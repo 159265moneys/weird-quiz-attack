@@ -569,9 +569,9 @@
 }
 @keyframes gkB12BlurPulse {
     0%   { filter: blur(12px); }
-    25%  { filter: blur(7px); }
-    50%  { filter: blur(3px); }
-    75%  { filter: blur(7px); }
+    25%  { filter: blur(6px); }
+    50%  { filter: blur(1.2px); }
+    75%  { filter: blur(6px); }
     100% { filter: blur(12px); }
 }
 

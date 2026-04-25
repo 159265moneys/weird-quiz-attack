@@ -1,0 +1,589 @@
+/* ============================================================
+   gimmick-guide-thumbs.css — ギミック図鑑 カード用 静止サムネ
+   ------------------------------------------------------------
+   各ギミックの効果を一目で示す、CSS-only の静止画。
+     - JS なし / アニメーション原則なし (ただしごく軽いものは可)
+     - .gg-thumb 内に絶対配置でフィット
+     - フォントは Courier 系 (ゲーム本編と同調)
+   ID 文字列は UI に出さない。下端ラインの色 (cat-B/C/W/G) で系統が
+   分かるようにする。
+   ============================================================ */
+
+.gg-thumb [class^="gt-"],
+.gg-thumb [class*=" gt-"] {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    color: #d6ecff;
+    letter-spacing: 0.06em;
+    overflow: hidden;
+    position: relative;
+    /* 大半のサムネで使う基準フォントサイズ (1080-canvas 用カードに合わせる) */
+    font-size: 38px;
+    box-sizing: border-box;
+    padding: 6px;
+}
+
+/* ============================================================
+   B 系 (問題文)
+   ============================================================ */
+
+/* B01: タップ反転 — 矢印 ↓↑ */
+.gt-flip-tap {
+    flex-direction: column;
+    color: var(--accent-cyan, #00fff0);
+    font-size: 56px;
+    line-height: 1;
+}
+.gt-flip-tap br + * { color: var(--accent-red, #ff3340); }
+
+/* B02: タイプライター — カーソル '|' を点滅 */
+.gt-typewriter i {
+    display: inline-block;
+    width: 0.12em;
+    height: 1em;
+    background: currentColor;
+    margin-left: 4px;
+    vertical-align: -0.1em;
+    animation: gtBlink 1s steps(2, end) infinite;
+}
+@keyframes gtBlink { 50% { opacity: 0; } }
+
+/* B03: 鏡像 (左右反転) */
+.gt-mirror { transform: scaleX(-1); color: var(--accent-cyan, #00fff0); }
+
+/* B04: ズーム (拡大) */
+.gt-zoom { font-size: 64px; transform: scale(1.0); letter-spacing: 0.1em; }
+
+/* B05: 水平鏡映 — B03 と区別: scaleY 反転 */
+.gt-hflip { transform: scaleY(-1); }
+
+/* B06: 色覚破壊 — 虹グラデーション */
+.gt-rainbow {
+    background: linear-gradient(90deg, #ff3344, #ffcc00, #44ff44, #00e5ff, #cc44ff, #ff3344);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+}
+
+/* B07: グリッチ — 横ズレ二重 */
+.gt-glitch {
+    position: relative;
+    color: #fff;
+    text-shadow:
+        2px 0 #ff3344,
+        -2px 0 #00e5ff;
+}
+
+/* B08: フェード — 右に向かって透明 */
+.gt-fade {
+    background: linear-gradient(90deg, #fff 30%, transparent 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* B09: シュリンク — 中央に小さい字 */
+.gt-shrink { font-size: 18px; opacity: 0.65; }
+
+/* B10: 文字均質化 — 同じ字が並ぶ */
+.gt-homog { color: #88aacc; letter-spacing: 0.2em; }
+
+/* B11: ビーム — 4 隅から斜めライン */
+.gt-beam {
+    background:
+        linear-gradient(45deg, transparent 47%, rgba(0,229,255,0.85) 49%, transparent 51%),
+        linear-gradient(-45deg, transparent 47%, rgba(0,229,255,0.85) 49%, transparent 51%),
+        radial-gradient(circle at 50% 50%, rgba(0,229,255,0.18) 0%, transparent 60%);
+    background-size: 100% 100%;
+}
+
+/* B12: ぼかし */
+.gt-blur { filter: blur(4px); color: #fff; }
+
+/* B13: 極小フォント */
+.gt-tiny { font-size: 9px; letter-spacing: 0.04em; }
+
+/* B15: 文字順逆 */
+.gt-reverse { color: #ffcc88; }
+
+/* B16: 偽カウントダウン */
+.gt-countdown { background: #050609; }
+.gt-countdown span {
+    display: inline-block;
+    padding: 8px 14px;
+    border: 2px solid var(--accent-red, #ff3340);
+    color: var(--accent-red, #ff3340);
+    font-size: 32px;
+    letter-spacing: 0.18em;
+    box-shadow: 0 0 16px rgba(255,51,64,0.45);
+}
+
+/* B17: ノイズ文字に紛れる本文 */
+.gt-noise-text {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 18px;
+}
+.gt-noise-text span:nth-child(1),
+.gt-noise-text span:nth-child(3) {
+    color: #6b7888;
+    opacity: 0.7;
+}
+.gt-noise-text span:nth-child(2) {
+    color: #fff;
+    text-shadow: 0 0 6px rgba(0,229,255,0.45);
+}
+
+/* B18: 偽エラーオーバーレイ */
+.gt-error {
+    background: linear-gradient(180deg, #2a0610 0%, #150307 100%);
+    color: var(--accent-red, #ff3340);
+    font-size: 36px;
+    border: 2px solid rgba(255,51,64,0.55);
+    text-shadow: 0 0 10px rgba(255,51,64,0.7);
+    letter-spacing: 0.18em;
+}
+
+/* B20: 暗転 */
+.gt-blackout { background: #000; }
+
+/* B21: 即死トラップ — テキスト + 警告ハッチ */
+.gt-trap {
+    color: #fff;
+}
+.gt-trap i {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(255,51,64,0.35) 0 8px, transparent 8px 16px);
+    pointer-events: none;
+}
+
+/* B22: 二重ズレ */
+.gt-double {
+    position: relative;
+    color: #fff;
+}
+.gt-double::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 51%; top: 51%;
+    transform: translate(-50%, -50%);
+    color: rgba(0,229,255,0.55);
+    z-index: -1;
+}
+
+/* B23: 黒塗り */
+.gt-redact { color: #fff; }
+.gt-redact i {
+    display: inline-block;
+    width: 1.6em;
+    height: 0.9em;
+    background: #000;
+    vertical-align: -0.1em;
+    margin: 0 0.05em;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* B24: マーキー (流れる) */
+.gt-marquee {
+    color: var(--accent-cyan, #00fff0);
+    letter-spacing: 0.12em;
+}
+
+/* B25: マスコット — シンプルな顔 */
+.gt-mascot {
+    background:
+        radial-gradient(circle 8px at 35% 42%, #fff 100%, transparent 0),
+        radial-gradient(circle 8px at 65% 42%, #fff 100%, transparent 0),
+        radial-gradient(ellipse 18px 8px at 50% 62%, #fff 100%, transparent 0),
+        radial-gradient(circle at 50% 50%, #4a3a30 0%, #2a1d18 70%, transparent 71%);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+/* B26: ランダム配色 — 各文字違う色 */
+.gt-randcolor b {
+    font-weight: 700;
+    margin: 0 0.04em;
+}
+.gt-randcolor b:nth-child(1) { color: #ff3344; }
+.gt-randcolor b:nth-child(2) { color: #ffcc00; }
+.gt-randcolor b:nth-child(3) { color: #44ff88; }
+.gt-randcolor b:nth-child(4) { color: #00e5ff; }
+.gt-randcolor b:nth-child(5) { color: #cc44ff; }
+.gt-randcolor b:nth-child(6) { color: #ff8844; }
+.gt-randcolor b:nth-child(7) { color: #88ff44; }
+
+/* B27: 文字欠落 */
+.gt-drop { color: #fff; letter-spacing: 0.4em; }
+
+/* B28: サイズチャオス */
+.gt-mixsize b { font-size: 48px; }
+.gt-mixsize i { font-size: 22px; font-style: normal; opacity: 0.85; }
+
+/* B29: バウンド */
+.gt-bounce { font-size: 56px; transform: translateY(-8px) rotate(-6deg); }
+
+/* B30: 螺旋 — 回転 */
+.gt-spiral { font-size: 56px; transform: rotate(-25deg); color: var(--accent-cyan, #00fff0); }
+
+/* B31: 文字色薄 */
+.gt-pale { color: rgba(255,255,255,0.25); }
+
+/* B32: 画面傾き */
+.gt-tilt { transform: rotate(8deg); color: #fff; }
+
+/* B33: 走査線 */
+.gt-scanlines {
+    background:
+        repeating-linear-gradient(0deg,
+            rgba(0,229,255,0.55) 0 3px,
+            transparent 3px 12px);
+}
+
+/* B34: ジッター — 文字をブレ風に二重写し */
+.gt-jitter {
+    color: #fff;
+    text-shadow:
+        1px 0 rgba(255,255,255,0.5),
+        -1px 0 rgba(255,255,255,0.5),
+        0 1px rgba(255,255,255,0.5);
+}
+
+/* B35: スキャンバー */
+.gt-scanbar {
+    background:
+        linear-gradient(transparent 30%, var(--accent-cyan, #00fff0) 30% 36%, transparent 36%),
+        linear-gradient(transparent 60%, var(--accent-cyan, #00fff0) 60% 64%, transparent 64%),
+        #050609;
+    background-size: 100% 100%;
+}
+
+/* B36: 吹き出し */
+.gt-bubble {
+    color: var(--accent-cyan, #00fff0);
+    font-size: 44px;
+}
+.gt-bubble::before {
+    content: '';
+    position: absolute;
+    width: 70%;
+    height: 70%;
+    border: 2px solid var(--accent-cyan, #00fff0);
+    border-radius: 50% 50% 50% 8px;
+    background: rgba(0,255,240,0.08);
+}
+.gt-bubble {
+    text-shadow: 0 0 6px rgba(0,229,255,0.4);
+}
+
+/* B37: 付箋 */
+.gt-sticky {
+    background: #050609;
+}
+.gt-sticky::before {
+    content: 'MEMO';
+    position: absolute;
+    width: 70%;
+    height: 70%;
+    background: #ffd966;
+    color: #2a2010;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    transform: rotate(-6deg);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
+}
+
+/* B38: ？ 雨 */
+.gt-qrain {
+    color: #fff;
+    font-size: 28px;
+    align-items: flex-start;
+    justify-content: space-around;
+    padding: 4px;
+}
+.gt-qrain > * {
+    display: inline-block;
+    transform: translateY(0);
+}
+.gt-qrain > *:nth-child(1) { transform: translateY(8px); font-size: 36px; }
+.gt-qrain > *:nth-child(2) { transform: translateY(40px); font-size: 24px; }
+.gt-qrain > *:nth-child(3) { transform: translateY(20px); font-size: 30px; }
+.gt-qrain > *:nth-child(4) { transform: translateY(60px); font-size: 22px; }
+
+/* B39: 偽通知 — iOS 風バナー */
+.gt-notif {
+    background: #050609;
+    align-items: flex-start;
+    justify-content: stretch;
+    padding: 0;
+}
+.gt-notif span {
+    display: block;
+    width: 80%;
+    margin: 12px auto 0;
+    height: 36px;
+    background: rgba(255,255,255,0.92);
+    color: #050609;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+}
+.gt-notif b {
+    position: absolute;
+    top: 18px;
+    left: 24%;
+    font-size: 14px;
+    color: #050609;
+    letter-spacing: 0.16em;
+}
+
+/* B40: 弾幕 */
+.gt-danmaku {
+    background: #050609;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+}
+.gt-danmaku span,
+.gt-danmaku b {
+    display: block;
+    font-size: 22px;
+    text-align: left;
+    text-shadow: 0 0 4px rgba(0,0,0,0.8);
+}
+.gt-danmaku span { color: #fff; padding-left: 10%; }
+.gt-danmaku b { color: #44ff88; padding-left: 30%; }
+
+/* ============================================================
+   C 系 (選択肢)
+   ============================================================ */
+
+/* C01: シャッフル — 番号がランダム順 */
+.gt-shuffle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 6px;
+    padding: 12px;
+}
+.gt-shuffle b {
+    background: #1a1d24;
+    border: 2px solid var(--accent-warn, #ffd400);
+    color: var(--accent-warn, #ffd400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    border-radius: 4px;
+}
+
+/* C02: 選択肢ノイズ */
+.gt-cnoise { color: #fff; letter-spacing: 0.1em; }
+
+/* C03: 黒塗り選択肢 */
+.gt-blackchoice {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 6px;
+    padding: 12px;
+}
+.gt-blackchoice b {
+    background: #1a1d24;
+    border: 2px solid rgba(255,255,255,0.6);
+    border-radius: 4px;
+}
+.gt-blackchoice i { background: #000; border: 2px solid rgba(255,255,255,0.18); border-radius: 4px; }
+
+/* C04: 偽 50:50 */
+.gt-5050 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 6px;
+    padding: 12px;
+}
+.gt-5050 b {
+    background: #1a1d24;
+    border: 2px solid var(--accent-cyan, #00fff0);
+    border-radius: 4px;
+}
+.gt-5050 i {
+    background: repeating-linear-gradient(45deg, rgba(255,51,64,0.4) 0 6px, transparent 6px 12px);
+    border: 2px solid rgba(255,51,64,0.55);
+    border-radius: 4px;
+}
+
+/* ============================================================
+   W 系 (キーボード/入力)
+   ============================================================ */
+
+.gt-keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 6px;
+    padding: 12px;
+}
+.gt-keypad::before, .gt-keypad::after { content: ''; }
+.gt-keypad {
+    /* 6 個のキー風セル */
+}
+.gt-keypad > * {
+    display: none;
+}
+.gt-keypad-fade {
+    background:
+        radial-gradient(circle 9px at 16% 30%, rgba(155,227,154,0.18), transparent 100%),
+        radial-gradient(circle 9px at 50% 30%, rgba(155,227,154,0.18), transparent 100%),
+        radial-gradient(circle 9px at 84% 30%, rgba(155,227,154,0.18), transparent 100%),
+        radial-gradient(circle 9px at 16% 70%, rgba(155,227,154,0.18), transparent 100%),
+        radial-gradient(circle 9px at 50% 70%, rgba(155,227,154,0.18), transparent 100%),
+        radial-gradient(circle 9px at 84% 70%, rgba(155,227,154,0.18), transparent 100%);
+}
+.gt-keypad-shuffle {
+    background:
+        radial-gradient(circle 9px at 32% 22%, rgba(155,227,154,0.85), transparent 100%),
+        radial-gradient(circle 9px at 78% 38%, rgba(155,227,154,0.85), transparent 100%),
+        radial-gradient(circle 9px at 12% 56%, rgba(155,227,154,0.85), transparent 100%),
+        radial-gradient(circle 9px at 56% 76%, rgba(155,227,154,0.85), transparent 100%),
+        radial-gradient(circle 9px at 90% 80%, rgba(155,227,154,0.85), transparent 100%),
+        radial-gradient(circle 9px at 38% 60%, rgba(155,227,154,0.85), transparent 100%);
+}
+.gt-keypad-missing {
+    background:
+        radial-gradient(circle 9px at 16% 30%, rgba(155,227,154,0.85), transparent 100%),
+        /* 中央上は空き */
+        radial-gradient(circle 9px at 84% 30%, rgba(155,227,154,0.85), transparent 100%),
+        /* 左下は空き */
+        radial-gradient(circle 9px at 50% 70%, rgba(155,227,154,0.85), transparent 100%);
+        /* 右下は空き */
+}
+
+/* W03: 入力欄なし — 隠された入力 */
+.gt-noinput {
+    background: #050609;
+}
+.gt-noinput::before {
+    content: '';
+    position: absolute;
+    width: 70%;
+    height: 30%;
+    border: 2px dashed rgba(155,227,154,0.5);
+    border-radius: 4px;
+}
+.gt-noinput::after {
+    content: '???';
+    color: rgba(155,227,154,0.5);
+    font-size: 28px;
+    letter-spacing: 0.2em;
+    position: relative;
+    z-index: 1;
+}
+
+/* W04: ズレ入力 */
+.gt-offsetkey { color: #fff; font-size: 36px; }
+.gt-offsetkey span { color: var(--accent-warn, #ffd400); padding: 0 8px; }
+
+/* W06: 逆順入力 */
+.gt-reverse-in { color: #88ff88; }
+
+/* W07: 自動消去 */
+.gt-autodel { color: #fff; }
+.gt-autodel span { color: var(--accent-red, #ff3340); padding-left: 8px; font-size: 36px; }
+
+/* W09: 二重入力 */
+.gt-doublekey { color: #fff; letter-spacing: 0.06em; }
+
+/* W20: フリック方向反転 */
+.gt-flick {
+    flex-direction: column;
+    color: var(--accent-warn, #ffd400);
+    font-size: 28px;
+    line-height: 1.2;
+    letter-spacing: 0.4em;
+}
+
+/* ============================================================
+   G 系 (Stage10 Boss)
+   ============================================================ */
+
+/* G1: ランダム即死 — ドクロ */
+.gt-skull {
+    background: repeating-linear-gradient(45deg, rgba(255,51,64,0.18) 0 8px, transparent 8px 16px);
+    color: var(--accent-red, #ff3340);
+    font-size: 60px;
+    text-shadow: 0 0 12px rgba(255,51,64,0.6);
+}
+.gt-skull::before {
+    content: '✶';
+    font-size: 80px;
+    color: rgba(255,51,64,0.85);
+    position: relative;
+}
+.gt-skull::after {
+    content: '即死';
+    position: absolute;
+    bottom: 6px;
+    right: 8px;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    color: var(--accent-red, #ff3340);
+}
+
+/* G4: 文字化け */
+.gt-corrupt {
+    color: var(--accent-red, #ff3340);
+    font-size: 44px;
+    text-shadow: 2px 0 #ff3344, -2px 0 #00e5ff;
+    letter-spacing: 0.06em;
+}
+
+/* G5: ワープ */
+.gt-warp {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 4px;
+    padding: 8px;
+}
+.gt-warp b {
+    background: rgba(255,51,64,0.18);
+    border: 2px solid var(--accent-red, #ff3340);
+    border-radius: 4px;
+    transform: translate(0, 0);
+}
+.gt-warp b:nth-child(1) { transform: translate(8px, -4px) rotate(3deg); }
+.gt-warp b:nth-child(2) { transform: translate(-4px, 6px) rotate(-2deg); }
+.gt-warp b:nth-child(3) { transform: translate(-6px, -2px) rotate(-3deg); }
+.gt-warp b:nth-child(4) { transform: translate(4px, 4px) rotate(2deg); }
+
+/* G7: 煽り */
+.gt-insult {
+    color: var(--accent-red, #ff3340);
+    font-size: 60px;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(255,51,64,0.18) 0%, transparent 60%);
+}
+.gt-insult::before {
+    content: '';
+    position: absolute;
+    width: 80%;
+    height: 60%;
+    border: 3px solid var(--accent-red, #ff3340);
+    border-radius: 50%;
+    box-shadow: 0 0 24px rgba(255,51,64,0.45);
+}

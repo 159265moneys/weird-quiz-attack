@@ -93,8 +93,13 @@
     //   塗り (filled) 用と 枠だけ (empty) 用を分ける。
     const ICON_STAR_FILL  = `<span class="gg-diff-ic gg-diff-ic-fill"><svg viewBox="0 -960 960 960" aria-hidden="true"><path fill="currentColor" d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg></span>`;
     const ICON_STAR_EMPTY = `<span class="gg-diff-ic gg-diff-ic-empty"><svg viewBox="0 -960 960 960" aria-hidden="true"><path fill="currentColor" d="m354-287 126-76 126 77-33-144 111-96-146-13-58-136-58 135-146 13 111 97-33 143ZM233-120l65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-350Z"/></svg></span>`;
-    const ICON_SKULL_FILL = `<span class="gg-diff-ic gg-diff-ic-fill"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2C7.03 2 3 6.03 3 11c0 2.85 1.34 5.39 3.42 7.04.36.29.58.71.58 1.16V21c0 .55.45 1 1 1h2v-2h2v2h4v-2h2v2h2c.55 0 1-.45 1-1v-1.8c0-.45.22-.87.58-1.16C19.66 16.39 21 13.85 21 11c0-4.97-4.03-9-9-9zM8.5 13C7.12 13 6 11.88 6 10.5S7.12 8 8.5 8 11 9.12 11 10.5 9.88 13 8.5 13zm7 0c-1.38 0-2.5-1.12-2.5-2.5S14.12 8 15.5 8 18 9.12 18 10.5 16.88 13 15.5 13z"/></svg></span>`;
-    const ICON_SKULL_EMPTY= `<span class="gg-diff-ic gg-diff-ic-empty"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" d="M12 2.8C7.47 2.8 3.8 6.47 3.8 11c0 2.6 1.22 4.92 3.13 6.43.55.43.87 1.09.87 1.79V21c0 .11.09.2.2.2h1.8v-1.6c0-.22.18-.4.4-.4h2.2c.22 0 .4.18.4.4v1.6h2v-1.6c0-.22.18-.4.4-.4h2.2c.22 0 .4.18.4.4V21.2h1.8c.11 0 .2-.09.2-.2v-1.78c0-.7.32-1.36.87-1.79C18.98 15.92 20.2 13.6 20.2 11c0-4.53-3.67-8.2-8.2-8.2z"/><circle cx="8.5" cy="10.5" r="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="15.5" cy="10.5" r="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></span>`;
+    // ドクロ: viewBox を path の実描画範囲ぴったり (3,2 始まり 18x20) に
+    // タイトに合わせる。Star は viewBox いっぱいに描画されるので、ドクロ
+    // 側もそれに揃えないと縦位置が中央に寄って小さく見える/ズレる。
+    // 同じ d 文字列を fill / stroke で切り替えて見た目を完全に揃える。
+    const SKULL_PATH = 'M12 2.5C7.45 2.5 3.5 6.45 3.5 11c0 2.66 1.27 5.0 3.24 6.55.42.33.66.86.66 1.40V21.5h2.0v-1.6c0-.22.18-.4.4-.4h1.8c.22 0 .4.18.4.4v1.6h2.0v-1.6c0-.22.18-.4.4-.4h1.8c.22 0 .4.18.4.4v1.6h2.0v-2.55c0-.54.24-1.07.66-1.40C19.23 16.0 20.5 13.66 20.5 11c0-4.55-3.95-8.5-8.5-8.5Z';
+    const ICON_SKULL_FILL = `<span class="gg-diff-ic gg-diff-ic-fill"><svg viewBox="3 2 18 20" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path fill="currentColor" d="${SKULL_PATH}"/><circle cx="8.6" cy="10.6" r="1.55" fill="#000"/><circle cx="15.4" cy="10.6" r="1.55" fill="#000"/></svg></span>`;
+    const ICON_SKULL_EMPTY= `<span class="gg-diff-ic gg-diff-ic-empty"><svg viewBox="3 2 18 20" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" d="${SKULL_PATH}"/><circle cx="8.6" cy="10.6" r="1.55" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="15.4" cy="10.6" r="1.55" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></span>`;
 
     function escapeHTML(s) {
         return String(s)
@@ -161,6 +166,77 @@
         `;
     }
 
+    // ギミック毎のサムネ HTML を生成。各効果を視覚的に示す静止画 (CSS-only)。
+    // 53 個分すべてに固有のサムネを与える。可能な限り「EXAMPLE」テキストや
+    // UI 風の小さい矩形でその効果が一目で分かるように作る。
+    function buildThumbInner(id) {
+        switch (id) {
+            // ---- B (問題文/画面系) ----
+            case 'B01': return '<div class="gt-flip-tap">↓<br>↑</div>';
+            case 'B02': return '<div class="gt-typewriter">EXA<i></i></div>';
+            case 'B03': return '<div class="gt-mirror">EXAMPLE</div>';
+            case 'B04': return '<div class="gt-zoom">EXAMPLE</div>';
+            case 'B05': return '<div class="gt-hflip">EXAMPLE</div>';
+            case 'B06': return '<div class="gt-rainbow">EXAMPLE</div>';
+            case 'B07': return '<div class="gt-glitch" data-text="EXAMPLE">EXAMPLE</div>';
+            case 'B08': return '<div class="gt-fade">EXAMPLE</div>';
+            case 'B09': return '<div class="gt-shrink">EX</div>';
+            case 'B10': return '<div class="gt-homog">口口口口</div>';
+            case 'B11': return '<div class="gt-beam"></div>';
+            case 'B12': return '<div class="gt-blur">EXAMPLE</div>';
+            case 'B13': return '<div class="gt-tiny">EXAMPLE</div>';
+            case 'B15': return '<div class="gt-reverse">ELPMAXE</div>';
+            case 'B16': return '<div class="gt-countdown"><span>00:03</span></div>';
+            case 'B17': return '<div class="gt-noise-text"><span>x▓░▓Λ#</span><span>EXAMPLE</span><span>%▓░※x</span></div>';
+            case 'B18': return '<div class="gt-error">ERROR!</div>';
+            case 'B20': return '<div class="gt-blackout"></div>';
+            case 'B21': return '<div class="gt-trap">EXAMPLE<i></i></div>';
+            case 'B22': return '<div class="gt-double" data-text="EXAMPLE">EXAMPLE</div>';
+            case 'B23': return '<div class="gt-redact">EX<i></i>PLE</div>';
+            case 'B24': return '<div class="gt-marquee">EXAMPLE»»</div>';
+            case 'B25': return '<div class="gt-mascot"></div>';
+            case 'B26': return '<div class="gt-randcolor"><b>E</b><b>X</b><b>A</b><b>M</b><b>P</b><b>L</b><b>E</b></div>';
+            case 'B27': return '<div class="gt-drop">E A P E</div>';
+            case 'B28': return '<div class="gt-mixsize"><b>E</b><i>x</i><b>A</b><i>m</i><b>P</b></div>';
+            case 'B29': return '<div class="gt-bounce">EX</div>';
+            case 'B30': return '<div class="gt-spiral">EX</div>';
+            case 'B31': return '<div class="gt-pale">EXAMPLE</div>';
+            case 'B32': return '<div class="gt-tilt">EXAMPLE</div>';
+            case 'B33': return '<div class="gt-scanlines"></div>';
+            case 'B34': return '<div class="gt-jitter">EXAMPLE</div>';
+            case 'B35': return '<div class="gt-scanbar"></div>';
+            case 'B36': return '<div class="gt-bubble">!?</div>';
+            case 'B37': return '<div class="gt-sticky">MEMO</div>';
+            case 'B38': return '<div class="gt-qrain">?<span>?</span><i>?</i><b>?</b></div>';
+            case 'B39': return '<div class="gt-notif"><span></span><b>NOTICE</b></div>';
+            case 'B40': return '<div class="gt-danmaku"><span>www</span><b>草草草</b></div>';
+            // ---- C (選択肢系) ----
+            case 'C01': return '<div class="gt-shuffle"><b>3</b><b>1</b><b>4</b><b>2</b></div>';
+            case 'C02': return '<div class="gt-cnoise">A▓C░E</div>';
+            case 'C03': return '<div class="gt-blackchoice"><b></b><b></b><i></i><b></b></div>';
+            case 'C04': return '<div class="gt-5050"><b></b><b></b><i></i><i></i></div>';
+            // ---- W (キーボード/入力系) ----
+            case 'W01': return '<div class="gt-keypad gt-keypad-fade"></div>';
+            case 'W02': return '<div class="gt-keypad gt-keypad-shuffle"></div>';
+            case 'W03': return '<div class="gt-noinput"></div>';
+            case 'W04': return '<div class="gt-offsetkey">A<span>→</span>B</div>';
+            case 'W06': return '<div class="gt-reverse-in">ELPMAXE</div>';
+            case 'W07': return '<div class="gt-autodel">EXA<span>←</span></div>';
+            case 'W08': return '<div class="gt-keypad gt-keypad-shuffle"></div>';
+            case 'W09': return '<div class="gt-doublekey">EEEXAA</div>';
+            case 'W18': return '<div class="gt-keypad gt-keypad-missing"></div>';
+            case 'W20': return '<div class="gt-flick">↓ ↑<br>← →</div>';
+            // ---- G (Stage10 ボス) ----
+            case 'G1': return '<div class="gt-skull"></div>';
+            case 'G4': return '<div class="gt-corrupt">▓░Λ#</div>';
+            case 'G5': return '<div class="gt-warp"><b></b><b></b><b></b><b></b></div>';
+            case 'G7': return '<div class="gt-insult">!?</div>';
+        }
+        // Fallback (未登録 id): カテゴリ別の幾何モチーフ
+        const cat = String(id).charAt(0);
+        return `<div class="gg-thumb-art gg-thumb-art-${cat}"></div>`;
+    }
+
     function buildCardHTML(g, seen) {
         const cat = String(g.id).charAt(0); // B / C / W / G (内部判定用、UIには出さない)
         if (!seen) {
@@ -171,16 +247,14 @@
                 </button>
             `;
         }
-        // サムネはカテゴリ別の幾何モチーフ (ID 文字列は出さない)。
-        //   B = 横ストライプ (問題文系)
-        //   C = 2x2 グリッド (選択肢系)
-        //   W = キーパッド風 ドット (入力系)
-        //   G = 警告ハッチ (Boss 系)
+        // サムネは ギミック毎の固有静止画。カテゴリ別アクセント (下端ライン色) は
+        //   B = 問題文系 (cyan)
+        //   C = 選択肢系 (warn yellow)
+        //   W = 入力系 (green)
+        //   G = Boss (red)
         return `
             <button class="gg-card is-seen" type="button" data-gid="${escapeHTML(g.id)}" aria-label="${escapeHTML(g.name)}">
-                <div class="gg-thumb gg-thumb-cat-${cat}">
-                    <div class="gg-thumb-art gg-thumb-art-${cat}"></div>
-                </div>
+                <div class="gg-thumb gg-thumb-cat-${cat}">${buildThumbInner(g.id)}</div>
                 <div class="gg-card-name">${escapeHTML(g.name)}</div>
             </button>
         `;
@@ -373,14 +447,16 @@
     function startSampleLoop(g) {
         const sampleEl = popupOverlay?.querySelector('.gg-sample');
         if (!sampleEl) return;
-        // ギミックが var(--canvas-h) を読んで translateY の距離計算に使うので、
-        // sample 領域の実高さ (px) で上書きする。 CSS のフォールバック値 (400px)
-        // でも動くがズレるので、レイアウト確定後に正確な値を渡す。
-        const setCanvasH = () => {
-            const h = sampleEl.clientHeight;
-            if (h > 0) sampleEl.style.setProperty('--canvas-h', `${h}px`);
+        // ギミックは 1080×1920 論理キャンバス前提で固定 px サイズで書かれている
+        // ので、sample は 1080×1920 で描画して wrap 幅に合わせて scale する。
+        // CSS の --canvas-h は 1920px 固定 (本番と同じ)。 ここで wrap の
+        // 実幅を測って --gg-sample-scale を JS で与える。
+        const setStageScale = () => {
+            const wrap = sampleEl.parentElement;
+            const w = wrap?.clientWidth || 0;
+            if (w > 0) sampleEl.style.setProperty('--gg-sample-scale', String(w / 1080));
         };
-        setCanvasH();
+        setStageScale();
         const ctx = {
             q: { id: 'GG_SAMPLE', mode: 'choice', question: 'EXAMPLE', choices: ['EXAMPLE 1', 'EXAMPLE 2', 'EXAMPLE 3', 'EXAMPLE 4'], answer: 0 },
             screen: sampleEl,

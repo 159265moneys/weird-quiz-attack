@@ -346,11 +346,19 @@
 }
 
 /* サンプル領域。
-   contain で外側へのレイアウト/塗り波及を遮断 → 3秒ごとの apply/cleanup で
-   外側のレイアウトを再計算しないので軽い。 */
+   ----------------------------------------------------------
+   方針 (2026-04-21): 「ギミック CSS は 1080×1920 論理キャンバス前提で
+   固定 px サイズで書かれている」ので、popup の小さい実 px に直接描画
+   すると beam / mascot / sticky note などが視覚的に過大になる。
+   解決: 中身を 1080×1920 の論理サイズで描画し、ラッパに合わせて
+   transform: scale で縮小するだけ。これで全ギミックが本番と同じ比率で
+   見える。
+   contain で外側へのレイアウト/塗り波及を遮断 → 3秒ごとの apply/cleanup
+   で外側を再計算しないので軽い。 */
 .gg-popup-sample-wrap {
     width: 100%;
-    aspect-ratio: 4 / 5;
+    /* 1080:1920 = 9:16。本番の縦横比と同じ。 */
+    aspect-ratio: 9 / 16;
     max-height: 60vh;
     border-radius: 14px;
     overflow: hidden;
@@ -372,65 +380,30 @@
         repeating-linear-gradient(45deg, rgba(255,255,255,0.04) 0 8px, transparent 8px 16px);
 }
 
-/* .question-screen の絶対配置を sample 用に上書き。
-   ギミック CSS の "::after" や子要素は .gg-sample 内で正しく動く。 */
+/* .question-screen を 1080×1920 論理サイズで描画 → ラッパに合わせて scale。
+   --gg-sample-scale は JS が wrap.clientWidth / 1080 で計算して与える
+   (フォールバックとして 0.27 = popup 幅 290px / 1080 想定)。 */
 .gg-sample.question-screen {
-    position: relative !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
     inset: auto !important;
-    width: 100% !important;
-    height: 100% !important;
-    overflow: hidden;
-    /* ギミックが var(--canvas-h) を読むので sample 実高さに合わせる
-       (JS の startSampleLoop で具体的な px 値に上書きされる) */
-    --canvas-h: 400px;
+    width: 1080px !important;
+    height: 1920px !important;
+    transform: scale(var(--gg-sample-scale, 0.27));
+    transform-origin: top left;
+    --canvas-h: 1920px;
     isolation: isolate;
     background: var(--canvas-bg, #050609);
+    overflow: hidden;
+    /* .screen のflex/padding を解除して絶対配置ベース (本番と同じ) */
+    display: block;
+    padding: 0;
+    align-items: unset;
+    justify-content: unset;
 }
 .gg-sample .q-zone-header {
     display: none;
-}
-.gg-sample .q-zone-question {
-    position: absolute !important;
-    left: 12px !important;
-    right: 12px !important;
-    top: 12px !important;
-    bottom: auto !important;
-    height: 52% !important;
-    overflow: hidden;
-}
-.gg-sample .q-zone-answer {
-    position: absolute !important;
-    left: 12px !important;
-    right: 12px !important;
-    bottom: 12px !important;
-    top: auto !important;
-    height: 42% !important;
-}
-.gg-sample .q-stem {
-    padding: 12px !important;
-    font-size: 15px !important;
-    line-height: 1.4 !important;
-    letter-spacing: 0.04em !important;
-    border-width: 2px !important;
-    box-shadow:
-        4px 4px 0 var(--line),
-        inset 0 0 0 1px rgba(255,255,255,0.08) !important;
-}
-.gg-sample .q-zone-answer.is-choice {
-    gap: 6px !important;
-}
-.gg-sample .q-zone-answer.is-choice .q-choices {
-    gap: 6px !important;
-}
-.gg-sample .q-choice {
-    padding: 6px !important;
-    font-size: 13px !important;
-    line-height: 1.2 !important;
-    letter-spacing: 0.04em !important;
-    border-width: 2px !important;
-    box-shadow:
-        3px 3px 0 var(--line),
-        inset 0 0 0 1px rgba(255,255,255,0.08) !important;
 }
 
 /* メタ情報 (難易度 + ID) */
