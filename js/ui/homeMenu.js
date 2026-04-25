@@ -365,39 +365,17 @@
         `;
     }
 
-    // 達成バッジモーダル。openProfile 等と同じ hm-overlay レイヤを使う。
-    //   Achievements カタログは IIFE 即時定義なので Avatars と違い load 待ち不要。
-    let achievementsOverlay = null;
-    let achievementsKeyHandler = null;
+    // 達成バッジ画面を開く。
+    //   2026-04: 旧モーダル (hm-overlay + sticky head の二重 backdrop-filter)
+    //   が iOS WKWebView で落ちる事象が出たため、図鑑と同様に Router 管理の
+    //   独立スクリーン (js/screens/achievements.js) に移行した。
+    //   既存の呼び出し箇所 (home.js / TabBar 等) を変更せず済むよう、
+    //   ここから Router.show('achievements') に転送する。
     function openAchievements() {
-        if (!achievementsOverlay) {
-            achievementsOverlay = document.createElement('div');
-            achievementsOverlay.className = 'hm-overlay';
-            document.body.appendChild(achievementsOverlay);
-        }
-        achievementsOverlay.innerHTML = buildAchievementsHTML();
-        achievementsOverlay.classList.add('is-open');
-
-        const doClose = () => {
-            window.SE?.fire?.('cancel');
-            closeAchievements();
-        };
-        achievementsOverlay.querySelector('.hm-close')?.addEventListener('click', doClose);
-        // 背景タップでも閉じる (パネル内のクリックは無視)
-        achievementsOverlay.addEventListener('click', (e) => {
-            if (e.target === achievementsOverlay) doClose();
-        });
-        // ESC キーでも閉じる (デスクトップ)
-        achievementsKeyHandler = (e) => { if (e.key === 'Escape') doClose(); };
-        document.addEventListener('keydown', achievementsKeyHandler);
-
-        window.SE?.fire?.('confirm');
-    }
-    function closeAchievements() {
-        if (achievementsOverlay) achievementsOverlay.classList.remove('is-open');
-        if (achievementsKeyHandler) {
-            document.removeEventListener('keydown', achievementsKeyHandler);
-            achievementsKeyHandler = null;
+        if (window.Router?.show) {
+            window.Router.show('achievements');
+        } else {
+            console.error('[HomeMenu] Router not available for achievements screen');
         }
     }
 
@@ -760,10 +738,11 @@
         // ホーム ⚙ (設定モーダル) から ABOUT / 進捗リセットを開けるように
         // 公開。従来はプロフィール画面フッタから呼んでいた。
         openResetConfirm,
-        // フルスクリーンタブ (js/screens/profile.js, scores.js) から
-        // モーダルと同じ HTML / ハンドラを再利用するための公開 API。
-        buildProfileHTML,     // -> <div class="hm-panel">...</div>
-        buildScoresHTML,      // -> <div class="hm-panel hm-panel-wide">...</div>
-        bindProfileHandlers,  // (rootEl, { onClose, isModal=false })
+        // フルスクリーンタブ (js/screens/profile.js, scores.js, achievements.js)
+        // からモーダルと同じ HTML / ハンドラを再利用するための公開 API。
+        buildProfileHTML,        // -> <div class="hm-panel">...</div>
+        buildScoresHTML,         // -> <div class="hm-panel hm-panel-wide">...</div>
+        buildAchievementsHTML,   // -> <div class="hm-panel hm-panel-wide hm-panel-ach">...</div>
+        bindProfileHandlers,     // (rootEl, { onClose, isModal=false })
     };
 })();
