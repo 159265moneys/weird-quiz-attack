@@ -1783,17 +1783,34 @@
         },
     };
 
-    // B35 偽カーソル横切り: シアン水平線 (高さ 2px) が 4秒で 1 往復。
-    // 画面に 1 個 overlay を append するだけ。pointer-events: none で
-    // 入力には一切影響しない。
+    // B35 シアン走査線スパム: シアン水平線が複数本、画面を上→下に流れる。
+    // 太さ・所要時間・スタートタイミングがランダム、一定間隔で spawn。
+    // 不透明 (透過なし) で頻度高め。pointer-events: none で入力影響なし。
     const B35_SCAN_BAR = {
-        id: 'B35', name: '偽カーソル', supports: 'both', introducedAt: 2, difficulty: 2,
+        id: 'B35', name: 'シアン走査線', supports: 'both', introducedAt: 2, difficulty: 2,
         apply(ctx) {
-            const el = document.createElement('div');
-            el.className = 'gk-b35-scanbar';
-            el.setAttribute('aria-hidden', 'true');
-            ctx.screen.appendChild(el);
-            return () => { if (el.isConnected) el.remove(); };
+            const items = new Set();
+            function spawn() {
+                const el = document.createElement('div');
+                el.className = 'gk-b35-scanbar';
+                el.setAttribute('aria-hidden', 'true');
+                const thick = 1 + Math.floor(Math.random() * 5); // 1-5px
+                const dur = 1.6 + Math.random() * 1.6;           // 1.6-3.2s
+                el.style.height = `${thick}px`;
+                el.style.animationDuration = `${dur}s`;
+                ctx.screen.appendChild(el);
+                items.add(el);
+                setTimeout(() => {
+                    if (el.isConnected) el.remove();
+                    items.delete(el);
+                }, dur * 1000 + 200);
+            }
+            spawn(); spawn();
+            const t = setInterval(spawn, 380);
+            return () => {
+                clearInterval(t);
+                items.forEach(el => { if (el.isConnected) el.remove(); });
+            };
         },
     };
 
@@ -1892,7 +1909,7 @@
     };
 
     // B38 ？マーク雨: 画面上端から ？ がランダムに落下する装飾ノイズ。
-    // 4-6s 寿命、約 0.7s 間隔で spawn。pure decoration。
+    // 不透明白で密度高め (約 0.25s 間隔で spawn、寿命 4-6s)。
     const B38_QMARK_RAIN = {
         id: 'B38', name: 'クエスチョン雨', supports: 'both', introducedAt: 1, difficulty: 2,
         apply(ctx) {
@@ -1914,8 +1931,8 @@
                     items.delete(el);
                 }, dur * 1000 + 200);
             }
-            spawn(); spawn();
-            const t = setInterval(spawn, 700);
+            spawn(); spawn(); spawn(); spawn();
+            const t = setInterval(spawn, 250);
             return () => {
                 clearInterval(t);
                 items.forEach(el => { if (el.isConnected) el.remove(); });
@@ -1974,11 +1991,18 @@
         id: 'B40', name: 'ニコ動弾幕', supports: 'both', introducedAt: 5, difficulty: 5,
         apply(ctx) {
             const COMMENTS = [
+                'wwwwwwwwwwwwww', 'wwwwwwwwwwwwwwwwwwwwwwww',
+                '草草草草草草草草', '草草草草草草草草草草草草草',
+                'あああああああああああ', 'うわあああああああああ',
+                '8888888888888888', '888888888888',
                 'wwwwww', '草', '簡単', '答え:1', '答え:2', '答え:3', '答え:4',
-                'ヒント！', 'いやそれ違うw', '騙されんなｗ', 'これは罠', 'やべぇ',
-                'むずい', '時間ない', 'ええええ', 'マジで？', 'うそだろ', '神回',
-                '88888888', '俺はわかった', '正解は出ない', 'もう諦めろ', 'バグってる？',
-                '自信ある', 'チートかな', '神問題', 'ksk', 'ファッ！？', '焦るな',
+                'ヒント！', 'いやそれ違うw', '騙されんなｗｗｗ', 'これは罠だろ',
+                'やべぇ', 'むずい', '時間ない', 'ええええ', 'マジで？', 'うそだろ',
+                '神回', '俺はわかったｗｗｗ', '正解は出ない', 'もう諦めろｗ',
+                'バグってる？', '自信ある', 'チートかな', '神問題', 'ファッ！？',
+                '焦るな', 'まじか…', 'はあぁぁぁ？', 'これ無理ゲーじゃん',
+                'おまえらレベル低いなｗ', '答え教えてｗ', 'ヒントありがとう',
+                'なるほどなぁ', 'これ罠やぞｗｗ',
             ];
             const COLORS = ['#ffffff', '#ff8888', '#88ff88', '#8888ff', '#ffff88', '#ff88ff', '#88ffff', '#ffaa00'];
             const zone = q(ctx.screen, '.q-zone-question') || ctx.screen;
@@ -1991,11 +2015,11 @@
                 el.className = 'gk-b40-danmaku';
                 el.textContent = COMMENTS[Math.floor(Math.random() * COMMENTS.length)];
                 el.style.color = COLORS[Math.floor(Math.random() * COLORS.length)];
-                el.style.fontSize = `${24 + Math.floor(Math.random() * 18)}px`;
+                el.style.fontSize = `${36 + Math.floor(Math.random() * 28)}px`; // 36-64px
                 el.style.top = `${Math.random() * 88}%`;
                 const dur = 4 + Math.random() * 2.5;
                 el.style.animationDuration = `${dur}s`;
-                const travel = (zone.clientWidth || 800) + 400;
+                const travel = (zone.clientWidth || 800) + 600;
                 el.style.setProperty('--travel', `${travel}px`);
                 zone.appendChild(el);
                 items.add(el);
@@ -2004,8 +2028,8 @@
                     items.delete(el);
                 }, dur * 1000 + 200);
             }
-            spawn(); spawn();
-            const t = setInterval(spawn, 600);
+            spawn(); spawn(); spawn(); spawn();
+            const t = setInterval(spawn, 280);
             return () => {
                 clearInterval(t);
                 items.forEach(el => { if (el.isConnected) el.remove(); });

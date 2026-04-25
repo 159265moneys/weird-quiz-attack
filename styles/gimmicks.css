@@ -348,33 +348,28 @@
     to   { background-position: 0 6px; }
 }
 
-/* ---------- B35 偽カーソル横切り ----------
-   シアンの細い水平線が 4 秒で画面上下を 1 往復。
-   読み進めるカーソルのように見えてうっとうしい。 */
+/* ---------- B35 シアン走査線スパム ----------
+   シアン水平線が複数本、画面を上→下に流れる。
+   太さは 1-5px ランダム、不透明、頻度高め。 */
 .gk-b35-scanbar {
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
-    height: 2px;
     pointer-events: none;
     z-index: 78;
-    background: linear-gradient(
-        to right,
-        transparent,
-        var(--accent-cyan, #2af) 25%,
-        var(--accent-cyan, #2af) 75%,
-        transparent
-    );
+    background: var(--accent-cyan, #2af);
     box-shadow:
-        0 0 10px var(--accent-cyan, #2af),
-        0 0 22px var(--accent-cyan, #2af);
-    animation: gkB35ScanSweep 4s ease-in-out infinite alternate;
+        0 0 12px var(--accent-cyan, #2af),
+        0 0 24px var(--accent-cyan, #2af);
+    animation-name: gkB35ScanSweep;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
     will-change: transform;
 }
 @keyframes gkB35ScanSweep {
     0%   { transform: translateY(0); }
-    100% { transform: translateY(calc(var(--canvas-h, 100vh) - 2px)); }
+    100% { transform: translateY(var(--canvas-h, 100vh)); }
 }
 
 /* ---------- B32 画面ねじれ ----------
@@ -436,15 +431,16 @@
 }
 
 /* ---------- B37 付箋スパム ----------
-   黄/桃/シアン等の正方形ふせんが画面ランダム位置に貼られて消える。 */
+   黄/桃/シアン等の正方形ふせんが画面ランダム位置に貼られて消える。
+   サイズは大きめ (240×240, font 75px) で存在感マシマシ。 */
 .gk-b37-sticky {
     position: absolute;
     pointer-events: none;
     z-index: 84;
-    width: 96px;
-    height: 96px;
+    width: 240px;
+    height: 240px;
     color: #111;
-    font-size: 30px;
+    font-size: 75px;
     font-weight: 900;
     display: flex;
     align-items: center;
@@ -466,15 +462,15 @@
 }
 
 /* ---------- B38 ？マーク雨 ----------
-   薄白の ？ が画面上から下にゆっくり落ちていく装飾。 */
+   不透明白の ？ が画面上から下にゆっくり落ちていく装飾。 */
 .gk-b38-qmark {
     position: absolute;
     top: 0;
     pointer-events: none;
     z-index: 60;
-    color: rgba(255, 255, 255, 0.32);
+    color: #ffffff;
     font-weight: 900;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.18);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
     animation-name: gkB38QFall;
     animation-timing-function: linear;
     animation-fill-mode: forwards;
@@ -482,8 +478,8 @@
 }
 @keyframes gkB38QFall {
     0%   { transform: translate(0, -10vh) rotate(0deg); opacity: 0; }
-    8%   { opacity: 0.7; }
-    92%  { opacity: 0.7; }
+    6%   { opacity: 1; }
+    94%  { opacity: 1; }
     100% {
         transform: translate(var(--drift, 0px), var(--canvas-h, 100vh)) rotate(var(--rot, 0deg));
         opacity: 0;
