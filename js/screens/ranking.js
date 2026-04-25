@@ -80,23 +80,34 @@
         `;
     }
 
-    // active ボタンを viewport の **左端** に揃えるように track の translateX を計算。
-    //   - 右側には次ステージの左端だけが peek するレイアウト (CSS 側でカード幅を絞る)
-    //   - prev は track 外 (左にハミ出る) なので peek しない
-    //   - 単位は offsetLeft / offsetWidth で統一: getBoundingClientRect() は
-    //     #stage に掛かった transform: scale(...) でデバイス px に変換されるため、
-    //     offsetWidth (キャンバス px) と混在させると idx が増えるほど誤差が雪だるま
-    //     式に膨らんで active が画面外に飛んでいく既知バグになる。
+    // ステージナビ レイアウト
+    //   - active カードを viewport の左端にピタッと配置
+    //   - 右側に次ステージの左端だけ peek
+    //   - 単位/サイズは全部 JS で決め打ち。CSS の % flex-basis / var() / calc() に
+    //     頼らない。WKWebView (Capacitor iOS) で flex container の main size が
+    //     indefinite と解釈されてカード幅が 0 に潰れるケースを根本回避するため。
+    //   - viewport.clientWidth (キャンバス px) を基準にカード幅 = viewport - PEEK
+    //     を JS で各カードに設定し、step = card + GAP も JS で計算する。
+    const PEEK_PX = 92;   // 右に覗く次ステージの幅 (gap 込み)
+    const GAP_PX  = 16;   // カード間隔
     function layoutTrack(root, animate = true) {
+        const viewport = root.querySelector('.rk-stage-viewport');
         const track = root.querySelector('.rk-stage-track');
-        if (!track) return;
+        if (!viewport || !track) return;
         const btns = track.querySelectorAll('.rk-stage-btn');
         if (!btns.length) return;
-        const step = btns[1]
-            ? (btns[1].offsetLeft - btns[0].offsetLeft)
-            : btns[0].offsetWidth;
+
+        // カード幅を JS で確定 (CSS 依存を排除)
+        const vw = viewport.clientWidth || viewport.offsetWidth || 0;
+        const cardW = Math.max(120, vw - PEEK_PX);
+        track.style.gap = GAP_PX + 'px';
+        btns.forEach(b => {
+            b.style.flex = '0 0 ' + cardW + 'px';
+            b.style.width = cardW + 'px';
+        });
+
+        const step = cardW + GAP_PX;
         const idx = Math.min(btns.length - 1, Math.max(0, currentStage - 1));
-        // 左寄せ: active カードを viewport 左端に配置
         const offset = -idx * step;
         if (!animate) {
             track.style.transition = 'none';
