@@ -68,7 +68,7 @@ REGISTRY: List[Gimmick] = [
     Gimmick('W02', '文字盤あべこべ',         'input',  6, 7, conflicts=['W08', 'W18']),
     Gimmick('W03', '解答欄見えない',         'input',  6, 6),
     Gimmick('W07', '入力1文字消失',          'input',  6, 7),
-    Gimmick('C02', 'ダミー選択肢',           'choice', 6, 7),
+    Gimmick('C02', '選択肢ノイズ',            'choice', 6, 6),
     # Stage 7 (Batch 4)
     Gimmick('B01', '反転タップ',             'choice', 7, 8, conflicts=['C01']),
     Gimmick('B13', 'フォント極小',           'both',   7, 7, conflicts=['B17']),
@@ -90,7 +90,7 @@ REGISTRY: List[Gimmick] = [
     Gimmick('G4', '文字化け',         'both',   10, 9,
             conflicts=['B02', 'B07', 'B10', 'B15', 'B17',
                        'B23', 'B24', 'B26', 'B27', 'B28', 'B29', 'B30']),
-    Gimmick('G5', '選択肢ワープ',     'choice', 10, 10, conflicts=['C02']),
+    Gimmick('G5', '選択肢ワープ',     'choice', 10, 10, conflicts=[]),
     Gimmick('G7', 'スコア煽り',       'both',   10, 7),
     # --- 2026-04 追加: 問題文系ギミック B22-B31 (9個) ---
     # stem.textContent/innerHTML を触る系は相互に conflict、

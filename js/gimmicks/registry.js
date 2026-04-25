@@ -1092,145 +1092,48 @@
         },
     };
 
-    // C02 ダミー選択肢:
-    // 旧実装は「src の textContent をそっくり dst にコピー」だったので、
-    // 2 つの選択肢が "1 文字も違わない完全一致" になっていた
-    // → どちらが正解か見分ける手段が文字通りゼロ、完全に運ゲー (ユーザー指摘バグ)。
+    // C02 選択肢ノイズ (2026-04 仕様変更):
+    //   旧仕様 (ダミー選択肢) は「他選択肢のテキストを微改変して別選択肢に貼る」
+    //   ものだったが、短文 / 改変不能パターンで appendMark フォールバックに
+    //   落ちると "雨" と "雨。" のように "ほぼ同一" の選択肢が並んでしまい、
+    //   実質的に運ゲーと体感されていた (ユーザーフィードバック)。
     //
-    // 新実装: src のラベルを "微改変" して dst に貼る。
-    //   改変候補を複数試し、[改変後] が [src原本] と異なり かつ [他選択肢のいずれとも異なる]
-    //   ものを採用。短文/改変不能な場合は末尾に記号を 1 つ足す safe fallback。
-    //   「似てるけどよく見れば違う」ダミーを生成することで、よく読んだ者が正解できる
-    //   「焦り系」ギミックに戻る。
-    const C02_DUMMY_CHOICE = {
-        id: 'C02', name: 'ダミー選択肢', supports: 'choice', introducedAt: 6, difficulty: 7,
+    //   新実装: 全 4 つの選択肢それぞれに対し、ランダムな 1 文字をノイズ
+    //   グリフ (▓ █ ◊ ※ 等) で置換する。各選択肢は大半の文字が読めるので
+    //   推測で正解を選べる「視覚ノイズ系」のフェアなギミックに。
+    //   どの選択肢にも均等にノイズが入るので、特定の選択肢だけが目立つ
+    //   ことはなく、運要素は無い。
+    const C02_CHOICE_NOISE = {
+        id: 'C02', name: '選択肢ノイズ', supports: 'choice', introducedAt: 6, difficulty: 6,
         apply(ctx) {
             const btns = qa(ctx.screen, '.q-choice');
-            if (btns.length < 2) return () => {};
-            const srcIdx = Math.floor(Math.random() * btns.length);
-            let dstIdx;
-            do { dstIdx = Math.floor(Math.random() * btns.length); } while (dstIdx === srcIdx);
-            const dst = btns[dstIdx];
-            const src = btns[srcIdx];
-            const originalText = dst.textContent;
-
-            // 他の選択肢 (src と dst 以外) のテキスト集合。生成したダミーが
-            // これらと衝突する場合はもう一度別戦略で作り直す。
-            const otherTexts = new Set(
-                btns.filter((b, i) => i !== srcIdx && i !== dstIdx)
-                    .map(b => b.textContent)
-            );
-
-            const dummyText = makeSimilarDummy(src.textContent, otherTexts);
-            dst.textContent = dummyText;
-            dst.classList.add('gk-c02-dummy');
-            window.SE?.fire('gB25Pop');
+            if (btns.length === 0) return () => {};
+            const NOISE = ['▓', '█', '▒', '░', '◊', '※', '◇', '◆', '◯', '☒'];
+            const records = [];
+            btns.forEach(btn => {
+                const original = btn.textContent;
+                const chars = Array.from(original);
+                // 置換対象は空白以外の文字。候補がなければ何もしない。
+                const candidates = [];
+                for (let i = 0; i < chars.length; i++) {
+                    if (!/\s/.test(chars[i])) candidates.push(i);
+                }
+                if (candidates.length === 0) {
+                    records.push({ btn, original, changed: false });
+                    return;
+                }
+                const idx = candidates[Math.floor(Math.random() * candidates.length)];
+                chars[idx] = NOISE[Math.floor(Math.random() * NOISE.length)];
+                btn.textContent = chars.join('');
+                records.push({ btn, original, changed: true });
+            });
             return () => {
-                dst.textContent = originalText;
-                dst.classList.remove('gk-c02-dummy');
+                records.forEach(r => {
+                    if (r.changed && r.btn.isConnected) r.btn.textContent = r.original;
+                });
             };
         },
     };
-
-    // ---- C02 ダミー文字生成ヘルパ ----
-    // 似てるけど違う」を安定して作るための複数戦略。
-    // どの戦略も「元と異なる かつ 他選択肢と被らない」ものだけ採用する。
-    const DAKUTEN_PAIRS = (() => {
-        const m = {
-            'か':'が','き':'ぎ','く':'ぐ','け':'げ','こ':'ご',
-            'さ':'ざ','し':'じ','す':'ず','せ':'ぜ','そ':'ぞ',
-            'た':'だ','ち':'ぢ','つ':'づ','て':'で','と':'ど',
-            'は':'ば','ひ':'び','ふ':'ぶ','へ':'べ','ほ':'ぼ',
-            'カ':'ガ','キ':'ギ','ク':'グ','ケ':'ゲ','コ':'ゴ',
-            'サ':'ザ','シ':'ジ','ス':'ズ','セ':'ゼ','ソ':'ゾ',
-            'タ':'ダ','チ':'ヂ','ツ':'ヅ','テ':'デ','ト':'ド',
-            'ハ':'バ','ヒ':'ビ','フ':'ブ','ヘ':'ベ','ホ':'ボ',
-        };
-        Object.keys(m).slice().forEach(k => { m[m[k]] = k; });
-        return m;
-    })();
-    const SMALL_PAIRS = (() => {
-        const m = {
-            'や':'ゃ','ゆ':'ゅ','よ':'ょ','つ':'っ',
-            'あ':'ぁ','い':'ぃ','う':'ぅ','え':'ぇ','お':'ぉ',
-            'ヤ':'ャ','ユ':'ュ','ヨ':'ョ','ツ':'ッ',
-            'ア':'ァ','イ':'ィ','ウ':'ゥ','エ':'ェ','オ':'ォ',
-        };
-        Object.keys(m).slice().forEach(k => { m[m[k]] = k; });
-        return m;
-    })();
-
-    function makeSimilarDummy(src, excludeSet) {
-        const tried = [];
-        const strategies = [
-            strategyToggleDakuten,
-            strategyToggleSmall,
-            strategySwapAdjacent,
-            strategyReplaceChar,
-            strategyAppendMark,
-        ];
-        // 戦略をランダム順に試す
-        strategies.sort(() => Math.random() - 0.5);
-        for (const strat of strategies) {
-            const out = strat(src);
-            if (!out || out === src) continue;
-            if (excludeSet.has(out)) continue;
-            return out;
-        }
-        // どうしても作れないとき (超短い/記号だけ等) のフォールバック
-        const marks = ['…', '。', ' ', '　'];
-        for (const mk of marks) {
-            const out = src + mk;
-            if (out !== src && !excludeSet.has(out)) return out;
-        }
-        return src + '?';  // 最終手段: どうあがいても src とは別のはず
-    }
-
-    // [1] 濁点/半濁点を 1 箇所トグル
-    function strategyToggleDakuten(s) {
-        const positions = [];
-        for (let i = 0; i < s.length; i++) {
-            if (DAKUTEN_PAIRS[s[i]]) positions.push(i);
-        }
-        if (!positions.length) return null;
-        const p = positions[Math.floor(Math.random() * positions.length)];
-        return s.slice(0, p) + DAKUTEN_PAIRS[s[p]] + s.slice(p + 1);
-    }
-    // [2] 小書きをトグル (や↔ゃ 等)
-    function strategyToggleSmall(s) {
-        const positions = [];
-        for (let i = 0; i < s.length; i++) {
-            if (SMALL_PAIRS[s[i]]) positions.push(i);
-        }
-        if (!positions.length) return null;
-        const p = positions[Math.floor(Math.random() * positions.length)];
-        return s.slice(0, p) + SMALL_PAIRS[s[p]] + s.slice(p + 1);
-    }
-    // [3] 隣接 2 文字の入れ替え
-    function strategySwapAdjacent(s) {
-        if (s.length < 2) return null;
-        const p = Math.floor(Math.random() * (s.length - 1));
-        return s.slice(0, p) + s[p + 1] + s[p] + s.slice(p + 2);
-    }
-    // [4] 1 文字を似た別文字に置換 (ー ↔ 一, O ↔ 0 等の視覚類似)
-    function strategyReplaceChar(s) {
-        const HOMO = {
-            'ー':'一', '一':'ー', 'O':'0', '0':'O', 'l':'1', '1':'l',
-            'い':'り', 'り':'い', 'こ':'二', '二':'こ', 'ロ':'口', '口':'ロ',
-        };
-        const positions = [];
-        for (let i = 0; i < s.length; i++) {
-            if (HOMO[s[i]]) positions.push(i);
-        }
-        if (!positions.length) return null;
-        const p = positions[Math.floor(Math.random() * positions.length)];
-        return s.slice(0, p) + HOMO[s[p]] + s.slice(p + 1);
-    }
-    // [5] 末尾に微小な記号を付加
-    function strategyAppendMark(s) {
-        const marks = ['。', '、', '…', '!', '?'];
-        return s + marks[Math.floor(Math.random() * marks.length)];
-    }
 
     const C04_FAKE_5050 = {
         id: 'C04', name: '嘘50:50', supports: 'choice', introducedAt: 8, difficulty: 6,
@@ -1258,17 +1161,15 @@
 
     // --- Stage 8 プール (Choice) ---
 
-    // --- C03 選択肢真っ黒 (2026-04 仕様変更) ---
-    // 旧実装「選択肢文字が1秒ごとにランダム破壊される」は 4 択全体が常時グリッチで
-    // 読む気が失せるだけだった。
-    // 新実装: 4 つのうち 1 つだけを完全に真っ黒 (背景・枠・文字全て #000) にする。
-    //   - ボタン自体は生きているので、見えないボタンもタップ可能 (=正解かもしれない)。
-    //   - 「どれか消える」→ 残り 3 つで消去法を頑張るか、黒を賭けで選ぶか。
-    //   - C02 のダミー選択肢は避ける (見えない選択肢が 2 つあると破綻)。
+    // --- C03 選択肢真っ黒 ---
+    // 仕様: 4 択のうち 1 つを完全ブラックアウト (背景・枠・文字 すべて #000)。
+    //   抽選は完全ランダム (1/N)。正解が黒になることもあれば外れが黒になることも
+    //   ある = 黒く塗り潰された選択肢を「賭けで押す」か「無視して残りから選ぶ」かの
+    //   判断を強いるギミック。「黒 = 必ず正解」「黒 = 必ず誤答」のような偏りは入れない。
     const C03_CHAR_CORRUPT = {
         id: 'C03', name: '選択肢真っ黒', supports: 'choice', introducedAt: 8, difficulty: 8,
         apply(ctx) {
-            const btns = qa(ctx.screen, '.q-choice:not(.gk-c02-dummy)');
+            const btns = qa(ctx.screen, '.q-choice');
             if (btns.length === 0) return () => {};
             const target = btns[Math.floor(Math.random() * btns.length)];
             target.classList.add('gk-c03-blackout');
@@ -1805,8 +1706,7 @@
     // 「タップしたのに他の選択肢が光ってる、あれ?」→ 気づいて戻せるフェアさ。
     const G5_CHOICE_WARP = {
         id: 'G5', name: '選択肢ワープ', supports: 'choice', introducedAt: 10, difficulty: 10,
-        // C02 ダミー: ダミー選択肢を拾うと click 再送で selectedIdx が不整合になる
-        conflicts: ['C02'],
+        // C02 はノイズ系に差し替え済 (旧ダミー時代の click 再送 conflict は不要)
         apply(ctx) {
             const choices = qa(ctx.screen, '.q-choice');
             if (choices.length < 2) return () => {};
@@ -1869,7 +1769,7 @@
         B26_COLOR_RANDOM, B27_CHAR_DROP, B28_SIZE_CHAOS,
         B29_BOUNCE, B30_SPIRAL, B31_FAINT,
         B01_REVERSE_TAP, B17_NOISE_TEXT,
-        C01_SHUFFLE, C02_DUMMY_CHOICE, C03_CHAR_CORRUPT, C04_FAKE_5050,
+        C01_SHUFFLE, C02_CHOICE_NOISE, C03_CHAR_CORRUPT, C04_FAKE_5050,
         W01_KEYS_INVISIBLE, W02_KEYS_SHUFFLE, W03_ANSWER_INVISIBLE, W07_CHAR_DROP,
         W04_INPUT_SHIFT, W06_REVERSE_TEXT, W09_GHOST_INPUT,
         B21_INSTANT_DEATH, W08_KEYS_RESHUFFLE, W18_KEY_VANISH, W20_FLICK_SHUFFLE,
