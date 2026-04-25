@@ -93,13 +93,15 @@
     //   塗り (filled) 用と 枠だけ (empty) 用を分ける。
     const ICON_STAR_FILL  = `<span class="gg-diff-ic gg-diff-ic-fill"><svg viewBox="0 -960 960 960" aria-hidden="true"><path fill="currentColor" d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg></span>`;
     const ICON_STAR_EMPTY = `<span class="gg-diff-ic gg-diff-ic-empty"><svg viewBox="0 -960 960 960" aria-hidden="true"><path fill="currentColor" d="m354-287 126-76 126 77-33-144 111-96-146-13-58-136-58 135-146 13 111 97-33 143ZM233-120l65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-350Z"/></svg></span>`;
-    // ドクロ: viewBox を path の実描画範囲ぴったり (3,2 始まり 18x20) に
-    // タイトに合わせる。Star は viewBox いっぱいに描画されるので、ドクロ
-    // 側もそれに揃えないと縦位置が中央に寄って小さく見える/ズレる。
-    // 同じ d 文字列を fill / stroke で切り替えて見た目を完全に揃える。
-    const SKULL_PATH = 'M12 2.5C7.45 2.5 3.5 6.45 3.5 11c0 2.66 1.27 5.0 3.24 6.55.42.33.66.86.66 1.40V21.5h2.0v-1.6c0-.22.18-.4.4-.4h1.8c.22 0 .4.18.4.4v1.6h2.0v-1.6c0-.22.18-.4.4-.4h1.8c.22 0 .4.18.4.4v1.6h2.0v-2.55c0-.54.24-1.07.66-1.40C19.23 16.0 20.5 13.66 20.5 11c0-4.55-3.95-8.5-8.5-8.5Z';
-    const ICON_SKULL_FILL = `<span class="gg-diff-ic gg-diff-ic-fill"><svg viewBox="3 2 18 20" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path fill="currentColor" d="${SKULL_PATH}"/><circle cx="8.6" cy="10.6" r="1.55" fill="#000"/><circle cx="15.4" cy="10.6" r="1.55" fill="#000"/></svg></span>`;
-    const ICON_SKULL_EMPTY= `<span class="gg-diff-ic gg-diff-ic-empty"><svg viewBox="3 2 18 20" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" d="${SKULL_PATH}"/><circle cx="8.6" cy="10.6" r="1.55" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="15.4" cy="10.6" r="1.55" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></span>`;
+    // 難易度 6〜8 (旧 ドクロ枠) は星と同一の SVG パスで描画する。
+    // 試行: 独自 ドクロ SVG / Material 系 / Bootstrap Icons いずれも
+    // 星と並べたとき viewBox とパス実描画範囲のズレで上下に揃わない。
+    // ユーザ判断 (2026-04-21) で「赤い星でいい」となったため、星と完全に
+    // 同じパスで色だけ赤系 (--accent-red) に切り替えて危険度を表現する。
+    // → 同一 SVG = ピクセル単位でアライン保証 + 既存の星サイズ感と完全に
+    //   一致するので並べても違和感がない。
+    const ICON_SKULL_FILL  = `<span class="gg-diff-ic gg-diff-ic-fill"><svg viewBox="0 -960 960 960" aria-hidden="true"><path fill="currentColor" d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg></span>`;
+    const ICON_SKULL_EMPTY = `<span class="gg-diff-ic gg-diff-ic-empty"><svg viewBox="0 -960 960 960" aria-hidden="true"><path fill="currentColor" d="m354-287 126-76 126 77-33-144 111-96-146-13-58-136-58 135-146 13 111 97-33 143ZM233-120l65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-350Z"/></svg></span>`;
 
     function escapeHTML(s) {
         return String(s)
