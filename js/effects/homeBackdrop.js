@@ -1,22 +1,24 @@
 /* ============================================================
-   effects/homeBackdrop.js — ホーム背景の回転多面体
+   effects/homeBackdrop.js — ホーム背景の回転正二十面体
    ------------------------------------------------------------
-   旧実装: <canvas> + requestAnimationFrame で正二十面体を毎フレーム
-           3D 回転 → 投影 → 2D 描画していたが、iOS WKWebView では
-           VHS / FloatingText / キャラ呼吸アニメ 等と重なって GPU 負荷が
-           上限に達し、放置 5〜10 秒で WebContent が落ちる事例が継続。
+   要件:
+     1. 正二十面体 (12 頂点 / 30 辺)
+     2. 頂点にドット
+     3. 3D で回転
+     4. 最も軽い方法で
 
-   新実装: 1 度だけ正二十面体を投影してから静的 SVG を生成し、CSS の
-           @keyframes で SVG 自体をゆっくり回転させる方式に切り替え。
-           - rAF / canvas / ctx 一切なし
-           - 描画は GPU の compositor 処理のみ (transform layer 1 枚)
-           - mount/unmount で DOM に挿入/削除するだけ
-           絶対に GPU バッファを溢れさせないことを最優先にした設計。
+   実装方針 (canvas / rAF / SVG 全て不採用):
+     - 頂点 12 個と辺 30 本を <div> として 1 度だけ生成し、
+       CSS の transform: translate3d / rotateY / rotateZ で 3D 配置。
+     - 全体を transform-style: preserve-3d な親 (rotor) に入れ、
+       CSS @keyframes で rotateX/Y/Z を回す。
+     - 描画は GPU compositor が単一 3D マトリックスを各 div に適用するだけで、
+       JS 側の処理は mount 時の 1 回のみ。事実上ゼロコスト。
    ============================================================ */
 (function () {
     'use strict';
 
-    // --- 正二十面体ジオメトリ (元実装と同一データ) ---
+    // 正二十面体の頂点 / 辺 (黄金比ベース、単位球面に正規化)
     const PHI = (1 + Math.sqrt(5)) / 2;
     const NORM = Math.sqrt(1 + PHI * PHI);
     const VERTS = [
@@ -36,87 +38,73 @@
         [8,9],[10,11],
     ];
 
-    // 投影に使う固定回転 (viewBox -1..1 内に収まる "見栄えのする" 角度)。
-    // 純粋な真上/真横だと薄っぺらく見えるので少し傾けてある。
-    const VIEW_ROT = { x: 0.45, y: 0.85, z: 0.15 };
+    // 半径 (ホーム画面の game canvas は 1080×1920 想定。500px 前後で見栄え良し)
+    const RADIUS = 460;
+    const RAD2DEG = 180 / Math.PI;
 
-    function projectStaticVerts() {
-        const cosX = Math.cos(VIEW_ROT.x), sinX = Math.sin(VIEW_ROT.x);
-        const cosY = Math.cos(VIEW_ROT.y), sinY = Math.sin(VIEW_ROT.y);
-        const cosZ = Math.cos(VIEW_ROT.z), sinZ = Math.sin(VIEW_ROT.z);
-        return VERTS.map(([px0, py0, pz0]) => {
-            let px = px0, py = py0, pz = pz0;
-            // X
-            let yy = py * cosX - pz * sinX;
-            let zz = py * sinX + pz * cosX;
-            py = yy; pz = zz;
-            // Y
-            let xx = px * cosY + pz * sinY;
-            zz = -px * sinY + pz * cosY;
-            px = xx; pz = zz;
-            // Z
-            xx = px * cosZ - py * sinZ;
-            yy = px * sinZ + py * cosZ;
-            px = xx; py = yy;
-            const scale = 1 / (2 - pz * 0.5);
-            return [px * scale, py * scale, pz];
-        });
-    }
+    function build() {
+        const stage = document.createElement('div');
+        stage.className = 'home-bg-poly-stage';
+        stage.setAttribute('aria-hidden', 'true');
 
-    function buildSvg() {
-        const SVG_NS = 'http://www.w3.org/2000/svg';
-        const projected = projectStaticVerts();
+        const rotor = document.createElement('div');
+        rotor.className = 'home-bg-poly-rotor';
+        stage.appendChild(rotor);
 
-        const svg = document.createElementNS(SVG_NS, 'svg');
-        svg.setAttribute('class', 'home-bg-poly');
-        // viewBox は -1.6..1.6 で十分余白を取って中央配置
-        svg.setAttribute('viewBox', '-1.6 -1.6 3.2 3.2');
-        svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-        svg.setAttribute('aria-hidden', 'true');
-
-        // 辺は z で奥→手前にソート (奥は薄く、手前は濃く)
-        const edges = EDGES.map(([a, b]) => {
-            const p1 = projected[a];
-            const p2 = projected[b];
-            return { p1, p2, z: (p1[2] + p2[2]) * 0.5 };
-        }).sort((a, b) => a.z - b.z);
-
-        for (const { p1, p2, z } of edges) {
-            const depth = (z + 1) * 0.5; // 0..1
-            const alpha = (0.10 + depth * 0.22).toFixed(3);
-            const sw = (0.012 + depth * 0.014).toFixed(4);
-            const line = document.createElementNS(SVG_NS, 'line');
-            line.setAttribute('x1', p1[0].toFixed(4));
-            line.setAttribute('y1', p1[1].toFixed(4));
-            line.setAttribute('x2', p2[0].toFixed(4));
-            line.setAttribute('y2', p2[1].toFixed(4));
-            line.setAttribute('stroke', `rgba(20, 22, 30, ${alpha})`);
-            line.setAttribute('stroke-width', sw);
-            line.setAttribute('stroke-linecap', 'round');
-            svg.appendChild(line);
+        // --- 頂点 (12 個) ---
+        for (let i = 0; i < VERTS.length; i++) {
+            const [vx, vy, vz] = VERTS[i];
+            const x = (vx * RADIUS).toFixed(2);
+            const y = (vy * RADIUS).toFixed(2);
+            const z = (vz * RADIUS).toFixed(2);
+            const dot = document.createElement('div');
+            dot.className = 'home-bg-poly-dot';
+            // translate(-50%,-50%) で element 中心を起点に。translate3d で 3D 位置へ。
+            dot.style.transform =
+                `translate3d(${x}px, ${y}px, ${z}px) translate(-50%, -50%)`;
+            rotor.appendChild(dot);
         }
 
-        // 頂点 (奥は小さめ薄め、手前は大きめ濃いめ)
-        for (const p of projected) {
-            const depth = (p[2] + 1) * 0.5;
-            const alpha = (0.12 + depth * 0.22).toFixed(3);
-            const r = (0.018 + depth * 0.022).toFixed(4);
-            const c = document.createElementNS(SVG_NS, 'circle');
-            c.setAttribute('cx', p[0].toFixed(4));
-            c.setAttribute('cy', p[1].toFixed(4));
-            c.setAttribute('r', r);
-            c.setAttribute('fill', `rgba(30, 30, 45, ${alpha})`);
-            svg.appendChild(c);
+        // --- 辺 (30 本) ---
+        // div を 横長矩形 (length × 太さ) として作り、中点に置いて、
+        // 「local +X 方向 = 辺の方向」 となるよう rotateY / rotateZ を計算する。
+        for (const [ai, bi] of EDGES) {
+            const A = VERTS[ai], B = VERTS[bi];
+            const dx = (B[0] - A[0]) * RADIUS;
+            const dy = (B[1] - A[1]) * RADIUS;
+            const dz = (B[2] - A[2]) * RADIUS;
+            const len = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            const mx = (A[0] + B[0]) * 0.5 * RADIUS;
+            const my = (A[1] + B[1]) * 0.5 * RADIUS;
+            const mz = (A[2] + B[2]) * 0.5 * RADIUS;
+            const ux = dx / len, uy = dy / len, uz = dz / len;
+
+            // local +X (1,0,0) を (ux,uy,uz) に向ける 2 段階回転:
+            //   step1: rotateZ(β) で +X を XY 平面内で角度 β 持ち上げる → (cosβ, sinβ, 0)
+            //   step2: rotateY(α) で Y 軸まわりに α だけ回す → (cosβ cosα, sinβ, -cosβ sinα)
+            //   求める方向に一致するには β = asin(uy), α = atan2(-uz, ux)
+            const beta  = Math.asin(uy);
+            const alpha = Math.atan2(-uz, ux);
+            const aDeg = (alpha * RAD2DEG).toFixed(2);
+            const bDeg = (beta  * RAD2DEG).toFixed(2);
+
+            const edge = document.createElement('div');
+            edge.className = 'home-bg-poly-edge';
+            edge.style.width = `${len.toFixed(2)}px`;
+            // 順序 (CSS 右→左で適用): translate(-50%,-50%) → rotateZ → rotateY → translate3d
+            edge.style.transform =
+                `translate3d(${mx.toFixed(2)}px, ${my.toFixed(2)}px, ${mz.toFixed(2)}px) ` +
+                `rotateY(${aDeg}deg) rotateZ(${bDeg}deg) translate(-50%, -50%)`;
+            rotor.appendChild(edge);
         }
 
-        return svg;
+        return stage;
     }
 
     let mountedRoot = null;
 
     const HomeBackdrop = {
-        // 旧 API は canvas 要素を引数に受け取っていた。互換のため引数は受けるが、
-        // 中身は SVG 差し替えに変更。受け取った要素は削除する。
+        // 旧 API (canvas 要素を引数) 互換: 渡された要素は削除して SVG に置換。
         mount(targetEl) {
             this.unmount();
             let parent = null;
@@ -127,12 +115,7 @@
                 parent = document.querySelector('.home-screen');
             }
             if (!parent) return;
-            // perspective を持つ stage div で SVG を包んで 3D 回転させる
-            const stage = document.createElement('div');
-            stage.className = 'home-bg-poly-stage';
-            stage.setAttribute('aria-hidden', 'true');
-            stage.appendChild(buildSvg());
-            mountedRoot = stage;
+            mountedRoot = build();
             // 背景レイヤとして 一番先頭 に挿入 (z-index は CSS 側で -1)
             parent.insertBefore(mountedRoot, parent.firstChild);
         },

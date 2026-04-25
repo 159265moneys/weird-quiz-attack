@@ -46,31 +46,59 @@
    現実装は静的 SVG を 1 度だけ生成し、CSS @keyframes で transform 回転のみ。
    GPU 上では「テクスチャ 1 枚を回転 compositing」 する処理しか走らないので
    ほぼゼロコスト。絶対に落ちない設計。 */
-/* 多面体本体は SVG。GPU compositor が transform を 1 枚のレイヤに対して
-   matrix 計算 するだけなので 3D 回転でもほぼ無コスト。
-   - .home-bg-poly-stage: perspective を持つ親 (3D 視差)
-   - .home-bg-poly:        rotateX / rotateY / rotateZ で多軸回転 */
+/* --- 背景の回転正二十面体 (純 CSS 3D / GPU 専属) ---
+   構造:
+     .home-bg-poly-stage     位置決め + perspective を持つ親
+     └ .home-bg-poly-rotor   transform-style: preserve-3d で 3D 回転
+       ├ .home-bg-poly-dot   頂点ドット 12 個 (translate3d で 3D 配置)
+       └ .home-bg-poly-edge  辺の線 30 本 (translate3d + rotate で 3D 配置)
+   描画は GPU compositor が単一のマトリックスを各 div に適用するだけで、
+   毎フレームのラスタライズや JS 計算は発生しない。 */
 .home-bg-poly-stage {
     position: absolute;
+    /* home-screen の中央に固定。home-screen 自体が 1080×1920 の論理キャンバスなので
+       画面比に左右されず常に同じ位置/大きさで描画される。 */
     top: 50%;
     left: 50%;
-    width: min(150vmin, 100%);
-    height: min(150vmin, 100%);
-    transform: translate(-50%, -50%);
+    width: 0;       /* 子要素は translate3d で配置するので親の幅高は 0 で OK */
+    height: 0;
     pointer-events: none;
     z-index: -1;
-    perspective: 1200px;
-    transform-style: preserve-3d;
+    perspective: 1600px;
+    perspective-origin: 50% 50%;
 }
-.home-bg-poly {
-    width: 100%;
-    height: 100%;
-    opacity: 0.9;
-    will-change: transform;
+.home-bg-poly-rotor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
     transform-origin: center center;
-    animation: homePolySpin 24s linear infinite;
     transform-style: preserve-3d;
-    backface-visibility: hidden;
+    animation: homePolySpin 24s linear infinite;
+    will-change: transform;
+}
+.home-bg-poly-dot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(30, 30, 45, 0.55);
+    /* transform-origin はデフォルト center center で OK。
+       inline transform 側で translate(-50%,-50%) してから translate3d する。 */
+    transform-origin: center center;
+}
+.home-bg-poly-edge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1.5px;
+    background: rgba(20, 22, 30, 0.32);
+    /* width は inline でセット。transform-origin は 0 0 にしないと
+       translate(-50%,-50%) の効果と相殺されないので注意。 */
+    transform-origin: 0 0;
 }
 @keyframes homePolySpin {
     0%   { transform: rotateX(0deg)   rotateY(0deg)   rotateZ(0deg); }
