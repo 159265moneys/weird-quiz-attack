@@ -289,39 +289,6 @@
         if (achievementsOverlay) achievementsOverlay.classList.remove('is-open');
     }
 
-    // ACHIEVEMENTS グリッド (PROFILE 画面に埋め込む)。
-    //   解放済み = 鮮やかな枠 / hint を本文化。
-    //   未解放    = グレー枠 + ロックアイコン (詳細はホバー/タップで見える)。
-    // CATALOG は js/achievements.js が管理。未ロード時はメッセージのみ。
-    function buildAchievementsHTML() {
-        const cat = window.Achievements?.getCatalog?.();
-        if (!cat || !cat.length) {
-            return `<div class="hm-pf-ach-empty">未ロード</div>`;
-        }
-        const owned = new Set(window.Save?.getAchievements?.() || []);
-        const unlockedCount = cat.filter(a => owned.has(a.id)).length;
-
-        const cells = cat.map((a) => {
-            const isOwned = owned.has(a.id);
-            const stateCls = isOwned ? 'is-owned' : 'is-locked';
-            const tierCls = `tier-${a.tier || 'core'}`;
-            const name = isOwned ? escapeHTML(a.name) : '???';
-            const hint = escapeHTML(a.hint);
-            return `
-                <div class="hm-pf-ach-cell ${stateCls} ${tierCls}" data-ach="${a.id}">
-                    <div class="hm-pf-ach-name">${name}</div>
-                    <div class="hm-pf-ach-hint">${hint}</div>
-                </div>`;
-        }).join('');
-
-        return `
-            <div class="hm-pf-ach-wrap">
-                <div class="hm-pf-ach-summary">${unlockedCount} / ${cat.length}</div>
-                <div class="hm-pf-ach-grid">${cells}</div>
-            </div>
-        `;
-    }
-
     function buildProfileHTML() {
         const id   = window.Save?.getPlayerId?.() || '??????';
         const disp = window.Save?.getPlayerDisplayName?.() || id;
@@ -376,11 +343,6 @@
                             <span class="hm-pf-toggle-box"></span>
                             <span class="hm-pf-toggle-label">オンライン TOP100 に参加</span>
                         </label>
-                    </div>
-
-                    <div class="hm-pf-row hm-pf-row-ach">
-                        <div class="hm-pf-lbl">ACHIEVEMENTS</div>
-                        ${buildAchievementsHTML()}
                     </div>
 
                     <!-- 保存ボタンは 1つに統一: アイコンはタップで即保存される
