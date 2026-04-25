@@ -9,11 +9,17 @@
    コンパクトな矩形 (~280x380) に詰めて見せる。
    ============================================================ */
 
-/* ---- スクリーン本体 (Router.show('gimmickGuide') で開く) ---- */
+/* ---- スクリーン本体 (Router.show('gimmickGuide') で開く) ----
+   .screen の padding:80px 60px / align-items:center は子の幅を縮めて
+   グリッドがミニサイズになる原因。ここで !important 無しの上書きで
+   絶対配置 + フル幅 + stretch に戻す。 */
+.gimmick-guide-screen.screen {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    align-items: stretch;
+}
 .gimmick-guide-screen {
-    position: relative;
-    width: 100%;
-    height: 100%;
     background: linear-gradient(180deg, #0a0d14 0%, #060810 100%);
     color: #e6f1ff;
     display: flex;
