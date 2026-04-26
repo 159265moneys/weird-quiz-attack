@@ -426,15 +426,6 @@
                         <div class="hm-pf-avwrap">${buildAvatarGridHTML(iconId)}</div>
                     </div>
 
-                    <div class="hm-pf-row hm-pf-row-toggle">
-                        <div class="hm-pf-lbl">RANKING</div>
-                        <label class="hm-pf-toggle">
-                            <input type="checkbox" class="hm-pf-rank" ${(window.Ranking?.isEnabled?.() ?? true) ? 'checked' : ''}>
-                            <span class="hm-pf-toggle-box"></span>
-                            <span class="hm-pf-toggle-label">オンライン TOP100 に参加</span>
-                        </label>
-                    </div>
-
                     <!-- 保存ボタンは 1つに統一: アイコンはタップで即保存される
                          設計のため、このボタンは実質「名前の保存」だが、UX 上は
                          「プロフィール全体を保存した」という印象になるよう
@@ -492,16 +483,6 @@
                 }, 900);
             }
         });
-        // ランキング参加 ON/OFF トグル (即時反映)
-        const rankToggle = root.querySelector('.hm-pf-rank');
-        if (rankToggle) {
-            rankToggle.addEventListener('change', () => {
-                const v = rankToggle.checked;
-                window.Ranking?.setEnabled?.(v);
-                window.SE?.fire?.(v ? 'confirm' : 'cancel');
-            });
-        }
-
         root.querySelector('.hm-pf-reset')?.addEventListener('click', () => {
             if (input) input.value = '';
             window.Save?.setPlayerName?.(null);

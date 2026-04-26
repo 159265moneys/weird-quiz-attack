@@ -99,25 +99,56 @@
     text-shadow: 0 0 10px var(--accent-cyan-dim, rgba(0,255,240,0.45));
 }
 
-/* --- 参加 OFF バナー --- */
-.rk-banner {
-    margin: 4px 0 12px 0;
-    padding: 14px 16px;
-    background: var(--bg-elevated);
-    border-left: 4px solid var(--accent-warn);
-    color: var(--text-on-dark);
-    font-size: 16px;
-    line-height: 1.5;
+/* --- ヘッダ右の操作群 (リフレッシュボタン + ONLINE/OFFLINE バッジ) ---
+   .tab-header はタイトルを中央寄せしてるので、相対配置で右端に絶対配置
+   して中央寄せを崩さない。 */
+.ranking-screen .tab-header {
+    position: relative;
 }
-.rk-banner-title {
-    font-size: 20px;
-    color: var(--accent-warn);
-    letter-spacing: 2px;
-    margin-bottom: 4px;
+.ranking-screen .tab-header-actions {
+    position: absolute;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 14px;
 }
-.rk-banner-desc {
-    color: var(--text-faint);
+.rk-online-badge {
     font-size: 14px;
+    letter-spacing: 1.5px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid currentColor;
+}
+.rk-online-badge.is-on  { color: var(--accent-cyan); }
+.rk-online-badge.is-off { color: var(--accent-warn); opacity: 0.85; }
+
+.rk-refresh-btn {
+    width: 56px;
+    height: 56px;
+    border: 1.5px solid var(--line-dim);
+    background: transparent;
+    color: var(--text-on-dark);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.rk-refresh-btn:active { transform: scale(0.92); }
+.rk-refresh-btn svg    { width: 26px; height: 26px; }
+.rk-refresh-btn.is-loading svg {
+    animation: rkRefreshSpin 0.6s linear infinite;
+}
+.rk-refresh-btn.is-loading {
+    pointer-events: none;
+    opacity: 0.6;
+}
+@keyframes rkRefreshSpin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* --- ステージ見出し --- */

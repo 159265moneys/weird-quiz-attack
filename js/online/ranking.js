@@ -149,13 +149,17 @@
 
     // ============================================================
     //   設定 (参加 ON/OFF)
+    //   ------------------------------------------------------------
+    //   2026-04: 全員強制参加に変更。ON/OFF トグルは廃止し、isEnabled は
+    //   常に true を返す。setEnabled は API 互換のため残してあるが no-op。
+    //   オフライン (Firebase 不到達) なら結果として送信は走らないので、
+    //   ユーザーがネット遮断する自由は引き続き持っている。
     // ============================================================
     function isEnabled() {
-        const s = window.Save?.getSettings?.() || {};
-        return s.rankingEnabled !== false;
+        return true;
     }
-    function setEnabled(v) {
-        window.Save?.setSetting?.('rankingEnabled', !!v);
+    function setEnabled(_v) {
+        /* no-op: 強制参加に固定 */
     }
 
     // ============================================================

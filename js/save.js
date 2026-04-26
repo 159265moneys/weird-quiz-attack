@@ -71,7 +71,8 @@
                 bgmVolume: 0.2,   // BGM 音量 (0〜1) — 空気感担当で控えめ
                 muted: false,     // 全体ミュート (SE+BGM)
                 vibration: true,
-                rankingEnabled: true, // オンラインランキング参加 (クリア時自動送信)
+                // rankingEnabled は廃止 (2026-04: 全員強制参加に変更)。
+                // 旧セーブにこのキーが残っていても無視する。
             },
         };
     }
@@ -106,7 +107,6 @@
                 if (s.bgmVolume == null || s.bgmVolume === 0.35) s.bgmVolume = 0.2;
                 if (s.muted == null) s.muted = false;
                 if (s.vibration == null) s.vibration = true;
-                if (s.rankingEnabled == null) s.rankingEnabled = true;
                 // 2026-04 回復処理: 旧スライダーは min=0 まで下げられたため、
                 //   ユーザーが誤操作で SE/BGM 音量を 0 に張り付かせたまま保存 →
                 //   "SE だけ鳴らない" 状態で詰むケースがあった。

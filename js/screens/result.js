@@ -22,11 +22,13 @@
                     window.Achievements?.checkAfterStage?.(rec, result, window.GameState.currentStage, s);
                 } catch (e) { console.warn('[ach] post-stage failed', e); }
 
-                // ランキング送信 (α Prep モードでは localStorage のみ)
+                // ランキング送信 (Firestore + localStorage)。
                 //   参加 OFF / Ranking モジュール未ロード時は no-op。
                 //   死亡エンドも送信する (F も並ぶ方が賑わって見える)。
+                //   返り値の Promise は session に保持しておき、init() で
+                //   「YOUR RANK X / Y」表示に使う。失敗トーストもここで拾う。
                 try {
-                    window.Ranking?.submit?.({
+                    const submitPromise = window.Ranking?.submit?.({
                         stageNo: window.GameState.currentStage,
                         score: result.score,
                         correct: result.correct,
@@ -36,6 +38,12 @@
                         deathEnd: !!s.deathEnd,
                         sessionId: s.sessionId,
                     });
+                    if (submitPromise && typeof submitPromise.then === 'function') {
+                        s._rankingSubmit = submitPromise.catch(err => {
+                            console.warn('[Ranking] submit failed', err);
+                            return { ok: false, mode: 'error' };
+                        });
+                    }
                 } catch (_) { /* ランキングの失敗はゲーム進行に影響させない */ }
             }
 
@@ -178,6 +186,14 @@
                         STAGE ${window.GameState.currentStage}
                     </div>
 
+                    <!-- ランキング順位表示 (init() で window.Ranking.submit() の結果が
+                         返ってきた後に動的に埋める)。送信中は "..." を出しておき、
+                         参加OFFや失敗時はその旨を出す。 -->
+                    <div class="result-rank-pos" data-rank-pos>
+                        <span class="rrp-label">YOUR RANK</span>
+                        <span class="rrp-value">…</span>
+                    </div>
+
                     ${statusBanner}
 
                     <div class="result-actions">
@@ -280,6 +296,11 @@
                 speakResultComment(result, !!s.deathEnd);
             }, 1500);
 
+            // ランキング順位の DOM 反映 + 送信失敗トースト
+            // submit() の Promise は render() 側で session._rankingSubmit に
+            // 退避済み。enabled でも online 失敗でも、画面側で適切に表示する。
+            updateRankPosUI(s);
+
             // シェアボタン
             document.querySelector('[data-action="share"]')?.addEventListener('click', async (e) => {
                 const btn = e.currentTarget;
@@ -352,6 +373,57 @@
             });
         },
     };
+
+    // ============================================================
+    //   ランキング順位 (YOUR RANK X / Y) の DOM 反映
+    //   - online 成功     : "#42 / 1234人" の形で表示
+    //   - online 失敗     : "OFFLINE" 表示 + 小トースト
+    //   - rank 不明 (圏外): "—"
+    // ============================================================
+    function updateRankPosUI(s) {
+        const wrap = document.querySelector('[data-rank-pos]');
+        if (!wrap) return;
+        const valEl = wrap.querySelector('.rrp-value');
+
+        // submit が走ってない場合 (Ranking モジュール未読込)
+        const p = s && s._rankingSubmit;
+        if (!p || typeof p.then !== 'function') {
+            if (valEl) valEl.textContent = '—';
+            return;
+        }
+
+        p.then((res) => {
+            if (!res) return;
+            wrap.classList.remove('is-loading');
+            if (res.mode === 'online' || res.mode === 'offline') {
+                if (res.rank && res.total) {
+                    wrap.classList.add('is-ok');
+                    if (valEl) {
+                        valEl.innerHTML = `<strong>#${res.rank}</strong> <span class="rrp-of">/ ${res.total}人</span>`;
+                    }
+                } else {
+                    if (valEl) valEl.textContent = '—';
+                }
+                if (res.mode === 'offline') {
+                    wrap.classList.add('is-offline');
+                }
+            } else {
+                wrap.classList.add('is-failed');
+                if (valEl) valEl.textContent = 'OFFLINE';
+                showRankFailToast();
+            }
+        });
+    }
+
+    // 送信失敗トースト (シェアトーストを流用)。短く出すだけ。
+    function showRankFailToast() {
+        const el = document.querySelector('[data-share-toast]');
+        if (!el) return;
+        el.textContent = 'ランキング送信失敗 (オフライン)';
+        el.classList.add('is-show');
+        clearTimeout(showRankFailToast._t);
+        showRankFailToast._t = setTimeout(() => el.classList.remove('is-show'), 2400);
+    }
 
     // ステージを開き直す共通ルーチン。stageSelect.js の startStage と同じ流れ。
     //   重複コードだが、stageSelect.js 側は IIFE 内に閉じていて呼べないので

@@ -200,28 +200,39 @@
             const stages = window.CONFIG.STAGES;
             const progress = window.Save?.data?.progress || {};
             const unlocked = progress.unlockedStage || 1;
-            const enabled = window.Ranking?.isEnabled?.() ?? true;
 
             const chips = stages.map(s =>
                 chipHtml(s, s.no === currentStage, s.no <= unlocked)
             ).join('');
 
-            const banner = enabled ? '' : `
-                <div class="rk-banner">
-                    <div class="rk-banner-title">ランキング参加: OFF</div>
-                    <div class="rk-banner-desc">ON にするとクリア時に自動送信されます。<br>設定メニューから変更できます。</div>
-                </div>
-            `;
+            // オフライン表示: window.Firebase が未初期化 = Firestore 到達不能。
+            //   この状態でも seed/localStorage のみで動く設計だが、
+            //   ユーザーには明示しておく (ヘッダ右に小さく出す)。
+            const onlineMode = window.Ranking?.isOnline?.() ?? false;
+            const onlineBadge = onlineMode
+                ? `<span class="rk-online-badge is-on">● ONLINE</span>`
+                : `<span class="rk-online-badge is-off">● OFFLINE</span>`;
 
             return `
                 <div class="screen ranking-screen">
                     <div class="tab-header">
                         <h1 class="tab-header-title">RANKING</h1>
+                        <div class="tab-header-actions">
+                            ${onlineBadge}
+                            <button class="rk-refresh-btn" data-act="rk-refresh" aria-label="更新">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <polyline points="23 4 23 10 17 10"/>
+                                    <polyline points="1 20 1 14 7 14"/>
+                                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/>
+                                    <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="rk-stage-bar">
                         <div class="rk-stage-chips">${chips}</div>
                     </div>
-                    ${banner}
                     <div class="rk-stage-head">
                         <span class="rk-stage-no">STAGE ${String(currentStage).padStart(2, '0')}</span>
                         <span class="rk-stage-name">${stages[currentStage - 1].name}</span>
@@ -229,7 +240,7 @@
                     <div class="scroll-area">
                         <ol class="rk-list"><li class="rk-loading">LOADING…</li></ol>
                         <div class="rk-selfpin"></div>
-                        <div class="rk-footer-hint">${enabled ? '※クリア時に自動送信されます。' : '※送信はされていません。'}</div>
+                        <div class="rk-footer-hint">※クリア時に自動送信されます。</div>
                     </div>
                 </div>
             `;
@@ -247,6 +258,20 @@
                     if (!no) return;
                     setStage(root, no);
                 });
+            });
+
+            // リフレッシュボタン: 現在ステージのリストを再取得して描画
+            //   - 連打防止: 取得中はボタンに is-loading を付けて視覚的にロック
+            const refreshBtn = root.querySelector('[data-act="rk-refresh"]');
+            refreshBtn?.addEventListener('click', async () => {
+                if (refreshBtn.classList.contains('is-loading')) return;
+                refreshBtn.classList.add('is-loading');
+                window.SE?.fire?.('menuCursor');
+                try {
+                    await rerenderList(root);
+                } finally {
+                    setTimeout(() => refreshBtn.classList.remove('is-loading'), 300);
+                }
             });
 
             // スワイプ (画面全体)

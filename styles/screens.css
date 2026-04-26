@@ -1035,6 +1035,47 @@ body[data-nav-mode="tutorial"] .tutorial-cue {
     animation: resultPctIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both 0.65s;
 }
 
+/* ---------- ランキング順位表示 (YOUR RANK X / Y) ----------
+   submit() が Firestore から自分の順位を取って返してきたら埋まる。
+   表示が遅れる (Firestore 往復) ので "…" → 値の差し替えが見える設計。 */
+.result-rank-pos {
+    margin-top: 18px;
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 14px;
+    padding: 8px 22px;
+    border: 1.5px solid var(--line-dim);
+    border-radius: 8px;
+    color: var(--text-faint);
+    font-size: 22px;
+    letter-spacing: 1.5px;
+    animation: resultPctIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both 0.85s;
+}
+.result-rank-pos .rrp-label {
+    font-size: 18px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+}
+.result-rank-pos .rrp-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-on-dark);
+}
+.result-rank-pos .rrp-value strong {
+    color: var(--accent-cyan);
+    font-weight: 900;
+    font-size: 32px;
+    letter-spacing: 0.5px;
+}
+.result-rank-pos .rrp-of {
+    font-size: 18px;
+    color: var(--text-dim);
+    margin-left: 4px;
+}
+.result-rank-pos.is-failed { border-color: var(--accent-red); }
+.result-rank-pos.is-failed .rrp-value { color: var(--accent-red); }
+
 /* ボタンは 2 個固定 (シェア / ステージ選択)。Navigator ゾーンの上に浮かせる。
    吹き出し (bottom:700 + 高さ ~200 = 上端 y-from-bottom ~900) の上に余白を取って
    配置する。z-index は nav-overlay (1500) より上。 */
