@@ -1,0 +1,127 @@
+rules_version = '2';
+
+// =============================================================================
+//   Firestore Security Rules — 変なクイズ ランキング
+// -----------------------------------------------------------------------------
+//   設計方針:
+//     - /rankings/{stageId}/scores/{docId} に対して
+//         read   = 誰でも (TOP100 表示用、匿名 OK)
+//         create = フィールド検証を全通過した時のみ
+//         update = 完全禁止 (1 プレイ 1 レコード追加のみ)
+//         delete = 完全禁止 (Firebase コンソールから手動削除のみ)
+//     - フィールド形は既存 js/online/ranking.js#submit() のレコード形に合わせる
+//       (仕様書の formal モデルとは "difficulty" の有無で微妙に違うが、
+//        実装側を尊重)
+//     - createdAt は serverTimestamp() を強制 (クライアント時計の捏造を排除)
+//     - App Check (reCAPTCHA Enterprise) はコンソール側で Enforce ON 時に
+//       自動的にこの Rules の前段で適用される。Rules 自体は App Check の
+//       チェックをここに書かなくても良い (Firebase Console の "Enforce"
+//       ボタン 1 つで切替えられる)。
+// =============================================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==================== ランキング ====================
+    match /rankings/{stageId}/scores/{docId} {
+
+      // 読みは全公開 (TOP100 表示)
+      allow read: if true;
+
+      // 作成のみ許可。フィールド検証は createValid() 関数に集約
+      allow create: if createValid(stageId);
+
+      // 既存レコードの改竄/削除は完全禁止
+      allow update, delete: if false;
+    }
+
+    // ==================== 上記以外は全面 deny ====================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+//   ランキング書き込みのバリデーション関数
+// -----------------------------------------------------------------------------
+function createValid(stageId) {
+  let d = request.resource.data;
+
+  let VALID_STAGES = [
+    'stage-1','stage-2','stage-3','stage-4','stage-5',
+    'stage-6','stage-7','stage-8','stage-9','stage-10'
+  ];
+  let VALID_RANK = ['SS','S','A','B','C','D','E','F'];
+
+  return
+    // 0) URL の stageId 部分が許可ステージのいずれか
+    stageId in VALID_STAGES
+
+    // 1) フィールド過不足なし (キーセット完全一致)
+    && d.keys().hasOnly([
+        'playerId','displayName','iconId',
+        'stageNo','stageId','score',
+        'correct','total','totalTimeMs',
+        'rank','deathEnd',
+        'createdAt','sessionId','appVersion'
+       ])
+    && d.keys().hasAll([
+        'playerId','displayName','iconId',
+        'stageNo','stageId','score',
+        'correct','total','totalTimeMs',
+        'rank','deathEnd',
+        'createdAt','sessionId','appVersion'
+       ])
+
+    // 2) 各フィールドの型と範囲
+    && d.playerId is string
+       && d.playerId.matches('^[A-HJ-NP-Z2-9]{6}$')                 // Save が出す英大数字 6 桁
+
+    && d.displayName is string
+       && d.displayName.size() >= 1
+       && d.displayName.size() <= 16
+
+    && (d.iconId == null || (d.iconId is string && d.iconId.size() <= 64))
+
+    && d.stageNo is int
+       && d.stageNo >= 1 && d.stageNo <= 10
+
+    // stageId フィールドはコレクションパスの stageId と完全一致を要求
+    // (誤って "stage-3" のドキュメントを書きながら中身は "stage-1" を
+    //  詐称、というのを防ぐ)
+    && d.stageId is string
+       && d.stageId == stageId
+
+    && d.score is int
+       && d.score >= 0
+       && d.score <= 40000
+
+    && d.correct is int
+       && d.correct >= 0
+       && d.correct <= 20
+
+    && d.total is int
+       && d.total >= 0
+       && d.total <= 20
+
+    && d.totalTimeMs is int
+       && d.totalTimeMs >= 0
+       && d.totalTimeMs <= 1800000      // 30 min upper bound
+
+    && d.rank is string && d.rank in VALID_RANK
+    && d.deathEnd is bool
+
+    // 3) createdAt はサーバ側の時刻を強制
+    //   クライアントが Date.now() を入れると別値になり拒否される
+    && d.createdAt == request.time
+
+    // 4) sessionId と appVersion は文字列の形だけ簡易チェック
+    && d.sessionId is string
+       && d.sessionId.size() >= 8
+       && d.sessionId.size() <= 64
+
+    && d.appVersion is string
+       && d.appVersion.size() >= 1
+       && d.appVersion.size() <= 32
+    ;
+}

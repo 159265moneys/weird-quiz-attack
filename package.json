@@ -25,6 +25,7 @@
     "@capacitor/status-bar": "^8.0.2"
   },
   "devDependencies": {
+    "firebase-tools": "^15.15.0",
     "puppeteer": "^24.42.0",
     "typescript": "^6.0.3"
   }

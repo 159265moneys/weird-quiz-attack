@@ -76,7 +76,75 @@
     <script src="js/share/shareCard.js"></script>
     <script src="js/share/shareSheet.js"></script>
 
-    <!-- オンライン (α Prep: localStorage + seed JSON) -->
+    <!-- ============================================================
+         オンラインランキング (Firebase Firestore)
+         ------------------------------------------------------------
+         初期化順:
+           1. firebase-config.js で window.FIREBASE_CONFIG /
+              window.APP_CHECK_SITE_KEY を window に公開 (普通の <script>)
+           2. 下の <script type="module"> で Firebase SDK + App Check
+              を CDN から動的 import → 初期化 → window.Firebase に格納
+              → 'firebase:ready' を発火
+           3. ranking.js は load() 内で window.Firebase を待ってから使う
+              (Firebase が来てなくても seed/localStorage で動くフォールバック有)
+         ============================================================ -->
+    <script src="js/online/firebase-config.js"></script>
+    <script type="module">
+        // ローカル開発時は App Check デバッグトークンモードを有効化。
+        // 初回読込時にコンソールに UUID 形式のトークンが出力されるので、
+        // それを Firebase Console → App Check → 該当アプリ → デバッグトークン
+        // に登録すれば Enforce 後も localhost / 127.0.0.1 で動かせる。
+        // 本番 (github.io / Capacitor) では実 reCAPTCHA トークンを使う。
+        const __isLocalDev = (
+            location.hostname === 'localhost' ||
+            location.hostname === '127.0.0.1' ||
+            location.hostname === '' /* file:// */
+        );
+        if (__isLocalDev) {
+            // 固定 UUID を使う (毎回変わると Firebase Console 登録が面倒なため)。
+            // この値を Firebase Console → App Check → デバッグトークン に登録すれば
+            // localhost で常に通る。漏れても本番ドメイン (github.io 等) では使えない。
+            self.FIREBASE_APPCHECK_DEBUG_TOKEN =
+                'ee7a33a9-34dc-4fc2-893a-7adea92434e0';
+        }
+
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+        import { getFirestore }  from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+        import { initializeAppCheck, ReCaptchaEnterpriseProvider }
+            from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app-check.js';
+
+        try {
+            const app = initializeApp(window.FIREBASE_CONFIG);
+
+            // App Check は Firebase コンソール側 Enforce が OFF の間は
+            // 「初期化失敗してもアプリは動く」状態だが、ON にした瞬間に
+            // ここで初期化していないと書き込みが全拒否になる。
+            // 早めに有効化しておく。
+            let appCheck = null;
+            try {
+                appCheck = initializeAppCheck(app, {
+                    provider: new ReCaptchaEnterpriseProvider(window.APP_CHECK_SITE_KEY),
+                    isTokenAutoRefreshEnabled: true,
+                });
+            } catch (e) {
+                console.warn('[Firebase] App Check init failed:', e);
+            }
+
+            window.Firebase = {
+                app,
+                appCheck,
+                db: getFirestore(app),
+            };
+            window.dispatchEvent(new CustomEvent('firebase:ready'));
+            console.log('[Firebase] initialized (project=odd-quiz)');
+        } catch (e) {
+            // CDN 到達不可 / config 不正など。ranking.js は seed のみで動く。
+            console.warn('[Firebase] init failed, ranking will run offline-only:', e);
+            window.dispatchEvent(new CustomEvent('firebase:failed'));
+        }
+    </script>
+
+    <!-- ranking.js は SDK の有無を都度チェックする -->
     <script src="js/online/ranking.js"></script>
 
     <!-- UI コンポーネント -->

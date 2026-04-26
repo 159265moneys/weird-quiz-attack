@@ -56,3 +56,8 @@ android/app/src/main/assets/capacitor.plugins.json
 
 # Backup files (created before destructive rewrites; keep locally)
 *.bak
+
+# Firebase CLI 生成物 (debug log / cache)
+firebase-debug.log*
+firebase-debug.*.log
+.firebase/

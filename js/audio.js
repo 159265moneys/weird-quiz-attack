@@ -64,7 +64,18 @@
         const Ctx = window.AudioContext || window.webkitAudioContext;
         if (!Ctx) return null;
         try {
-            audioCtx = new Ctx();
+            // 2026-04: 画面録画 (iOS ReplayKit) 中にバッファ・アンダーランで
+            // 「ジジジ」ノイズになる対策として latencyHint='playback' を指定。
+            //   - 'interactive' (default) は ~10-25ms バッファで音ズレ最小だが、
+            //     録画起動中に内部バッファ要求が変わると瞬間的に underrun する。
+            //   - 'playback' は ~100ms バッファで underrun 耐性が高い。
+            //     クイズゲーで 100ms 遅延は知覚できないレベル。
+            // 古いブラウザ (引数を理解しない) でも positional ignore で no-op。
+            try {
+                audioCtx = new Ctx({ latencyHint: 'playback' });
+            } catch (_) {
+                audioCtx = new Ctx();
+            }
             masterGain = audioCtx.createGain();
             masterGain.gain.value = muted ? 0 : masterVolume;
             masterGain.connect(audioCtx.destination);
