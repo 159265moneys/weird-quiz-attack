@@ -426,17 +426,14 @@
                         <div class="hm-pf-avwrap">${buildAvatarGridHTML(iconId)}</div>
                     </div>
 
-                    <!-- 保存ボタンは 1つに統一: アイコンはタップで即保存される
-                         設計のため、このボタンは実質「名前の保存」だが、UX 上は
-                         「プロフィール全体を保存した」という印象になるよう
-                         ラベルを中立的な "SAVE" に。RESET NAME は名前専用の
-                         サブアクションとして控えめに残す (アイコンのリセットは
-                         アバターグリッド先頭の "—" で行う)。
+                    <!-- 保存ボタンは 1つだけ: 名前を空にして SAVE すれば
+                         "未設定" 状態 (= ID をそのまま名前として使う) に戻せるため
+                         RESET NAME は廃止。アイコンのリセットはアバターグリッド先頭
+                         の "—" で行う。
                          ABOUT / RESET PROGRESS は Home の ⚙ (設定モーダル)
                          に移動したのでここからは削除。 -->
-                    <div class="hm-pf-actions">
+                    <div class="hm-pf-actions hm-pf-actions-single">
                         <button class="hm-pf-btn hm-pf-save"  type="button" data-default-label="SAVE">SAVE</button>
-                        <button class="hm-pf-btn hm-pf-reset hm-pf-btn-small" type="button">RESET NAME</button>
                     </div>
                 </div>
             </div>
@@ -483,14 +480,6 @@
                 }, 900);
             }
         });
-        root.querySelector('.hm-pf-reset')?.addEventListener('click', () => {
-            if (input) input.value = '';
-            window.Save?.setPlayerName?.(null);
-            window.SE?.fire?.('cancel');
-            const curEl = root.querySelector('.hm-pf-current');
-            if (curEl) curEl.textContent = window.Save?.getPlayerDisplayName?.() || '';
-        });
-
         // ABOUT / RESET PROGRESS (旧ハンバーガーから移設)
         root.querySelectorAll('.hm-pf-footer-actions [data-act]').forEach(btn => {
             btn.addEventListener('click', () => {

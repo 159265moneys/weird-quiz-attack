@@ -32,8 +32,10 @@
 }
 body.has-tabbar .scores-screen-inner {
     /* TabBar は position:fixed でビューポート下端。canvas 可変高対応で
-       TabBar 実高さ (CSS px) を canvas-px に換算。 */
-    padding-bottom: calc((56px + env(safe-area-inset-bottom, 0px)) / var(--scale, 1) + 24px);
+       TabBar 実高さ (CSS px) を canvas-px に換算。
+       Stage 10 の行が TabBar 直上に詰まって見えるのを防ぐため、
+       底面オフセットを少し厚めに取る (24px → 80px)。 */
+    padding-bottom: calc((56px + env(safe-area-inset-bottom, 0px)) / var(--scale, 1) + 80px);
 }
 
 .scores-screen .hm-panel {

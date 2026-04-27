@@ -283,7 +283,8 @@ body.has-tabbar .profile-screen-inner {
     transform: translateX(30px);
 }
 
-/* メインアクション (SAVE / RESET NAME) */
+/* メインアクション (SAVE のみ。RESET NAME は廃止)。
+   SAVE は単独・中央寄せ・大きく出すことで「ここを押せば確定」を強調。 */
 .profile-screen .hm-pf-actions {
     gap: 14px;
     margin-top: 8px;
@@ -296,14 +297,17 @@ body.has-tabbar .profile-screen-inner {
     border-radius: 10px;
     min-height: 0;
 }
+.profile-screen .hm-pf-actions-single {
+    justify-content: center;
+    margin-top: 28px;
+}
+.profile-screen .hm-pf-actions-single .hm-pf-btn {
+    min-width: 520px;
+    padding: 30px 60px;
+    font-size: 38px;
+    letter-spacing: 10px;
+}
 
 /* hm-pf-footer (ABOUT / RESET PROGRESS) はプロフィール画面から撤去し
-   設定モーダルに移設した。旧スタイル上書きも不要。
-   RESET NAME は .hm-pf-btn-small として残るので小サイズのオーバーライド
-   のみ維持する。 */
-.profile-screen .hm-pf-btn.hm-pf-btn-small {
-    padding: 22px 16px;
-    font-size: 26px;
-    letter-spacing: 5px;
-}
+   設定モーダルに移設した。旧スタイル上書きも不要。 */
 
