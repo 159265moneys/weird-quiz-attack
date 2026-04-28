@@ -1097,5 +1097,151 @@
     padding: 22px 22px 16px;
 }
 .achievements-screen .hm-ach-body {
-    padding: 0 22px;
+    padding: 0 36px;
+}
+
+/* ============================================================
+   ACHIEVEMENTS フルスクリーン専用スケール上書き
+   ------------------------------------------------------------
+   元 hm-* スタイルは「viewport 480px 幅のモーダル」用に設計されたが、
+   フルスクリーン化すると Capacitor canvas 1080px 上で各文字が小さく見える。
+   ここでは achievements-screen 配下に限り、フォント/間隔/枠サイズを
+   canvas-px 基準で 1.6〜2.5 倍に拡大して、スマホ全画面で読みやすく。
+   ============================================================ */
+
+/* タイトル / 閉じるボタン */
+.achievements-screen .hm-head-sticky {
+    padding: 36px 36px 22px;
+}
+.achievements-screen .hm-title {
+    font-size: 44px;
+    letter-spacing: 0.22em;
+}
+.achievements-screen .hm-close {
+    width: 80px;
+    height: 80px;
+    border-radius: 18px;
+    border-width: 3px;
+}
+.achievements-screen .hm-close svg {
+    width: 40px;
+    height: 40px;
+}
+
+/* 進捗カード */
+.achievements-screen .hm-ach-progress {
+    margin: 28px 0 32px;
+    padding: 28px 28px 24px;
+    border-radius: 22px;
+    border-width: 2.5px;
+}
+.achievements-screen .hm-ach-progress-num {
+    margin-bottom: 18px;
+    gap: 8px;
+}
+.achievements-screen .hm-ach-progress-got {
+    font-size: 70px;
+}
+.achievements-screen .hm-ach-progress-sep,
+.achievements-screen .hm-ach-progress-total {
+    font-size: 38px;
+}
+.achievements-screen .hm-ach-progress-lbl {
+    font-size: 20px;
+    letter-spacing: 0.32em;
+}
+.achievements-screen .hm-ach-progress-bar {
+    height: 22px;
+    margin-bottom: 16px;
+    border-radius: 999px;
+}
+.achievements-screen .hm-ach-progress-pct {
+    font-size: 18px;
+    letter-spacing: 0.18em;
+}
+
+/* tier チップ */
+.achievements-screen .hm-ach-chips { gap: 12px; }
+.achievements-screen .hm-ach-chip {
+    padding: 10px 18px 10px 14px;
+    font-size: 20px;
+    letter-spacing: 0.18em;
+    border-width: 2px;
+    border-radius: 999px;
+}
+.achievements-screen .hm-ach-chip-ic,
+.achievements-screen .hm-ach-chip-ic svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* セクション見出し */
+.achievements-screen .hm-ach-section + .hm-ach-section { margin-top: 32px; }
+.achievements-screen .hm-ach-sec-head {
+    margin-bottom: 16px;
+    gap: 14px;
+}
+.achievements-screen .hm-ach-sec-ic,
+.achievements-screen .hm-ach-sec-ic svg {
+    width: 30px;
+    height: 30px;
+}
+.achievements-screen .hm-ach-sec-lbl {
+    font-size: 24px;
+    letter-spacing: 0.32em;
+}
+.achievements-screen .hm-ach-sec-cnt {
+    font-size: 20px;
+    letter-spacing: 0.14em;
+}
+
+/* カード */
+.achievements-screen .hm-ach-grid {
+    gap: 14px;
+}
+.achievements-screen .hm-ach-card {
+    grid-template-columns: 80px 1fr auto;
+    gap: 22px;
+    padding: 22px 24px;
+    border-width: 2px;
+    border-radius: 18px;
+}
+.achievements-screen .hm-ach-card::before {
+    width: 5px;
+}
+.achievements-screen .hm-ach-card-ic {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    border-width: 2px;
+}
+.achievements-screen .hm-ach-card-ic svg {
+    width: 42px;
+    height: 42px;
+}
+.achievements-screen .hm-ach-card-name {
+    font-size: 28px;
+    letter-spacing: 0.10em;
+    margin-bottom: 6px;
+}
+.achievements-screen .hm-ach-card-hint {
+    font-size: 22px;
+    line-height: 1.45;
+    letter-spacing: 0.04em;
+}
+.achievements-screen .hm-ach-pill {
+    padding: 8px 16px;
+    font-size: 18px;
+    letter-spacing: 0.22em;
+    border-width: 2px;
+    border-radius: 999px;
+}
+.achievements-screen .hm-ach-card.is-locked .hm-ach-card-name {
+    letter-spacing: 0.55em;
+}
+
+/* 空状態 */
+.achievements-screen .hm-ach-empty {
+    font-size: 26px;
+    padding: 48px 8px;
 }
