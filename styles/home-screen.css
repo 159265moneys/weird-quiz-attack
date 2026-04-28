@@ -145,26 +145,41 @@
     width: 96px;
     height: 96px;
     border-radius: 18px;
-    border: 2px solid rgba(10, 10, 10, 0.25);
-    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid #0a0a0a;
+    /* 背景: 灰色キャンバス上で「画面に固定された」感を出す控えめなグレー。
+       透明にすると浮いて見えるので不透明グレー指定。 */
+    background: #d8d8dc;
     color: #444;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     padding: 0;
-    transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    /* 通常時: 真下にぼかしたシアン光のドロップシャドウ。
+       これで「ボタンが画面から少し浮いてシアンの光を落としている」ニュアンスを
+       常時付与する (旧: 押下時のみ光らせていたが、通常時に浮遊感が出てしまっていた)。 */
+    box-shadow: 0 6px 16px rgba(0, 229, 255, 0.45);
+    transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 .home-head-icon:active {
     transform: scale(0.92);
     border-color: var(--accent-cyan);
-    box-shadow: 0 0 16px rgba(0, 229, 255, 0.35);
+    background: #ffffff;
+    /* 押下時: 真下のドロップシャドウを残しつつ、全周にシアン発光を重ねる。
+       「沈み込んだ瞬間に表面がシアンに光る」表現。 */
+    box-shadow:
+        0 4px 10px rgba(0, 229, 255, 0.55),
+        0 0 28px rgba(0, 229, 255, 0.70);
 }
 .home-head-icon img {
     width: 56px;
     height: 56px;
-    /* 黒っぽいグレーで表示 */
-    filter: brightness(0) saturate(100%) invert(25%);
+    /* 濃いグレーで表示 (押下時にコントラスト上げる) */
+    filter: brightness(0) saturate(100%) invert(20%);
+    transition: filter 0.2s ease;
+}
+.home-head-icon:active img {
+    filter: brightness(0) saturate(100%) invert(35%);
 }
 
 /* --- STATS バー (ヘッダ直下、横一列で進捗を出す) ---
@@ -174,15 +189,26 @@
    配置: home-screen は flex column。home-head の直下に通常フローで載せる。
         position は relative で、VHS / floating-text レイヤより手前 (z-index:5)。 */
 .home-stats {
-    width: 100%;
+    /* 画面左端 (canvas x=0) にピッタリ吸着させる。
+       home-screen の padding-left:60px を負マージンで打ち消し、
+       右端は 4 アイコン (canvas x=944〜1040) と被らない 920px で止める。
+       (margin-left:-60px で x=0 始まり / 幅 920 → 右端 x=920、
+        アイコン左端 x=944 まで 24px の余白ができる) */
+    margin-left: -60px;
+    width: 920px;
     margin-bottom: 18px;
-    padding: 12px 18px;
+    padding: 20px 22px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 6px;
     background: rgba(10, 10, 14, 0.78);
     border: 2px solid rgba(0, 229, 255, 0.45);
+    /* 右辺は左端ピッタリなので border-left を消し、ライン感を出すためコーナーを
+       右端だけ角丸にして「左から伸びる電光掲示板」のニュアンスに */
+    border-left: none;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
     box-shadow:
         4px 4px 0 rgba(0, 229, 255, 0.22),
         inset 0 0 0 1px rgba(255, 255, 255, 0.04);

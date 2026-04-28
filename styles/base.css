@@ -202,7 +202,10 @@ body {
 
 /* === ライト背景の画面 (タイトル・ステージ選択) === */
 .screen.title-screen {
-    background: var(--canvas-light);
+    /* canvas-light (#f0f0f2) は微妙にグレーがかって燻んで見えるため、
+       タイトルだけ純白で上書き。canvas-light 自体は他で使われないが、
+       将来共有時の副作用回避のため変数経由ではなくリテラルで指定。 */
+    background: #ffffff;
     color: var(--text-on-light);
 }
 .screen.stage-select-screen {
