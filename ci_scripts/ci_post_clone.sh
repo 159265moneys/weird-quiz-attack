@@ -40,7 +40,7 @@ echo "==> Switched to repo root: $(pwd)"
 # auto-update が失敗 → brew 経由のインストール全停止という事象が発生。
 # 公式 nodejs.org からポータブルバイナリを直接 DL する方式に切り替える。
 if ! command -v node >/dev/null 2>&1; then
-    NODE_VERSION="20.18.0"  # LTS (2025-04 時点で安定)
+    NODE_VERSION="22.18.0"  # LTS (Capacitor 8 が Node >=22 を要求)
     ARCH=$(uname -m)
     case "$ARCH" in
         arm64)  NODE_ARCH="darwin-arm64" ;;
