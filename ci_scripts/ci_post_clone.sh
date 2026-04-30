@@ -35,13 +35,31 @@ cd "${CI_PRIMARY_REPOSITORY_PATH:-$(cd "$(dirname "$0")/.." && pwd)}"
 echo "==> Switched to repo root: $(pwd)"
 
 # --- Node.js の用意 -------------------------------------------------
-# Xcode Cloud のホストには brew があるが node は未インストール。
-# brew で入れるのが最も簡単で、Apple 公式ドキュメントが推奨する方法。
+# 当初は `brew install node` で入れていたが、Xcode Cloud のランナーから
+# pkg-containers.githubusercontent.com への DNS が通らず Homebrew の
+# auto-update が失敗 → brew 経由のインストール全停止という事象が発生。
+# 公式 nodejs.org からポータブルバイナリを直接 DL する方式に切り替える。
 if ! command -v node >/dev/null 2>&1; then
-    echo "==> Installing Node.js via Homebrew..."
-    brew install node
+    NODE_VERSION="20.18.0"  # LTS (2025-04 時点で安定)
+    ARCH=$(uname -m)
+    case "$ARCH" in
+        arm64)  NODE_ARCH="darwin-arm64" ;;
+        x86_64) NODE_ARCH="darwin-x64" ;;
+        *) echo "Unsupported arch: $ARCH"; exit 1 ;;
+    esac
+    NODE_PKG="node-v${NODE_VERSION}-${NODE_ARCH}"
+    NODE_INSTALL_DIR="$HOME/.local/node"
+
+    echo "==> Installing Node.js v${NODE_VERSION} (${NODE_ARCH}) via nodejs.org..."
+    mkdir -p "$NODE_INSTALL_DIR"
+    TMPDIR_LOCAL=$(mktemp -d)
+    cd "$TMPDIR_LOCAL"
+    curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/${NODE_PKG}.tar.xz" -o node.tar.xz
+    tar -xf node.tar.xz -C "$NODE_INSTALL_DIR" --strip-components=1
+    export PATH="$NODE_INSTALL_DIR/bin:$PATH"
+    cd "${CI_PRIMARY_REPOSITORY_PATH:-$(cd "$(dirname "$0")/.." && pwd)}"
 else
-    echo "==> Node.js already present: $(node --version)"
+    echo "==> Node.js already present"
 fi
 
 echo "==> Node:    $(node --version)"
