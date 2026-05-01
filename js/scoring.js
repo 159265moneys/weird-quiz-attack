@@ -6,17 +6,20 @@
      時間ボーナス: max(0, 残り時間) / 制限時間 * 1000 点
      → 1問最大 2000 点 / 20問で最大 40,000 点
 
-   ランク判定 (2026-04 改訂):
-     SS: 全問正解 AND 合計 <= 2:30 (150s) — 鬼仕様・激レア
-     S : 全問正解 AND 合計 <= 3:30 (210s)
-     A : 正答率 >= 95% (≤1ミス) AND 合計 <= 4:00 (240s)
-     B : 正答率 >= 70%                (時間不問)
+   ランク判定 (2026-05 改訂 v3):
+     SS: 0 ミス AND 合計時間 <= ステージ別閾値 (60〜120 秒)
+     S : 0 ミス (時間不問)
+     A : 1 ミス (時間不問)
+     B : 2 ミス以上 AND 正答率 >= 70% (= 2〜6 ミス相当)
      C : 正答率 >= 50%
      D : 正答率 >= 30%
      E : 正答率 >= 10%
-     F : それ未満 / 即死(B21/G1)終了
+     F : それ未満 / 即死 (B21/G1) 終了
 
-   注意: "100% 正解でも遅いと B 落ち" は意図通りの鬼仕様。
+   SS 閾値はステージごとに段階的に緩くなる:
+     S1=60, S2=70, S3=75, S4=80, S5=90,
+     S6=95, S7=100, S8=105, S9=110, S10=120 (秒)
+
    B21/G1 即死で session.deathEnd = true → 強制 F。
    ============================================================ */
 
@@ -24,10 +27,18 @@
     const Q_TIME_LIMIT_MS = 60 * 1000; // 1問あたり60秒
     const BASE_POINT = 1000;
     const TIME_BONUS_MAX = 1000;
-    // 合計時間制限 (20問 total)
-    const SS_TOTAL_TIME_SEC = 150;  // 2:30
-    const S_TOTAL_TIME_SEC  = 210;  // 3:30
-    const A_TOTAL_TIME_SEC  = 240;  // 4:00
+
+    // SS 取得に必要な合計時間 (秒)。配列の index = stageNo - 1。
+    const SS_TIME_BY_STAGE = [60, 70, 75, 80, 90, 95, 100, 105, 110, 120];
+    // フォールバック: stageNo 不明なら最も寛容な Stage 10 の閾値を使う。
+    const SS_TIME_FALLBACK_SEC = SS_TIME_BY_STAGE[SS_TIME_BY_STAGE.length - 1];
+
+    function ssThresholdSecFor(stageNo) {
+        const n = Number(stageNo);
+        if (!Number.isFinite(n)) return SS_TIME_FALLBACK_SEC;
+        const idx = Math.min(SS_TIME_BY_STAGE.length, Math.max(1, Math.round(n))) - 1;
+        return SS_TIME_BY_STAGE[idx];
+    }
 
     function computeQuestionScore(answer) {
         if (!answer || !answer.correct) return { base: 0, timeBonus: 0, total: 0 };
@@ -37,10 +48,11 @@
         return { base: BASE_POINT, timeBonus, total: BASE_POINT + timeBonus };
     }
 
-    function compute(session) {
+    function compute(session, stageNo) {
         const total = session.questions.length;
         const answered = session.answers.length;
         const correct = session.answers.filter(a => a.correct).length;
+        const missed = total - correct;
         const accuracy = total > 0 ? correct / total : 0;
 
         let score = 0;
@@ -54,15 +66,21 @@
         const avgTimeSec = answered > 0 ? (totalTimeMs / answered) / 1000 : 0;
         const totalTimeSec = totalTimeMs / 1000;
 
+        // stageNo 未指定時は GameState から拾う (compute(session) 旧シグネチャの互換)
+        const _stage = (stageNo != null)
+            ? stageNo
+            : (typeof window !== 'undefined' && window.GameState ? window.GameState.currentStage : null);
+        const ssThresholdSec = ssThresholdSecFor(_stage);
+
         let rank;
         if (session.deathEnd) {
             // B21/G1 即死終了は強制 F
             rank = 'F';
-        } else if (total > 0 && accuracy >= 1.0 && totalTimeSec <= SS_TOTAL_TIME_SEC) {
+        } else if (total > 0 && missed === 0 && totalTimeSec <= ssThresholdSec) {
             rank = 'SS';
-        } else if (total > 0 && accuracy >= 1.0 && totalTimeSec <= S_TOTAL_TIME_SEC) {
+        } else if (total > 0 && missed === 0) {
             rank = 'S';
-        } else if (accuracy >= 0.95 && totalTimeSec <= A_TOTAL_TIME_SEC) {
+        } else if (total > 0 && missed === 1) {
             rank = 'A';
         } else if (accuracy >= 0.70) {
             rank = 'B';
@@ -76,13 +94,15 @@
             rank = 'F';
         }
 
-        return { score, correct, total, accuracy, avgTimeSec, totalTimeSec, rank };
+        return { score, correct, total, accuracy, avgTimeSec, totalTimeSec, rank, ssThresholdSec };
     }
 
     window.Scoring = {
         Q_TIME_LIMIT_MS,
         BASE_POINT,
         TIME_BONUS_MAX,
+        SS_TIME_BY_STAGE,
+        ssThresholdSecFor,
         computeQuestionScore,
         compute,
     };

@@ -5,7 +5,7 @@
 (function () {
     const Screen = {
         render() {
-            const result = window.Scoring.compute(window.GameState.session);
+            const result = window.Scoring.compute(window.GameState.session, window.GameState.currentStage);
             const s = window.GameState.session;
 
             // セーブ (初回表示時のみ)
@@ -207,7 +207,7 @@
 
         init() {
             const s = window.GameState.session;
-            const result = window.Scoring.compute(s);
+            const result = window.Scoring.compute(s, window.GameState.currentStage);
             const target = result.score;
             const el = document.getElementById('resultScore');
 
@@ -310,10 +310,10 @@
                 btn.textContent = '生成中...';
 
                 try {
-                    const result = window.Scoring.compute(window.GameState.session);
+                    const stageNo = window.GameState.currentStage;
+                    const result = window.Scoring.compute(window.GameState.session, stageNo);
                     const s = window.GameState.session;
                     const timeouts = s.answers.filter(a => a.reason === 'timeout').length;
-                    const stageNo = window.GameState.currentStage;
                     const stageDef = window.CONFIG.STAGES.find(x => x.no === stageNo) || {};
                     const stageInfo = { no: stageNo, name: stageDef.name || '', stress: stageDef.stress };
 
