@@ -19,18 +19,28 @@
      Stage 9  : introducedAt ∈ {8, 9}    (8追加分 + 9追加分のみ)
      Stage 10 : CONFIG.STAGE10_POOL 直指定 (最高難度のみ, 重複OK)
 
-   実装済み:
-     Stage1: B11, B16, B18                  ← Phase 5b-Batch1 (B19は廃止)
-     Stage2: B03, B07                       ← Phase 5a
-     Stage3: B02, B08                       ← Phase 5b-Batch2
-     Stage4: B04, B15, B20, C01             ← Phase 5b-Batch2 (+ C01=5a)
-     Stage5: B05, B06, B12, B14             ← Phase 5b-Batch3a (+ B05/B12=5a)
-     Stage6: B09, B10, W01, W02, W03, W07, C02  ← Phase 5b-Batch3b (+ W01/W03=5a)
-     Stage7: B01, B13, B17, W05, W10, W17, W19  ← Phase 5b-Batch4 (+ B13=5a) ※W14不採用
-     Stage8: C03, C04, W04, W06, W09, W15, W16  ← Phase 5b-Batch5 (+ C04=5a)
-     Stage9: B21, W08, W18, W20                 ← Phase 5b-Batch6 (最終バッチ)
+   実装済み (introducedAt 別):
+     1  : B11, B16, B18, B33, B38                                (5)
+     2  : B03, B07, B35                                          (3)
+     3  : B02, B08, B32, B37                                     (4)
+     4  : B04, B15, B20, B26, B31, B34, B36, B39, C01            (9)
+     5  : B05, B06, B12, B22, B25, B27, B40                      (7)
+     6  : B09, B10, B23, B28, C02, W01, W02, W03, W07            (9)
+     7  : B01, B13, B17, B24                                     (4)
+     8  : B29, B30, C03, C04, W04, W06, W09                      (7)
+     9  : B21, W08, W18, W20                                     (4)
+     10 : G1, G4, G5, G7                                         (4)
+     ──────────────────────────────────────────────
+     合計: 56 種 (App Store スクショの「50種類以上」表記に対応)
 
-   未実装: なし (MVP ギミック全数 = 35 / Phase 5b 完了)
+     ※ コメント上の Stage は introducedAt の値で、実際の出題プールは
+        selector.js のステージ別プール抽選ルール (上記) で決まる。
+        例えば introducedAt:6 のものは Stage 6, 7, 8 で出てくる可能性あり。
+
+     ※ 旧計画から落ちた ID: B14, B19, W05, W10, W14, W15, W16, W17, W19
+        (= 設計したが採用しなかった or 別 ID に統合された)
+
+   未実装: なし (MVP 完了 + B22〜B40 / G7 の追加バッチも完了)
    ============================================================ */
 
 (function () {
