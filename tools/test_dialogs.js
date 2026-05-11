@@ -49,28 +49,52 @@ function assert(label, cond, detail) {
     console.log('--- Dialogs ---');
     await sandbox.window.Dialogs.load();
 
-    const sub5A = sandbox.window.Dialogs.getSubCharFor(5, 'A');
-    assert('stage5 A → jellyfish', sub5A && sub5A.id === 'jellyfish', JSON.stringify(sub5A));
+    // getSubCharFor は stages のみで判定 (rank/F は pickSubVariantBank で別個に判定)
+    const sub5 = sandbox.window.Dialogs.getSubCharFor(5);
+    assert('stage5 → jellyfish', sub5 && sub5.id === 'jellyfish', JSON.stringify(sub5));
+    const sub6 = sandbox.window.Dialogs.getSubCharFor(6);
+    assert('stage6 → jellyfish', sub6 && sub6.id === 'jellyfish');
+    const sub7 = sandbox.window.Dialogs.getSubCharFor(7);
+    assert('stage7 → tv', sub7 && sub7.id === 'tv');
+    const sub8 = sandbox.window.Dialogs.getSubCharFor(8);
+    assert('stage8 → tv', sub8 && sub8.id === 'tv');
+    const sub9 = sandbox.window.Dialogs.getSubCharFor(9);
+    assert('stage9 → phonograph', sub9 && sub9.id === 'phonograph');
+    const sub10 = sandbox.window.Dialogs.getSubCharFor(10);
+    assert('stage10 → phonograph', sub10 && sub10.id === 'phonograph');
+    assert('stage1 → null (対象外)', sandbox.window.Dialogs.getSubCharFor(1) === null);
+    assert('stage4 → null', sandbox.window.Dialogs.getSubCharFor(4) === null);
 
-    const sub6S = sandbox.window.Dialogs.getSubCharFor(6, 'S');
-    assert('stage6 S → jellyfish', sub6S && sub6S.id === 'jellyfish');
+    // pickSubVariantBank: ランク別バンク選択 + deathOrF はアンロック後限定
+    const pick = sandbox.window.Dialogs.pickSubVariantBank;
+    const ssBank = pick(sub5, 'SS', false, false);
+    assert('jellyfish SS bank 取得', Array.isArray(ssBank) && ssBank.length === 7);
+    const sBank = pick(sub5, 'S', false, false);
+    assert('jellyfish S bank 取得', Array.isArray(sBank) && sBank.length === 5);
+    const aBank = pick(sub5, 'A', false, false);
+    assert('jellyfish A → default bank', Array.isArray(aBank) && aBank.length === 11);
+    const bBank = pick(sub5, 'B', false, false);
+    assert('jellyfish B → default bank', Array.isArray(bBank) && bBank.length === 11);
+    const fLocked = pick(sub5, 'F', false, false);
+    assert('jellyfish F + 未解放 → null (= 非登場)', fLocked === null);
+    const fUnlocked = pick(sub5, 'F', false, true);
+    assert('jellyfish F + 解放後 → deathOrF', Array.isArray(fUnlocked) && fUnlocked.length === 7);
+    const deathLocked = pick(sub5, 'A', true, false);
+    assert('jellyfish A+deathEnd + 未解放 → null', deathLocked === null);
+    const deathUnlocked = pick(sub5, 'A', true, true);
+    assert('jellyfish A+deathEnd + 解放後 → deathOrF', Array.isArray(deathUnlocked) && deathUnlocked.length === 7);
 
-    const sub7A = sandbox.window.Dialogs.getSubCharFor(7, 'A');
-    assert('stage7 A → tv', sub7A && sub7A.id === 'tv');
-
-    const sub8SS = sandbox.window.Dialogs.getSubCharFor(8, 'SS');
-    assert('stage8 SS → tv', sub8SS && sub8SS.id === 'tv');
-
-    const sub9SS = sandbox.window.Dialogs.getSubCharFor(9, 'SS');
-    assert('stage9 SS → phonograph', sub9SS && sub9SS.id === 'phonograph');
-
-    const sub10A = sandbox.window.Dialogs.getSubCharFor(10, 'A');
-    assert('stage10 A → phonograph', sub10A && sub10A.id === 'phonograph');
-
-    assert('stage1 SS → null (対象外)', sandbox.window.Dialogs.getSubCharFor(1, 'SS') === null);
-    assert('stage5 B → null (ランク不足)', sandbox.window.Dialogs.getSubCharFor(5, 'B') === null);
-    assert('stage5 F → null (F は除外)', sandbox.window.Dialogs.getSubCharFor(5, 'F') === null);
-    assert('stage4 A → null', sandbox.window.Dialogs.getSubCharFor(4, 'A') === null);
+    // home bank
+    const homePuzzle = sandbox.window.Dialogs.getHomeBank('puzzle');
+    assert('home.puzzle 20 行', Array.isArray(homePuzzle) && homePuzzle.length === 20, homePuzzle?.length);
+    const homeJelly = sandbox.window.Dialogs.getHomeBank('jellyfish');
+    assert('home.jellyfish 20 行', Array.isArray(homeJelly) && homeJelly.length === 20);
+    const homeTv = sandbox.window.Dialogs.getHomeBank('tv');
+    assert('home.tv 20 行', Array.isArray(homeTv) && homeTv.length === 20);
+    const homePhono = sandbox.window.Dialogs.getHomeBank('phonograph');
+    assert('home.phonograph 20 行', Array.isArray(homePhono) && homePhono.length === 20);
+    const homeUnknown = sandbox.window.Dialogs.getHomeBank('does_not_exist');
+    assert('home.unknown → puzzle にフォールバック', Array.isArray(homeUnknown) && homeUnknown.length === 20);
 
     // interpolate
     const ip = sandbox.window.Dialogs.interpolate('{pct} に {label} だよ', { pct: '上位 8%', label: 'TEST' });
@@ -78,16 +102,16 @@ function assert(label, cond, detail) {
     const ipEmpty = sandbox.window.Dialogs.interpolate('{pct} です {label}', { pct: '上位 8%' });
     assert('interpolate label 未指定 → 空', ipEmpty === '上位 8% です ', ipEmpty);
 
-    // main 全 tier
+    // main 全 tier (新仕様: 各 11 パターン)
     const tiers = ['GODLIKE','ELITE','STRONG','DECENT','NORMAL_DOWN','WEAK','TERRIBLE','DOOMED'];
     for (const t of tiers) {
         const b = sandbox.window.Dialogs.getMain(t);
-        assert('main.'+t+' 取得', b && b.variants && b.variants.length === 5, b ? b.variants.length : 'null');
+        assert('main.'+t+' 取得 (11 パターン)', b && b.variants && b.variants.length === 11, b ? b.variants.length : 'null');
     }
 
-    // stage10 death
+    // stage10 death (新仕様: 11 パターン)
     const d = sandbox.window.Dialogs.getStage10Death();
-    assert('stage10Death ×5', d.length === 5);
+    assert('stage10Death ×11', d.length === 11);
     assert('stage10Death[0].lines length', Array.isArray(d[0].lines) && d[0].lines.length >= 2);
 
     console.log('--- Save ---');

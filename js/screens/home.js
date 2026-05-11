@@ -13,18 +13,19 @@
    ============================================================ */
 
 (function () {
-    // 10 セリフ (メタ禁止: ゲーム/プレイヤー/UI/画面に言及しない)
-    // 口調: 既存パズル女ラインと同調 (クール / からかい / 挑発寄り)。
-    const DIALOGUES = [
+    // 立ち絵が読み込めなかった or Dialogs JSON が間に合わなかった時の
+    // ナビ子(puzzle) 用フォールバックセリフ。10 個ハードコード。
+    // 通常はこれは出ない (data/dialogs.json -> home.puzzle が引かれる)。
+    const FALLBACK_DIALOGUES = [
         '暇だったのね、よく来たじゃない。',
-        '指、温めてきた? 冷えたまま挑むと痛い目見るわよ。',
+        '指、温めてきた? 冷えたまま挑むと痛い目見るよ。',
         'ちょっと待って、考え事してたの。',
-        '今日はどこまで行けるかしらね。',
-        '焦らなくていい。ただし時間は、削れてるから。',
-        '目を逸らさないで。落ちるわよ。',
-        '冴えてる? たぶん。見せて。',
+        '今日はどこまで行けるかな。',
+        '焦らなくていい。ただし時間は、削れてる。',
+        '目を逸らさないで。落ちるよ。',
+        '冴えてる? 見せて。',
         '答えは、だいたい最初の直感が正しいわ。',
-        'ちゃんと息、してる? 止めてると鈍るから。',
+        'ちゃんと息、してる? 止めると鈍るから。',
         'ようこそ。また戻ってきたのね。',
     ];
 
@@ -37,8 +38,14 @@
             .replace(/'/g, '&#39;');
     }
 
-    function pickDialogue() {
-        return DIALOGUES[Math.floor(Math.random() * DIALOGUES.length)];
+    // 立ち絵で抽選されたキャラ ID 用のセリフバンクから 1 つ選ぶ。
+    //   1. data/dialogs.json -> home[charId] があればそこから
+    //   2. なければ home.puzzle (= ナビ子) にフォールバック
+    //   3. それも無ければハードコードの FALLBACK_DIALOGUES
+    function pickDialogue(charId) {
+        const bank = window.Dialogs?.getHomeBank?.(charId || 'puzzle');
+        const list = (bank && bank.length) ? bank : FALLBACK_DIALOGUES;
+        return list[Math.floor(Math.random() * list.length)];
     }
 
     // ------------------------------------------------------------------
@@ -115,7 +122,9 @@
         phonograph: ['phonograph_1.png', 'phonograph_discover.png', 'phonograph_idea.png'],
     };
 
-    function pickHomeCharPath() {
+    // 立ち絵を 1 枚抽選して { id, path } で返す (id はキャラ ID)。
+    // セリフバンクをキャラに合わせて引くため、id を返す形に変更。
+    function pickHomeChar() {
         // 解放済み (HOME 候補) の char id を集める
         const unlockedIds = Object.keys(HOME_POSES)
             .filter(id => window.Save?.isIconUnlocked?.(id) !== false);
@@ -125,11 +134,11 @@
         // そのキャラが出る確率が上がる。ポーズ単位で一様抽選)
         const pool = [];
         for (const id of ids) {
-            for (const f of (HOME_POSES[id] || [])) pool.push(f);
+            for (const f of (HOME_POSES[id] || [])) pool.push({ id, file: f });
         }
         if (!pool.length) return null;
         const pick = pool[Math.floor(Math.random() * pool.length)];
-        return CHARS_BASE + encodeURIComponent(pick);
+        return { id: pick.id, path: CHARS_BASE + encodeURIComponent(pick.file) };
     }
 
     // タップで切替する TIP の index (画面再生成のたびに乱数で初期化)
@@ -140,8 +149,12 @@
             const progress = window.Save?.data?.progress || {};
             const unlocked = progress.unlockedStage || 1;
             const stageName = window.CONFIG.STAGES?.[unlocked - 1]?.name || '';
-            const dialogue = pickDialogue();
-            const avPath = pickHomeCharPath();
+
+            // 立ち絵 + キャラ ID (セリフバンクをキャラに合わせて引くため)
+            const charInfo = pickHomeChar();
+            const charId = charInfo?.id || 'puzzle';
+            const avPath = charInfo?.path || null;
+            const dialogue = pickDialogue(charId);
 
             const charHtml = avPath
                 ? `<img class="home-char" src="${escapeHTML(avPath)}" alt="" id="homeChar" onerror="this.remove();">`
@@ -183,7 +196,7 @@
 
                     ${buildStatsHTML()}
 
-                    <div class="home-dialog" id="homeDialog">
+                    <div class="home-dialog" id="homeDialog" data-char-id="${escapeHTML(charId)}">
                         <p class="home-dialog-text">${escapeHTML(dialogue)}</p>
                     </div>
 
@@ -211,6 +224,24 @@
             // 背景の回転多面体。SVG + CSS アニメ (canvas/rAF 廃止 = GPU 安全)。
             // mount() は home-screen を見つけて自動で SVG を挿入する。
             window.HomeBackdrop?.mount?.();
+
+            // Dialogs JSON が render 時点で未ロードだとキャラ別バンクを引けず
+            // ナビ子のフォールバック表示になる。ロード完了後に再抽選して差し替える。
+            //   data-char-id 属性に立ち絵抽選結果のキャラ ID が入っている。
+            try {
+                const dlgEl = document.getElementById('homeDialog');
+                const charId = dlgEl?.dataset?.charId || 'puzzle';
+                const ready = !!window.Dialogs?.getHomeBank?.(charId);
+                if (!ready && window.Dialogs?.load) {
+                    window.Dialogs.load().then(() => {
+                        const stillEl = document.getElementById('homeDialog');
+                        if (!stillEl || stillEl !== dlgEl) return;  // すでに別画面に遷移
+                        const newDlg = pickDialogue(charId);
+                        const txt = stillEl.querySelector('.home-dialog-text');
+                        if (txt && newDlg) txt.textContent = newDlg;
+                    }).catch(() => {});
+                }
+            } catch (_) {}
 
             // 連続日数を更新 (1 度の起動で何回 home に来ても同日なら no-op)
             //   isNewDay=true なら STREAK セルにポップ演出を 1 回入れる。

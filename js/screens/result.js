@@ -490,19 +490,32 @@
             const isF = rank === 'F';
             const isStage10Death = isF && deathEnd && stageNo === 10;
 
-            // サブキャラ判定 (死亡エンドは対象外 = F は stages/ranks に含まれないので自動的に除外される)
-            const subChar = (!deathEnd)
-                ? (window.Dialogs?.getSubCharFor?.(stageNo, rank) || null)
-                : null;
+            // ステージに該当するサブキャラを取得 (死亡時もキャラ自体は同じ)。
+            // バンク選択 (default/SS/S/deathOrF) は pickSubVariantBank に委ねる。
+            const subChar = window.Dialogs?.getSubCharFor?.(stageNo) || null;
             const subUnlocked = subChar
                 ? !!window.Save?.isIconUnlocked?.(subChar.iconId)
-                : true;
-            // 初回は確定。2 回目以降は 50/50 抽選。
+                : false;
+            // ランクに応じた variant bank を引く。
+            //   F/死亡 + 解放後 → deathOrF バンク
+            //   F/死亡 + 未解放 → null (= サブキャラ非登場、ナビ子にフォールバック)
+            //   B/A/S/SS       → 該当ランクの bank or default
+            const subBank = subChar
+                ? window.Dialogs?.pickSubVariantBank?.(subChar, rank, deathEnd, subUnlocked)
+                : null;
+
+            // useSub 判定:
+            //   未解放 + 通常ランク (B/A/S/SS) → 確定で出す (= 初回登場 / 解放トリガー)
+            //   解放後 + bank あり             → 50/50 抽選でナビ子と分岐
+            //   それ以外                        → サブキャラ非表示
             let useSub = false;
-            if (subChar) {
-                useSub = !subUnlocked
-                    ? true
-                    : (hashSeed(seed + '_lottery') % 2 === 0);
+            if (subBank && subBank.length) {
+                if (!subUnlocked) {
+                    // 初回登場は B/A/S/SS のときだけ (= deathOrF は解放後限定)
+                    useSub = (rank === 'B' || rank === 'A' || rank === 'S' || rank === 'SS');
+                } else {
+                    useSub = (hashSeed(seed + '_lottery') % 2 === 0);
+                }
             }
 
             let lines = null;
@@ -510,15 +523,13 @@
             let customImage = null;
             let unlockTarget = null;  // セリフ後に解放 popup を出すキャラ
 
-            if (useSub && subChar) {
-                const vs = subChar.variants || [];
-                if (vs.length) {
-                    const pick = vs[hashSeed(seed) % vs.length] || [];
-                    lines = pick.map(l => window.Dialogs.interpolate(l, { pct, label: subChar.label }));
-                    poses = subChar.poses;
-                    customImage = subChar.image;
-                    if (!subUnlocked) unlockTarget = subChar;
-                }
+            if (useSub && subChar && subBank) {
+                const pick = subBank[hashSeed(seed) % subBank.length] || [];
+                // サブキャラのセリフは {label} を使わない方針だが、安全のため空文字で消す
+                lines = pick.map(l => window.Dialogs.interpolate(l, { pct, label: '' }));
+                poses = subChar.poses;
+                customImage = subChar.image;
+                if (!subUnlocked) unlockTarget = subChar;
             } else if (isStage10Death) {
                 const arr = window.Dialogs?.getStage10Death?.() || [];
                 if (arr.length) {
@@ -581,13 +592,17 @@
         const label = subChar.label || '';
         const el = document.createElement('div');
         el.className = 'icon-unlock';
+        // label が空のキャラ (= 名前を出さない方針) ではラベル div を省略する
+        const labelHtml = label
+            ? `<div class="icon-unlock-label">${escapeHTML(label)}</div>`
+            : '';
         el.innerHTML = `
             <div class="icon-unlock-card">
                 <div class="icon-unlock-eyebrow">NEW ICON</div>
                 <div class="icon-unlock-frame">
                     <img src="${img}" alt="">
                 </div>
-                <div class="icon-unlock-label">${escapeHTML(label)}</div>
+                ${labelHtml}
                 <div class="icon-unlock-hint">PROFILE から設定できるよ</div>
             </div>
         `;
